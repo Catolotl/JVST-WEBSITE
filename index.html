@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J V S T - Casual. Useful. Human.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 12px;
+            color: #000;
+            cursor: pointer;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 48px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #000;
+        }
+
+        .cta-btn {
+            background: #000;
+            color: white !important;
+            padding: 10px 28px;
+            border-radius: 2px;
+            transition: all 0.3s;
+            border: 2px solid #000;
+        }
+
+        .cta-btn:hover {
+            background: white;
+            color: #000 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .hero {
+            margin-top: 90px;
+            padding: 200px 60px;
+            text-align: center;
+            background: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: 'JVST';
+            position: absolute;
+            font-size: 35vw;
+            font-weight: 900;
+            color: rgba(0, 0, 0, 0.015);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            letter-spacing: -20px;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 110px;
+            font-weight: 900;
+            letter-spacing: 20px;
+            margin-bottom: 32px;
+            color: #000;
+            animation: fadeInUp 0.8s ease;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .hero .tagline {
+            font-size: 28px;
+            color: #999;
+            font-weight: 300;
+            margin-bottom: 64px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            animation: fadeInUp 0.8s ease 0.2s backwards;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            gap: 24px;
+            animation: fadeInUp 0.8s ease 0.4s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 18px 48px;
+            border-radius: 0;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            border: 2px solid;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-primary {
+            background: #000;
+            color: white;
+            border-color: #000;
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: #000;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #000;
+            border-color: #000;
+        }
+
+        .btn-secondary:hover {
+            background: #000;
+            color: white;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .sticky-text-section {
+            position: relative;
+            height: 400vh;
+            background: #ffffff;
+        }
+
+        .sticky-text-container {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sticky-text-content h2 {
+            font-size: 120px;
+            font-weight: 900;
+            letter-spacing: 10px;
+            line-height: 1.2;
+            font-family: 'Space Grotesk', sans-serif;
+            text-align: center;
+        }
+
+        .text-part {
+            color: #e0e0e0;
+            transition: color 0.5s ease;
+        }
+
+        .text-part.active {
+            color: #000;
+        }
+
+        .parallax-section {
+            position: relative;
+            height: 300vh;
+            background: #000;
+        }
+
+        .parallax-container {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-item {
+            margin: 60px 0;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.6s ease;
+            text-align: center;
+            color: white;
+        }
+
+        .stat-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stat-number {
+            font-size: 140px;
+            font-weight: 900;
+            letter-spacing: -5px;
+            margin-bottom: 16px;
+            font-family: 'Space Grotesk', sans-serif;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 18px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #999;
+            font-weight: 300;
+        }
+
+        .horizontal-scroll-section {
+            position: relative;
+            height: 300vh;
+            background: #fafafa;
+        }
+
+        .horizontal-container {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .horizontal-content {
+            display: flex;
+            gap: 60px;
+            padding: 0 60px;
+            will-change: transform;
+        }
+
+        .horizontal-card {
+            min-width: 500px;
+            height: 600px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .horizontal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: #000;
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform 0.6s;
+        }
+
+        .horizontal-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .horizontal-card h3 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 24px;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .horizontal-card p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #666;
+        }
+
+        .card-number {
+            font-size: 200px;
+            font-weight: 900;
+            position: absolute;
+            bottom: -40px;
+            right: 40px;
+            color: rgba(0, 0, 0, 0.03);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .features {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 140px 60px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            background: #f5f5f5;
+        }
+
+        .feature-card {
+            padding: 80px 50px;
+            background: white;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .feature-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature-card:nth-child(2).visible {
+            transition-delay: 0.1s;
+        }
+
+        .feature-card:nth-child(3).visible {
+            transition-delay: 0.2s;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #000 0%, #333 100%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: 0;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .feature-card > * {
+            position: relative;
+            z-index: 1;
+            transition: all 0.5s;
+        }
+
+        .feature-card:hover > * {
+            color: white;
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 32px;
+            display: block;
+            filter: grayscale(1);
+            opacity: 0.8;
+        }
+
+        .feature-card:hover .feature-icon {
+            filter: grayscale(0);
+            opacity: 1;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .zoom-section {
+            position: relative;
+            height: 400vh;
+            background: #ffffff;
+        }
+
+        .zoom-container {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .zoom-content {
+            text-align: center;
+            transform-origin: center;
+            will-change: transform;
+        }
+
+        .zoom-content h2 {
+            font-size: 80px;
+            font-weight: 900;
+            letter-spacing: 8px;
+            font-family: 'Space Grotesk', sans-serif;
+            margin-bottom: 24px;
+        }
+
+        .zoom-content p {
+            font-size: 20px;
+            color: #666;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .products {
+            background: #fafafa;
+            padding: 140px 60px;
+            position: relative;
+        }
+
+        .products::before {
+            content: 'PRODUCTS';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18vw;
+            font-weight: 900;
+            color: rgba(0, 0, 0, 0.015);
+            letter-spacing: -10px;
+        }
+
+        .products-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title {
+            font-size: 72px;
+            font-weight: 900;
+            margin-bottom: 24px;
+            color: #000;
+            letter-spacing: 8px;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: #999;
+            margin-bottom: 100px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 300;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2px;
+            background: #e0e0e0;
+        }
+
+        .product-card {
+            background: white;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        .product-card.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .product-card:nth-child(2).visible {
+            transition-delay: 0.1s;
+        }
+
+        .product-card:nth-child(3).visible {
+            transition-delay: 0.2s;
+        }
+
+        .product-card:nth-child(4).visible {
+            transition-delay: 0.3s;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.03) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: 1;
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-card:hover {
+            transform: scale(1.02);
+            z-index: 10;
+            box-shadow: 0 40px 120px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 60%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 120px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .product-image::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.8) 50%, transparent 60%);
+            transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            transition: all 0.8s;
+        }
+
+        .product-card:hover .product-image::after {
+            transform: translateX(100%) translateY(100%) rotate(45deg);
+        }
+
+        .product-card:nth-child(1) .product-image {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+        }
+
+        .product-card:nth-child(2) .product-image {
+            background: linear-gradient(135deg, #4a4a4a 0%, #666 100%);
+        }
+
+        .product-card:nth-child(3) .product-image {
+            background: linear-gradient(135deg, #2a2a2a 0%, #444 100%);
+        }
+
+        .product-card:nth-child(4) .product-image {
+            background: linear-gradient(135deg, #3a3a3a 0%, #555 100%);
+        }
+
+        .product-content {
+            padding: 48px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            z-index: 2;
+        }
+
+        .product-content h3 {
+            font-size: 32px;
+            margin-bottom: 16px;
+            color: #000;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .product-content p {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 32px;
+            line-height: 1.8;
+        }
+
+        .product-link {
+            color: #000;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 4px;
+            transition: all 0.3s;
+        }
+
+        .product-link:hover {
+            gap: 20px;
+        }
+
+        .bundle {
+            max-width: 1200px;
+            margin: 140px auto;
+            padding: 120px 80px;
+            background: #000;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .bundle.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .bundle::before {
+            content: '$3';
+            position: absolute;
+            font-size: 40vw;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.03);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .bundle::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,0.03) 2px,rgba(255,255,255,0.03) 4px);
+            pointer-events: none;
+        }
+
+        .bundle-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .bundle h2 {
+            font-size: 56px;
+            margin-bottom: 32px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .bundle p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            opacity: 0.7;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .bundle .price {
+            font-size: 120px;
+            font-weight: 900;
+            margin: 48px 0;
+            letter-spacing: -6px;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .bundle .price span {
+            font-size: 32px;
+            opacity: 0.7;
+            font-weight: 300;
+        }
+
+        .bundle .btn-white {
+            background: white;
+            color: #000;
+            padding: 20px 64px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 2px solid white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .bundle .btn-white:hover {
+            background: transparent;
+            color: white;
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(255, 255, 255, 0.1);
+        }
+
+        footer {
+            background: #fafafa;
+            padding: 80px 60px 60px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-brand {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            color: #000;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+        }
+
+        .footer-content p {
+            color: #999;
+            font-size: 13px;
+            line-height: 2;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .footer-links a {
+            color: #666;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            transition: color 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .footer-links a:hover {
+            color: #000;
+        }
+
+        @media (max-width: 1024px) {
+            .sticky-text-content h2 { font-size: 60px; }
+            .stat-number { font-size: 80px; }
+            .horizontal-card { min-width: 400px; height: 500px; }
+            .zoom-content h2 { font-size: 50px; }
+            .features { grid-template-columns: 1fr; gap: 1px; }
+            .product-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero { padding: 120px 30px; }
+            .hero h1 { font-size: 48px; letter-spacing: 8px; }
+            .sticky-text-content h2 { font-size: 36px; }
+            .stat-number { font-size: 60px; }
+            .horizontal-card { min-width: 300px; height: 400px; padding: 40px; }
+            .horizontal-card h3 { font-size: 32px; }
+            .zoom-content h2 { font-size: 36px; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">JVST</div>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#products">Products</a>
+                <a href="#about">About</a>
+                <a href="#login" class="cta-btn">Log In</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>J V S T</h1>
+            <p class="tagline">Casual. Useful. Human.</p>
+            <div class="hero-cta">
+                <a href="#bundle" class="btn-primary">Get Started</a>
+                <a href="#products" class="btn-secondary">Explore Products</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="sticky-text-section">
+        <div class="sticky-text-container">
+            <div class="sticky-text-content">
+                <h2>
+                    <span class="text-part" data-index="0">BUILT FOR</span><br>
+                    <span class="text-part" data-index="1">STUDENTS.</span><br>
+                    <span class="text-part" data-index="2">CREATORS.</span><br>
+                    <span class="text-part" data-index="3">INNOVATORS.</span>
+                </h2>
+            </div>
+        </div>
+    </section>
+
+    <section class="parallax-section">
+        <div class="parallax-container">
+            <div class="parallax-content">
+                <div class="stat-item" data-stat="0">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-item" data-stat="1">
+                    <div class="stat-number">99.9%</div>
+                    <div class="stat-label">Uptime</div>
+                </div>
+                <div class="stat-item" data-stat="2">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Support</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="horizontal-scroll-section">
+        <div class="horizontal-container">
+            <div class="horizontal-content">
+                <div class="horizontal-card">
+                    <div>
+                        <h3>Fast</h3>
+                        <p>Lightning-quick performance engineered for modern workflows. Every millisecond counts, every interaction refined.</p>
+                    </div>
+                    <div class="card-number">01</div>
+                </div>
+                <div class="horizontal-card">
+                    <div>
+                        <h3>Simple</h3>
+                        <p>Complexity hidden behind intuitive design. Powerful features that feel effortless to use, every single time.</p>
+                    </div>
+                    <div class="card-number">02</div>
+                </div>
+                <div class="horizontal-card">
+                    <div>
+                        <h3>Reliable</h3>
+                        <p>Built to last with enterprise-grade infrastructure. Your data, your work, always secure and accessible.</p>
+                    </div>
+                    <div class="card-number">03</div>
+                </div>
+                <div class="horizontal-card">
+                    <div>
+                        <h3>Affordable</h3>
+                        <p>Premium features at student-friendly prices. Quality shouldn't cost a fortune when you're building your future.</p>
+                    </div>
+                    <div class="card-number">04</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="feature-card">
+            <span class="feature-icon">⚡</span>
+            <h3>Lightning Fast</h3>
+            <p>Optimized tools that load instantly and keep you ahead. Built for speed and efficiency in everything you do.</p>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">🦾</span>
+            <h3>Innovation First</h3>
+            <p>Cutting-edge features designed for modern creators and innovators. Stay at the forefront of technology.</p>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">👋</span>
+            <h3>One Man Crew</h3>
+            <p>One developer, one computer, and pure perseverance. Built with passion and dedication to excellence.</p>
+        </div>
+    </section>
+
+    <section class="zoom-section">
+        <div class="zoom-container">
+            <div class="zoom-content">
+                <h2>SCROLL TO ZOOM</h2>
+                <p>Experience the power</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="products" id="products">
+        <div class="products-container">
+            <h2 class="section-title">Products</h2>
+            <p class="section-subtitle">Work smarter, not harder</p>
+            
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-image">📺</div>
+                    <div class="product-content">
+                        <div>
+                            <h3>TV</h3>
+                            <p>Stream your favorite educational YouTubers, watch digital lessons. The possibilities are endless for just $3.00/year.</p>
+                        </div>
+                        <a href="#" class="product-link">Explore →</a>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">🤖</div>
+                    <div class="product-content">
+                        <div>
+                            <h3>Indy // Chatbot</h3>
+                            <p>Beta AI assistant designed to help students and creators work more efficiently and creatively.</p>
+                        </div>
+                        <a href="#" class="product-link">Test it out →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="bundle">
+        <div class="bundle">
+            <div class="bundle-content">
+                <h2>THE COMPLETE BUNDLE</h2>
+                <p>Includes Blade Card, Master TV code, and beta AI access</p>
+                <div class="price">$3<span>/year</span></div>
+                <p style="margin-bottom: 48px;">A must-have for any student. Everything you need, one simple price.</p>
+                <a href="#" class="btn-white">Get Started</a>
+            </div>
+        </div>
+    </section>
+
+    <footer id="about">
+        <div class="footer-content">
+            <div class="footer-brand">A predecessor of I R E L A N D CO.</div>
+            <p>© 2026 J V S T by I R E L A N D</p>
+            <p style="max-width: 900px; margin: 20px auto;">"IRELAND" is an independent company and is not affiliated with, endorsed by, or connected to any school or school district. Our products are sold commercially and are not school-sponsored in any way.</p>
+            <div class="footer-links">
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Contact</a>
+                <a href="#">Support</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function updateStickyText() {
+            const section = document.querySelector('.sticky-text-section');
+            if (!section) return;
+            const parts = document.querySelectorAll('.text-part');
+            const rect = section.getBoundingClientRect();
+            const sectionHeight = section.offsetHeight;
+            const windowHeight = window.innerHeight;
+            const scrollProgress = Math.max(0, Math.min(1, -rect.top / (sectionHeight - windowHeight)));
+            parts.forEach((part, i) => {
+                const activationPoint = i / parts.length;
+                const deactivationPoint = (i + 1) / parts.length;
+                if (scrollProgress >= activationPoint && scrollProgress < deactivationPoint + 0.15) {
+                    part.classList.add('active');
+                } else {
+                    part.classList.remove('active');
+                }
+            });
+        }
+
+        function updateParallaxStats() {
+            const section = document.querySelector('.parallax-section');
+            if (!section) return;
+            const stats = document.querySelectorAll('.stat-item');
+            const rect = section.getBoundingClientRect();
+            const sectionHeight = section.offsetHeight;
+            const windowHeight = window.innerHeight;
+            const scrollProgress = Math.max(0, Math.min(1, -rect.top / (sectionHeight - windowHeight)));
+            stats.forEach((stat, i) => {
+                const activationPoint = i / stats.length;
+                const deactivationPoint = (i + 0.5) / stats.length;
+                if (scrollProgress >= activationPoint && scrollProgress < deactivationPoint + 0.3) {
+                    stat.classList.add('visible');
+                } else {
+                    stat.classList.remove('visible');
+                }
+            });
+        }
+
+        function updateHorizontalScroll() {
+            const section = document.querySelector('.horizontal-scroll-section');
+            if (!section) return;
+            const content = document.querySelector('.horizontal-content');
+            const rect = section.getBoundingClientRect();
+            const sectionHeight = section.offsetHeight;
+            const windowHeight = window.innerHeight;
+            const scrollProgress = Math.max(0, Math.min(1, -rect.top / (sectionHeight - windowHeight)));
+            const maxScroll = content.scrollWidth - window.innerWidth;
+            content.style.transform = `translateX(-${scrollProgress * maxScroll}px)`;
+        }
+
+        function updateZoomSection() {
+            const section = document.querySelector('.zoom-section');
+            if (!section) return;
+            const content = document.querySelector('.zoom-content');
+            const rect = section.getBoundingClientRect();
+            const sectionHeight = section.offsetHeight;
+            const windowHeight = window.innerHeight;
+            const scrollProgress = Math.max(0, Math.min(1, -rect.top / (sectionHeight - windowHeight)));
+            const scale = 1 + (scrollProgress * 2);
+            const opacity = 1 - (scrollProgress * 0.7);
+            content.style.transform = `scale(${scale})`;
+            content.style.opacity = opacity;
+        }
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .product-card, .bundle').forEach(el => {
+            observer.observe(el);
+        });
+
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    updateStickyText();
+                    updateParallaxStats();
+                    updateHorizontalScroll();
+                    updateZoomSection();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        updateStickyText();
+        updateParallaxStats();
+        updateHorizontalScroll();
+        updateZoomSection();
+    </script>
+</body>
+</html>Learn more →</a>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">🎵</div>
+                    <div class="product-content">
+                        <div>
+                            <h3>Tunes</h3>
+                            <p>Stream music clips on your Chromebook with an easy UI. No login required, 100% free!</p>
+                        </div>
+                        <a href="#" class="product-link">Try it now →</a>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">🔍</div>
+                    <div class="product-content">
+                        <div>
+                            <h3>Search</h3>
+                            <p>Powerful search capabilities integrated across all J V S T products for seamless discovery.</p>
+                        </div>
+                        <a href="#" class="product-link">
