@@ -922,6 +922,42 @@
 }
 
 
+.announcement-bar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1100;
+}
+nav {
+  top: 44px; /* match announcement-bar height */
+}
+.hero {
+  margin-top: 134px; /* nav + announcement */
+}
+
+
+        .marquee-content {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+        @media (prefers-reduced-motion: reduce) {
+  .marquee-content {
+    animation: none;
+    padding-left: 0;
+    display: block;
+    text-align: center;
+  }
+}
+
+
+        
     </style>
 </head>
 <body>
