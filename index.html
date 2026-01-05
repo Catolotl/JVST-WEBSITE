@@ -878,9 +878,65 @@
     transform: translateX(-50%) translateY(0);
 }
 
+
+
+
+        .announcement-bar {
+  background-color: #333; /* Dark background */
+  color: white;           /* White text */
+  padding: 10px 0;        /* Vertical padding */
+  overflow: hidden;       /* Hides overflowing content outside the bar */
+  white-space: nowrap;    /* Keeps all text on a single line */
+  box-sizing: border-box;
+}
+
+.marquee-content {
+  display: inline-block;
+  padding-left: 100%; /* Starts the text off-screen to the right */
+  animation: marquee 30s linear infinite; /* Animation properties */
+}
+
+.marquee-content span {
+  padding: 0 20px; /* Space between repeated announcements */
+}
+
+/* Keyframe animation definition */
+@keyframes marquee {
+  0% {
+    transform: translateX(0); /* Start position */
+  }
+  100% {
+    transform: translateX(-100%); /* End position (moves fully to the left) */
+  }
+}
+
+/* Accessibility: Stop animation if a user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-content {
+    animation: none;
+    /* Center the static text if animation is off */
+    transform: translateX(-50%);
+    text-align: center;
+    display: block;
+  }
+}
+
+
     </style>
 </head>
 <body>
+
+
+<div class="announcement-bar">
+  <div class="marquee-content">
+    <span>✨ Sale: 20% off all items! Free shipping on orders over $50! ✨</span>
+    <!-- Repeat the text to ensure a continuous loop without a gap -->
+    <span>✨ Sale: 20% off all items! Free shipping on orders over $50! ✨</span>
+  </div>
+</div>
+
+
+    
     <nav>
         <div class="nav-container">
             <div class="logo">JVST</div>
