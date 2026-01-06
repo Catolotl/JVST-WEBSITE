@@ -956,9 +956,52 @@ nav {
   }
 }
 
+        /* Push nav down to avoid overlap with tunes-announcement */
+nav {
+    top: 44px; /* Keeps space for the existing marquee bar */
+}
 
-        
-    </style>
+/* Add margin/push hero down since tunes-announcement is tall */
+.hero {
+    margin-top: 250px; /* Increased from 134px to account for tunes section */
+}
+
+        /* Spacing adjustments for new announcement */
+        nav {
+            top: 44px;
+        }
+        .hero {
+            margin-top: 250px;
+        }
+
+        .tunes-announcement {
+            background: #000;
+            color: white;
+            text-align: center;
+            padding: 120px 60px;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeIn 1.2s ease forwards;
+            animation-delay: 0.3s;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        .tunes-announcement::before {
+            content: 'TUNES';
+            position: absolute;
+            font-size: 25vw;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.03);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            letter-spacing: -10px;
+            font-family: 'Space Grotesk', sans-serif;
+            pointer-events: none;
+        }
+        /* ... paste the rest of your .tunes-announcement rules here exactly as before ... */
 </head>
 <body>
 
@@ -971,7 +1014,29 @@ nav {
   </div>
 </div>
 
-
+<section class="tunes-announcement">
+    <h2>FULL SONGS</h2>
+    <p>Coming to Tunes this Thursday</p>
+    <div class="countdown" id="countdown">
+        <div class="countdown-item">
+            <div class="countdown-number" id="days">00</div>
+            <div class="countdown-label">Days</div>
+        </div>
+        <div class="countdown-item">
+            <div class="countdown-number" id="hours">00</div>
+            <div class="countdown-label">Hours</div>
+        </div>
+        <div class="countdown-item">
+            <div class="countdown-number" id="minutes">00</div>
+            <div class="countdown-label">Minutes</div>
+        </div>
+        <div class="countdown-item">
+            <div class="countdown-number" id="seconds">00</div>
+            <div class="countdown-label">Seconds</div>
+        </div>
+    </div>
+    <a href="tunes.html" class="btn-primary">Explore Tunes</a>
+</section>
     
     <nav>
         <div class="nav-container">
@@ -1258,5 +1323,40 @@ nav {
         updateHorizontalScroll();
         updateZoomSection();
     </script>
+    <script>
+    // Countdown to next Thursday at 00:00:00 (you can change the hour if launch is at a specific time)
+    function getNextThursday() {
+        const now = new Date();
+        const dayOfWeek = now.getDay(); // 0 = Sunday, 4 = Thursday
+        const daysUntilThursday = dayOfWeek <= 4 ? 4 - dayOfWeek : 11 - dayOfWeek;
+        const nextThursday = new Date(now);
+        nextThursday.setDate(now.getDate() + daysUntilThursday);
+        nextThursday.setHours(9, 0, 0, 0); // Change to desired launch hour, e.g., 9 for 9 AM
+        return nextThursday;
+    }
+
+    const countdownDate = getNextThursday().getTime();
+
+    const countdownFunction = setInterval(function() {
+        const now = new Date().getTime();
+        const distance = countdownDate - now;
+
+        if (distance < 0) {
+            document.getElementById("countdown").innerHTML = "<p style='font-size:24px;letter-spacing:4px;'>FULL SONGS ARE NOW LIVE!</p>";
+            clearInterval(countdownFunction);
+            return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById("days").innerText = days.toString().padStart(2, '0');
+        document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+        document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+        document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+    }, 1000);
+</script>
 </body>
 </html>
