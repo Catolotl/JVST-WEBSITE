@@ -1001,7 +1001,81 @@ nav {
             font-family: 'Space Grotesk', sans-serif;
             pointer-events: none;
         }
-        /* ... paste the rest of your .tunes-announcement rules here exactly as before ... */
+                .tunes-announcement h2 {
+            font-size: 80px;
+            font-weight: 900;
+            letter-spacing: 12px;
+            margin-bottom: 24px;
+            font-family: 'Space Grotesk', sans-serif;
+            position: relative;
+            z-index: 2;
+        }
+        .tunes-announcement p {
+            font-size: 20px;
+            color: #ccc;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 48px;
+            font-weight: 300;
+            position: relative;
+            z-index: 2;
+        }
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-bottom: 64px;
+            position: relative;
+            z-index: 2;
+            flex-wrap: wrap;
+        }
+        .countdown-item {
+            text-align: center;
+        }
+        .countdown-number {
+            font-size: 100px;
+            font-weight: 900;
+            font-family: 'Space Grotesk', sans-serif;
+            line-height: 1;
+            background: linear-gradient(135deg, #ffffff 0%, #aaaaaa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .countdown-label {
+            font-size: 14px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #999;
+            margin-top: 12px;
+            font-weight: 500;
+        }
+        .tunes-announcement .btn-primary {
+            background: white;
+            color: #000;
+            border-color: white;
+            padding: 18px 48px;
+            position: relative;
+            z-index: 2;
+        }
+        .tunes-announcement .btn-primary:hover {
+            background: transparent;
+            color: white;
+            box-shadow: 0 12px 32px rgba(255, 255, 255, 0.15);
+        }
+        @media (max-width: 1024px) {
+            .tunes-announcement h2 { font-size: 60px; letter-spacing: 8px; }
+            .countdown-number { font-size: 70px; }
+            .countdown { gap: 40px; }
+        }
+        @media (max-width: 768px) {
+            .tunes-announcement { padding: 80px 30px; }
+            .tunes-announcement h2 { font-size: 40px; letter-spacing: 6px; }
+            .countdown { gap: 20px; }
+            .countdown-number { font-size: 50px; }
+        }
+    </style>
+</head>
 </head>
 <body>
 
