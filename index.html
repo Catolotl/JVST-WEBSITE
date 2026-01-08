@@ -1074,6 +1074,183 @@ nav {
             .countdown { gap: 20px; }
             .countdown-number { font-size: 50px; }
         }
+        /* Add smooth scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Subtle text selection color */
+::selection {
+    background: #000;
+    color: #fff;
+}
+
+/* Smooth focus states for accessibility */
+a:focus, button:focus {
+    outline: 2px solid #000;
+    outline-offset: 4px;
+}
+
+/* Add subtle hover lift to all links */
+a {
+    transition: transform 0.2s ease;
+}
+
+a:hover {
+    transform: translateY(-1px);
+}
+
+/* Enhance the nav with a subtle shadow on scroll */
+nav.scrolled {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+/* Add micro-interactions to buttons */
+.btn-primary, .btn-secondary, .cta-btn, .btn-white {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::after, .btn-secondary::after, .cta-btn::after, .btn-white::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-primary:hover::after, .btn-secondary:hover::after, 
+.cta-btn:hover::after, .btn-white:hover::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* Enhance product cards with border animation */
+.product-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 3px solid #000;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.product-card:hover::after {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Add depth to feature cards */
+.feature-card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.feature-card:hover {
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+}
+
+/* Enhance horizontal cards with better shadows */
+.horizontal-card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.horizontal-card:hover {
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+}
+
+/* Add animated underline to nav links */
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #000;
+    transition: width 0.3s ease;
+}
+
+.nav-links a {
+    position: relative;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+/* Smooth image transitions */
+.product-image {
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.05);
+}
+
+/* Add breathing animation to hero */
+@keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+.hero-content h1 {
+    animation: fadeInUp 0.8s ease, breathe 8s ease-in-out infinite 2s;
+}
+
+/* Enhance footer links with better spacing */
+.footer-links a {
+    position: relative;
+    padding-bottom: 2px;
+}
+
+.footer-links a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    background: #000;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.footer-links a:hover::after {
+    width: 100%;
+}
+
+/* Add subtle gradient overlay to bundle section for depth */
+.bundle::after {
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.02) 2px,
+        rgba(255,255,255,0.02) 4px
+    );
+}
+
+/* Improve readability with subtle text shadows on dark backgrounds */
+.parallax-section .stat-item,
+.tunes-announcement h2,
+.bundle h2 {
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Add smooth transitions to all elements */
+* {
+    transition: background-color 0.3s ease;
+}
     </style>
 </head>
 </head>
@@ -1164,7 +1341,7 @@ nav {
             <div class="parallax-content">
                 <div class="stat-item" data-stat="0">
                     <div class="stat-number">10K+</div>
-                    <div class="stat-label">Questions Asked to Indy</div>
+                    <div class="stat-label">Questions Answered/div>
                 </div>
                 <div class="stat-item" data-stat="1">
                     <div class="stat-number">99.9%</div>
@@ -1216,7 +1393,7 @@ nav {
                     <div class="product-content">
                         <div>
                             <h3>Tunes</h3>
-                            <p>Use Tunes on your Chromebook Device now to get the best (In School) experience for streaming music now! Now equiped with full songs, Tunes is unstopable!</p>
+                            <p>Stream music seamlessly on your Chromebook. Now equipped with full songs - Tunes is unstoppable!</p>
                         </div>
                         <a href="tunes.html" class="product-link">Explore →</a>
                     </div>
@@ -1226,7 +1403,7 @@ nav {
                     <div class="product-content">
                         <div>
                             <h3>Indy // Chatbot</h3>
-                            <p>Beta AI assistant designed to help students and creators work more efficiently and creatively.</p>
+                            <p>Your AI study buddy. Get instant answers, brainstorm ideas, and power through assignments faster.</p>
                         </div>
                         <a href="indy.html" class="product-link">Test it out →</a>
                     </div>
@@ -1241,7 +1418,7 @@ nav {
                 <h2>THE COMPLETE BUNDLE</h2>
                 <p>Includes Blade Card, Master TV code, and beta AI access</p>
                 <div class="price">$3<span>/year</span></div>
-                <p style="margin-bottom: 48px;">A must-have for any student. Everything you need, one simple price.</p>
+                <p style="margin-bottom: 48px;">Was $5.00 a year, this is a must-have for any student. Everything you need, one simple price.</p>
                 <a href="login.html" class="btn-white">Get Started</a>
             </div>
         </div>
@@ -1431,6 +1608,16 @@ nav {
         document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
         document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
     }, 1000);
+
+        // Add shadow to nav on scroll
+window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    if (window.scrollY > 100) {
+        nav.classList.add('scrolled');
+    } else {
+        nav.classList.remove('scrolled');
+    }
+});
 </script>
 </body>
 </html>
