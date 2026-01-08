@@ -1256,36 +1256,48 @@ nav.scrolled {
 
 
 
-        /* Zoom out all content below nav */
-body {
-    font-size: 90%; /* Reduces base font size by 10% */
+.announcement-bar {
+    background-color: #333;
+    color: white;
+    padding: 10px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1100;
 }
 
-/* Keep nav at normal size */
-nav,
-nav * {
-    font-size: initial;
+.marquee-content {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 25s linear infinite;
 }
 
-/* Alternatively, use transform scale on main sections */
-.hero,
-.sticky-text-section,
-.parallax-section,
-.features,
-.zoom-section,
-.products,
-.bundle,
-.horizontal-scroll-section,
-footer,
-.tunes-announcement {
-    transform: scale(0.95);
-    transform-origin: top center;
+.marquee-content span {
+    display: inline-block;
+    padding: 0 40px; /* Spacing between announcements */
 }
 
-/* Adjust spacing to compensate for scale */
-.hero { padding: 180px 60px; }
-.products { padding: 120px 60px; }
-.features { padding: 120px 60px; }
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .marquee-content {
+        animation: none;
+        display: block;
+        text-align: center;
+        padding: 0;
+    }
+}
     </style>
 </head>
 </head>
@@ -1297,20 +1309,6 @@ footer,
     <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
     <!-- Repeat the text to ensure a continuous loop without a gap -->
     <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
-
-      <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
-
-      <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
-
-      <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
-
-          <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
-    <!-- Repeat the text to ensure a continuous loop without a gap -->
-    <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
-
-      <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
-
-      <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
 
       <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
   </div>
