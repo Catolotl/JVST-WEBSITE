@@ -1251,6 +1251,41 @@ nav.scrolled {
 * {
     transition: background-color 0.3s ease;
 }
+
+
+
+
+
+        /* Zoom out all content below nav */
+body {
+    font-size: 90%; /* Reduces base font size by 10% */
+}
+
+/* Keep nav at normal size */
+nav,
+nav * {
+    font-size: initial;
+}
+
+/* Alternatively, use transform scale on main sections */
+.hero,
+.sticky-text-section,
+.parallax-section,
+.features,
+.zoom-section,
+.products,
+.bundle,
+.horizontal-scroll-section,
+footer,
+.tunes-announcement {
+    transform: scale(0.95);
+    transform-origin: top center;
+}
+
+/* Adjust spacing to compensate for scale */
+.hero { padding: 180px 60px; }
+.products { padding: 120px 60px; }
+.features { padding: 120px 60px; }
     </style>
 </head>
 </head>
@@ -1341,7 +1376,7 @@ nav.scrolled {
             <div class="parallax-content">
                 <div class="stat-item" data-stat="0">
                     <div class="stat-number">10K+</div>
-                    <div class="stat-label">Questions Answered/div>
+                    <div class="stat-label">Questions Answered</div>
                 </div>
                 <div class="stat-item" data-stat="1">
                     <div class="stat-number">99.9%</div>
