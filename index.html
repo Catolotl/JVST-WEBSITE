@@ -1270,21 +1270,23 @@ nav.scrolled {
 }
 
 .marquee-content {
-    display: inline-block;
+    display: inline-flex; /* Changed to flex */
     white-space: nowrap;
-    animation: marquee 25s linear infinite;
+    animation: marquee 30s linear infinite;
+    will-change: transform;
 }
 
 .marquee-content span {
     display: inline-block;
-    padding: 0 40px; /* Spacing between announcements */
+    padding: 0 60px; /* More spacing for seamless feel */
+    flex-shrink: 0; /* Prevent shrinking */
 }
 
 @keyframes marquee {
-    0% {
+    from {
         transform: translateX(0);
     }
-    100% {
+    to {
         transform: translateX(-50%);
     }
 }
@@ -1307,10 +1309,20 @@ nav.scrolled {
 <div class="announcement-bar">
   <div class="marquee-content">
     <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
-    <!-- Repeat the text to ensure a continuous loop without a gap -->
     <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
-
-      <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
+    <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
+          <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
+    <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
+    <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
+          <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
+    <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
+    <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
+          <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
+    <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
+    <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
+          <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
+    <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
+    <span>✨ All time low price - Blade Card for $3.00/Year ✨</span>
   </div>
 </div>
 
