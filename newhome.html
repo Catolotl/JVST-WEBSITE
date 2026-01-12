@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JVST - Built Different</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      color: #111;
+      background: #fff;
+      line-height: 1.6;
+    }
+
+    /* Announcement Banner - Infinite seamless scroll */
+    .announcement {
+      background: #000;
+      color: #fff;
+      text-align: center;
+      padding: 14px 0;
+      font-weight: 500;
+      font-size: 1.15rem;
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+    }
+    .announcement .track {
+      display: inline-block;
+      padding-left: 100%;
+      animation: scroll 25s linear infinite;
+      will-change: transform;
+    }
+    .announcement .track span {
+      padding-right: 4rem;
+    }
+    @keyframes scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Navbar */
+    nav {
+      background: #fff;
+      padding: 1.2rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      font-weight: 500;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #000;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .nav-right a {
+      text-decoration: none;
+      color: #000;
+      font-weight: 500;
+    }
+    .heart {
+      font-size: 1.4rem;
+    }
+    .login-btn {
+      background: #000;
+      color: #fff;
+      padding: 0.5rem 1.2rem;
+      border-radius: 6px;
+    }
+
+    /* Hero */
+    .hero {
+      height: 90vh;
+      min-height: 600px;
+      background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)),
+                  url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80') center/cover no-repeat;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 5%;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .hero.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .hero h1 {
+      font-size: 6.5rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      letter-spacing: 8px;
+    }
+    .hero p {
+      font-size: 2.2rem;
+      margin-bottom: 2.5rem;
+      opacity: 0.95;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 1.5rem;
+    }
+    .btn {
+      padding: 1rem 2.2rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: 2px solid #000;
+    }
+    .btn-explore {
+      background: white;
+      color: black;
+    }
+    .btn-explore:hover {
+      background: #f0f0f0;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+    .btn-login {
+      background: black;
+      color: white;
+      border-color: black;
+    }
+    .btn-login:hover {
+      background: #222;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+
+    /* Sections */
+    .section {
+      padding: 8rem 5%;
+      display: flex;
+      align-items: center;
+      gap: 6rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .section.reverse {
+      flex-direction: row-reverse;
+    }
+    .section-text {
+      flex: 1;
+      min-width: 320px;
+    }
+    .section-text h2 {
+      font-size: 3.5rem;
+      margin-bottom: 1.2rem;
+      line-height: 1.1;
+    }
+    .section-text p.subtitle {
+      font-size: 1.4rem;
+      font-weight: 500;
+      margin-bottom: 1.8rem;
+      opacity: 0.8;
+    }
+    .section-text p {
+      font-size: 1.25rem;
+      line-height: 1.7;
+      max-width: 580px;
+      margin-bottom: 2rem;
+    }
+    .section-buttons {
+      display: flex;
+      gap: 1.2rem;
+    }
+    .btn-sec {
+      padding: 0.9rem 1.8rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .btn-primary {
+      background: #000;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #222;
+    }
+    .btn-outline {
+      background: white;
+      color: #000;
+      border: 2px solid #000;
+    }
+    .btn-outline:hover {
+      background: #f8f8f8;
+    }
+    .section-img {
+      flex: 1;
+      min-width: 320px;
+    }
+    .section-img img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+
+    /* Footer - more detailed */
+    footer {
+      background: #000;
+      color: #ccc;
+      padding: 4rem 5% 2rem;
+      text-align: center;
+    }
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 2.5rem;
+      margin-bottom: 3rem;
+    }
+    .footer-col h4 {
+      color: white;
+      font-size: 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+    .footer-col ul {
+      list-style: none;
+    }
+    .footer-col ul li {
+      margin-bottom: 0.8rem;
+    }
+    .footer-col a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover {
+      color: white;
+    }
+    .footer-bottom {
+      border-top: 1px solid #333;
+      padding-top: 2rem;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 900px) {
+      .section, .section.reverse {
+        flex-direction: column;
+        text-align: center;
+      }
+      .hero h1 { font-size: 5rem; }
+      .hero p { font-size: 1.8rem; }
+      .nav-links { display: none; } /* → add hamburger later */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Infinite Announcement -->
+  <div class="announcement">
+    <div class="track">
+      <span>Up to 20% off Blade Card for Students ☺ &nbsp;&nbsp;•&nbsp;&nbsp;</span>
+      <span>Up to 20% off Blade Card for Students ☺ &nbsp;&nbsp;•&nbsp;&nbsp;</span>
+      <span>Up to 20% off Blade Card for Students ☺ &nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">JVST</div>
+    <div class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">Products</a>
+      <a href="#">AI</a>
+      <a href="#">More</a>
+    </div>
+    <div class="nav-right">
+      <a href="#" class="heart">♡</a>
+      <a href="#" class="login-btn">Log In</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>JVST</h1>
+    <p>Built Different</p>
+    <div class="hero-buttons">
+      <a href="#" class="btn btn-explore">Explore</a>
+      <a href="#" class="btn btn-login">Log In</a>
+    </div>
+  </section>
+
+  <!-- Abt Us -->
+  <section class="section">
+    <div class="section-text">
+      <h2>Abt. Us</h2>
+      <p class="subtitle">Bad? Nah, Good / Experienced</p>
+      <p>We're just a couple of people who got tired of overpriced, overcomplicated tools that students and creators have to deal with. So we built JVST — fast, affordable, no-BS stuff that actually helps you get things done. One person coding, real students using it, no corporate fluff.</p>
+    </div>
+    <div class="section-img">
+      <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Team or workspace vibe">
+    </div>
+  </section>
+
+  <!-- Indy -->
+  <section class="section reverse">
+    <div class="section-text">
+      <h2>Wussup Indy</h2>
+      <p>Your AI study buddy that's actually useful. Instant answers, brainstorming help, breaking through creative blocks — all without the creepy corporate tracking. Built for Chromebooks and real workflows.</p>
+      <div class="section-buttons">
+        <a href="#" class="btn-sec btn-primary">Try Free</a>
+        <a href="#" class="btn-sec btn-outline">See Plans</a>
+      </div>
+    </div>
+    <div class="section-img">
+      <img src="indy.png">
+    </div>
+  </section>
+
+  <!-- Tunes -->
+  <section class="section">
+    <div class="section-text">
+      <h2>Wussup Tunes</h2>
+      <p>Full songs, zero interruptions, works great on school devices. We made it stupid simple and actually affordable so you can focus instead of fighting ads.</p>
+      <div class="section-buttons">
+        <a href="#" class="btn-sec btn-primary">Try Free</a>
+        <a href="#" class="btn-sec btn-outline">See Plans</a>
+      </div>
+    </div>
+    <div class="section-img">
+      <img src="https://images.unsplash.com/photo-1611339555312-e607c8352fd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Music / headphones">
+    </div>
+  </section>
+
+  <!-- Blade Card -->
+  <section class="section reverse">
+    <div class="section-text">
+      <h2>Wussup Blade Card</h2>
+      <p>The student essential. Unlock everything JVST has to offer at crazy low prices. Right now — up to 20% off just for students. Because broke shouldn't mean limited.</p>
+      <div class="section-buttons">
+        <a href="#" class="btn-sec btn-primary">Get Blade Card</a>
+        <a href="#" class="btn-sec btn-outline">Learn More</a>
+      </div>
+    </div>
+    <div class="section-img">
+      <img src="https://images.unsplash.com/photo-1556740714-a8395b3a74dd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Card or membership">
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-col">
+        <h4>JVST</h4>
+        <p>Built Different</p>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="#">Indy (AI)</a></li>
+          <li><a href="#">Tunes</a></li>
+          <li><a href="#">Blade Card</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Students</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      ® I R E L A N D 2026 • Made with grit in Princeton, MA
+    </div>
+  </footer>
+
+  <script>
+    // Fade-in on scroll
+    const fadeElements = document.querySelectorAll('.hero, .section');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          // observer.unobserve(entry.target); // uncomment if you want one-time animation
+        }
+      });
+    }, {
+      threshold: 0.12,
+      rootMargin: "0px 0px -80px 0px"
+    });
+
+    fadeElements.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
