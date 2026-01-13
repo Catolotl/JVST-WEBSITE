@@ -311,32 +311,32 @@
       }
     }
 
-    .section-img {
+.section-img {
   flex: 1;
   min-width: 320px;
-  position: relative;           /* ← important for absolute child */
-  overflow: hidden;             /* ← crops anything that would overflow */
-  border-radius: 12px;          /* ← moved from img → container keeps perfect rounding */
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transition: all 0.4s ease;
 }
 
 .section-img img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;            /* ← key property: fills container without distortion */
-  display: block;               /* removes bottom gap in some browsers */
-  border-radius: 12px;          /* still good to keep as fallback / for older browsers */
+  height: auto;           /* ← changed back */
+  display: block;
+  border-radius: 12px;
   transition: transform 0.45s ease;
 }
 
+/* Optional: still do a subtle container hover */
 .section-img:hover {
-  transform: scale(1.015);      /* subtle container lift */
-  box-shadow: 0 16px 44px rgba(0,0,0,0.16);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.14);
 }
 
 .section-img:hover img {
-  transform: scale(1.06);       /* image scales a bit more inside → nice parallax feel */
+  transform: scale(1.04);
 }
   </style>
 </head>
