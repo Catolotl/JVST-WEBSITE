@@ -314,7 +314,7 @@
 .section-img {
   flex: 1;
   min-width: 320px;
-  position: relative;
+  position: relative;           /* for absolute positioning */
   overflow: hidden;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.12);
@@ -322,14 +322,17 @@
 }
 
 .section-img img {
+  position: absolute;
+  inset: 0;                     /* fills the entire container */
   width: 100%;
-  height: auto;           /* ← changed back */
+  height: 100%;
+  object-fit: cover;            /* key: fills space, crops edges if aspect doesn't match */
+  object-position: center;      /* focus on middle — change to top / bottom if faces get cut badly */
   display: block;
   border-radius: 12px;
   transition: transform 0.45s ease;
 }
 
-/* Optional: still do a subtle container hover */
 .section-img:hover {
   transform: translateY(-6px);
   box-shadow: 0 20px 50px rgba(0,0,0,0.14);
