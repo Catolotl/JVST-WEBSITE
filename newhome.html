@@ -300,24 +300,23 @@
 .section-img {
   flex: 1;
   min-width: 320px;
-
-  /* Optional: prevent it from becoming ridiculously tall if text is very long */
-  max-width: 600px;               /* ← adjust or remove if you want images wider */
-  align-self: center;             /* centers vertically relative to text if heights differ */
+  max-width: 580px;           /* keeps it from getting too wide; adjust or remove */
+  display: flex;              /* helps child (img) fill without gaps */
+  align-items: center;        /* vertical centering if needed */
+  justify-content: center;
 }
 
 .section-img img {
   width: 100%;
-  height: auto;                   /* keeps natural proportions, no stubbiness */
-  display: block;                 /* removes mystery bottom gap */
+  height: auto;
+  display: block;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* Removed box-shadow completely for clean look */
+  transition: transform 0.3s ease;   /* keep subtle zoom on hover */
 }
 
 .section-img img:hover {
-  transform: scale(1.02);
-  box-shadow: 0 15px 40px rgba(0,0,0,0.18);
+  transform: scale(1.03);     /* gentle lift/zoom, no shadow change needed */
 }
   </style>
 </head>
