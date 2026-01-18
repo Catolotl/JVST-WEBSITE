@@ -379,17 +379,33 @@
 }
 
 .gradient-text {
-  margin: 0;
+  margin: 0 0 1.2rem 0;           /* small breathing room below only */
+  padding: 0;
+  
+  font-weight: 800;               /* extra bold for impact */
+  letter-spacing: -0.02em;        /* subtle tightening — looks premium */
+  line-height: 1.05;              /* nice for big headings */
+  
   background: linear-gradient(
     90deg,
-    rgba(0, 183, 255, 1) 0%,
-    rgba(193, 87, 199, 1) 25%,
-    rgba(242, 39, 39, 1) 75%,
-    rgba(237, 221, 83, 1) 100%
+    rgba(0, 183, 255, 1)   0%,    /* bright cyan */
+    rgba(193, 87, 199, 1)  28%,   /* vivid purple */
+    rgba(242, 39, 39, 1)   55%,   /* strong red */
+    rgba(237, 221, 83, 1)  82%,   /* warm yellow */
+    rgba(0, 183, 255, 1)  100%    /* loops back for smoother repeat feel */
   );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  
+  /* Optional: subtle shine/movement on hover (very popular in 2025–2026 designs) */
+  transition: all 0.4s ease;
+}
+
+.gradient-text:hover {
+  background-position: 100% 0;    /* shift gradient on hover */
+  transform: translateY(-2px);    /* tiny lift */
+  filter: brightness(1.08);       /* gentle glow */
 }
 
     
