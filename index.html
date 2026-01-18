@@ -378,6 +378,20 @@
   display: block;
 }
 
+.gradient-text {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 183, 255, 1) 0%,
+    rgba(193, 87, 199, 1) 25%,
+    rgba(242, 39, 39, 1) 75%,
+    rgba(237, 221, 83, 1) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+    
 /* Mobile: make sure it works on tap */
 @media (max-width: 900px) {
   .nav-links {
@@ -436,8 +450,9 @@
 
   <!-- Hero -->
   <section class="hero">
-    <h1>JVST</h1>
-    <p>Built Different</p>
+        <p class="gradient-text">Indy Ideas</p>
+    <h1>INDY</h1>
+    <p>The future of AI</p>
     <div class="hero-buttons">
       <a href="#" class="btn btn-explore">Explore</a>
       <a href="login.html" class="btn btn-login">Log In</a>
