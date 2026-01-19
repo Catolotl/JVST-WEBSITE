@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="shortcut icon" type="image/png" href="favicon.png">
   <title>JVST - Built Different</title>
+
+<!-- Inter – thin, modern, techy font (your favorite) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <style>
     * {
       margin: 0;
@@ -675,7 +681,7 @@
       }
 
       .hero h1 {
-        font-size: 4.5rem;
+        font-size: 6rem;
       }
 
       .section-text h2 {
@@ -899,14 +905,7 @@ html, body {
   max-width: 100vw;
 }
 
-.hero::before,
-.hero::after {
-  display: none;                /* ← easiest fix: disable the huge border spotlights on mobile */
-  /* or keep them but constrain: */
-  /* right: 0; */
-  /* width: 100%; */
-  /* border-width: 0 100vw 100vh 0; */ /* scale down dramatically */
-}
+
 
 /* Images never break out */
 img {
@@ -972,6 +971,119 @@ img {
   }
 }
 
+
+.artists-bar {
+  background: rgba(255,255,255,0.02);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+  padding: 2rem 0;
+  position: relative;
+  z-index: 90;
+}
+
+.artists-track {
+  display: inline-flex;
+  animation: scrollArtists 10s linear infinite; /* slower = more elegant */
+  white-space: nowrap;
+}
+
+.artist-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 160px;           /* wider items */
+  padding: 0 1.8rem;
+  flex-shrink: 0;
+  transition: transform 0.4s ease;
+}
+
+.artist-item:hover {
+  transform: translateY(-6px);
+}
+
+.artist-item img {
+  width: 140px;               /* decent size – rectangular */
+  height: auto;               /* natural aspect ratio */
+  object-fit: cover;
+  border-radius: 12px;        /* soft corners, not circle */
+  border: 1px solid rgba(255,255,255,0.12);
+  margin-bottom: 0.9rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  transition: all 0.4s ease;
+}
+
+.artist-item:hover img {
+  transform: scale(1.06);
+  box-shadow: 0 12px 40px rgba(99,102,241,0.3);
+}
+
+.artist-item span {
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.85);
+  text-transform: uppercase;
+}
+
+/* Slower, smoother scroll */
+@keyframes scrollArtists {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.artists-bar:hover .artists-track {
+  animation-play-state: paused;
+}
+
+/* Use Inter everywhere – thin and techy */
+body,
+.logo,
+.nav-links a,
+.nav-right a,
+.announcement span,
+.artist-item span,
+h1, h2, h3, h4, p, span, a {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 300;           /* thin/light – feels futuristic */
+  letter-spacing: 0.08em;     /* subtle tech spacing */
+}
+
+/* Force uppercase on nav, announcement, artist names */
+.logo,
+.nav-links a,
+.nav-right a,
+.announcement .track span,
+.artist-item span {
+  text-transform: uppercase;
+  font-weight: 400;           /* slightly bolder for readability in caps */
+  letter-spacing: 0.15em;     /* wider spacing for premium feel */
+}
+
+/* Optional: even thinner nav/logo if you want ultra-minimal */
+.logo {
+  font-weight: 200;
+  font-size: 1.7rem;
+  letter-spacing: 0.3em;
+}
+
+.artist-item img {
+  width: 500px;               /* fixed width – change this number to make bigger/smaller */
+  height: 400px;              /* fixed height – same value = perfect square; or try 200px for portrait feel */
+  object-fit: cover;          /* crops nicely without stretching */
+  object-position: center;    /* centers the image inside the box */
+  border-radius: 0px;
+  border: 1px solid rgba(255,255,255,0.12);
+  margin-bottom: 0.9rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  transition: all 0.4s ease;
+}
+
+.artist-item {
+  min-width: 180px;           /* slightly wider than image so there's breathing room */
+  padding: 0 1.2rem;
+}
   </style>
 </head>
 <body>
@@ -1114,6 +1226,72 @@ img {
       </div>
     </div>
   </section>
+
+    <section class="section">
+    <div class="section-content">
+      <div class="section-text">
+                  <h2>Listen to famous musicians like</h2>
+      </div>
+    </div>
+  </section>
+
+<!-- Artists Showcase Bar -->
+<div class="artists-bar">
+  <div class="artists-track">
+    <!-- Repeat the set twice for seamless infinite loop -->
+    <div class="artist-item">
+      <img src="https://www.economist.com/cdn-cgi/image/width=1424,quality=80,format=auto/content-assets/images/20250712_CUP003.jpg" alt="Bad Bunny">
+      <span>BAD BUNNY</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://www.rollingstone.com/wp-content/uploads/2024/10/Rose-Solo-Album.jpg?crop=0px%2C130px%2C1800px%2C1014px&resize=1600%2C900" alt="ROSÉ">
+      <span>ROSÉ</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://www.billboard.com/wp-content/uploads/2025/06/benson-boone-gov-ball-2025-billboard-1548.jpg" alt="YOASOBI">
+      <span>BENSON BOONE</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://artist99.cdn107.com/00e/00e82728b9a9287bc27a28f3c7e0a2ae_lg.jpg" alt="The Weeknd">
+      <span>THE WEEKND</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://static01.nyt.com/images/2024/05/20/arts/17eilish-review/17eilish-review-mediumSquareAt3X.jpg" alt="Billie Eilish">
+      <span>BILLIE EILISH</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/KendrickSZASPurs230725-19_-_54683179509_%28cropped%29_%28cropped%29.jpg" alt="SZA">
+      <span>SZA</span>
+    </div>
+
+    <!-- Duplicate set for seamless loop -->
+    <div class="artist-item">
+      <img src="https://www.economist.com/cdn-cgi/image/width=1424,quality=80,format=auto/content-assets/images/20250712_CUP003.jpg" alt="Bad Bunny">
+      <span>BAD BUNNY</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://www.rollingstone.com/wp-content/uploads/2024/10/Rose-Solo-Album.jpg?crop=0px%2C130px%2C1800px%2C1014px&resize=1600%2C900" alt="ROSÉ">
+      <span>ROSÉ</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://www.billboard.com/wp-content/uploads/2025/06/benson-boone-gov-ball-2025-billboard-1548.jpg" alt="YOASOBI">
+      <span>BENSON BOONE</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://artist99.cdn107.com/00e/00e82728b9a9287bc27a28f3c7e0a2ae_lg.jpg" alt="The Weeknd">
+      <span>THE WEEKND</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://static01.nyt.com/images/2024/05/20/arts/17eilish-review/17eilish-review-mediumSquareAt3X.jpg" alt="Billie Eilish">
+      <span>BILLIE EILISH</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/KendrickSZASPurs230725-19_-_54683179509_%28cropped%29_%28cropped%29.jpg" alt="SZA">
+      <span>SZA</span>
+    </div>
+    </div>
+  </div>
+</div>
 
   <!-- Blade Card -->
   <section class="section reverse">
