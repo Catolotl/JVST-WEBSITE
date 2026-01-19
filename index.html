@@ -1084,6 +1084,105 @@ h1, h2, h3, h4, p, span, a {
   min-width: 180px;           /* slightly wider than image so there's breathing room */
   padding: 0 1.2rem;
 }
+    /* Remove old spotlight effects */
+.hero::before,
+.hero::after {
+  display: none !important;
+}
+
+.dust-particle {
+  display: none !important;
+}
+
+/* Static background image */
+.hero {
+  background: url('static.png') center/cover no-repeat;
+  position: relative;
+}
+
+/* Dark overlay for text readability */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: block !important;
+  z-index: 1;
+}
+
+/* Ensure content is above overlay */
+.hero h1,
+.hero p,
+.hero-buttons {
+  position: relative;
+  z-index: 2;
+}
+
+/* Apple-style title with Indy gradient */
+.hero h1 {
+  background: linear-gradient(135deg,
+    #00aaff 0%,
+    #df3eff 33%,
+    #ff1313 66%,
+    rgb(255, 129, 19) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 20px rgba(0, 170, 255, 0.3));
+  animation: none;
+  letter-spacing: -4px;
+  font-weight: 800;
+}
+
+/* Clean Apple-style subtitle */
+.hero p {
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  animation: none;
+  font-weight: 400;
+  font-size: 1.6rem;
+  letter-spacing: 0.02em;
+}
+
+/* Apple-style buttons */
+.hero-buttons .btn::before {
+  display: none;
+}
+
+.hero-buttons .btn {
+  backdrop-filter: blur(20px);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.hero-buttons .btn-primary {
+  background: rgba(255, 255, 255, 0.95);
+  color: #000;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.hero-buttons .btn-primary:hover {
+  background: #fff;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+}
+
+.hero-buttons .btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.hero-buttons .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Keep grid subtle or remove it entirely */
+.grid-background {
+  opacity: 0.3;
+}
   </style>
 </head>
 <body>
