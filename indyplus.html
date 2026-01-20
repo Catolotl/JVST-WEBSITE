@@ -473,5 +473,42 @@
     </iframe>
 </div>
 
+    <script>
+        // Dropdown (hover + click support)
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropdowns = document.querySelectorAll('.nav-dropdown');
+
+            dropdowns.forEach(dropdown => {
+                const trigger = dropdown.querySelector('.dropdown-trigger');
+                const menu = dropdown.querySelector('.dropdown-menu');
+
+                dropdown.addEventListener('mouseenter', () => {
+                    dropdown.classList.add('active');
+                });
+
+                dropdown.addEventListener('mouseleave', () => {
+                    dropdown.classList.remove('active');
+                });
+
+                trigger.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const isActive = dropdown.classList.contains('active');
+                    dropdowns.forEach(d => d.classList.remove('active'));
+                    if (!isActive) {
+                        dropdown.classList.add('active');
+                    }
+                });
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.nav-dropdown')) {
+                    document.querySelectorAll('.nav-dropdown').forEach(d => {
+                        d.classList.remove('active');
+                    });
+                }
+            });
+        });
+    </script>
+    
 </body>
 </html>
