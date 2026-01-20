@@ -1237,6 +1237,38 @@ p {
 .hero h1 {
   filter: none !important;
 }
+.hero-tunes {
+    background-color: #fff;
+}
+.btn-primary-tunes {
+  position: absolute;
+  background: #fff;
+  color: #000;
+  border: 2px solid #fff;
+  border-radius: 9999px; /* true pill */
+  bottom: 4rem;
+  left: 90rem;
+
+  height: 55px;
+  padding: 0 40px; /* controls width */
+  
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    
+.btn-primary-tunes:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+}
 
   </style>
 </head>
@@ -1384,6 +1416,9 @@ p {
   <section class="tunes-hero">
     <p>✦ Tunes</p>
     <h2>Music. Playlists. 100% safe.</h2>
+        <div class="hero-tunes">
+      <a href="tunes.html" class="btn btn-primary-tunes">Start for free**</a>
+    </div>
   </section>
 
 <!-- Artists Showcase Bar -->
