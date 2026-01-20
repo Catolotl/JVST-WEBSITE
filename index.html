@@ -808,6 +808,43 @@
 .btn-primary-tunes {
   margin-bottom: 2rem;              /* make sure button sits flush with the bottom */
 }
+
+  .one-hero {
+  background-color: #000000;          /* Pure black background */
+  color: #ffffff;                     /* All text white */
+  min-height: 80vh;                   /* Takes most of the viewport height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;            /* Centers content vertically */
+  align-items: center;                /* Centers content horizontally */
+  text-align: center;
+  padding: 4rem 2rem;                 /* Generous padding */
+}
+
+/* Heading styling */
+.one-hero h1 {
+  font-size: 5.5rem;                  /* Really big heading */
+  font-weight: 800;
+  margin: 0 0 1.5rem 0;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+/* Optional: make the sparkle symbol stand out a bit */
+.one-hero h1::before,
+.one-hero h1::after {
+  content: "✧";
+  opacity: 0.7;
+}
+
+/* Paragraph text */
+.one-hero p {
+  font-size: 1.5rem;
+  max-width: 600px;
+  margin: 0 0 2.5rem 0;
+  line-height: 1.5;
+  opacity: 0.9;                       /* Slightly softer than pure white */
+}
 </style>
 </head>
 <body>
@@ -1023,19 +1060,11 @@
 </div>
 
   <!-- Blade Card -->
-  <section class="section reverse">
-    <div class="section-content">
-      <div class="section-text">
-        <h2>The Blade Card</h2>
-        <p>Student essentials at student prices. Unlock everything JVST offers with up to 20% off. Because broke shouldn't mean limited.</p>
-        <div class="section-buttons">
-          <a href="login.html" class="btn-sec btn-white">Get Blade Card</a>
-          <a href="#" class="btn-sec btn-outline">Learn More</a>
-        </div>
-      </div>
-      <div class="section-img">
-        <img src="blade.png" alt="Blade Card">
-      </div>
+  <section class="one-hero">
+    <h1>✧One</h1>
+    <p>All in one bundle for only $3! You will receve a digital blade card on purchase used to log you into your favorate services!</p>
+    <div class="hero-buttons">
+      <a href="login.html" class="btn btn-primary">Log In</a>
     </div>
   </section>
 
