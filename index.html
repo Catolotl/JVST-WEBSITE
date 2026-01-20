@@ -6,11 +6,6 @@
   <link rel="shortcut icon" type="image/png" href="favicon.png">
   <title>JVST - Built Different</title>
 
-<!-- Inter – thin, modern, techy font (your favorite) -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
   <style>
     * {
       margin: 0;
@@ -229,18 +224,6 @@
       50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
     }
     
-    .hero h1 {
-      font-size: 7rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      letter-spacing: -2px;
-      background: linear-gradient(135deg, #fff 0%, #888 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      position: relative;
-      z-index: 1;
-    }
     
     .hero p {
       font-size: 1.5rem;
@@ -992,7 +975,7 @@ img {
 .artist-item {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   min-width: 160px;           /* wider items */
   padding: 0 1.8rem;
   flex-shrink: 0;
@@ -1023,8 +1006,8 @@ img {
   font-size: 0.95rem;
   font-weight: 500;
   letter-spacing: 2px;
-  color: rgba(255,255,255,0.85);
-  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: left;
 }
 
 /* Slower, smoother scroll */
@@ -1037,7 +1020,7 @@ img {
   animation-play-state: paused;
 }
 
-/* Use Inter everywhere – thin and techy */
+/* Use SF Pro everywhere – thin and techy */
 body,
 .logo,
 .nav-links a,
@@ -1045,10 +1028,18 @@ body,
 .announcement span,
 .artist-item span,
 h1, h2, h3, h4, p, span, a {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  font-weight: 300;           /* thin/light – feels futuristic */
-  letter-spacing: 0.08em;     /* subtle tech spacing */
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Text",
+    "SF Pro Display",
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
 }
+
 
 /* Force uppercase on nav, announcement, artist names */
 .logo,
@@ -1056,7 +1047,6 @@ h1, h2, h3, h4, p, span, a {
 .nav-right a,
 .announcement .track span,
 .artist-item span {
-  text-transform: uppercase;
   font-weight: 400;           /* slightly bolder for readability in caps */
   letter-spacing: 0.15em;     /* wider spacing for premium feel */
 }
@@ -1133,7 +1123,6 @@ h1, h2, h3, h4, p, span, a {
   filter: drop-shadow(0 4px 20px rgba(0, 170, 255, 0.3));
   animation: none;
   letter-spacing: -4px;
-  font-weight: 800;
 }
 
 /* Clean Apple-style subtitle */
@@ -1184,6 +1173,71 @@ h1, h2, h3, h4, p, span, a {
 .grid-background {
   opacity: 0.3;
 }
+.tunes-hero {
+  background: url('erm.png') center/cover no-repeat;
+  background-position: center 70%; /* Move image up - lower % = higher position */
+  position: relative;
+}
+    .tunes-hero {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 5%;
+      overflow: hidden;
+    }
+.tunes-hero {
+  position: relative; /* establishes positioning context */
+}
+
+.tunes-hero p {
+  position: absolute;
+  bottom: 7rem;
+  left: 3rem;
+
+  color: #fff;
+  font-weight: bold;
+  font-size: 2rem;
+}
+.tunes-hero h2 {
+  position: absolute;
+  bottom: 3rem;
+  left: 3rem;
+
+  color: #fff;
+  font-weight: bold;
+  font-size: 3rem;
+}
+
+h1, h2 {
+  font-weight: 700;
+}
+
+h3, h4 {
+  font-weight: 600;
+}
+
+p {
+  font-weight: 400;
+}
+
+.nav-links a,
+.nav-right a {
+  font-weight: 500;
+}
+.hero::before,
+.hero::after,
+.dust-particle {
+  display: none !important;
+}
+
+.hero h1 {
+  filter: none !important;
+}
+
   </style>
 </head>
 <body>
@@ -1327,12 +1381,9 @@ h1, h2, h3, h4, p, span, a {
     </div>
   </section>
 
-    <section class="section">
-    <div class="section-content">
-      <div class="section-text">
-                  <h2>Listen to famous musicians like</h2>
-      </div>
-    </div>
+  <section class="tunes-hero">
+    <p>✦ Tunes</p>
+    <h2>Music. Playlists. 100% safe.</h2>
   </section>
 
 <!-- Artists Showcase Bar -->
@@ -1341,23 +1392,23 @@ h1, h2, h3, h4, p, span, a {
     <!-- Repeat the set twice for seamless infinite loop -->
     <div class="artist-item">
       <img src="https://www.economist.com/cdn-cgi/image/width=1424,quality=80,format=auto/content-assets/images/20250712_CUP003.jpg" alt="Bad Bunny">
-      <span>BAD BUNNY</span>
+      <span>Bad Bunny</span>
     </div>
     <div class="artist-item">
       <img src="https://www.rollingstone.com/wp-content/uploads/2024/10/Rose-Solo-Album.jpg?crop=0px%2C130px%2C1800px%2C1014px&resize=1600%2C900" alt="ROSÉ">
-      <span>ROSÉ</span>
+      <span>Rosé</span>
     </div>
     <div class="artist-item">
       <img src="https://www.billboard.com/wp-content/uploads/2025/06/benson-boone-gov-ball-2025-billboard-1548.jpg" alt="YOASOBI">
-      <span>BENSON BOONE</span>
+      <span>Benson Boone</span>
     </div>
     <div class="artist-item">
       <img src="https://artist99.cdn107.com/00e/00e82728b9a9287bc27a28f3c7e0a2ae_lg.jpg" alt="The Weeknd">
-      <span>THE WEEKND</span>
+      <span>The Weeknd</span>
     </div>
     <div class="artist-item">
       <img src="https://static01.nyt.com/images/2024/05/20/arts/17eilish-review/17eilish-review-mediumSquareAt3X.jpg" alt="Billie Eilish">
-      <span>BILLIE EILISH</span>
+      <span>Billie Eilish</span>
     </div>
     <div class="artist-item">
       <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/KendrickSZASPurs230725-19_-_54683179509_%28cropped%29_%28cropped%29.jpg" alt="SZA">
@@ -1367,23 +1418,23 @@ h1, h2, h3, h4, p, span, a {
     <!-- Duplicate set for seamless loop -->
     <div class="artist-item">
       <img src="https://www.economist.com/cdn-cgi/image/width=1424,quality=80,format=auto/content-assets/images/20250712_CUP003.jpg" alt="Bad Bunny">
-      <span>BAD BUNNY</span>
+      <span>Bad Bunny</span>
     </div>
     <div class="artist-item">
       <img src="https://www.rollingstone.com/wp-content/uploads/2024/10/Rose-Solo-Album.jpg?crop=0px%2C130px%2C1800px%2C1014px&resize=1600%2C900" alt="ROSÉ">
-      <span>ROSÉ</span>
+      <span>Rosé</span>
     </div>
     <div class="artist-item">
       <img src="https://www.billboard.com/wp-content/uploads/2025/06/benson-boone-gov-ball-2025-billboard-1548.jpg" alt="YOASOBI">
-      <span>BENSON BOONE</span>
+      <span>Benson Boone</span>
     </div>
     <div class="artist-item">
       <img src="https://artist99.cdn107.com/00e/00e82728b9a9287bc27a28f3c7e0a2ae_lg.jpg" alt="The Weeknd">
-      <span>THE WEEKND</span>
+      <span>The Weeknd</span>
     </div>
     <div class="artist-item">
       <img src="https://static01.nyt.com/images/2024/05/20/arts/17eilish-review/17eilish-review-mediumSquareAt3X.jpg" alt="Billie Eilish">
-      <span>BILLIE EILISH</span>
+      <span>Billie Eilish</span>
     </div>
     <div class="artist-item">
       <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/KendrickSZASPurs230725-19_-_54683179509_%28cropped%29_%28cropped%29.jpg" alt="SZA">
