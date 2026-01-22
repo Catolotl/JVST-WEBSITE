@@ -1,640 +1,894 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="shortcut icon" type="image/png" href="favicon.png">
   <title>JVST - Built Different</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    html, body { 
-      width: 100%; 
-      max-width: 100vw; 
-      overflow-x: hidden; 
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #000;
-      color: #fff;
-      line-height: 1.6;
-    }
-
-    /* Grid Background */
-    .grid-bg {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px),
-                  linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px);
-      background-size: 60px 60px;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    /* Announcement Bar */
-    .announcement {
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      text-align: center;
-      padding: 10px 0;
-      font-weight: 400;
-      font-size: 0.875rem;
-      overflow: hidden;
-      white-space: nowrap;
-      position: relative;
-      z-index: 100;
-    }
-
-    .announcement .track {
-      display: inline-flex;
-      animation: scroll 25s linear infinite;
-    }
-
-    .announcement .track span { padding: 0 2rem; color: rgba(255,255,255,0.8); }
-
-    @keyframes scroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    /* Navbar - Apple Style */
-    nav {
-      background: rgba(0,0,0,0.72);
-      backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      padding: 0.75rem 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 99;
-      transition: all 0.3s;
-    }
-
-    .logo {
-      font-size: 1.3rem;
-      font-weight: 600;
-      letter-spacing: 2px;
-      color: #fff;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2.5rem;
-      font-weight: 400;
-      font-size: 0.875rem;
-    }
-
-    .nav-links a, .nav-right a {
-      text-decoration: none;
-      color: rgba(255,255,255,0.92);
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover, .nav-right a:hover { color: rgba(255,255,255,0.6); }
-
-    .nav-right { display: flex; align-items: center; gap: 1.5rem; }
-
-    .login-btn {
-      background: rgba(255,255,255,0.08);
-      color: #fff;
-      padding: 0.5rem 1.2rem;
-      border-radius: 980px;
-      font-weight: 400;
-      font-size: 0.875rem;
-      transition: all 0.2s;
-    }
-
-    .login-btn:hover {
-      background: rgba(255,255,255,0.15);
-    }
-
-    /* Dropdown */
-    .dropdown { position: relative; display: inline-block; }
-    .dropdown-toggle::after { content: "▾"; margin-left: 4px; font-size: 0.7rem; transition: transform 0.2s; }
-    .dropdown:hover .dropdown-toggle::after { transform: rotate(180deg); }
-
-    .dropdown-menu {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(29,29,31,0.98);
-      backdrop-filter: saturate(180%) blur(20px);
-      min-width: 150px;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 12px;
-      overflow: hidden;
-      z-index: 200;
-      margin-top: 10px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
-    }
-
-    .dropdown-menu a {
-      display: block;
-      padding: 10px 16px;
-      color: rgba(255,255,255,0.92);
-      text-decoration: none;
-      font-size: 0.875rem;
-      transition: all 0.15s;
-    }
-
-    .dropdown-menu a:hover {
-      background: rgba(255,255,255,0.08);
-    }
-
-    .dropdown:hover .dropdown-menu { display: block; }
-
-    /* Full-Screen Hero Sections */
-    .hero-section {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      align-items: center;
-      text-align: center;
-      padding: 4rem 5% 6rem;
-      overflow: hidden;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .hero-section::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.5));
-      z-index: 1;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      max-width: 980px;
-      margin-bottom: 3rem;
-    }
-
-    .hero-section .subtitle {
-      font-size: 1.125rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      color: rgba(255,255,255,0.8);
-      margin-bottom: 0.5rem;
-      text-transform: uppercase;
-    }
-
-    .hero-section h1 {
-      font-size: clamp(3rem, 8vw, 6rem);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin-bottom: 1rem;
-      line-height: 1.05;
-    }
-
-    .hero-section .gradient-text {
-      background: linear-gradient(135deg, #00aaff 0%, #df3eff 33%, #ff1313 66%, #ff8113 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-section p {
-      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-      color: rgba(255,255,255,0.85);
-      margin-bottom: 2.5rem;
-      font-weight: 400;
-    }
-
-    /* Buttons - Apple Style */
-    .btn {
-      padding: 0.75rem 2rem;
-      font-size: 1rem;
-      font-weight: 400;
-      border-radius: 980px;
-      text-decoration: none;
-      transition: all 0.25s;
-      cursor: pointer;
-      display: inline-block;
-      border: none;
-    }
-
-    .btn-primary {
-      background: #0071e3;
-      color: #fff;
-    }
-
-    .btn-primary:hover {
-      background: #0077ed;
-    }
-
-    .btn-secondary {
-      background: transparent;
-      color: #0071e3;
-      border: 1px solid #0071e3;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(0,113,227,0.1);
-    }
-
-    .btn-white {
-      background: #fff;
-      color: #000;
-    }
-
-    .btn-white:hover {
-      background: rgba(255,255,255,0.92);
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-    }
-
-    /* Full Width Image Sections */
-    .full-section {
-      position: relative;
-      min-height: 85vh;
-      display: flex;
-      align-items: flex-end;
-      padding: 4rem 5% 4rem;
-      background-size: cover;
-      background-position: center;
-      margin: 0.75rem 0;
-    }
-
-    .full-section-content {
-      max-width: 980px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    .full-section h2 {
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-    }
-
-    .full-section p {
-      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-      color: rgba(255,255,255,0.85);
-      margin-bottom: 2rem;
-      max-width: 700px;
-    }
-
-    .full-section .small-text {
-      font-size: 1.125rem;
-      color: rgba(255,255,255,0.7);
-      margin-bottom: 1.5rem;
-    }
-
-    /* Stats Grid */
-    .stats-section {
-      padding: 6rem 5%;
-      text-align: center;
-      background: #000;
-    }
-
-    .stats-section h2 {
-      font-size: clamp(2rem, 5vw, 3rem);
-      font-weight: 700;
-      margin-bottom: 4rem;
-      letter-spacing: -0.02em;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .stat-item {
-      padding: 3rem 2rem;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
-      transition: all 0.3s;
-    }
-
-    .stat-item:hover {
-      background: rgba(255,255,255,0.04);
-      transform: translateY(-8px);
-      border-color: rgba(255,255,255,0.12);
-    }
-
-    .stat-number {
-      font-size: 3.5rem;
-      font-weight: 700;
-      margin-bottom: 0.75rem;
-      color: #fff;
-    }
-
-    .stat-label {
-      font-size: 1rem;
-      color: rgba(255,255,255,0.6);
-      font-weight: 400;
-    }
-
-    /* Split Section */
-    .split-section {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-      padding: 0.75rem 0;
-    }
-
-    .split-item {
-      position: relative;
-      min-height: 70vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 3rem;
-      background-size: cover;
-      background-position: center;
-      border-radius: 18px;
-      overflow: hidden;
-    }
-
-    .split-item::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.4));
-    }
-
-    .split-item-content {
-      position: relative;
-      z-index: 2;
-    }
-
-    .split-item h3 {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 700;
-      margin-bottom: 0.75rem;
-      letter-spacing: -0.02em;
-    }
-
-    .split-item p {
-      font-size: 1.125rem;
-      color: rgba(255,255,255,0.85);
-      margin-bottom: 1.5rem;
-    }
-
-    /* Demo Section - Cleaner Apple Style */
-    .demo-section {
-      padding: 6rem 5%;
-      background: #000;
-    }
-
-    .demo-section h2 {
-      text-align: center;
-      font-size: clamp(2.5rem, 5vw, 3.5rem);
-      font-weight: 700;
-      margin-bottom: 1rem;
-      letter-spacing: -0.02em;
-    }
-
-    .demo-section > p {
-      text-align: center;
-      font-size: 1.25rem;
-      color: rgba(255,255,255,0.6);
-      margin-bottom: 3rem;
-    }
-
-    .demo-container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
-      padding: 2rem;
-    }
-
-    .chat-messages {
-      min-height: 350px;
-      max-height: 450px;
-      overflow-y: auto;
-      margin-bottom: 2rem;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .chat-messages::-webkit-scrollbar { width: 6px; }
-    .chat-messages::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
-    .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
-
-    .message {
-      padding: 1rem 1.25rem;
-      border-radius: 18px;
-      max-width: 80%;
-      animation: slideIn 0.3s ease;
-    }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .message.user {
-      background: #0071e3;
-      align-self: flex-end;
-      color: #fff;
-    }
-
-    .message.indy {
-      background: rgba(255,255,255,0.08);
-      align-self: flex-start;
-      color: #fff;
-    }
-
-    .demo-input-area {
-      display: flex;
-      gap: 0.75rem;
-      align-items: center;
-    }
-
-    .demo-input {
-      flex: 1;
-      padding: 1rem 1.25rem;
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 980px;
-      background: rgba(255,255,255,0.05);
-      color: #fff;
-      font-size: 1rem;
-      transition: all 0.2s;
-    }
-
-    .demo-input:focus {
-      outline: none;
-      border-color: #0071e3;
-      background: rgba(255,255,255,0.08);
-    }
-
-    .demo-send {
-      padding: 1rem 2rem;
-      background: #0071e3;
-      color: #fff;
-      border: none;
-      border-radius: 980px;
-      font-weight: 400;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .demo-send:hover:not(:disabled) {
-      background: #0077ed;
-    }
-
-    .demo-send:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    .limit-notice {
-      margin-top: 1rem;
-      text-align: center;
-      font-size: 0.875rem;
-      color: rgba(255,255,255,0.5);
-    }
-
-    /* Artists Bar */
-    .artists-bar {
-      background: rgba(255,255,255,0.02);
-      backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(255,255,255,0.06);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      overflow: hidden;
-      padding: 3rem 0;
-    }
-
-    .artists-track {
-      display: inline-flex;
-      animation: scrollArtists 40s linear infinite;
-      white-space: nowrap;
-    }
-
-    .artist-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-width: 200px;
-      padding: 0 1.5rem;
-      transition: transform 0.3s;
-    }
-
-    .artist-item:hover { transform: translateY(-8px); }
-
-    .artist-item img {
-      width: 160px;
-      height: 160px;
-      object-fit: cover;
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.1);
-      margin-bottom: 1rem;
-      transition: all 0.3s;
-    }
-
-    .artist-item:hover img {
-      border-color: rgba(255,255,255,0.3);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-    }
-
-    .artist-item span {
-      font-size: 0.875rem;
-      font-weight: 400;
-      color: rgba(255,255,255,0.8);
-    }
-
-    @keyframes scrollArtists {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    /* Footer */
-    footer {
-      background: #000;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      padding: 3rem 5% 2rem;
-      margin-top: 4rem;
-    }
-
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto 3rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 2rem;
-    }
-
-    .footer-col h4 {
-      font-size: 0.875rem;
-      margin-bottom: 1rem;
-      font-weight: 600;
-      color: rgba(255,255,255,0.6);
-    }
-
-    .footer-col ul { list-style: none; }
-    .footer-col ul li { margin-bottom: 0.75rem; }
-
-    .footer-col a {
-      color: rgba(255,255,255,0.6);
-      text-decoration: none;
-      font-size: 0.875rem;
-      transition: color 0.2s;
-    }
-
-    .footer-col a:hover { color: #fff; }
-
-    .footer-bottom {
-      text-align: center;
-      padding-top: 2rem;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      color: rgba(255,255,255,0.4);
-      font-size: 0.8125rem;
-    }
-
-    /* Scroll Animation */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-
-    .fade-in.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .nav-links { display: none; }
-      .split-section { grid-template-columns: 1fr; }
-      .hero-buttons { flex-direction: column; width: 100%; }
-      .hero-buttons .btn { width: 100%; }
-      .stats-grid { grid-template-columns: 1fr 1fr; }
-    }
-  </style>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: #000;
+    color: #fff;
+    line-height: 1.6;
+  }
+
+  /* Background grid */
+  .grid-background {
+    position: fixed;
+    inset: 0;
+    background: 
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Announcement */
+  .announcement {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+    padding: 12px 0;
+    font-weight: 500;
+    font-size: 0.9rem;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    z-index: 100;
+  }
+
+  .announcement .track {
+    display: inline-flex;
+    animation: scroll 20s linear infinite;
+  }
+
+  .announcement .track span {
+    padding: 0 2rem;
+    flex-shrink: 0;
+  }
+
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Navbar */
+  nav {
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, #fff 0%, #aaa 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  .nav-links a,
+  .nav-right a {
+    text-decoration: none;
+    color: rgba(255,255,255,0.7);
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover,
+  .nav-right a:hover {
+    color: #fff;
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  .login-btn {
+    background: #333;
+    color: #000;
+    padding: 0.6rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .login-btn:hover {
+    background: #222;
+    transform: translateY(-2px);
+  }
+
+  /* Dropdown */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-toggle::after {
+    content: "▾";
+    margin-left: 4px;
+    font-size: 0.8rem;
+    transition: transform 0.2s;
+  }
+
+  .dropdown:hover .dropdown-toggle::after {
+    transform: rotate(180deg);
+  }
+
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: rgba(20,20,20,0.95);
+    backdrop-filter: blur(20px);
+    min-width: 140px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 200;
+    margin-top: 8px;
+  }
+
+  .dropdown-menu a {
+    display: block;
+    padding: 12px 20px;
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .dropdown-menu a:hover {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+
+  .dropdown:hover .dropdown-menu {
+    display: block;
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 5%;
+    overflow: hidden;
+    background: url('static.png') center/cover no-repeat;
+    background-position: center 70%;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+  }
+
+  .hero h1,
+  .hero p,
+  .hero-buttons {
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 12vw, 6rem);
+    font-weight: 700;
+    letter-spacing: -4px;
+    background: linear-gradient(135deg, #00aaff 0%, #df3eff 33%, #ff1313 66%, rgb(255, 129, 19) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero p {
+    font-size: 1.5rem;
+    margin-bottom: 3rem;
+    color: rgba(255,255,255,0.85);
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 1rem;
+  }
+
+  /* Buttons */
+  .btn,
+  .btn-sec,
+  .btn-primary-tunes {
+    padding: 1rem 2.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .btn-primary,
+  .btn-white,
+  .btn-primary-tunes {
+    background: #fff;
+    color: #000;
+    border: 1px solid #fff;
+  }
+
+  .btn-primary:hover,
+  .btn-white:hover,
+  .btn-primary-tunes:hover {
+    background: rgba(255,255,255,0.9);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary,
+  .btn-outline {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  .btn-secondary:hover,
+  .btn-outline:hover {
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-2px);
+  }
+
+  .btn-primary-tunes {
+    border-radius: 9999px;
+    height: 55px;
+    padding: 0 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    white-space: nowrap;
+  }
+
+  .btn-primary-tunes:hover {
+    box-shadow: 0 10px 28px rgba(0,0,0,0.2);
+  }
+
+  /* General sections */
+  .section {
+    position: relative;
+    padding: 8rem 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+    opacity: 0;
+    transform: translateY(60px) scale(0.95);
+    transition: opacity 1.2s cubic-bezier(0.22,1,0.36,1), transform 1.2s cubic-bezier(0.22,1,0.36,1);
+  }
+
+  .section.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .section-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+
+  .section.reverse .section-content {
+    direction: rtl;
+  }
+
+  .section.reverse .section-text {
+    direction: ltr;
+  }
+
+  .section-text h2 {
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    letter-spacing: -1px;
+    line-height: 1.1;
+  }
+
+  .section-text p {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 2rem;
+  }
+
+  .section-text .subtitle {
+    font-size: 1.3rem;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 1rem;
+  }
+
+  .section-buttons {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .section-img {
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .section-img img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+
+  .section-img:hover img {
+    transform: scale(1.05);
+  }
+
+  /* Demo section */
+  .demo-section {
+    padding: 10rem 5%;
+    background: radial-gradient(circle at center, rgba(60,60,120,0.1) 0%, transparent 70%);
+  }
+
+  .demo-section h2 {
+    text-align: center;
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
+  }
+
+  .demo-section > p {
+    text-align: center;
+    font-size: 1.3rem;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 4rem;
+  }
+
+  .demo-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #000;
+    border-radius: 20px;
+  }
+
+  .chat-messages {
+    min-height: 350px;
+    max-height: 450px;
+    overflow-y: auto;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #000;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .chat-messages::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .chat-messages::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+  }
+
+  .chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+  }
+
+  .message {
+    padding: 1.2rem 1.5rem;
+    border-radius: 16px;
+    max-width: 85%;
+    animation: slideIn 0.4s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .message.user {
+    background: rgba(255,255,255,0.1);
+    align-self: flex-end;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  .message.indy {
+    background: rgba(0,0,0,0.15);
+    align-self: flex-start;
+    border: 1px solid rgba(56,56,56,0.3);
+    color: #fff;
+  }
+
+  .message.indy strong {
+    color: #ffffff;
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .typing-indicator .dots span {
+    animation: blink 1.4s infinite;
+    opacity: 0;
+  }
+
+  .typing-indicator .dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-indicator .dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes blink {
+    0%, 60%, 100% { opacity: 0; }
+    30% { opacity: 1; }
+  }
+
+  .demo-input-area {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .demo-input {
+    flex: 1;
+    padding: 1.2rem 1.5rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    background: rgba(0,0,0,0.3);
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s;
+  }
+
+  .demo-input:focus {
+    outline: none;
+    border-color: rgba(255,255,255,0.4);
+    background: rgba(0,0,0,0.5);
+  }
+
+  .demo-input::placeholder {
+    color: rgba(255,255,255,0.4);
+  }
+
+  .demo-send {
+    padding: 1.2rem 2.5rem;
+    background: #fff;
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+  }
+
+  .demo-send:hover:not(:disabled) {
+    background: rgba(255,255,255,0.9);
+    transform: translateY(-2px);
+  }
+
+  .demo-send:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .limit-notice {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* Stats */
+  .stats-section {
+    padding: 8rem 5%;
+    text-align: center;
+  }
+
+  .stats-section h2 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 4rem;
+    letter-spacing: -1px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .stat-item {
+    padding: 2.5rem 1.5rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    transition: all 0.3s;
+  }
+
+  .stat-item:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.2);
+    transform: translateY(-5px);
+  }
+
+  .stat-number {
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #fff 0%, #aaa 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .stat-label {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* Tunes Hero */
+  .tunes-hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 4rem 5%;
+    background: url('erm.png') center/cover no-repeat;
+    background-position: center 70%;
+    position: relative;
+  }
+
+  .tunes-content {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .tunes-text {
+    max-width: 65%;
+    padding-bottom: 4.8rem;
+  }
+
+  .tunes-text p {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 0.8rem 0;
+  }
+
+  .tunes-text h2 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    line-height: 1.05;
+  }
+
+  .btn-primary-tunes {
+    background: #fff;
+    color: #000;
+    border: 2px solid #fff;
+    border-radius: 9999px;
+    height: 55px;
+    padding: 0 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .btn-primary-tunes:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.2);
+  }
+
+  /* Artists bar */
+  .artists-bar {
+    background: rgba(255,255,255,0.02);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    overflow: hidden;
+    padding: 2rem 0;
+    position: relative;
+    z-index: 90;
+  }
+
+  .artists-track {
+    display: inline-flex;
+    animation: scrollArtists 10s linear infinite;
+    white-space: nowrap;
+  }
+
+  .artist-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 180px;
+    padding: 0 1.2rem;
+    flex-shrink: 0;
+    transition: transform 0.4s ease;
+  }
+
+  .artist-item:hover {
+    transform: translateY(-6px);
+  }
+
+  .artist-item img {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.12);
+    margin-bottom: 0.9rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    transition: all 0.4s ease;
+  }
+
+  .artist-item:hover img {
+    transform: scale(1.06);
+    box-shadow: 0 12px 40px rgba(99,102,241,0.3);
+  }
+
+  .artist-item span {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.85);
+    text-align: center;
+  }
+
+  @keyframes scrollArtists {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .artists-bar:hover .artists-track {
+    animation-play-state: paused;
+  }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 5rem 5% 3rem;
+    margin-top: 8rem;
+  }
+
+  .footer-content {
+    max-width: 1400px;
+    margin: 0 auto 4rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 3rem;
+  }
+
+  .footer-col h4 {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .footer-col ul {
+    list-style: none;
+  }
+
+  .footer-col ul li {
+    margin-bottom: 1rem;
+  }
+
+  .footer-col a {
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s;
+  }
+
+  .footer-col a:hover {
+    color: #fff;
+  }
+
+  .footer-bottom {
+    text-align: center;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.4);
+    font-size: 0.9rem;
+  }
+
+  /* Typography weights */
+  h1, h2 { font-weight: 700; }
+  h3, h4 { font-weight: 600; }
+  p { font-weight: 400; }
+  .nav-links a, .nav-right a { font-weight: 500; }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .section-content { grid-template-columns: 1fr; gap: 3rem; }
+    .section.reverse .section-content { direction: ltr; }
+    .hero h1 { font-size: 6rem; }
+    .section-text h2 { font-size: 2.5rem; }
+    .demo-section h2 { font-size: 3rem; }
+  }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hero h1 { font-size: 3rem; }
+    .hero p { font-size: 1.2rem; }
+    .demo-input-area { flex-direction: column; }
+    .demo-send { width: 100%; }
+    .stat-number { font-size: 3rem; }
+    nav { padding: 1rem 4%; }
+    .hero-buttons { flex-direction: column; gap: 1rem; }
+    .btn { width: 100%; text-align: center; }
+    .section { padding: 4rem 5%; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .tunes-content { flex-direction: column; align-items: flex-start; }
+    .btn-primary-tunes { margin-top: 1.5rem; }
+  }
+  .tunes-hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-end;         /* ← push content towards bottom */
+  padding: 4rem 5% 8rem 5%;      /* extra bottom padding so content is not glued to the very bottom */
+  padding-bottom: 2rem; /* or even more */
+}
+
+.tunes-content {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;         /* button aligns to the bottom of the row */
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+
+.tunes-text {
+  max-width: 65%;
+  /* No extra bottom padding here — we want the text to sit naturally */
+}
+
+.tunes-text h2 {
+  margin-bottom: 0;              /* remove any extra space below h2 */
+}
+
+.btn-primary-tunes {
+  margin-bottom: 2rem;              /* make sure button sits flush with the bottom */
+}
+
+  .one-hero {
+  background-color: #000000;          /* Pure black background */
+  color: #ffffff;                     /* All text white */
+  min-height: 80vh;                   /* Takes most of the viewport height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;            /* Centers content vertically */
+  align-items: center;                /* Centers content horizontally */
+  text-align: center;
+  padding: 4rem 2rem;                 /* Generous padding */
+}
+
+/* Heading styling */
+.one-hero h1 {
+  font-size: 5.5rem;                  /* Really big heading */
+  font-weight: 800;
+  margin: 0 0 1.5rem 0;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+/* Optional: make the sparkle symbol stand out a bit */
+.one-hero h1::before,
+.one-hero h1::after {
+  content: "";
+  opacity: 0.7;
+}
+
+/* Paragraph text */
+.one-hero p {
+  font-size: 1.5rem;
+  max-width: 600px;
+  margin: 0 0 2.5rem 0;
+  line-height: 1.5;
+  opacity: 0.9;                       /* Slightly softer than pure white */
+}
+  .hero-buttons {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Button styling */
+.btn {
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 50px;                /* Pill shape */
+  transition: all 0.3s ease;
+}
+
+/* Primary button */
+.btn-primary {
+  background-color: #ffffff;
+  color: #000000;
+  border: 2px solid #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: transparent;
+  color: #ffffff;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.15);
+}
+</style>
 </head>
 <body>
-  <div class="grid-bg"></div>
+  <div class="grid-background"></div>
 
   <!-- Announcement -->
   <div class="announcement">
     <div class="track">
-      <span>Up to 20% off Blade Card for Students ☺</span>
-      <span>•</span>
-      <span>Up to 20% off Blade Card for Students ☺</span>
-      <span>•</span>
-      <span>Up to 20% off Blade Card for Students ☺</span>
-      <span>•</span>
-      <span>Up to 20% off Blade Card for Students ☺</span>
-      <span>•</span>
+      <span>Up to 20% off Blade Card for Students ☺ &nbsp;&nbsp;•&nbsp;&nbsp;</span>
+      <span>Up to 20% off Blade Card for Students ☺ &nbsp;&nbsp;•&nbsp;&nbsp;</span>
+      <span>Up to 20% off Blade Card for Students ☺ &nbsp;&nbsp;•&nbsp;&nbsp;</span>
+      <span>Up to 20% off Blade Card for Students ☺ &nbsp;&nbsp;•&nbsp;&nbsp;</span>
+      <span>Up to 20% off Blade Card for Students ☺ &nbsp;&nbsp;•&nbsp;&nbsp;</span>
+      <span>Up to 20% off Blade Card for Students ☺ &nbsp;&nbsp;•&nbsp;&nbsp;</span>
     </div>
   </div>
 
@@ -657,43 +911,50 @@
     </div>
   </nav>
 
-  <!-- Main Hero -->
-  <section class="hero-section" style="background-image: url('static.png');">
-    <div class="hero-content">
-      <div class="subtitle">AI Innovation</div>
-      <h1 class="gradient-text">INDY</h1>
-      <p>Intelligence that works for students.</p>
-      <div class="hero-buttons">
-        <a href="#demo" class="btn btn-white">Try Indy</a>
-        <a href="login.html" class="btn btn-secondary">Learn more</a>
+  <!-- Hero -->
+  <section class="hero">
+    <h1>INDY</h1>
+    <p>The future of AI innovation</p>
+    <div class="hero-buttons">
+      <a href="#demo" class="btn btn-primary">Try Indy</a>
+      <a href="login.html" class="btn btn-secondary">Get Started</a>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="section visible">
+    <div class="section-content">
+      <div class="section-text">
+        <p class="subtitle">Built different</p>
+        <h2>No corporate fluff. Just tools that work.</h2>
+        <p>We're tired of overpriced, overcomplicated tools that students and creators deal with. So we built JVST — fast, affordable, no-BS software that helps you get things done. One person coding, real students using it.</p>
+      </div>
+      <div class="section-img">
+        <img src="abtus.png" alt="Team workspace">
       </div>
     </div>
   </section>
 
-  <!-- Full Width - About -->
-  <section class="full-section" style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);">
-    <div class="full-section-content">
-      <p class="small-text">Built Different</p>
-      <h2>No corporate fluff.<br>Just tools that work.</h2>
-      <p>We're tired of overpriced, overcomplicated tools. So we built JVST — fast, affordable, no-BS software for students.</p>
-      <a href="#" class="btn btn-white">Discover JVST</a>
-    </div>
-  </section>
-
-  <!-- Demo Section -->
-  <section class="demo-section fade-in" id="demo">
+  <!-- Interactive Demo -->
+  <section class="demo-section section" id="demo">
     <h2>Experience Indy</h2>
     <p>Real AI. Real answers. Try 2 messages for free.</p>
     
     <div class="demo-container">
       <div class="chat-messages" id="chatMessages">
         <div class="message indy">
-          Howdy 🤠! I'm Indy, your AI assistant built for students. I can help with creative ideas, coding, and more. What can I help you with today?
+          Howdy 🤠! I'm Indy, your AI assistant built for students. I can help with several tasks including creative ideas, coding, and more. What can I help you with today?
         </div>
       </div>
       
       <div class="demo-input-area">
-        <input type="text" class="demo-input" id="userInput" placeholder="Ask anything..." maxlength="200">
+        <input 
+          type="text" 
+          class="demo-input" 
+          id="userInput" 
+          placeholder="Ask anything..."
+          maxlength="200"
+        />
         <button class="demo-send" id="sendBtn">Send</button>
       </div>
       
@@ -702,12 +963,12 @@
   </section>
 
   <!-- Stats -->
-  <section class="stats-section fade-in">
-    <h2>Trusted by students everywhere</h2>
+  <section class="stats-section section">
+    <h2>Trusted by students</h2>
     <div class="stats-grid">
       <div class="stat-item">
         <div class="stat-number">1K+</div>
-        <div class="stat-label">Messages Sent</div>
+        <div class="stat-label">Messages Sent to Indy</div>
       </div>
       <div class="stat-item">
         <div class="stat-number">5K+</div>
@@ -724,106 +985,132 @@
     </div>
   </section>
 
-  <!-- Split Section - Products -->
-  <div class="split-section fade-in">
-    <div class="split-item" style="background-image: url('indy.png'); background-color: #1a1a2e;">
-      <div class="split-item-content">
-        <h3>Indy Ideas</h3>
-        <p>Your AI assistant for everything. Generate images, get coding help, draft emails.</p>
-        <a href="indy.html" class="btn btn-white">Try free</a>
+  <!-- Indy Product -->
+  <section class="section reverse">
+    <div class="section-content">
+      <div class="section-text">
+        <h2 class="indy-gradient">Indy Ideas</h2>
+        <p>Your AI assistant for Chromebook. Generate images, get coding help, and draft up emails! Image generation is a beta feature available for Indy+ members.</p>
+        <div class="section-buttons">
+          <a href="indy.html" class="btn-sec btn-white">Try Free</a>
+          <a href="login.html" class="btn-sec btn-outline">See Plans</a>
+        </div>
       </div>
-    </div>
-    <div class="split-item" style="background-image: url('tunes.png'); background-color: #2e1a1a;">
-      <div class="split-item-content">
-        <h3>Stream unlimited</h3>
-        <p>Full songs. Minimal interruptions. Perfect for study sessions.</p>
-        <a href="tunes.html" class="btn btn-white">Listen now</a>
+      <div class="section-img">
+        <img src="indy.png" alt="AI assistant">
       </div>
-    </div>
-  </div>
-
-  <!-- Full Width - Tunes -->
-  <section class="full-section" style="background-image: url('erm.png');">
-    <div class="full-section-content">
-      <p class="small-text">✦ Tunes</p>
-      <h2>Music. Playlists.<br>100% safe.</h2>
-      <p>Everything you need to focus and create.</p>
-      <a href="tunes.html" class="btn btn-white">Start for free**</a>
     </div>
   </section>
 
-  <!-- Artists Bar -->
-  <div class="artists-bar">
-    <div class="artists-track">
-      <div class="artist-item">
-        <img src="https://www.economist.com/cdn-cgi/image/width=1424,quality=80,format=auto/content-assets/images/20250712_CUP003.jpg" alt="Bad Bunny">
-        <span>Bad Bunny</span>
+  <!-- Tunes -->
+  <section class="section">
+    <div class="section-content">
+      <div class="section-text">
+        <h2>Stream without limits</h2>
+        <p>Full songs. Minimal interruptions. Perfect for study sessions. We made it simple and affordable so you can focus on what matters.</p>
+        <div class="section-buttons">
+          <a href="tunes.html" class="btn-sec btn-white">Try Free</a>
+        </div>
       </div>
-      <div class="artist-item">
-        <img src="https://www.rollingstone.com/wp-content/uploads/2024/10/Rose-Solo-Album.jpg" alt="ROSÉ">
-        <span>Rosé</span>
+      <div class="section-img">
+        <img src="tunes.png" alt="Music streaming">
       </div>
-      <div class="artist-item">
-        <img src="https://www.billboard.com/wp-content/uploads/2025/06/benson-boone-gov-ball-2025-billboard-1548.jpg" alt="Benson Boone">
-        <span>Benson Boone</span>
-      </div>
-      <div class="artist-item">
-        <img src="https://artist99.cdn107.com/00e/00e82728b9a9287bc27a28f3c7e0a2ae_lg.jpg" alt="The Weeknd">
-        <span>The Weeknd</span>
-      </div>
-      <div class="artist-item">
-        <img src="https://static01.nyt.com/images/2024/05/20/arts/17eilish-review/17eilish-review-mediumSquareAt3X.jpg" alt="Billie Eilish">
-        <span>Billie Eilish</span>
-      </div>
-      <div class="artist-item">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/KendrickSZASPurs230725-19_-_54683179509_%28cropped%29_%28cropped%29.jpg" alt="SZA">
-        <span>SZA</span>
-      </div>
-      <!-- Duplicate -->
-      <div class="artist-item">
-        <img src="https://www.economist.com/cdn-cgi/image/width=1424,quality=80,format=auto/content-assets/images/20250712_CUP003.jpg" alt="Bad Bunny">
-        <span>Bad Bunny</span>
-      </div>
-      <div class="artist-item">
-        <img src="https://www.rollingstone.com/wp-content/uploads/2024/10/Rose-Solo-Album.jpg" alt="ROSÉ">
-        <span>Rosé</span>
-      </div>
-      <div class="artist-item">
-        <img src="https://www.billboard.com/wp-content/uploads/2025/06/benson-boone-gov-ball-2025-billboard-1548.jpg" alt="Benson Boone">
-        <span>Benson Boone</span>
-      </div>
-      <div class="artist-item">
-        <img src="https://artist99.cdn107.com/00e/00e82728b9a9287bc27a28f3c7e0a2ae_lg.jpg" alt="The Weeknd">
-        <span>The Weeknd</span>
-      </div>
-      <div class="artist-item">
-        <img src="https://static01.nyt.com/images/2024/05/20/arts/17eilish-review/17eilish-review-mediumSquareAt3X.jpg" alt="Billie Eilish">
-        <span>Billie Eilish</span>
-      </div>
-      <div class="artist-item">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/KendrickSZASPurs230725-19_-_54683179509_%28cropped%29_%28cropped%29.jpg" alt="SZA">
-        <span>SZA</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Full Width - One Bundle -->
-  <section class="full-section fade-in" style="background: linear-gradient(135deg, #2e1a3e 0%, #1a1a2e 100%);">
-    <div class="full-section-content">
-      <p class="small-text">✧ Bundle</p>
-      <h2>One.<br>Everything included.</h2>
-      <p>All services for only $3. Digital blade card on purchase.</p>
-      <a href="login.html" class="btn btn-white">Get started</a>
     </div>
   </section>
 
-  <!-- Full Width - Sponsors -->
-  <section class="full-section fade-in" style="background: linear-gradient(135deg, #1a2e1a 0%, #0f1e0f 100%);">
-    <div class="full-section-content">
-      <p class="small-text">Our Sponsors Since 2025</p>
-      <h2>Supporting independent<br>artists.</h2>
-      <p>Meet Noah Loke, Evan Duffy, and our VIP Rainn Blais. These talented musicians have been making music from home, and we're giving them the credit they deserve.</p>
-      <a href="https://www.youtube.com" class="btn btn-white">Listen on YouTube</a>
+<section class="tunes-hero">
+  <div class="tunes-content">
+    <div class="tunes-text">
+      <p>✦ Tunes</p>
+      <h2>Music. Playlists. 100% safe.</h2>
+    </div>
+
+    <a href="tunes.html" class="btn btn-primary-tunes">Start for free**</a>
+  </div>
+</section>
+
+
+
+<!-- Artists Showcase Bar -->
+<div class="artists-bar">
+  <div class="artists-track">
+    <!-- Repeat the set twice for seamless infinite loop -->
+    <div class="artist-item">
+      <img src="https://www.economist.com/cdn-cgi/image/width=1424,quality=80,format=auto/content-assets/images/20250712_CUP003.jpg" alt="Bad Bunny">
+      <span>Bad Bunny</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://www.rollingstone.com/wp-content/uploads/2024/10/Rose-Solo-Album.jpg?crop=0px%2C130px%2C1800px%2C1014px&resize=1600%2C900" alt="ROSÉ">
+      <span>Rosé</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://www.billboard.com/wp-content/uploads/2025/06/benson-boone-gov-ball-2025-billboard-1548.jpg" alt="YOASOBI">
+      <span>Benson Boone</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://artist99.cdn107.com/00e/00e82728b9a9287bc27a28f3c7e0a2ae_lg.jpg" alt="The Weeknd">
+      <span>The Weeknd</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://static01.nyt.com/images/2024/05/20/arts/17eilish-review/17eilish-review-mediumSquareAt3X.jpg" alt="Billie Eilish">
+      <span>Billie Eilish</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/KendrickSZASPurs230725-19_-_54683179509_%28cropped%29_%28cropped%29.jpg" alt="SZA">
+      <span>SZA</span>
+    </div>
+
+    <!-- Duplicate set for seamless loop -->
+    <div class="artist-item">
+      <img src="https://www.economist.com/cdn-cgi/image/width=1424,quality=80,format=auto/content-assets/images/20250712_CUP003.jpg" alt="Bad Bunny">
+      <span>Bad Bunny</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://www.rollingstone.com/wp-content/uploads/2024/10/Rose-Solo-Album.jpg?crop=0px%2C130px%2C1800px%2C1014px&resize=1600%2C900" alt="ROSÉ">
+      <span>Rosé</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://www.billboard.com/wp-content/uploads/2025/06/benson-boone-gov-ball-2025-billboard-1548.jpg" alt="YOASOBI">
+      <span>Benson Boone</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://artist99.cdn107.com/00e/00e82728b9a9287bc27a28f3c7e0a2ae_lg.jpg" alt="The Weeknd">
+      <span>The Weeknd</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://static01.nyt.com/images/2024/05/20/arts/17eilish-review/17eilish-review-mediumSquareAt3X.jpg" alt="Billie Eilish">
+      <span>Billie Eilish</span>
+    </div>
+    <div class="artist-item">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/KendrickSZASPurs230725-19_-_54683179509_%28cropped%29_%28cropped%29.jpg" alt="SZA">
+      <span>SZA</span>
+    </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Blade Card -->
+  <section class="one-hero">
+    <h1>✧One</h1>
+    <p>All in one bundle for only $3! You will receve a digital blade card on purchase used to log you into your favorate services!</p>
+    <div class="hero-buttons">
+      <a href="login.html" class="btn btn-primary">Log In</a>
+    </div>
+  </section>
+
+  <!-- Sponsors -->
+  <section class="section">
+    <div class="section-content">
+      <div class="section-text">
+        <h2>Our Sponsors Since 2025</h2>
+        <p>Meet Noah Loke, Evan Duffy, and our VIP Rainn Blais. These talented musicians have been making music from home, and we're giving them the credit they deserve. Stream their music on YouTube!</p>
+        <div class="section-buttons">
+          <a href="https://www.youtube.com" class="btn-sec btn-white">Listen Now</a>
+        </div>
+      </div>
+      <div class="section-img">
+        <img src="nl.png" alt="Sponsors">
+      </div>
     </div>
   </section>
 
@@ -832,7 +1119,7 @@
     <div class="footer-content">
       <div class="footer-col">
         <h4>JVST</h4>
-        <p style="color: rgba(255,255,255,0.5); font-size: 0.875rem;">Built Different</p>
+        <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">Built Different</p>
       </div>
       <div class="footer-col">
         <h4>Products</h4>
@@ -864,19 +1151,29 @@
   </footer>
 
   <script>
-    // Scroll animations
-    const fadeElements = document.querySelectorAll('.fade-in');
+    // Intersection Observer for fade-in
+    const sections = document.querySelectorAll('.section');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
         }
       });
-    }, { threshold: 0.1, rootMargin: "0px 0px -80px 0px" });
+    }, {
+      threshold: 0.1,
+      rootMargin: "0px 0px -100px 0px"
+    });
     
-    fadeElements.forEach(el => observer.observe(el));
+    sections.forEach(section => observer.observe(section));
 
-    // AI Demo functionality
+    // Dropdown
+    const dropdowns = document.querySelectorAll('.dropdown');
+    dropdowns.forEach(dropdown => {
+      dropdown.addEventListener('mouseenter', () => dropdown.classList.add('active'));
+      dropdown.addEventListener('mouseleave', () => dropdown.classList.remove('active'));
+    });
+
+    // Indy AI Demo
     let messageCount = 0;
     const maxMessages = 2;
     const chatMessages = document.getElementById('chatMessages');
@@ -888,7 +1185,7 @@
     function addMessage(text, isUser) {
       const messageDiv = document.createElement('div');
       messageDiv.className = `message ${isUser ? 'user' : 'indy'}`;
-      messageDiv.textContent = text;
+      messageDiv.innerHTML = isUser ? text : `${text}`;
       chatMessages.appendChild(messageDiv);
       chatMessages.scrollTop = chatMessages.scrollHeight;
       return messageDiv;
@@ -896,21 +1193,27 @@
 
     function addTypingIndicator() {
       const typingDiv = document.createElement('div');
-      typingDiv.className = 'message indy';
-      typingDiv.innerHTML = '<span style="opacity: 0.6;">thinking...</span>';
+      typingDiv.className = 'message indy typing-indicator';
+      typingDiv.innerHTML = '<span class="dots">thinking<span>.</span><span>.</span><span>.</span></span>';
       chatMessages.appendChild(typingDiv);
       chatMessages.scrollTop = chatMessages.scrollHeight;
       return typingDiv;
     }
 
     async function getAIResponse(userMessage) {
-      conversationHistory.push({ role: "user", content: userMessage });
-      const systemPrompt = "You are Indy, using Sunshine 1.0 model, a sleek AI assistant by JVST for students. Help with homework, creative ideas, coding, studying. Keep responses 2-3 sentences max. Be friendly but professional. Mention full version has unlimited messages and image generation.";
+      conversationHistory.push({
+        role: "user",
+        content: userMessage
+      });
+
+      const systemPrompt = "You are Indy, you use the model: Sunshine 1.0, a sleek AI assistant built by JVST for students. You help with homework, creative ideas, coding, studying, and more. Keep responses concise (2-3 sentences max). Be friendly but professional. Mention that the full version has unlimited messages and image generation.";
       
       try {
         const response = await fetch('https://text.pollinations.ai/', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({
             messages: [
               { role: "system", content: systemPrompt },
@@ -919,11 +1222,17 @@
             model: "openai"
           })
         });
+
         const aiResponse = await response.text();
-        conversationHistory.push({ role: "assistant", content: aiResponse });
+        conversationHistory.push({
+          role: "assistant",
+          content: aiResponse
+        });
+        
         return aiResponse;
       } catch (error) {
-        return "Having trouble connecting. The full version offers reliable, unlimited access!";
+        console.error('AI Error:', error);
+        return "Having trouble connecting. The full version offers reliable, unlimited access to help with homework, projects, and more!";
       }
     }
 
@@ -964,6 +1273,43 @@
     userInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter' && !sendBtn.disabled) sendMessage();
     });
-  </script>
+
+// Create tiny dust particles in spotlight area
+function createDustParticles() {
+  const hero = document.querySelector('.hero');
+  const particleCount = 50;
+  
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'dust-particle';
+    
+    // Start from right side (spotlight origin)
+    const startX = 60 + Math.random() * 30; // 60-90% from left
+    const startY = 20 + Math.random() * 30; // 20-50% from top
+    
+    // Float within spotlight cone (down and left)
+    const endX = -100 - Math.random() * 150; // drift left
+    const endY = 50 + Math.random() * 200;   // drift down
+    
+    const duration = 6 + Math.random() * 8;
+    const delay = Math.random() * 8;
+    const size = 1 + Math.random() * 1.5;
+    
+    particle.style.left = `${startX}%`;
+    particle.style.top = `${startY}%`;
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    particle.style.setProperty('--endX', `${endX}px`);
+    particle.style.setProperty('--endY', `${endY}px`);
+    particle.style.animationDuration = `${duration}s`;
+    particle.style.animationDelay = `${delay}s`;
+    
+    hero.appendChild(particle);
+  }
+}
+
+createDustParticles();
+    </script>
+
 </body>
 </html>
