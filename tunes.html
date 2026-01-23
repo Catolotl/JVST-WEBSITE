@@ -1,62 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>JVST Tunes</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="shortcut icon" type="image/png" href="favicon.png">
 
     <style>
+        /* Reset everything */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        body {
+
+        /* Make the page itself full screen */
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
             font-family: 'Inter', sans-serif;
             background: #fff;
             color: #111;
         }
-        /* Embed area */
+
+        /* Fullscreen embed wrapper */
         .embed-wrapper {
-            width: 100%;
-            height: calc(100vh - 96px);
+            width: 100vw;
+            height: 100vh;
         }
 
+        /* Fullscreen iframe */
         .embed-wrapper iframe {
             width: 100%;
             height: 100%;
             border: none;
-        }
-
-        @media (max-width: 768px) {
-            .nav-container {
-                padding: 20px 30px;
-            }
-            .nav-links {
-                gap: 24px;
-            }
-            .dropdown-menu {
-                left: 0;
-                transform: translateX(0) translateY(10px);
-            }
-            .nav-dropdown:hover .dropdown-menu,
-            .nav-dropdown.active .dropdown-menu {
-                transform: translateX(0) translateY(0);
-            }
+            display: block;
         }
     </style>
 </head>
 <body>
 
-    <!-- Your embedded TV app -->
     <div class="embed-wrapper">
         <iframe
             src="https://mini-tunes.pages.dev/full-tunes"
             loading="lazy"
-            allowfullscreen>
-        </iframe>
+            allowfullscreen
+            referrerpolicy="no-referrer"
+        ></iframe>
     </div>
+
 </body>
 </html>
