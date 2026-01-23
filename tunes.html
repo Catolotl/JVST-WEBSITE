@@ -194,27 +194,6 @@
 </head>
 <body>
 
-    <nav>
-        <div class="nav-container">
-            <a href="index.html" class="logo">JVST</a>
-            <div class="nav-links">
-                <a href="index.html">Home</a>
-                <div class="nav-dropdown">
-                    <span class="dropdown-trigger">Products</span>
-                    <div class="dropdown-menu">
-                        <a href="tv.html">TV</a>
-                        <a href="tunes.html">Tunes</a>
-                    </div>
-                </div>
-                                <a href="indy.html">AI</a>
-            </div>
-            <div class="nav-right">
-                <a href="#" class="heart">♡</a>
-                <a href="login.html" class="cta-btn">Log In</a>
-            </div>
-        </div>
-    </nav>
-
     <!-- Your embedded TV app -->
     <div class="embed-wrapper">
         <iframe
@@ -223,42 +202,5 @@
             allowfullscreen>
         </iframe>
     </div>
-
-    <script>
-        // Dropdown (hover + click support)
-        document.addEventListener('DOMContentLoaded', () => {
-            const dropdowns = document.querySelectorAll('.nav-dropdown');
-
-            dropdowns.forEach(dropdown => {
-                const trigger = dropdown.querySelector('.dropdown-trigger');
-                const menu = dropdown.querySelector('.dropdown-menu');
-
-                dropdown.addEventListener('mouseenter', () => {
-                    dropdown.classList.add('active');
-                });
-
-                dropdown.addEventListener('mouseleave', () => {
-                    dropdown.classList.remove('active');
-                });
-
-                trigger.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const isActive = dropdown.classList.contains('active');
-                    dropdowns.forEach(d => d.classList.remove('active'));
-                    if (!isActive) {
-                        dropdown.classList.add('active');
-                    }
-                });
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.nav-dropdown')) {
-                    document.querySelectorAll('.nav-dropdown').forEach(d => {
-                        d.classList.remove('active');
-                    });
-                }
-            });
-        });
-    </script>
 </body>
 </html>
