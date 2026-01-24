@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Arena</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px 20px;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            margin-bottom: 40px;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+        }
+
+        .nav-item {
+            padding: 15px 20px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .nav-icon {
+            font-size: 1.5em;
+        }
+
+        .user-section {
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .user-avatar {
+            font-size: 2.5em;
+        }
+
+        .coins-display {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Auth Screen Styles */
+        .auth-screen {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .auth-container {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .auth-header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: #f0f0f0;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s;
+        }
+
+        .auth-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        /* Lobby Screen Unique Style */
+        .lobby-container {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 20px;
+            color: white;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .lobby-header {
+            background: rgba(0,0,0,0.2);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .lobby-content {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1em;
+            margin: 10px 0;
+        }
+
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .emoji-option {
+            font-size: 2em;
+            padding: 10px;
+            border: 3px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .emoji-option:hover {
+            background: #f0f0f0;
+        }
+
+        .emoji-option.selected {
+            border-color: #667eea;
+            background: #e8eaff;
+        }
+
+        .emoji-option.locked {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .players-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .player-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .player-card.host {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+        }
+
+        .player-emoji {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .chat-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .chat-messages {
+            height: 200px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+
+        .chat-message {
+            margin: 5px 0;
+            padding: 8px;
+            background: #e9ecef;
+            border-radius: 5px;
+        }
+
+        .game-mode-card {
+            background: white;
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .game-mode-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+        }
+
+        .game-mode-card.selected {
+            border-color: #667eea;
+            background: #e8eaff;
+        }
+
+        .lobby-code {
+            background: white;
+            color: #333;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            letter-spacing: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 4px dashed #667eea;
+        }
+
+        .code-label {
+            font-size: 0.4em;
+            letter-spacing: 2px;
+            color: #999;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .game-arena {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .score {
+            font-size: 3em;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .shop-item {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .shop-item.owned {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        @media (max-width: 600px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 20px;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Screen -->
+    <div class="auth-screen" id="authScreen">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>🎮 Game Arena</h1>
+                <p>Join the fun!</p>
+            </div>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+                <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
+            </div>
+            
+            <div id="loginForm">
+                <input type="email" id="loginEmail" placeholder="Email">
+                <input type="password" id="loginPassword" placeholder="Password">
+                <button class="btn" onclick="login()" style="width: 100%;">Login</button>
+            </div>
+            
+            <div id="signupForm" style="display: none;">
+                <input type="text" id="signupName" placeholder="Display Name">
+                <input type="email" id="signupEmail" placeholder="Email">
+                <input type="password" id="signupPassword" placeholder="Password">
+                <button class="btn" onclick="signup()" style="width: 100%;">Sign Up</button>
+            </div>
+            
+            <p style="text-align: center; margin-top: 20px; color: #999;">
+                Play as guest? <a href="#" onclick="playAsGuest()" style="color: #667eea;">Click here</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="app-container" id="appContainer" style="display: none;">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>🎮 Game Arena</h1>
+                <p>Play, Compete, Win!</p>
+            </div>
+            
+            <div class="sidebar-nav">
+                <div class="nav-item active" onclick="showScreen('homeScreen')">
+                    <span class="nav-icon">🏠</span>
+                    <span>Home</span>
+                </div>
+                <div class="nav-item" onclick="showScreen('createLobbyScreen')">
+                    <span class="nav-icon">➕</span>
+                    <span>Create Lobby</span>
+                </div>
+                <div class="nav-item" onclick="showScreen('joinLobbyScreen')">
+                    <span class="nav-icon">🚪</span>
+                    <span>Join Lobby</span>
+                </div>
+                <div class="nav-item" onclick="showScreen('shopScreen')">
+                    <span class="nav-icon">🛒</span>
+                    <span>Shop</span>
+                </div>
+                <div class="nav-item" onclick="showScreen('customGameScreen')">
+                    <span class="nav-icon">⭐</span>
+                    <span>Custom Games</span>
+                </div>
+            </div>
+            
+            <div class="user-section">
+                <div class="user-info">
+                    <div class="user-avatar" id="sidebarEmoji">😀</div>
+                    <div>
+                        <div style="font-weight: bold;" id="sidebarName">Player</div>
+                        <div style="font-size: 0.85em; opacity: 0.8;" id="userEmail"></div>
+                    </div>
+                </div>
+                <div class="coins-display" id="coinsDisplay">💰 0</div>
+                <button class="btn btn-secondary" onclick="logout()" style="width: 100%; margin-top: 10px;">Logout</button>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Home Screen -->
+            <div class="screen active" id="homeScreen">
+                <div class="container">
+                    <div class="header">
+                        <h1>Welcome Back!</h1>
+                        <p>Ready to play some games?</p>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        <div class="game-mode-card" onclick="showScreen('createLobbyScreen')">
+                            <h2 style="font-size: 3em; margin-bottom: 10px;">➕</h2>
+                            <h3>Create Lobby</h3>
+                            <p>Start a new game and invite friends</p>
+                        </div>
+                        <div class="game-mode-card" onclick="showScreen('joinLobbyScreen')">
+                            <h2 style="font-size: 3em; margin-bottom: 10px;">🚪</h2>
+                            <h3>Join Game</h3>
+                            <p>Enter a code to join a friend's lobby</p>
+                        </div>
+                        <div class="game-mode-card" onclick="showScreen('shopScreen')">
+                            <h2 style="font-size: 3em; margin-bottom: 10px;">🛒</h2>
+                            <h3>Shop</h3>
+                            <p>Unlock new emojis with your coins</p>
+                        </div>
+                        <div class="game-mode-card" onclick="showScreen('customGameScreen')">
+                            <h2 style="font-size: 3em; margin-bottom: 10px;">⭐</h2>
+                            <h3>Custom Games</h3>
+                            <p>Create your own game modes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Lobby Screen -->
+            <div class="screen" id="createLobbyScreen">
+                <div class="container">
+                    <div class="header">
+                        <h1>Create a Lobby</h1>
+                        <p>Set up your game room</p>
+                    </div>
+                    <input type="text" id="hostNameInput" placeholder="Enter your name">
+                    <h3 style="margin: 20px 0 10px 0;">Choose your emoji:</h3>
+                    <div class="emoji-grid" id="hostEmojiGrid"></div>
+                    <button class="btn" onclick="createLobby()">Create Lobby</button>
+                    <button class="btn btn-secondary" onclick="showScreen('homeScreen')">Back</button>
+                </div>
+            </div>
+
+            <!-- Join Lobby Screen -->
+            <div class="screen" id="joinLobbyScreen">
+                <div class="container">
+                    <div class="header">
+                        <h1>Join a Lobby</h1>
+                        <p>Enter the game code</p>
+                    </div>
+                    <input type="text" id="joinCodeInput" placeholder="Enter lobby code" style="text-transform: uppercase; text-align: center; font-size: 1.5em; letter-spacing: 4px;">
+                    <input type="text" id="playerNameInput" placeholder="Enter your name">
+                    <h3 style="margin: 20px 0 10px 0;">Choose your emoji:</h3>
+                    <div class="emoji-grid" id="playerEmojiGrid"></div>
+                    <button class="btn" onclick="joinLobby()">Join Lobby</button>
+                    <button class="btn btn-secondary" onclick="showScreen('homeScreen')">Back</button>
+                </div>
+            </div>
+
+            <!-- Lobby Screen -->
+            <div class="screen" id="lobbyScreen">
+                <div class="lobby-container">
+                    <div class="lobby-header">
+                        <h1 style="margin: 0; font-size: 2em;">🎮 Game Lobby</h1>
+                        <div class="lobby-code" id="lobbyCodeDisplay">
+                            <span class="code-label">LOBBY CODE</span>
+                            XXXXXX
+                        </div>
+                    </div>
+                    
+                    <div class="lobby-content">
+                        <h2>Players in Lobby</h2>
+                        <div class="players-list" id="playersList"></div>
+                        
+                        <div class="chat-container">
+                            <h3>Chat</h3>
+                            <div class="chat-messages" id="chatMessages"></div>
+                            <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleChatKeypress(event)">
+                            <button class="btn" onclick="sendMessage()">Send</button>
+                        </div>
+
+                        <div id="gameModeSelection" style="display: none;">
+                            <h3>Select Game Mode</h3>
+                            <div id="gameModesContainer"></div>
+                            <button class="btn" onclick="startGame()">Start Game</button>
+                        </div>
+                        
+                        <button class="btn btn-secondary" onclick="leaveLobby()">Leave Lobby</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Screen -->
+            <div class="screen" id="gameScreen">
+                <div class="container">
+                    <div id="gameContent"></div>
+                </div>
+            </div>
+
+            <!-- Shop Screen -->
+            <div class="screen" id="shopScreen">
+                <div class="container">
+                    <div class="header">
+                        <h1>🛒 Shop</h1>
+                        <p>Unlock new emojis with your coins!</p>
+                    </div>
+                    <div id="shopItems"></div>
+                    <button class="btn btn-secondary" onclick="showScreen('homeScreen')">Back to Home</button>
+                </div>
+            </div>
+
+            <!-- Custom Game Screen -->
+            <div class="screen" id="customGameScreen">
+                <div class="container">
+                    <div class="header">
+                        <h1>⭐ Custom Game Modes</h1>
+                        <p>Create your own game experiences</p>
+                    </div>
+                    <button class="btn" onclick="showCreateCustomGame()">Create New Game Mode</button>
+                    <div id="customGamesList"></div>
+                    <button class="btn btn-secondary" onclick="showScreen('homeScreen')">Back to Home</button>
+                </div>
+            </div>
+
+            <!-- Create Custom Game Screen -->
+            <div class="screen" id="createCustomGameScreen">
+                <div class="container">
+                    <div class="header">
+                        <h1>Create Custom Game</h1>
+                        <p>Design your own game mode</p>
+                    </div>
+                    <input type="text" id="customGameName" placeholder="Game mode name">
+                    <textarea id="customGameDescription" placeholder="Description" style="width: 100%; padding: 15px; border-radius: 10px; border: 2px solid #ddd; min-height: 100px; margin: 10px 0;"></textarea>
+                    <input type="number" id="customGameDuration" placeholder="Duration (seconds)" min="10" max="300">
+                    <input type="number" id="customGamePoints" placeholder="Points to win" min="1" max="1000">
+                    <button class="btn" onclick="saveCustomGame()">Save Game Mode</button>
+                    <button class="btn btn-secondary" onclick="showScreen('customGameScreen')">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, set, onValue, push, remove, update, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDJ-sl0-AHlqefEiNHlVmSaSXiqtb7C-Ag",
+            authDomain: "chatapp-4675a.firebaseapp.com",
+            projectId: "chatapp-4675a",
+            storageBucket: "chatapp-4675a.firebasestorage.app",
+            messagingSenderId: "615230017150",
+            appId: "1:615230017150:web:bde99de91d1e6c602c122f",
+            measurementId: "G-P7LETNMPP6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+
+        window.db = db;
+        window.auth = auth;
+        window.dbRef = ref;
+        window.dbSet = set;
+        window.dbOnValue = onValue;
+        window.dbPush = push;
+        window.dbRemove = remove;
+        window.dbUpdate = update;
+        window.dbGet = get;
+
+        // Check auth state
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.gameState.userId = user.uid;
+                window.gameState.userEmail = user.email;
+                window.gameState.playerName = user.displayName || 'Player';
+                loadUserData(user.uid);
+                document.getElementById('authScreen').style.display = 'none';
+                document.getElementById('appContainer').style.display = 'flex';
+                updateUserDisplay();
+            } else {
+                document.getElementById('authScreen').style.display = 'flex';
+                document.getElementById('appContainer').style.display = 'none';
+            }
+        });
+
+        async function loadUserData(userId) {
+            const userRef = ref(db, `users/${userId}`);
+            const snapshot = await get(userRef);
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                window.gameState.coins = data.coins || 0;
+                window.gameState.unlockedEmojis = data.unlockedEmojis || ['😀','😎','🎮'];
+                window.gameState.playerEmoji = data.playerEmoji || '😀';
+            } else {
+                // Create new user data
+                await set(userRef, {
+                    coins: 0,
+                    unlockedEmojis: ['😀','😎','🎮'],
+                    playerEmoji: '😀'
+                });
+            }
+            updateCoinsDisplay();
+            renderShop();
+            renderEmojiGrids();
+        }
+
+        async function saveUserData() {
+            if (!window.gameState.userId || window.gameState.isGuest) return;
+            const userRef = ref(db, `users/${window.gameState.userId}`);
+            await update(userRef, {
+                coins: window.gameState.coins,
+                unlockedEmojis: window.gameState.unlockedEmojis,
+                playerEmoji: window.gameState.playerEmoji
+            });
+        }
+
+        window.login = async function() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                alert('Login failed: ' + error.message);
+            }
+        };
+
+        window.signup = async function() {
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await updateProfile(userCredential.user, { displayName: name });
+                window.location.reload();
+            } catch (error) {
+                alert('Sign up failed: ' + error.message);
+            }
+        };
+
+        window.logout = async function() {
+            try {
+                await signOut(auth);
+            } catch (error) {
+                alert('Logout failed: ' + error.message);
+            }
+        };
+
+        window.playAsGuest = function() {
+            window.gameState.isGuest = true;
+            window.gameState.userId = 'guest_' + Math.random().toString(36).substr(2, 9);
+            window.gameState.playerName = 'Guest';
+            window.gameState.coins = parseInt(localStorage.getItem('guestCoins') || '0');
+            window.gameState.unlockedEmojis = JSON.parse(localStorage.getItem('guestEmojis') || '["😀","😎","🎮"]');
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'flex';
+            updateUserDisplay();
+            updateCoinsDisplay();
+            renderShop();
+            renderEmojiGrids();
+        };
+
+        window.switchAuthTab = function(tab) {
+            const tabs = document.querySelectorAll('.auth-tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'login') {
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('signupForm').style.display = 'none';
+            } else {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('signupForm').style.display = 'block';
+            }
+        };
+
+        function updateUserDisplay() {
+            document.getElementById('sidebarName').textContent = window.gameState.playerName;
+            document.getElementById('sidebarEmoji').textContent = window.gameState.playerEmoji;
+            document.getElementById('userEmail').textContent = window.gameState.userEmail || 'Guest User';
+        }
+
+        // Game state
+        window.gameState = {
+            userId: null,
+            userEmail: null,
+            currentLobby: null,
+            isHost: false,
+            isGuest: false,
+            playerName: '',
+            playerEmoji: '😀',
+            selectedGameMode: null,
+            coins: 0,
+            unlockedEmojis: ['😀','😎','🎮']
+        };
+
+        // Default emojis and shop items
+        window.allEmojis = ['😀','😎','🎮','🎯','🎲','🎪','🎨','🎭','🎺','🎸','🎹','🎤','🎧','🎬','🎮','🎯','🎲','🎰','🎳','🎪','🏀','⚽','🏈','⚾','🎾','🏐','🏉','🎱','🏓','🏸','🏒','🏑','🥊','🥋','🥅','⛳','🏹','🎣','🥏','🪁'];
+        
+        window.shopItems = [
+            { emoji: '🎯', price: 50 },
+            { emoji: '🎲', price: 50 },
+            { emoji: '🎪', price: 100 },
+            { emoji: '🎨', price: 100 },
+            { emoji: '🎭', price: 150 },
+            { emoji: '🎺', price: 150 },
+            { emoji: '🎸', price: 200 },
+            { emoji: '🎹', price: 200 },
+            { emoji: '🎤', price: 250 },
+            { emoji: '🎧', price: 250 }
+        ];
+
+        window.gameModes = [
+            {
+                id: 'race',
+                name: '🏁 Race Mode',
+                description: 'Click as fast as you can! First to 50 clicks wins!',
+                duration: 60
+            },
+            {
+                id: 'tower',
+                name: '🏰 Tower Defense',
+                description: 'Build the highest tower in 45 seconds!',
+                duration: 45
+            },
+            {
+                id: 'collect',
+                name: '💎 Gem Collector',
+                description: 'Collect falling gems. Most gems wins!',
+                duration: 60
+            },
+            {
+                id: 'reaction',
+                name: '⚡ Reaction Time',
+                description: 'Click when it turns green! Best average wins!',
+                duration: 30
+            }
+        ];
+
+        updateCoinsDisplay();
+        renderShop();
+        renderEmojiGrids();
+        loadCustomGames();
+
+        // Make functions global
+        window.showScreen = showScreen;
+        window.createLobby = createLobby;
+        window.joinLobby = joinLobby;
+        window.leaveLobby = leaveLobby;
+        window.sendMessage = sendMessage;
+        window.handleChatKeypress = handleChatKeypress;
+        window.startGame = startGame;
+        window.selectEmoji = selectEmoji;
+        window.buyEmoji = buyEmoji;
+        window.showCreateCustomGame = showCreateCustomGame;
+        window.saveCustomGame = saveCustomGame;
+        window.loadCustomGames = loadCustomGames;
+        window.selectGameMode = selectGameMode;
+        window.saveUserData = saveUserData;
+        
+    </script>
+
+    <script>
+        function showScreen(screenId) {
+            // Update sidebar active state
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const navMap = {
+                'homeScreen': 0,
+                'createLobbyScreen': 1,
+                'joinLobbyScreen': 2,
+                'shopScreen': 3,
+                'customGameScreen': 4
+            };
+            
+            if (navMap[screenId] !== undefined) {
+                document.querySelectorAll('.nav-item')[navMap[screenId]].classList.add('active');
+            }
+            
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function renderEmojiGrids() {
+            const hostGrid = document.getElementById('hostEmojiGrid');
+            const playerGrid = document.getElementById('playerEmojiGrid');
+            
+            [hostGrid, playerGrid].forEach(grid => {
+                grid.innerHTML = '';
+                window.allEmojis.slice(0, 20).forEach(emoji => {
+                    const div = document.createElement('div');
+                    div.className = 'emoji-option';
+                    div.textContent = emoji;
+                    
+                    if (!window.gameState.unlockedEmojis.includes(emoji)) {
+                        div.classList.add('locked');
+                        div.title = 'Locked - Buy in shop';
+                    } else {
+                        div.onclick = () => selectEmoji(emoji, grid);
+                        if (emoji === window.gameState.playerEmoji) {
+                            div.classList.add('selected');
+                        }
+                    }
+                    
+                    grid.appendChild(div);
+                });
+            });
+        }
+
+        function selectEmoji(emoji, grid) {
+            if (!window.gameState.unlockedEmojis.includes(emoji)) return;
+            
+            window.gameState.playerEmoji = emoji;
+            grid.querySelectorAll('.emoji-option').forEach(e => e.classList.remove('selected'));
+            event.target.classList.add('selected');
+        }
+
+        async function createLobby() {
+            const name = document.getElementById('hostNameInput').value.trim() || window.gameState.playerName;
+            if (!name) {
+                alert('Please enter your name');
+                return;
+            }
+
+            window.gameState.playerName = name;
+            window.gameState.isHost = true;
+            
+            const lobbyCode = Math.random().toString(36).substr(2, 7).toUpperCase();
+            window.gameState.currentLobby = lobbyCode;
+
+            const lobbyRef = window.dbRef(window.db, `lobbies/${lobbyCode}`);
+            await window.dbSet(lobbyRef, {
+                host: window.gameState.userId,
+                createdAt: Date.now(),
+                status: 'waiting',
+                players: {
+                    [window.gameState.userId]: {
+                        name: name,
+                        emoji: window.gameState.playerEmoji,
+                        isHost: true
+                    }
+                }
+            });
+
+            document.getElementById('lobbyCodeDisplay').innerHTML = `<span class="code-label">LOBBY CODE</span>${lobbyCode}`;
+            document.getElementById('gameModeSelection').style.display = 'block';
+            
+            renderGameModes();
+            listenToLobby(lobbyCode);
+            showScreen('lobbyScreen');
+        }
+
+        async function joinLobby() {
+            const code = document.getElementById('joinCodeInput').value.trim().toUpperCase();
+            const name = document.getElementById('playerNameInput').value.trim() || window.gameState.playerName;
+            
+            if (!code || !name) {
+                alert('Please enter lobby code and your name');
+                return;
+            }
+
+            window.gameState.playerName = name;
+            window.gameState.currentLobby = code;
+
+            const lobbyRef = window.dbRef(window.db, `lobbies/${code}`);
+            const snapshot = await window.dbGet(lobbyRef);
+            
+            if (!snapshot.exists()) {
+                alert('Lobby not found');
+                return;
+            }
+
+            await window.dbUpdate(window.dbRef(window.db, `lobbies/${code}/players/${window.gameState.userId}`), {
+                name: name,
+                emoji: window.gameState.playerEmoji,
+                isHost: false
+            });
+
+            document.getElementById('lobbyCodeDisplay').innerHTML = `<span class="code-label">LOBBY CODE</span>${code}`;
+            document.getElementById('gameModeSelection').style.display = 'none';
+            
+            listenToLobby(code);
+            showScreen('lobbyScreen');
+        }
+
+        function listenToLobby(code) {
+            const lobbyRef = window.dbRef(window.db, `lobbies/${code}`);
+            
+            window.dbOnValue(lobbyRef, (snapshot) => {
+                const data = snapshot.val();
+                if (!data) {
+                    alert('Lobby has been closed');
+                    showScreen('homeScreen');
+                    return;
+                }
+
+                renderPlayers(data.players);
+
+                if (data.status === 'playing' && data.gameMode) {
+                    startGameMode(data.gameMode);
+                }
+            });
+
+            const chatRef = window.dbRef(window.db, `lobbies/${code}/chat`);
+            window.dbOnValue(chatRef, (snapshot) => {
+                const messages = snapshot.val();
+                renderChat(messages);
+            });
+        }
+
+        function renderPlayers(players) {
+            const list = document.getElementById('playersList');
+            list.innerHTML = '';
+            
+            Object.entries(players || {}).forEach(([id, player]) => {
+                const card = document.createElement('div');
+                card.className = 'player-card';
+                if (player.isHost) card.classList.add('host');
+                
+                card.innerHTML = `
+                    <div class="player-emoji">${player.emoji}</div>
+                    <strong>${player.name}</strong>
+                    ${player.isHost ? '<div>👑 Host</div>' : ''}
+                `;
+                
+                list.appendChild(card);
+            });
+        }
+
+        function renderChat(messages) {
+            const container = document.getElementById('chatMessages');
+            container.innerHTML = '';
+            
+            Object.values(messages || {}).forEach(msg => {
+                const div = document.createElement('div');
+                div.className = 'chat-message';
+                div.innerHTML = `<strong>${msg.playerName}:</strong> ${msg.text}`;
+                container.appendChild(div);
+            });
+            
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            
+            if (!text) return;
+
+            const chatRef = window.dbRef(window.db, `lobbies/${window.gameState.currentLobby}/chat`);
+            await window.dbPush(chatRef, {
+                playerName: window.gameState.playerName,
+                text: text,
+                timestamp: Date.now()
+            });
+
+            input.value = '';
+        }
+
+        function handleChatKeypress(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function renderGameModes() {
+            const container = document.getElementById('gameModesContainer');
+            container.innerHTML = '';
+            
+            window.gameModes.forEach(mode => {
+                const card = document.createElement('div');
+                card.className = 'game-mode-card';
+                card.onclick = () => selectGameMode(mode.id, card);
+                
+                card.innerHTML = `
+                    <h3>${mode.name}</h3>
+                    <p>${mode.description}</p>
+                    <small>Duration: ${mode.duration}s</small>
+                `;
+                
+                container.appendChild(card);
+            });
+
+            const customGames = JSON.parse(localStorage.getItem('customGames') || '[]');
+            customGames.forEach(mode => {
+                const card = document.createElement('div');
+                card.className = 'game-mode-card';
+                card.onclick = () => selectGameMode(mode.id, card);
+                
+                card.innerHTML = `
+                    <h3>⭐ ${mode.name}</h3>
+                    <p>${mode.description}</p>
+                    <small>Duration: ${mode.duration}s | Points: ${mode.points}</small>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        function selectGameMode(modeId, cardElement) {
+            document.querySelectorAll('.game-mode-card').forEach(c => c.classList.remove('selected'));
+            cardElement.classList.add('selected');
+            window.gameState.selectedGameMode = modeId;
+        }
+
+        async function startGame() {
+            if (!window.gameState.isHost) return;
+            if (!window.gameState.selectedGameMode) {
+                alert('Please select a game mode');
+                return;
+            }
+
+            await window.dbUpdate(window.dbRef(window.db, `lobbies/${window.gameState.currentLobby}`), {
+                status: 'playing',
+                gameMode: window.gameState.selectedGameMode
+            });
+        }
+
+        function startGameMode(modeId) {
+            showScreen('gameScreen');
+            
+            const mode = window.gameModes.find(m => m.id === modeId) || 
+                         JSON.parse(localStorage.getItem('customGames') || '[]').find(m => m.id === modeId);
+            
+            const content = document.getElementById('gameContent');
+            
+            if (modeId === 'race') {
+                let clicks = 0;
+                content.innerHTML = `
+                    <div class="game-arena">
+                        <h2>🏁 Race Mode</h2>
+                        <div class="score">${clicks} / 50</div>
+                        <button class="btn" style="font-size: 2em; padding: 50px;" onclick="window.raceClick()">CLICK ME!</button>
+                    </div>
+                `;
+                
+                window.raceClick = () => {
+                    clicks++;
+                    content.querySelector('.score').textContent = `${clicks} / 50`;
+                    if (clicks >= 50) {
+                        endGame(100);
+                    }
+                };
+            } else if (modeId === 'tower') {
+                let height = 0;
+                content.innerHTML = `
+                    <div class="game-arena">
+                        <h2>🏰 Tower Defense</h2>
+                        <div class="score">Height: ${height}</div>
+                        <button class="btn" onclick="window.buildTower()">Build Block</button>
+                    </div>
+                `;
+                
+                window.buildTower = () => {
+                    height++;
+                    content.querySelector('.score').textContent = `Height: ${height}`;
+                };
+                
+                setTimeout(() => endGame(height * 10), mode.duration * 1000);
+            } else {
+                content.innerHTML = `
+                    <div class="game-arena">
+                        <h2>${mode.name}</h2>
+                        <p>${mode.description}</p>
+                        <div class="score">Game in progress...</div>
+                    </div>
+                `;
+                setTimeout(() => endGame(Math.floor(Math.random() * 100)), mode.duration * 1000);
+            }
+        }
+
+        function endGame(coinsEarned) {
+            window.gameState.coins += coinsEarned;
+            
+            if (window.gameState.isGuest) {
+                localStorage.setItem('guestCoins', window.gameState.coins);
+            } else {
+                window.saveUserData();
+            }
+            
+            updateCoinsDisplay();
+            
+            const content = document.getElementById('gameContent');
+            content.innerHTML = `
+                <div class="game-arena">
+                    <h2>🎉 Game Over!</h2>
+                    <div class="score">You earned ${coinsEarned} coins!</div>
+                    <button class="btn" onclick="returnToLobby()">Back to Lobby</button>
+                </div>
+            `;
+        }
+
+        window.returnToLobby = async function() {
+            await window.dbUpdate(window.dbRef(window.db, `lobbies/${window.gameState.currentLobby}`), {
+                status: 'waiting',
+                gameMode: null
+            });
+            showScreen('lobbyScreen');
+        };
+
+        async function leaveLobby() {
+            if (window.gameState.currentLobby) {
+                await window.dbRemove(window.dbRef(window.db, `lobbies/${window.gameState.currentLobby}/players/${window.gameState.userId}`));
+                
+                if (window.gameState.isHost) {
+                    await window.dbRemove(window.dbRef(window.db, `lobbies/${window.gameState.currentLobby}`));
+                }
+            }
+            
+            window.gameState.currentLobby = null;
+            window.gameState.isHost = false;
+            showScreen('homeScreen');
+        }
+
+        function updateCoinsDisplay() {
+            document.getElementById('coinsDisplay').textContent = `💰 ${window.gameState.coins}`;
+        }
+
+        function renderShop() {
+            const container = document.getElementById('shopItems');
+            container.innerHTML = '';
+            
+            window.shopItems.forEach(item => {
+                const owned = window.gameState.unlockedEmojis.includes(item.emoji);
+                const div = document.createElement('div');
+                div.className = 'shop-item' + (owned ? ' owned' : '');
+                
+                div.innerHTML = `
+                    <div>
+                        <span style="font-size: 2em; margin-right: 15px;">${item.emoji}</span>
+                        <strong>${owned ? 'Owned' : item.price + ' coins'}</strong>
+                    </div>
+                    ${!owned ? `<button class="btn" onclick="buyEmoji('${item.emoji}', ${item.price})">Buy</button>` : '<span>✓</span>'}
+                `;
+                
+                container.appendChild(div);
+            });
+        }
+
+        function buyEmoji(emoji, price) {
+            if (window.gameState.coins < price) {
+                alert('Not enough coins!');
+                return;
+            }
+            
+            if (window.gameState.unlockedEmojis.includes(emoji)) {
+                alert('Already owned!');
+                return;
+            }
+            
+            window.gameState.coins -= price;
+            window.gameState.unlockedEmojis.push(emoji);
+            
+            if (window.gameState.isGuest) {
+                localStorage.setItem('guestCoins', window.gameState.coins);
+                localStorage.setItem('guestEmojis', JSON.stringify(window.gameState.unlockedEmojis));
+            } else {
+                window.saveUserData();
+            }
+            
+            updateCoinsDisplay();
+            renderShop();
+            renderEmojiGrids();
+        }
+
+        function showCreateCustomGame() {
+            showScreen('createCustomGameScreen');
+        }
+
+        function saveCustomGame() {
+            const name = document.getElementById('customGameName').value.trim();
+            const description = document.getElementById('customGameDescription').value.trim();
+            const duration = parseInt(document.getElementById('customGameDuration').value);
+            const points = parseInt(document.getElementById('customGamePoints').value);
+            
+            if (!name || !description || !duration || !points) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            const customGames = JSON.parse(localStorage.getItem('customGames') || '[]');
+            const newGame = {
+                id: 'custom_' + Date.now(),
+                name: name,
+                description: description,
+                duration: duration,
+                points: points
+            };
+            
+            customGames.push(newGame);
+            localStorage.setItem('customGames', JSON.stringify(customGames));
+            
+            // Clear form
+            document.getElementById('customGameName').value = '';
+            document.getElementById('customGameDescription').value = '';
+            document.getElementById('customGameDuration').value = '';
+            document.getElementById('customGamePoints').value = '';
+            
+            alert('Custom game mode created!');
+            loadCustomGames();
+            showScreen('customGameScreen');
+        }
+
+        function loadCustomGames() {
+            const container = document.getElementById('customGamesList');
+            const customGames = JSON.parse(localStorage.getItem('customGames') || '[]');
+            
+            if (customGames.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999; margin: 20px 0;">No custom games yet. Create one!</p>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            customGames.forEach((game, index) => {
+                const card = document.createElement('div');
+                card.className = 'game-mode-card';
+                card.style.cursor = 'default';
+                
+                card.innerHTML = `
+                    <h3>⭐ ${game.name}</h3>
+                    <p>${game.description}</p>
+                    <small>Duration: ${game.duration}s | Points to win: ${game.points}</small>
+                    <div style="margin-top: 10px;">
+                        <button class="btn btn-secondary" onclick="deleteCustomGame(${index})" style="font-size: 0.9em; padding: 8px 15px;">Delete</button>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        window.deleteCustomGame = function(index) {
+            if (!confirm('Are you sure you want to delete this custom game?')) return;
+            
+            const customGames = JSON.parse(localStorage.getItem('customGames') || '[]');
+            customGames.splice(index, 1);
+            localStorage.setItem('customGames', JSON.stringify(customGames));
+            loadCustomGames();
+        };
+    </script>
+</body>
+</html>
