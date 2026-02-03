@@ -58,28 +58,27 @@
       box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.05);
     }
 
-    .nav-content {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 0 max(22px, env(safe-area-inset-left));
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 44px;
-    }
+.nav-content {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 22px;
+    display: flex;
+    align-items: center;
+    height: 44px;
+}
 
-    .nav-logo {
-      font-size: 21px;
-      font-weight: 600;
-      letter-spacing: -0.5px;
-      color: var(--color-text);
-    }
+.nav-logo {
+    margin-right: auto;               /* pushes links to center */
+}
 
-    .nav-links {
-      display: flex;
-      gap: 36px;
-      align-items: center;
-    }
+.nav-links {
+    display: flex;
+    gap: 36px;
+    align-items: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);      /* true center */
+}
 
     .nav-links a {
       color: var(--color-text);
@@ -1888,6 +1887,7 @@
         <a href="indy.html">Indy</a>
         <a href="tunes.html">Tunes</a>
         <a href="login.html">👤</a>
+      </div>
       </div>
     </div>
   </nav>
