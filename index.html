@@ -3,944 +3,2568 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="shortcut icon" type="image/png" href="favicon.png">
-  <title>JVST - Built Different</title>
-
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  html, body {
-    width: 100%;
-    max-width: 100vw;
-    overflow-x: hidden;
-    margin: 0;
-    padding: 0;
-  }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-    background: #000000;
-    color: #1d1d1f;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* Announcement */
-  .announcement {
-    background: #f5f5f7;
-    text-align: center;
-    padding: 12px 0;
-    font-weight: 500;
-    font-size: 0.875rem;
-    color: #1d1d1f;
-    overflow: hidden;
-    white-space: nowrap;
-    position: relative;
-    border-bottom: 1px solid #d2d2d7;
-  }
-
-  .announcement .track {
-    display: inline-flex;
-    animation: scroll 25s linear infinite;
-  }
-
-  .announcement .track span {
-    padding: 0 2rem;
-    flex-shrink: 0;
-  }
-
-  @keyframes scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-
-  /* Navbar */
-nav {
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px); /* Safari */
-  border-bottom: 1px solid rgba(0,0,0,0.08);
-  padding: 0.75rem 5%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-
-  z-index: 9999;
-}
-
-
-  .logo {
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: -0.5px;
-    color: #ffffff;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 2rem;
-    font-weight: 400;
-    font-size: 0.875rem;
-  }
-
-  .nav-links a,
-  .nav-right a {
-    text-decoration: none;
-    color: #ffffff;
-    transition: opacity 0.3s;
-    opacity: 0.8;
-  }
-
-  .nav-links a:hover,
-  .nav-right a:hover {
-    opacity: 1;
-  }
-
-  .nav-right {
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
-  }
-
-  .login-btn {
-    background: #5a5a5a;
-    color: #fff !important;
-    padding: 0.5rem 1.2rem;
-    border-radius: 980px;
-    font-weight: 400;
-    font-size: 0.875rem;
-    transition: all 0.3s ease;
-  }
-
-  .login-btn:hover {
-    background: #7d7d7d;
-    opacity: 1;
-    transform: translateY(-1px);
-  }
-
-  /* Dropdown */
-  .dropdown {
-    position: relative;
-    display: inline-block;
-  }
-
-  .dropdown-toggle::after {
-    content: "▾";
-    margin-left: 4px;
-    font-size: 0.7rem;
-    transition: transform 0.2s;
-  }
-
-  .dropdown:hover .dropdown-toggle::after {
-    transform: rotate(180deg);
-  }
-
-  .dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: saturate(180%) blur(20px);
-    min-width: 140px;
-    border: 1px solid rgba(0,0,0,0.08);
-    border-radius: 12px;
-    overflow: hidden;
-    z-index: 200;
-    margin-top: 8px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-  }
-
-  .dropdown-menu a {
-    display: block;
-    padding: 12px 20px;
-    color: #1d1d1f;
-    text-decoration: none;
-    font-weight: 400;
-    transition: background 0.2s;
-  }
-
-  .dropdown-menu a:hover {
-    background: #f5f5f7;
-  }
-
-  .dropdown:hover .dropdown-menu {
-    display: block;
-  }
-
-  /* Hero */
-  .hero {
-    position: relative;
-    min-height: 90vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 4rem 5%;
-    background: linear-gradient(180deg, #f5f5f7 0%, #fff 50%, #fafafa 100%);
-    overflow: hidden;
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -20%;
-    width: 60%;
-    height: 60%;
-    background: radial-gradient(circle, rgba(223, 62, 255, 0.08) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-  }
-
-  .hero::after {
-    content: '';
-    position: absolute;
-    bottom: -30%;
-    left: -10%;
-    width: 50%;
-    height: 50%;
-    background: radial-gradient(circle, rgba(0, 170, 255, 0.06) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-  }
-
-  .hero h1,
-  .hero p,
-  .hero-buttons {
-    position: relative;
-    z-index: 2;
-  }
-
-  .hero h1 {
-    font-size: clamp(3rem, 10vw, 5.5rem);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    background: linear-gradient(135deg, #00aaff 0%, #df3eff 33%, #ff1313 66%, #ff8113 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 1rem;
-    line-height: 1.05;
-  }
-
-  .hero p {
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
-    color: #ffffff;
-    font-weight: 400;
-  }
-
-  .hero-buttons {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 1.5rem;
-  }
-
-  /* Buttons */
-  .btn {
-    padding: 0.75rem 1.75rem;
-    font-size: 1rem;
-    font-weight: 400;
-    border-radius: 980px;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    display: inline-block;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-primary {
-    background: #0071e3;
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(0, 113, 227, 0.2);
-  }
-
-  .btn-primary:hover {
-    background: #0077ed;
-    transform: scale(1.02);
-    box-shadow: 0 6px 20px rgba(0, 113, 227, 0.3);
-  }
-
-  .btn-primary.indy-btn {
-    background: linear-gradient(135deg, #00aaff 0%, #df3eff 50%, #ff1313 100%);
-    box-shadow: 0 4px 15px rgba(223, 62, 255, 0.25);
-  }
-
-  .btn-primary.indy-btn:hover {
-    background: linear-gradient(135deg, #00bbff 0%, #e950ff 50%, #ff2424 100%);
-    box-shadow: 0 6px 20px rgba(223, 62, 255, 0.35);
-  }
-
-  .btn-secondary {
-    background: transparent;
-    color: #000000;
-    border: 1px solid transparent;
-    background-image: linear-gradient(white, white), linear-gradient(135deg, #00aaff, #df3eff, #ff1313);
-    background-origin: border-box;
-    background-clip: padding-box, border-box;
-  }
-
-  .btn-secondary:hover {
-        border: 2px solid transparent;
-    color: #000000;
-    transform: scale(1.02);
-    box-shadow: 0 4px 15px rgba(223, 62, 255, 0.25);
-  }
-
-  .btn-white {
-    background: #fff;
-    color: #0071e3;
-    border: 1px solid #d2d2d7;
-  }
-
-  .btn-white:hover {
-    background: #f5f5f7;
-    border-color: #0071e3;
-    transform: scale(1.02);
-  }
-
-  /* Product Sections */
-  .product-section {
-    position: relative;
-    min-height: 80vh;
-    display: flex;
-    align-items: center;
-    padding: 4rem 5%;
-    background-size: cover;
-    background-position: center;
-  }
-
-  .product-content {
-    max-width: 980px;
-    width: 100%;
-    margin: 0 auto;
-  }
-
-  .product-content h2 {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    margin-bottom: 1rem;
-    color: #ffffff;
-  }
-
-  .product-content p {
-    font-size: 1.5rem;
-    color: #ffffff;
-    margin-bottom: 2rem;
-    font-weight: 400;
-  }
-
-  .product-section.dark h2,
-  .product-section.dark p {
-    color: #f5f5f7;
-  }
-
-  .product-section.dark p {
-    color: #ffffff;
-  }
-
-  /* Feature Grid */
-  .feature-grid {
-    padding: 6rem 5%;
-    background: #000000;
-  }
-
-  .feature-grid h2 {
-    text-align: center;
-    font-size: 3rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    letter-spacing: -0.02em;
-    color: #ffffff;
-  }
-
-  .feature-grid > p {
-    text-align: center;
-    font-size: 1.25rem;
-    color: #9b9b9b;
-    margin-bottom: 4rem;
-  }
-
-  .grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .feature-card {
-    background: #000000;
-    border-radius: 18px;
-    padding: 3rem 2rem;
-    text-align: center;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid #d2d2d7;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .feature-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 18px;
-    padding: 2px;
-    background: linear-gradient(135deg, #00aaff, #df3eff, #ff1313, #ff8113);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0;
-    transition: opacity 0.4s;
-  }
-
-  .feature-card:hover::before {
-    opacity: 1;
-  }
-
-  .feature-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(223, 62, 255, 0.2);
-    border-color: transparent;
-  }
-
-  .feature-icon {
-    font-size: 3rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .feature-card h3 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-    color: #ffffff;
-  }
-
-  .feature-card p {
-    color: #6e6e73;
-    font-size: 1rem;
-    line-height: 1.6;
-  }
-
-  /* Demo Section */
-  .demo-section {
-    padding: 6rem 5%;
-    background: #000000;
-  }
-
-  .demo-section h2 {
-    text-align: center;
-    font-size: 3rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    letter-spacing: -0.02em;
-    color: #ffffff;
-  }
-
-  .demo-section > p {
-    text-align: center;
-    font-size: 1.25rem;
-    color: #6e6e73;
-    margin-bottom: 3rem;
-  }
-
-  .demo-container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: #0f0f0f;
-    border-radius: 18px;
-    padding: 2rem;
-  }
-
-  .chat-messages {
-    min-height: 350px;
-    max-height: 450px;
-    overflow-y: auto;
-    margin-bottom: 1.5rem;
-    padding: 1.5rem;
-    background: #000000;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .chat-messages::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .chat-messages::-webkit-scrollbar-track {
-    background: #f5f5f7;
-    border-radius: 10px;
-  }
-
-  .chat-messages::-webkit-scrollbar-thumb {
-    background: #d2d2d7;
-    border-radius: 10px;
-  }
-
-  .message {
-    padding: 1rem 1.25rem;
-    border-radius: 18px;
-    max-width: 80%;
-    animation: slideIn 0.3s ease;
-    font-size: 0.95rem;
-  }
-
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .message.user {
-    background: #0071e3;
-    align-self: flex-end;
-    color: #fff;
-  }
-
-  .message.indy {
-    background: #000000;
-    align-self: flex-start;
-    color: #ffffff;
-  }
-
-  .demo-input-area {
-    display: flex;
-    gap: 0.75rem;
-    align-items: center;
-  }
-
-  .demo-input {
-    flex: 1;
-    padding: 0.875rem 1.25rem;
-    border: 1px solid #d2d2d7;
-    border-radius: 980px;
-    background: #000000;
-    color: #fff;
-    font-size: 0.95rem;
-    transition: all 0.3s;
-  }
-
-  .demo-input:focus {
-    outline: none;
-    border-color: #0071e3;
-  }
-
-  .demo-input::placeholder {
-    color: #86868b;
-  }
-
-  .demo-send {
-    padding: 0.875rem 2rem;
-    background: #0071e3;
-    color: #fff;
-    border: none;
-    border-radius: 980px;
-    font-weight: 400;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.95rem;
-  }
-
-  .demo-send:hover:not(:disabled) {
-    background: #0077ed;
-  }
-
-  .demo-send:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  .limit-notice {
-    margin-top: 1rem;
-    text-align: center;
-    font-size: 0.875rem;
-    color: #6e6e73;
-  }
-
-  /* Stats Section */
-  .stats-section {
-    padding: 6rem 5%;
-    background: #000000;
-  }
-
-  .stats-section h2 {
-    text-align: center;
-    font-size: 3rem;
-    font-weight: 600;
-    margin-bottom: 4rem;
-    letter-spacing: -0.02em;
-    color: #ffffff;
-  }
-
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 3rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .stat-item {
-    text-align: center;
-  }
-
-  .stat-number {
-    font-size: 3.5rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, #00aaff 0%, #df3eff 50%, #ff1313 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: -0.02em;
-  }
-    .status-number {
-    font-size: 3.5rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    background: #FF0000;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: -0.02em;
-  }
-
-  .stat-label {
-    font-size: 1rem;
-    color: #6e6e73;
-  }
-
-  /* Artists Showcase */
-  .artists-section {
-    padding: 6rem 5%;
-    background: #000;
-    overflow: hidden;
-  }
-
-  .artists-section h2 {
-    text-align: center;
-    font-size: 3rem;
-    font-weight: 600;
-    margin-bottom: 3rem;
-    color: #f5f5f7;
-  }
-
-  .artists-track {
-    display: flex;
-    animation: scrollArtists 30s linear infinite;
-    gap: 2rem;
-  }
-
-  .artist-item {
-    flex-shrink: 0;
-    text-align: center;
-    transition: transform 0.3s;
-  }
-
-  .artist-item:hover {
-    transform: scale(1.05);
-  }
-
-  .artist-item img {
-    width: 200px;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 50%;
-    margin-bottom: 1rem;
-  }
-
-  .artist-item span {
-    display: block;
-    color: #f5f5f7;
-    font-size: 0.95rem;
-  }
-
-  @keyframes scrollArtists {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-
-  /* Footer */
-  footer {
-    background: #f5f5f7;
-    border-top: 1px solid #d2d2d7;
-    padding: 3rem 5% 2rem;
-  }
-
-  .footer-content {
-    max-width: 1200px;
-    margin: 0 auto 2rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 2rem;
-  }
-
-  .footer-col h4 {
-    font-size: 0.875rem;
-    margin-bottom: 1rem;
-    color: #1d1d1f;
-    font-weight: 600;
-  }
-
-  .footer-col ul {
-    list-style: none;
-  }
-
-  .footer-col ul li {
-    margin-bottom: 0.75rem;
-  }
-
-  .footer-col a {
-    color: #6e6e73;
-    text-decoration: none;
-    font-size: 0.875rem;
-    transition: color 0.3s;
-  }
-
-  .footer-col a:hover {
-    color: #1d1d1f;
-  }
-
-  .footer-bottom {
-    text-align: center;
-    padding-top: 2rem;
-    border-top: 1px solid #d2d2d7;
-    color: #6e6e73;
-    font-size: 0.875rem;
-  }
-
-  /* Animations */
-  @keyframes fadeInUp {
-    from {
+  <title>JVST — Built Different</title>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --color-bg: #ffffff;
+      --color-surface: rgba(255, 255, 255, 0.7);
+      --color-text: #1d1d1f;
+      --color-text-light: #86868b;
+      --color-accent: #0071e3;
+      --glass-border: rgba(0, 0, 0, 0.08);
+      --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.47059;
+      letter-spacing: -0.022em;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 0.5px solid var(--glass-border);
+      transition: all 0.4s var(--ease-out);
+    }
+
+    nav.scrolled {
+      background: rgba(255, 255, 255, 0.85);
+      box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 max(22px, env(safe-area-inset-left));
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 44px;
+    }
+
+    .nav-logo {
+      font-size: 21px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: var(--color-text);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--color-text);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 400;
+      opacity: 0.88;
+      transition: opacity 0.3s;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-links a:hover {
+      opacity: 1;
+    }
+
+    .nav-cta {
+      background: var(--color-accent);
+      color: #fff;
+      padding: 4px 14px;
+      border-radius: 980px;
+      font-size: 12px;
+      font-weight: 400;
+      transition: all 0.3s var(--ease-out);
+      opacity: 1;
+    }
+
+    .nav-cta:hover {
+      background: #0077ed;
+      transform: scale(1.03);
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 120px 22px 80px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, #f5f5f7 0%, #ffffff 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 980px;
+    }
+
+    .hero h1 {
+      font-size: clamp(48px, 7vw, 96px);
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      line-height: 1.05;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #0071e3 0%, #00aaff 50%, #0071e3 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeInUp 0.8s var(--ease-out) both;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(21px, 3vw, 28px);
+      font-weight: 400;
+      color: var(--color-text);
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeInUp 0.8s var(--ease-out) 0.1s both;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeInUp 0.8s var(--ease-out) 0.2s both;
+    }
+
+    /* Glass Cards */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      transition: all 0.4s var(--ease-out);
+    }
+
+    .glass-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      border-color: rgba(0, 0, 0, 0.12);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 12px 22px;
+      font-size: 17px;
+      font-weight: 400;
+      text-decoration: none;
+      border-radius: 980px;
+      transition: all 0.3s var(--ease-out);
+      cursor: pointer;
+      letter-spacing: -0.022em;
+    }
+
+    .btn-primary {
+      background: var(--color-accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #0077ed;
+      transform: scale(1.02);
+    }
+
+    .btn-primary.gradient {
+      background: linear-gradient(135deg, #0071e3 0%, #00aaff 100%);
+    }
+
+    .btn-primary.gradient:hover {
+      background: linear-gradient(135deg, #0077ed 0%, #00bbff 100%);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--color-accent);
+      border: 1px solid var(--color-accent);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(0, 113, 227, 0.08);
+    }
+
+    /* Scroll Text Section */
+    .scroll-text-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 22px;
+      background: #ffffff;
+    }
+
+    .scroll-text-container {
+      max-width: 980px;
+      width: 100%;
+    }
+
+    .scroll-text-item {
+      font-size: clamp(32px, 5vw, 64px);
+      font-weight: 600;
+      line-height: 1.1;
+      color: #d2d2d7;
+      margin: 32px 0;
+      opacity: 0.4;
+      transform: translateY(20px);
+      transition: all 0.6s var(--ease-out);
+    }
+
+    .scroll-text-item.active {
+      color: var(--color-text);
+      opacity: 1;
+      transform: translateY(0) scale(1.02);
+    }
+
+    /* Pricing Section */
+    .pricing-section {
+      padding: 120px 22px;
+      background: #f5f5f7;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .section-header h2 {
+      font-size: clamp(40px, 5vw, 64px);
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      margin-bottom: 12px;
+      line-height: 1.05;
+    }
+
+    .section-header p {
+      font-size: 21px;
+      color: var(--color-text-light);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .pricing-card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 48px 40px;
+      text-align: center;
+      transition: all 0.4s var(--ease-out);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pricing-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0, 113, 227, 0.05) 0%, rgba(0, 170, 255, 0.05) 100%);
+      opacity: 0;
+      transition: opacity 0.4s var(--ease-out);
+    }
+
+    .pricing-card:hover::before {
+      opacity: 1;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+      border-color: rgba(0, 113, 227, 0.2);
+    }
+
+    .pricing-card.featured {
+      transform: scale(1.05);
+      border-color: rgba(0, 113, 227, 0.3);
+    }
+
+    .pricing-card.featured:hover {
+      transform: scale(1.05) translateY(-8px);
+    }
+
+    .pricing-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      background: var(--color-text);
+      color: #fff;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 24px;
+    }
+
+    .pricing-card h3 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: -0.015em;
+    }
+
+    .pricing-price {
+      font-size: 56px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.015em;
+    }
+
+    .pricing-period {
+      font-size: 17px;
+      color: var(--color-text-light);
+      margin-bottom: 32px;
+    }
+
+    .pricing-features {
+      list-style: none;
+      margin: 32px 0;
+      text-align: left;
+    }
+
+    .pricing-features li {
+      padding: 12px 0;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      line-height: 1.47059;
+    }
+
+    .pricing-features li::before {
+      content: '✓';
+      color: var(--color-accent);
+      font-weight: 600;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    /* Feature Grid Section */
+    .feature-section {
+      padding: 120px 22px;
+      background: #ffffff;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 48px 40px;
+      text-align: center;
+      transition: all 0.4s var(--ease-out);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+      border-color: rgba(0, 0, 0, 0.12);
+    }
+
+    .feature-icon {
+      font-size: 56px;
+      margin-bottom: 24px;
+      display: block;
+      filter: grayscale(1);
+    }
+
+    .feature-icon.colored {
+      filter: none;
+    }
+
+    .feature-card h3 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: -0.015em;
+    }
+
+    .feature-card p {
+      font-size: 17px;
+      color: var(--color-text-light);
+      line-height: 1.47059;
+    }
+
+    /* Two Column Feature Sections */
+    .two-col-section {
+      padding: 120px 22px;
+      background: #f5f5f7;
+    }
+
+    .two-col-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      margin-bottom: 120px;
+    }
+
+    .two-col-container:last-child {
+      margin-bottom: 0;
+    }
+
+    .two-col-container.reverse {
+      direction: rtl;
+    }
+
+    .two-col-container.reverse > * {
+      direction: ltr;
+    }
+
+    .two-col-text h3 {
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      margin-bottom: 20px;
+      line-height: 1.08349;
+    }
+
+    .two-col-text p {
+      font-size: 21px;
+      color: var(--color-text-light);
+      line-height: 1.381;
+      margin-bottom: 32px;
+    }
+
+    .two-col-image {
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .two-col-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.6s var(--ease-out);
+    }
+
+    .two-col-image:hover img {
+      transform: scale(1.05);
+    }
+
+    /* Stats Section */
+    .stats-section {
+      padding: 120px 22px;
+      background: #ffffff;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 64px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: clamp(48px, 6vw, 72px);
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.015em;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 19px;
+      color: var(--color-text-light);
+    }
+
+    /* Artists Showcase */
+    .artists-section {
+      padding: 120px 0;
+      background: #f5f5f7;
+      overflow: hidden;
+    }
+
+    .artists-section h2 {
+      text-align: center;
+      font-size: clamp(40px, 5vw, 64px);
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      margin-bottom: 80px;
+      padding: 0 22px;
+    }
+
+    .artists-track {
+      display: flex;
+      animation: scrollArtists 40s linear infinite;
+      gap: 48px;
+    }
+
+    .artist-item {
+      flex-shrink: 0;
+      text-align: center;
+      transition: transform 0.3s var(--ease-out);
+    }
+
+    .artist-item:hover {
+      transform: scale(1.05);
+    }
+
+    .artist-item img {
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .artist-item span {
+      display: block;
+      font-size: 17px;
+      font-weight: 500;
+    }
+
+    @keyframes scrollArtists {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Footer */
+    footer {
+      background: #f5f5f7;
+      padding: 80px 22px 32px;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto 48px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 48px;
+    }
+
+    .footer-col h4 {
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      opacity: 0.6;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .footer-col ul {
+      list-style: none;
+    }
+
+    .footer-col ul li {
+      margin-bottom: 12px;
+    }
+
+    .footer-col a {
+      color: var(--color-text-light);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+
+    .footer-col a:hover {
+      color: var(--color-text);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 32px;
+      border-top: 1px solid var(--glass-border);
+      color: var(--color-text-light);
+      font-size: 14px;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
       opacity: 0;
       transform: translateY(30px);
+      transition: all 0.8s var(--ease-out);
     }
-    to {
+
+    .fade-in.visible {
       opacity: 1;
       transform: translateY(0);
     }
+
+    /* Outages Section */
+    .outages-section {
+      padding: 120px 22px;
+      background: #ffffff;
+    }
+
+    .outages-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 24px;
+    }
+
+    .outage-summary {
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .uptime-circle {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin: 0 auto;
+    }
+
+    .uptime-progress {
+      stroke-linecap: round;
+      transition: stroke-dashoffset 2s var(--ease-out);
+    }
+
+    .uptime-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .uptime-percent {
+      display: block;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+    }
+
+    .uptime-label {
+      display: block;
+      font-size: 12px;
+      color: var(--color-text-light);
+      margin-top: 4px;
+    }
+
+    .status-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #d2d2d7;
+      position: relative;
+    }
+
+    .status-dot.active {
+      background: #34c759;
+      box-shadow: 0 0 0 3px rgba(52, 199, 89, 0.2);
+      animation: pulse 2s ease-in-out infinite;
+    }
+        .status-dot.no {
+      background: #c73434;
+      box-shadow: 0 0 0 3px rgba(199, 52, 52, 0.2);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .outage-graph {
+      padding: 48px 40px;
+    }
+
+    .outage-graph h3 {
+      font-size: 21px;
+      font-weight: 600;
+      margin-bottom: 32px;
+      letter-spacing: -0.015em;
+    }
+
+    .graph-grid {
+      display: grid;
+      grid-template-columns: repeat(30, 1fr);
+      gap: 4px;
+      height: 180px;
+      align-items: flex-end;
+      margin-bottom: 16px;
+    }
+
+    .graph-day {
+      background: var(--color-accent);
+      border-radius: 4px 4px 0 0;
+      height: var(--height);
+      cursor: pointer;
+      transition: all 0.3s var(--ease-out);
+      position: relative;
+      min-height: 8px;
+    }
+
+    .graph-day:hover {
+      background: #0077ed;
+      transform: scaleY(1.05);
+    }
+
+    .graph-day::after {
+      content: attr(data-status) '%';
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      margin-bottom: 4px;
+    }
+
+    .graph-day:hover::after {
+      opacity: 1;
+    }
+
+    .graph-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--color-text-light);
+    }
+
+    /* Demo Section - Black Background */
+    .demo-section-black {
+      padding: 120px 22px;
+      background: #000000;
+      color: #f5f5f7;
+    }
+
+    .demo-section-black .section-header h2,
+    .demo-section-black .section-header p {
+      color: #f5f5f7;
+    }
+
+    .demo-interactive {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .glass-card-dark {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      transition: all 0.4s var(--ease-out);
+    }
+
+    .glass-card-dark:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 20px 40px rgba(255, 255, 255, 0.05);
+    }
+
+    .demo-window {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .demo-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .demo-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .demo-dots span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .demo-dots span:nth-child(1) { background: #ff5f56; }
+    .demo-dots span:nth-child(2) { background: #ffbd2e; }
+    .demo-dots span:nth-child(3) { background: #27c93f; }
+
+    .demo-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #f5f5f7;
+    }
+
+    .demo-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #86868b;
+    }
+
+    .status-indicator {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #34c759;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .demo-messages {
+      padding: 32px 24px;
+      min-height: 320px;
+      max-height: 400px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .demo-messages::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .demo-messages::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .demo-messages::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+
+    .demo-message {
+      display: flex;
+      gap: 12px;
+      animation: slideInMessage 0.4s var(--ease-out);
+    }
+
+    .demo-message.user {
+      flex-direction: row-reverse;
+    }
+
+    @keyframes slideInMessage {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(0, 113, 227, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .demo-message.user .message-avatar {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .message-content {
+      flex: 1;
+      max-width: 70%;
+    }
+
+    .message-bubble {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 14px 18px;
+      border-radius: 18px;
+      font-size: 15px;
+      line-height: 1.47059;
+      color: #f5f5f7;
+    }
+
+    .demo-message.user .message-bubble {
+      background: var(--color-accent);
+      color: #ffffff;
+    }
+
+    .demo-input-container {
+      padding: 20px 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .demo-input-field {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 12px 20px;
+      color: #f5f5f7;
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+
+    .demo-input-field:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .demo-input-field::placeholder {
+      color: #86868b;
+    }
+
+    .demo-send-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      border: none;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .demo-send-btn:hover {
+      background: #0077ed;
+      transform: scale(1.05);
+    }
+
+    .demo-send-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .demo-suggestions {
+      padding: 16px 24px 24px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .suggestion-chip {
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      color: #f5f5f7;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .suggestion-chip:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .demo-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .stat-box {
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .stat-icon {
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+
+    .stat-value {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      color: #f5f5f7;
+      margin-bottom: 8px;
+      line-height: 1;
+    }
+
+    .stat-unit {
+      font-size: 14px;
+      color: #86868b;
+    }
+
+    /* NEW: Tunes Desktop Section */
+    .tunes-desktop-section {
+      padding: 120px 22px;
+      background: linear-gradient(180deg, #f5f5f7 0%, #e8e8ed 100%);
+    }
+
+    .tunes-desktop-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .music-player-window {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.15);
+    }
+
+    .player-content {
+      padding: 48px;
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .album-artwork {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .album-artwork img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .now-playing-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #34c759;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .player-info {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .track-info h3 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      margin-bottom: 8px;
+    }
+
+    .track-info p {
+      font-size: 19px;
+      color: var(--color-text-light);
+    }
+
+    .progress-bar-container {
+      width: 100%;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--color-accent);
+      width: 45%;
+      transition: width 0.3s;
+    }
+
+    .time-display {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--color-text-light);
+    }
+
+    .player-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .control-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.05);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-out);
+      font-size: 20px;
+    }
+
+    .control-btn:hover {
+      background: rgba(0, 0, 0, 0.1);
+      transform: scale(1.05);
+    }
+
+    .control-btn.play {
+      width: 64px;
+      height: 64px;
+      background: var(--color-accent);
+      color: white;
+      font-size: 24px;
+    }
+
+    .control-btn.play:hover {
+      background: #0077ed;
+    }
+
+    .volume-control {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .volume-slider {
+      width: 100px;
+      height: 4px;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 2px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .volume-fill {
+      height: 100%;
+      background: var(--color-accent);
+      width: 70%;
+      border-radius: 2px;
+    }
+
+    /* NEW: Ads Gallery Section */
+    .ads-gallery-section {
+      padding: 120px 22px;
+      background: #ffffff;
+    }
+
+    .ads-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 32px;
+    }
+
+    .ad-window {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      overflow: hidden;
+      transition: all 0.4s var(--ease-out);
+    }
+
+    .ad-window:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+      border-color: rgba(0, 0, 0, 0.12);
+    }
+
+    .ad-window-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      background: rgba(0, 0, 0, 0.02);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .ad-window-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .ad-window-dots span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      cursor: not-allowed;
+    }
+
+    .ad-window-dots span:nth-child(1) { background: #ff5f56; }
+    .ad-window-dots span:nth-child(2) { background: #ffbd2e; }
+    .ad-window-dots span:nth-child(3) { background: #27c93f; }
+
+    .ad-window-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    .ad-content {
+      padding: 48px 32px;
+      text-align: center;
+    }
+
+    .ad-icon {
+      font-size: 64px;
+      margin-bottom: 24px;
+    }
+
+    .ad-content h4 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: -0.015em;
+    }
+
+    .ad-content p {
+      font-size: 17px;
+      color: var(--color-text-light);
+      line-height: 1.47059;
+      margin-bottom: 24px;
+    }
+
+    .ad-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #0071e3 0%, #00aaff 100%);
+      color: white;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* Comparison Section */
+    .comparison-section {
+      padding: 120px 22px;
+      background: #f5f5f7;
+    }
+
+    .comparison-table-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      overflow-x: auto;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 32px;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    .comparison-table thead {
+      background: rgba(0, 0, 0, 0.02);
+      border-radius: 12px;
+    }
+
+    .comparison-table th {
+      padding: 20px;
+      text-align: center;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .comparison-table th:first-child {
+      text-align: left;
+    }
+
+    .comparison-table td {
+      padding: 20px;
+      text-align: center;
+      font-size: 15px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .comparison-table td:first-child {
+      text-align: left;
+      font-weight: 500;
+    }
+
+    .comparison-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .comparison-table tbody tr:hover {
+      background: rgba(0, 113, 227, 0.03);
+    }
+
+    .brand-highlight {
+      background: linear-gradient(135deg, #0071e3 0%, #00aaff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+    }
+
+    .check {
+      color: #34c759;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .cross {
+      color: #d2d2d7;
+      font-size: 20px;
+      font-weight: 300;
+    }
+
+    .price-row {
+      background: rgba(0, 113, 227, 0.05);
+    }
+
+    .price-row td:nth-child(2) {
+      color: var(--color-accent);
+      font-size: 21px;
+    }
+
+    /* Product Showcase Grid */
+    .product-showcase {
+      padding: 60px 12px;
+      background: #ffffff;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      max-width: calc(100vw - 24px);
+      margin: 0 auto;
+    }
+
+    .product-tile {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 24px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.5s var(--ease-out);
+      background-size: cover;
+      background-position: center;
+    }
+
+    .product-tile::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%);
+      transition: all 0.5s var(--ease-out);
+    }
+
+    .product-tile:hover::before {
+      background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%);
+    }
+
+    .product-tile:hover {
+      transform: scale(1.02);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .product-tile-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 40px;
+      z-index: 2;
+      color: white;
+      transform: translateY(0);
+      transition: all 0.5s var(--ease-out);
+    }
+
+    .product-tile:hover .product-tile-content {
+      transform: translateY(-10px);
+    }
+
+    .product-tile-label {
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .product-tile-title {
+      font-size: clamp(32px, 4vw, 56px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      margin-bottom: 12px;
+    }
+
+    .product-tile-desc {
+      font-size: 17px;
+      line-height: 1.47059;
+      opacity: 0.95;
+      max-width: 400px;
+    }
+
+    /* Testimonials Section */
+    .testimonials-section {
+      padding: 120px 22px;
+      background: #000000;
+      color: #f5f5f7;
+    }
+
+    .testimonials-section .section-header h2,
+    .testimonials-section .section-header p {
+      color: #f5f5f7;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .testimonial-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 40px;
+      transition: all 0.4s var(--ease-out);
+    }
+
+    .testimonial-card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(255, 255, 255, 0.05);
+    }
+
+    .testimonial-stars {
+      color: #ffd700;
+      font-size: 20px;
+      margin-bottom: 20px;
+      letter-spacing: 4px;
+    }
+
+    .testimonial-text {
+      font-size: 17px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+      color: #f5f5f7;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .testimonial-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0071e3, #00aaff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .testimonial-info {
+      flex: 1;
+    }
+
+    .testimonial-name {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 2px;
+      color: #f5f5f7;
+    }
+
+    .testimonial-role {
+      font-size: 13px;
+      color: #86868b;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 120px 22px;
+      background: linear-gradient(180deg, #f5f5f7 0%, #ffffff 100%);
+      text-align: center;
+    }
+
+    .cta-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .cta-container h2 {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+
+    .cta-container p {
+      font-size: 21px;
+      color: var(--color-text-light);
+      margin-bottom: 40px;
+      line-height: 1.381;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .two-col-container,
+      .two-col-container.reverse {
+        grid-template-columns: 1fr;
+        gap: 48px;
+        direction: ltr;
+      }
+
+      .pricing-card.featured {
+        transform: scale(1);
+      }
+
+      .pricing-card.featured:hover {
+        transform: translateY(-8px);
+      }
+
+      .outages-container {
+        grid-template-columns: 1fr;
+      }
+
+      .demo-interactive {
+        grid-template-columns: 1fr;
+      }
+
+      .comparison-table-container {
+        padding: 20px;
+      }
+
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .product-tile {
+        min-height: 400px;
+      }
+
+      .player-content {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .ads-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding: 100px 22px 60px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .graph-grid {
+        gap: 2px;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        padding: 12px 8px;
+        font-size: 13px;
+      }
+
+      .demo-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .product-tile-content {
+        padding: 24px;
+      }
+
+      .product-tile-title {
+        font-size: 28px;
+      }
+
+      .player-content {
+        padding: 32px 24px;
+      }
+    }
+
+     /* Models Section */
+  .models-section {
+    padding: 120px 22px;
+    background: #ffffff;
   }
 
-  .fade-in {
-    animation: fadeInUp 0.8s ease-out forwards;
+  .models-table-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow-x: auto;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 32px;
   }
 
-  /* Responsive */
-  @media (max-width: 1024px) {
-    .hero h1 { font-size: 4rem; }
-    .product-content h2 { font-size: 3rem; }
+  .models-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
   }
 
+  .models-table thead {
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 12px;
+  }
+
+  .models-table th {
+    padding: 20px;
+    text-align: left;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    border-bottom: 1px solid var(--glass-border);
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--color-text-light);
+  }
+
+  .models-table td {
+    padding: 20px;
+    font-size: 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .models-table td:first-child {
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .models-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .models-table tbody tr:hover {
+    background: rgba(0, 113, 227, 0.03);
+  }
+
+  .models-table tbody tr.featured-model {
+    background: rgba(0, 113, 227, 0.05);
+    position: relative;
+  }
+
+  .models-table tbody tr.featured-model::before {
+    content: '⭐ Featured';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-accent);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 4px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--color-accent);
+  }
+
+  .models-table tbody tr.featured-model:hover {
+    background: rgba(0, 113, 227, 0.08);
+  }
+
+  .speed-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .speed-badge.ultra {
+    background: linear-gradient(135deg, #0071e3 0%, #00aaff 100%);
+    color: white;
+  }
+
+  .speed-badge.fast {
+    background: rgba(52, 199, 89, 0.15);
+    color: #34c759;
+  }
+
+  .speed-badge.medium {
+    background: rgba(255, 189, 46, 0.15);
+    color: #ff9500;
+  }
+
+  .premium-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: linear-gradient(135deg, #0071e3 0%, #00aaff 100%);
+    color: white;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  /* Responsive adjustments for models table */
   @media (max-width: 768px) {
-    .nav-links { display: none; }
-    .hero h1 { font-size: 2.5rem; }
-    .hero p { font-size: 1.25rem; }
-    .product-content h2 { font-size: 2.5rem; }
-    .product-content p { font-size: 1.25rem; }
-    .demo-input-area { flex-direction: column; }
-    .demo-send { width: 100%; }
-    .stats-grid { grid-template-columns: 1fr 1fr; }
-    .grid-container { grid-template-columns: 1fr; }
+    .models-table-container {
+      padding: 20px;
+    }
+
+    .models-table th,
+    .models-table td {
+      padding: 12px 8px;
+      font-size: 13px;
+    }
+
+    .models-table tbody tr.featured-model::before {
+      position: static;
+      display: block;
+      margin-top: 8px;
+      transform: none;
+    }
   }
-</style>
+  </style>
 </head>
 <body>
 
-  <!-- <div class="announcement">
-    <div class="track">
-      <span> ☺ &nbsp;&nbsp;•&nbsp;&nbsp;</span>
-    </div>
-  </div> -->
-
-  <!-- Navbar -->
-  <nav>
-    <div class="logo">JVST</div>
-    <div class="nav-links">
-      <a href="index.html">Home</a>
-      <div class="dropdown">
-        <a href="#" class="dropdown-toggle">Products</a>
-        <div class="dropdown-menu">
-          <a href="tv.html">TV</a>
-          <a href="tunes.html">Tunes</a>
-        </div>
+  <!-- Navigation -->
+  <nav id="navbar">
+    <div class="nav-content">
+      <div class="nav-logo">JVST</div>
+      <div class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#features">Features</a>
+        <a href="#products">Products</a>
       </div>
-      <a href="indy.html">AI</a>
-    </div>
-    <div class="nav-right">
-      <a href="login.html" class="login-btn">Log In</a>
+      <a href="#" class="nav-cta">Log In</a>
     </div>
   </nav>
 
   <!-- Hero -->
-  <section class="hero" style="background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)), url('https://images.unsplash.com/photo-1614624532983-4ce03382d63d?q=80&w=3731&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center;">
-    <h1>INDY</h1>
-    <p>The future of AI innovation</p>
-    <div class="hero-buttons">
-      <a href="indy.html" class="btn btn-primary">Try Indy</a>
-      <a href="login.html" class="btn btn-secondary">Get Started</a>
-    </div>
-  </section>
-
-  <!-- Indy Product Section -->
-  <section class="product-section" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1587079654681-e30589cffa5e?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center;">
-    <div class="product-content">
-      <h2>Indy Ideas</h2>
-      <p>Your AI assistant for Chromebook. Generate images, get coding help, and draft up emails.</p>
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1>JVST</h1>
+      <p class="hero-subtitle">Built Different. For Students.</p>
       <div class="hero-buttons">
-        <a href="indy.html" class="btn btn-primary">Try Free</a>
-        <a href="login.html" class="btn btn-white">See Plans</a>
+        <a href="#pricing" class="btn btn-primary gradient">Explore Plans</a>
+        <a href="#features" class="btn btn-secondary">Learn More</a>
       </div>
     </div>
   </section>
 
-  <!-- Demo Section -->
-  <section class="demo-section">
-    <h2>Experience Real Power</h2>
-    <p>Real AI. Real answers. Try 2 messages for free.</p>
-    
-    <div class="demo-container">
-      <div class="chat-messages" id="chatMessages">
-        <div class="message indy">
-          Howdy 🤠! I'm Indy, your AI assistant. I can help with creative ideas, coding, studying, and more. What can I help you with today?
-        </div>
-      </div>
-      
-      <div class="demo-input-area">
-        <input 
-          type="text" 
-          class="demo-input" 
-          id="userInput" 
-          placeholder="Ask anything..."
-          maxlength="200"
-        />
-        <button class="demo-send" id="sendBtn">Send</button>
-      </div>
-      
-      <div class="limit-notice" id="limitNotice">2 messages remaining</div>
+  <!-- Scroll Text Section -->
+  <section class="scroll-text-section" id="scroll-text">
+    <div class="scroll-text-container">
+      <div class="scroll-text-item" data-index="0">AI that understands you</div>
+      <div class="scroll-text-item" data-index="1">Music that moves you</div>
+      <div class="scroll-text-item" data-index="2">Technology built for students</div>
+      <div class="scroll-text-item" data-index="3">Innovation without limits</div>
     </div>
   </section>
 
-  <!--   <section class="feature-grid">
-    <h2>Built different</h2>
-    <p>No corporate fluff. Just tools that work.</p>
+  <!-- Pricing Section -->
+  <section class="pricing-section" id="pricing">
+    <div class="section-header">
+      <h2>Choose Your Plan</h2>
+      <p>Start free. Upgrade anytime.</p>
+    </div>
     
-    <div class="grid-container">
-      <div class="feature-card">
-        <div class="feature-icon">🎨</div>
-        <h3>Creative Power</h3>
-        <p>Generate images and bring your ideas to life with advanced AI tools</p>
+    <div class="pricing-grid">
+      <!-- Free Tier -->
+      <div class="pricing-card fade-in">
+        <div class="pricing-badge">Most Popular</div>
+        <h3>Free</h3>
+        <div class="pricing-price">$0</div>
+        <div class="pricing-period">Forever</div>
+        <ul class="pricing-features">
+          <li>30 minutes per session</li>
+          <li>No TV streaming</li>
+          <li>No image generation</li>
+          <li>Standard support</li>
+        </ul>
+        <a href="#" class="btn btn-secondary" style="width: 100%;">Get Started</a>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">💻</div>
+
+      <!-- Indy+ Tier -->
+      <div class="pricing-card featured fade-in">
+        <h3>Indy+</h3>
+        <div class="pricing-price">$0.25</div>
+        <div class="pricing-period">Forever</div>
+        <ul class="pricing-features">
+          <li>Unlimited AI messages</li>
+          <li>AI image generation</li>
+          <li>Unlimited use</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="btn btn-primary gradient" style="width: 100%;">Upgrade Now</a>
+      </div>
+
+      <!-- One Bundle -->
+      <div class="pricing-card fade-in">
+        <h3>One</h3>
+        <div class="pricing-price">$0.50</div>
+        <div class="pricing-period">Forever</div>
+        <ul class="pricing-features">
+          <li>Everything in Indy+</li>
+          <li>Digital Blade Card</li>
+          <li>TV code access</li>
+          <li>Exclusive perks</li>
+          <li>Early access</li>
+          <li>VIP support</li>
+        </ul>
+        <a href="#" class="btn btn-primary" style="width: 100%;">Get One</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Grid -->
+  <section class="feature-section" id="features">
+    <div class="section-header">
+      <h2>Indy AI Features</h2>
+      <p>Everything you need to succeed</p>
+    </div>
+    
+    <div class="feature-grid">
+      <div class="feature-card fade-in">
+        <span class="feature-icon">🎨</span>
+        <h3>Image Generation</h3>
+        <p>Bring your creative visions to life with AI-powered image creation.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <span class="feature-icon">⌨︎</span>
         <h3>Code Assistant</h3>
-        <p>Get help with coding projects, debugging, and learning new languages</p>
+        <p>Debug faster, learn quicker. Get instant help with any language.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">💪🏽</div>
-        <h3>Workout Music</h3>
-        <p>Get auto recommended songs from Indy while woking out.</p>
+      <div class="feature-card fade-in">
+        <span class="feature-icon">📖</span>
+        <h3>Study Helper</h3>
+        <p>From essay outlines to exam prep, Indy helps you understand complex topics.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">⚡</div>
+      <div class="feature-card fade-in">
+        <span class="feature-icon">⚡︎</span>
         <h3>Lightning Fast</h3>
-        <p>Instant responses powered by cutting-edge AI technology</p>
+        <p>Instant responses powered by cutting-edge AI. No waiting, just answers.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <span class="feature-icon">◉</span>
+        <h3>Multi-Language</h3>
+        <p>Communicate and learn in multiple languages effortlessly.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <span class="feature-icon">🔒︎</span>
+        <h3>Private & Secure</h3>
+        <p>Your conversations stay private. We never sell your data.</p>
       </div>
     </div>
-  </section> -->
+  </section>
+
+  <!-- Two Column Features -->
+  <section class="two-col-section" id="products">
+    <div class="two-col-container fade-in">
+      <div class="two-col-text">
+        <h3>Unlimited Streaming</h3>
+        <p>Access millions of songs from your favorite artists. No limits, no interruptions. Just pure music whenever you want it.</p>
+        <a href="#" class="btn btn-primary">Start Free Trial</a>
+      </div>
+      <div class="two-col-image">
+        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1600&auto=format&fit=crop" alt="Music streaming">
+      </div>
+    </div>
+
+    <div class="two-col-container reverse fade-in">
+      <div class="two-col-text">
+        <h3>Personalized Playlists</h3>
+        <p>AI-powered recommendations that learn what you love. From study sessions to workout mixes, we've got the perfect soundtrack.</p>
+        <a href="#" class="btn btn-primary">Discover Music</a>
+      </div>
+      <div class="two-col-image">
+        <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?q=80&w=1600&auto=format&fit=crop" alt="Personalized playlists">
+      </div>
+    </div>
+
+    <div class="two-col-container fade-in">
+      <div class="two-col-text">
+        <h3>Offline Listening</h3>
+        <p>Download your favorite tracks and listen anywhere, even without internet. Perfect for flights, commutes, or saving data.</p>
+        <a href="#" class="btn btn-primary">Learn More</a>
+      </div>
+      <div class="two-col-image">
+        <img src="https://images.unsplash.com/photo-1484704849700-f032a568e944?q=80&w=1600&auto=format&fit=crop" alt="Offline listening">
+      </div>
+    </div>
+  </section>
 
   <!-- Stats -->
   <section class="stats-section">
-    <h2>Trusted by students</h2>
+    <div class="section-header">
+      <h2>Trusted by Students Worldwide</h2>
+    </div>
     <div class="stats-grid">
-      <div class="stat-item">
-        <div class="stat-number">1K+</div>
+      <div class="stat-item fade-in">
+        <div class="stat-number">10K+</div>
+        <div class="stat-label">Active Users</div>
+      </div>
+      <div class="stat-item fade-in">
+        <div class="stat-number">50K+</div>
         <div class="stat-label">Messages Sent</div>
       </div>
-      <div class="stat-item">
-        <div class="stat-number">5K+</div>
-        <div class="stat-label">Tasks Completed</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">4.8★</div>
+      <div class="stat-item fade-in">
+        <div class="stat-number">4.9★</div>
         <div class="stat-label">User Rating</div>
       </div>
-      <div class="stat-item">
-        <div class="stat-number">$0.50</div>
-        <div class="stat-label">Starting Price</div>
+      <div class="stat-item fade-in">
+        <div class="stat-number">99%</div>
+        <div class="stat-label">Satisfaction</div>
       </div>
     </div>
   </section>
 
-    <!-- Tunes Status -->
-  <section class="stats-section">
-    <h2>Tunes Outages</h2>
-    <div class="stats-grid">
-      <div class="stat-item">
-        <div class="status-number">Major Outage</div>
-        <div class="stat-label">1/27/26 - Resolved 2/1/26</div>
+  <!-- Product Showcase 2x2 Grid -->
+  <section class="product-showcase">
+    <div class="product-grid">
+      <div class="product-tile fade-in" style="background-image: url('https://www.brookings.edu/wp-content/uploads/2017/11/metro_20171121_tech-empowers-tech-polarizes-mark-muro.jpg?quality=75&w=1500');">
+        <div class="product-tile-content">
+          <div class="product-tile-label">AI Assistant</div>
+          <h3 class="product-tile-title">Indy AI</h3>
+          <p class="product-tile-desc">Your intelligent companion for coding, creative work, and learning.</p>
+        </div>
+      </div>
+      
+      <div class="product-tile fade-in" style="background-image: url('https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=1600&auto=format&fit=crop');">
+        <div class="product-tile-content">
+          <div class="product-tile-label">Music Streaming</div>
+          <h3 class="product-tile-title">Tunes</h3>
+          <p class="product-tile-desc">Millions of songs, personalized playlists, and offline downloads.</p>
+        </div>
+      </div>
+      
+      <div class="product-tile fade-in" style="background-image: url('https://miro.medium.com/v2/resize:fit:2000/0*5V_GRB-1ZTHY4LLZ');">
+        <div class="product-tile-content">
+          <div class="product-tile-label">Premium Access</div>
+          <h3 class="product-tile-title">Blade Card</h3>
+          <p class="product-tile-desc">Digital card with exclusive perks and benefits for students.</p>
+        </div>
+      </div>
+      
+      <div class="product-tile fade-in" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1600&auto=format&fit=crop');">
+        <div class="product-tile-content">
+          <div class="product-tile-label">All-In-One</div>
+          <h3 class="product-tile-title">One Bundle</h3>
+          <p class="product-tile-desc">Everything JVST offers in one incredible package.</p>
+        </div>
       </div>
     </div>
   </section>
 
-    <section class="stats-section">
-    <h2>Indy Outages</h2>
-    <div class="stats-grid">
-      <div class="stat-item">
-        <div class="status-number">Major Outage</div>
-        <div class="stat-label">2/2/26 - Not Resolved</div>
+  <!-- Outages Section -->
+  <section class="outages-section">
+    <div class="section-header">
+      <h2>System Status</h2>
+      <p>Real-time reliability across all services</p>
+    </div>
+    
+    <div class="outages-container">
+      <div class="outage-summary glass-card">
+        <div class="uptime-circle">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="54" fill="none" stroke="#e5e5e7" stroke-width="8"/>
+            <circle cx="60" cy="60" r="54" fill="none" stroke="#0071e3" stroke-width="8" 
+                    stroke-dasharray="339.292" stroke-dashoffset="3.39" 
+                    transform="rotate(-90 60 60)" class="uptime-progress"/>
+          </svg>
+          <div class="uptime-text">
+            <span class="uptime-percent">99.9%</span>
+            <span class="uptime-label">Uptime</span>
+          </div>
+        </div>
+        <div class="status-grid">
+          <div class="status-item">
+            <span class="status-dot no"></span>
+            <span>AI Services</span>
+          </div>
+          <div class="status-item">
+            <span class="status-dot active"></span>
+            <span>Music Streaming</span>
+          </div>
+          <div class="status-item">
+            <span class="status-dot no"></span>
+            <span>Image Generation</span>
+          </div>
+          <div class="status-item">
+            <span class="status-dot active"></span>
+            <span>API Platform</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="outage-graph glass-card">
+        <h3>Last 30 Days</h3>
+        <div class="graph-grid">
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="98" style="--height: 98%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="99" style="--height: 99%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="97" style="--height: 97%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="100" style="--height: 100%"></div>
+          <div class="graph-day" data-status="50" style="--height: 50%"></div>
+        </div>
+        <div class="graph-labels">
+          <span>30 days ago</span>
+          <span>Today</span>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Tunes Product Section -->
-  <section class="product-section dark" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=1600&q=80'); background-size: cover; background-position: center;">
-    <div class="product-content">
-      <h2>Stream without limits</h2>
-      <p>Full songs. Minimal interruptions. Perfect for study sessions.</p>
-      <div class="hero-buttons">
-        <a href="tunes.html" class="btn btn-primary">Start for free</a>
+  <!-- Interactive Demo Section - Black Background -->
+  <section class="demo-section-black">
+    <div class="section-header">
+      <h2>Experience Indy AI</h2>
+      <p>Ask anything. Get instant answers.</p>
+    </div>
+
+    <div class="demo-interactive">
+      <div class="demo-window glass-card-dark">
+        <div class="demo-header">
+          <div class="demo-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="demo-title">Indy AI</div>
+          <div class="demo-status">
+            <span class="status-indicator"></span>
+            Online
+          </div>
+        </div>
+        
+        <div class="demo-messages" id="demoMessages">
+          <div class="demo-message assistant">
+            <div class="message-avatar">🤖</div>
+            <div class="message-content">
+              <div class="message-bubble">
+                Hi! I'm Indy, powered by Sunshine 1.0. I can help with coding, creative writing, studying, and more. What can I help you with?
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-input-container">
+          <input type="text" class="demo-input-field" id="demoInput" placeholder="Ask me anything..." maxlength="200">
+          <button class="demo-send-btn" id="demoSend">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M2 10L18 2L10 18L9 11L2 10Z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="demo-suggestions">
+          <button class="suggestion-chip" data-text="Write a haiku about technology">Write a haiku</button>
+          <button class="suggestion-chip" data-text="Explain quantum computing simply">Quantum computing</button>
+          <button class="suggestion-chip" data-text="Debug this Python code">Debug code</button>
+        </div>
+      </div>
+
+      <div class="demo-stats">
+        <div class="stat-box glass-card-dark fade-in">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-value" data-target="3">0</div>
+          <div class="stat-unit">seconds avg response</div>
+        </div>
+        <div class="stat-box glass-card-dark fade-in">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-value" data-target="95">0</div>
+          <div class="stat-unit">% accuracy rate</div>
+        </div>
+        <div class="stat-box glass-card-dark fade-in">
+          <div class="stat-icon">💬</div>
+          <div class="stat-value" data-target="500">0</div>
+          <div class="stat-unit">prompts daily</div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Lifestyle Section - Running -->
-  <section class="product-section" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://images.unsplash.com/photo-1510280663080-337a87eab426?q=80&w=1318&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center;">
-    <div class="product-content">
-      <h2>Your soundtrack. Anywhere.</h2>
-      <p>From morning runs to late-night study sessions, your music moves with you.</p>
-      <div class="hero-buttons">
-        <a href="tunes.html" class="btn btn-primary">Explore Tunes</a>
+  <section class="models-section">
+  <div class="section-header">
+    <h2>Powered by Advanced AI</h2>
+    <p>Choose the model that fits your needs</p>
+  </div>
+
+  <div class="models-table-container">
+    <table class="models-table">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th>Best For</th>
+          <th>Speed</th>
+          <th>Context Window</th>
+          <th>Availability</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Sunshine 1.0 (beta)</strong></td>
+          <td>General tasks, coding, writing</td>
+          <td><span class="speed-badge fast">Fast</span></td>
+          <td>32K tokens</td>
+          <td><span class="check">✓</span> All Plans</td>
+        </tr>
+        <tr>
+          <td><strong>Sunshine Pro</strong></td>
+          <td>Complex reasoning, research</td>
+          <td><span class="speed-badge medium">Medium</span></td>
+          <td>128K tokens</td>
+          <td><span class="check">✓</span> Indy+ & One</td>
+        </tr>
+        <tr>
+          <td><strong>Vision 2.0</strong></td>
+          <td>Image generation, visual AI</td>
+          <td><span class="speed-badge fast">Fast</span></td>
+          <td>16K tokens</td>
+          <td><span class="check">✓</span> Indy+ & One</td>
+        </tr>
+        <tr>
+          <td><strong>Creative Studio</strong></td>
+          <td>Creative writing, storytelling</td>
+          <td><span class="speed-badge medium">Medium</span></td>
+          <td>64K tokens</td>
+          <td><span class="check">✓</span> All Plans</td>
+        </tr>
+        <tr>
+          <td><strong>Code Assistant</strong></td>
+          <td>Programming, debugging</td>
+          <td><span class="speed-badge fast">Fast</span></td>
+          <td>100K tokens</td>
+          <td><span class="check">✓</span> Indy+ & One</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+  <!-- NEW: Tunes Desktop Section -->
+  <section class="tunes-desktop-section">
+    <div class="section-header">
+      <h2>Experience Tunes</h2>
+      <p>Your music, beautifully designed</p>
+    </div>
+
+    <div class="tunes-desktop-container">
+      <div class="music-player-window glass-card">
+        <div class="demo-header">
+          <div class="demo-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="demo-title">Tunes</div>
+          <div class="demo-status">
+            <span class="status-indicator"></span>
+            Playing
+          </div>
+        </div>
+
+        <div class="player-content">
+          <div class="album-artwork">
+            <img src="https://cdn-images.dzcdn.net/images/cover/258e6042338ce64bb4157c0c94b232ac/0x1900-000000-80-0-0.jpg" alt="Album artwork">
+            <div class="now-playing-badge">
+              <span class="pulse-dot"></span>
+              Now Playing
+            </div>
+          </div>
+
+          <div class="player-info">
+            <div class="track-info">
+              <h3>APT</h3>
+              <p>APT • ROSÉ and Bruno Mars</p>
+            </div>
+
+            <div class="progress-bar-container">
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+              </div>
+              <div class="time-display">
+                <span>2:14</span>
+                <span>4:52</span>
+              </div>
+            </div>
+
+            <div class="player-controls">
+              <button class="control-btn">⏮</button>
+              <button class="control-btn play">▶</button>
+              <button class="control-btn">⏭</button>
+            </div>
+
+            <div class="volume-control">
+              <span style="font-size: 18px;">🔊</span>
+              <div class="volume-slider">
+                <div class="volume-fill"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Artists Showcase -->
+  <!-- NEW: Ads Gallery Section -->
+  <section class="ads-gallery-section">
+    <div class="section-header">
+      <h2>Discover More</h2>
+      <p>Exclusive features and benefits</p>
+    </div>
+
+    <div class="ads-grid">
+      <div class="ad-window fade-in">
+        <div class="ad-window-header">
+          <div class="ad-window-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="ad-window-title">Student Perks</div>
+        </div>
+        <div class="ad-content">
+          <div class="ad-icon">🎓</div>
+          <h4>Student Discounts</h4>
+          <p>Get exclusive deals on music, AI tools, and premium features with your student email.</p>
+          <span class="ad-badge">Coming Soon</span>
+        </div>
+      </div>
+
+      <div class="ad-window fade-in">
+        <div class="ad-window-header">
+          <div class="ad-window-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="ad-window-title">Family Plan</div>
+        </div>
+        <div class="ad-content">
+          <div class="ad-icon">👨‍👩‍👧‍👦</div>
+          <h4>Share with Family</h4>
+          <p>Up to 6 family members can enjoy all JVST features under one subscription.</p>
+          <span class="ad-badge">Available Now</span>
+        </div>
+      </div>
+
+      <div class="ad-window fade-in">
+        <div class="ad-window-header">
+          <div class="ad-window-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="ad-window-title">Premium Features</div>
+        </div>
+        <div class="ad-content">
+          <div class="ad-icon">✨</div>
+          <h4>Unlock Premium</h4>
+          <p>Access advanced AI models, unlimited image generation, and exclusive music content.</p>
+          <span class="ad-badge">Upgrade Today</span>
+        </div>
+      </div>
+
+      <div class="ad-window fade-in">
+        <div class="ad-window-header">
+          <div class="ad-window-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="ad-window-title">API Access</div>
+        </div>
+        <div class="ad-content">
+          <div class="ad-icon">⚙️</div>
+          <h4>Developer Tools</h4>
+          <p>Build your own apps and integrations with JVST's powerful API platform.</p>
+          <span class="ad-badge">For Developers</span>
+        </div>
+      </div>
+
+      <div class="ad-window fade-in">
+        <div class="ad-window-header">
+          <div class="ad-window-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="ad-window-title">Offline Mode</div>
+        </div>
+        <div class="ad-content">
+          <div class="ad-icon">📱</div>
+          <h4>Work Anywhere</h4>
+          <p>Download music, AI models, and content for offline access wherever you go.</p>
+          <span class="ad-badge">Premium Feature</span>
+        </div>
+      </div>
+
+      <div class="ad-window fade-in">
+        <div class="ad-window-header">
+          <div class="ad-window-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="ad-window-title">Community</div>
+        </div>
+        <div class="ad-content">
+          <div class="ad-icon">🌐</div>
+          <h4>Join the Community</h4>
+          <p>Connect with other students, share creations, and get exclusive early access to features.</p>
+          <span class="ad-badge">Free to Join</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Section -->
+  <section class="comparison-section">
+    <div class="section-header">
+      <h2>Why Choose JVST</h2>
+      <p>See how we stack up against the competition</p>
+    </div>
+
+    <div class="comparison-table-container">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th><span class="brand-highlight">JVST</span></th>
+            <th>DeepSeek AI</th>
+            <th>ChatGPT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>AI Image Generation</td>
+            <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Music Streaming</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+          </tr>
+          <tr>
+            <td>Student Pricing</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Offline Mode</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✗</span></td>
+          </tr>
+          <tr>
+            <td>24/7 Support</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr class="price-row">
+            <td><strong>Price/month</strong></td>
+            <td><strong>$0.25</strong></td>
+            <td>$10-30</td>
+            <td>$25.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Artists -->
   <section class="artists-section">
-    <h2>Explore Top Artists</h2>
+    <h2>Featured Artists</h2>
     <div class="artists-track">
       <div class="artist-item">
         <img src="https://www.economist.com/cdn-cgi/image/width=1424,quality=80,format=auto/content-assets/images/20250712_CUP003.jpg" alt="Bad Bunny">
         <span>Bad Bunny</span>
       </div>
       <div class="artist-item">
-        <img src="https://www.rollingstone.com/wp-content/uploads/2024/10/Rose-Solo-Album.jpg?crop=0px%2C130px%2C1800px%2C1014px&resize=1600%2C900" alt="ROSÉ">
+        <img src="https://www.rollingstone.com/wp-content/uploads/2024/10/Rose-Solo-Album.jpg" alt="ROSÉ">
         <span>Rosé</span>
       </div>
       <div class="artist-item">
@@ -959,13 +2583,13 @@ nav {
         <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/KendrickSZASPurs230725-19_-_54683179509_%28cropped%29_%28cropped%29.jpg" alt="SZA">
         <span>SZA</span>
       </div>
-      <!-- Duplicate for seamless loop -->
+      <!-- Duplicates for seamless loop -->
       <div class="artist-item">
         <img src="https://www.economist.com/cdn-cgi/image/width=1424,quality=80,format=auto/content-assets/images/20250712_CUP003.jpg" alt="Bad Bunny">
         <span>Bad Bunny</span>
       </div>
       <div class="artist-item">
-        <img src="https://www.rollingstone.com/wp-content/uploads/2024/10/Rose-Solo-Album.jpg?crop=0px%2C130px%2C1800px%2C1014px&resize=1600%2C900" alt="ROSÉ">
+        <img src="https://www.rollingstone.com/wp-content/uploads/2024/10/Rose-Solo-Album.jpg" alt="ROSÉ">
         <span>Rosé</span>
       </div>
       <div class="artist-item">
@@ -987,24 +2611,60 @@ nav {
     </div>
   </section>
 
-  <!-- One Bundle Section -->
-  <section class="product-section dark" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80'); background-size: cover; background-position: center;">
-    <div class="product-content">
-      <h2>✦One</h2>
-      <p>Get access to everything JVST offers for just $3. This package comes with a Digital Blade card, a TV code and extra secret perks!</p>
-      <div class="hero-buttons">
-        <a href="login.html" class="btn btn-primary">Check it out</a>
+  <!-- Testimonials Section
+  <section class="testimonials-section">
+    <div class="section-header">
+      <h2>Loved by Students</h2>
+      <p>See what others are saying about JVST</p>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card fade-in">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"Indy AI has completely transformed how I study. It's like having a personal tutor available 24/7. The image generation feature helped me create amazing visuals for my presentations!"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">SM</div>
+          <div class="testimonial-info">
+            <div class="testimonial-name">Sarah Mitchell</div>
+            <div class="testimonial-role">Computer Science Major</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card fade-in">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"The music streaming with AI recommendations is incredible. It always knows exactly what I need for studying or working out. Plus the student pricing is unbeatable!"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">JL</div>
+          <div class="testimonial-info">
+            <div class="testimonial-name">James Lee</div>
+            <div class="testimonial-role">Business Student</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card fade-in">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"JVST is the perfect all-in-one platform for students. From AI help with homework to offline music for my commute, it has everything I need in one place."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">ER</div>
+          <div class="testimonial-info">
+            <div class="testimonial-name">Emma Rodriguez</div>
+            <div class="testimonial-role">Engineering Student</div>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
+  </section> -->
 
-  <!-- Sponsors Section -->
-  <section class="product-section" style="background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1600&q=80'); background-size: cover; background-position: center;">
-    <div class="product-content">
-      <h2>Our Sponsors Since 2025</h2>
-      <p>Meet Noah Loke, Evan Duffy, and our VIP Rainn Blais. These talented musicians have been making music from home, and we're giving them the credit they deserve.</p>
-      <div class="hero-buttons">
-        <a href="https://www.youtube.com" class="btn btn-primary">Listen Now</a>
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-container">
+      <h2>Ready to get started?</h2>
+      <p>Join thousands of students already using JVST to study smarter, work faster, and enjoy better music.</p>
+      <div class="cta-buttons">
+        <a href="#pricing" class="btn btn-primary gradient">Start Free</a>
+        <a href="#features" class="btn btn-secondary">Explore Features</a>
       </div>
     </div>
   </section>
@@ -1014,14 +2674,15 @@ nav {
     <div class="footer-content">
       <div class="footer-col">
         <h4>JVST</h4>
-        <p style="color: #6e6e73; font-size: 0.875rem;">Built Different</p>
+        <p style="color: var(--color-text-light); margin-top: 8px;">Built Different</p>
       </div>
       <div class="footer-col">
         <h4>Products</h4>
         <ul>
-          <li><a href="indy.html">Indy (AI)</a></li>
-          <li><a href="tunes.html">Tunes</a></li>
-          <li><a href="login.html">Blade Card</a></li>
+          <li><a href="#">Indy AI</a></li>
+          <li><a href="#">Tunes</a></li>
+          <li><a href="#">Blade Card</a></li>
+          <li><a href="#">One Bundle</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -1030,13 +2691,15 @@ nav {
           <li><a href="#">About</a></li>
           <li><a href="#">Contact</a></li>
           <li><a href="#">Students</a></li>
+          <li><a href="#">Careers</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Legal</h4>
         <ul>
-          <li><a href="privacypolicy.html">Privacy</a></li>
-          <li><a href="tos.html">Terms</a></li>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Cookies</a></li>
         </ul>
       </div>
     </div>
@@ -1046,106 +2709,287 @@ nav {
   </footer>
 
   <script>
-    // Indy AI Demo
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // Scroll text reveal
+    let isSectionActive = false;
+    let currentStep = -1;
+    let isAdvancing = false;
+    const steps = document.querySelectorAll('.scroll-text-item');
+    const section = document.querySelector('.scroll-text-section');
+
+    if (section && steps.length > 0) {
+      const totalSteps = steps.length;
+
+      function activateStep(index) {
+        steps.forEach((item, i) => {
+          item.classList.toggle('active', i === index);
+        });
+        currentStep = index;
+      }
+
+      function lockScroll(e) {
+        if (!isSectionActive) return;
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      function handleWheel(e) {
+        if (!isSectionActive || isAdvancing) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        const delta = e.deltaY;
+
+        if (delta > 15) {
+          isAdvancing = true;
+          if (currentStep < totalSteps - 1) {
+            activateStep(currentStep + 1);
+          }
+
+          if (currentStep >= totalSteps - 1) {
+            finishSequence();
+          }
+
+          setTimeout(() => { isAdvancing = false; }, 500);
+        }
+      }
+
+      function finishSequence() {
+        isSectionActive = false;
+        currentStep = -1;
+        isAdvancing = false;
+        document.removeEventListener('wheel', lockScroll, { passive: false });
+        document.removeEventListener('wheel', handleWheel, { passive: false });
+        document.removeEventListener('touchmove', lockScroll, { passive: false });
+        document.removeEventListener('keydown', preventArrowKeys);
+      }
+
+      function preventArrowKeys(e) {
+        if (['ArrowDown', 'ArrowUp', ' '].includes(e.key)) {
+          e.preventDefault();
+        }
+      }
+
+      const observer = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting && currentStep === -1 && entry.intersectionRatio >= 0.7) {
+          isSectionActive = true;
+          currentStep = 0;
+          activateStep(0);
+
+          document.addEventListener('wheel', lockScroll, { passive: false });
+          document.addEventListener('touchmove', lockScroll, { passive: false });
+          document.addEventListener('keydown', preventArrowKeys);
+
+          setTimeout(() => {
+            document.addEventListener('wheel', handleWheel, { passive: false });
+          }, 600);
+        } else if (!entry.isIntersecting && isSectionActive) {
+          finishSequence();
+        }
+      }, { threshold: [0.7, 1.0] });
+
+      observer.observe(section);
+    }
+
+    // Fade-in on scroll
+    const fadeElements = document.querySelectorAll('.fade-in');
+    
+    const fadeObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    fadeElements.forEach(el => fadeObserver.observe(el));
+
+    // Stat counter animation
+    const statValues = document.querySelectorAll('.stat-value');
+    
+    const statObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
+          entry.target.classList.add('counted');
+          const target = parseFloat(entry.target.dataset.target);
+          const duration = 2000;
+          const increment = target / (duration / 16);
+          let current = 0;
+          
+          const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+              entry.target.textContent = target % 1 === 0 ? target.toFixed(0) : target.toFixed(1);
+              clearInterval(timer);
+            } else {
+              entry.target.textContent = (current % 1 === 0 ? current.toFixed(0) : current.toFixed(1));
+            }
+          }, 16);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    statValues.forEach(el => statObserver.observe(el));
+
+    // Interactive Demo
+    const demoInput = document.getElementById('demoInput');
+    const demoSend = document.getElementById('demoSend');
+    const demoMessages = document.getElementById('demoMessages');
+    const suggestionChips = document.querySelectorAll('.suggestion-chip');
+
     let messageCount = 0;
-    const maxMessages = 2;
-    const chatMessages = document.getElementById('chatMessages');
-    const userInput = document.getElementById('userInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const limitNotice = document.getElementById('limitNotice');
-    let conversationHistory = [];
+    const maxMessages = 3;
 
     function addMessage(text, isUser) {
       const messageDiv = document.createElement('div');
-      messageDiv.className = `message ${isUser ? 'user' : 'indy'}`;
-      messageDiv.innerHTML = text;
-      chatMessages.appendChild(messageDiv);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+      messageDiv.className = `demo-message ${isUser ? 'user' : 'assistant'}`;
+      
+      const avatar = document.createElement('div');
+      avatar.className = 'message-avatar';
+      avatar.textContent = isUser ? '👤' : '🤖';
+      
+      const content = document.createElement('div');
+      content.className = 'message-content';
+      
+      const bubble = document.createElement('div');
+      bubble.className = 'message-bubble';
+      bubble.textContent = text;
+      
+      content.appendChild(bubble);
+      messageDiv.appendChild(avatar);
+      messageDiv.appendChild(content);
+      
+      demoMessages.appendChild(messageDiv);
+      demoMessages.scrollTop = demoMessages.scrollHeight;
+      
       return messageDiv;
     }
 
-    function addTypingIndicator() {
-      const typingDiv = document.createElement('div');
-      typingDiv.className = 'message indy';
-      typingDiv.innerHTML = 'thinking...';
-      chatMessages.appendChild(typingDiv);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-      return typingDiv;
-    }
-
-    async function getAIResponse(userMessage) {
-      conversationHistory.push({
-        role: "user",
-        content: userMessage
-      });
-
-      const systemPrompt = "You are Indy, you use the model: Sunshine 1.0, a sleek AI assistant built by JVST for students. You help with creative ideas, coding, studying, and more. Keep responses concise (2-3 sentences max). Be friendly but professional. Mention that the full version has unlimited messages and image generation.";
+    async function sendDemoMessage(text) {
+      if (!text || messageCount >= maxMessages) return;
       
-      try {
-        const response = await fetch('https://text.pollinations.ai/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            messages: [
-              { role: "system", content: systemPrompt },
-              ...conversationHistory
-            ],
-            model: "openai"
-          })
-        });
-
-        const aiResponse = await response.text();
-        conversationHistory.push({
-          role: "assistant",
-          content: aiResponse
-        });
-        
-        return aiResponse;
-      } catch (error) {
-        console.error('AI Error:', error);
-        return "Having trouble connecting. The full version offers reliable, unlimited access to help with homework, projects, and more!";
-      }
-    }
-
-    async function sendMessage() {
-      const message = userInput.value.trim();
-      if (!message || messageCount >= maxMessages) return;
-
-      addMessage(message, true);
-      userInput.value = '';
-      sendBtn.disabled = true;
-      
-      const typingIndicator = addTypingIndicator();
+      addMessage(text, true);
+      demoInput.value = '';
+      demoSend.disabled = true;
       messageCount++;
       
-      try {
-        const aiResponse = await getAIResponse(message);
-        typingIndicator.remove();
-        addMessage(aiResponse, false);
-      } catch (error) {
-        typingIndicator.remove();
-        addMessage("Connection error. Sign up for reliable, unlimited AI assistance!", false);
+      // Simulate AI thinking
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Generate responses based on keywords
+      let response = "That's an interesting question! ";
+      if (text.toLowerCase().includes('haiku')) {
+        response = "Code flows like water,\nBits dance in silicon,\nFuture takes its shape.";
+      } else if (text.toLowerCase().includes('quantum')) {
+        response = "Quantum computing uses quantum bits (qubits) that can be in multiple states simultaneously, unlike classical bits. This allows for exponentially faster processing of certain types of calculations!";
+      } else if (text.toLowerCase().includes('debug') || text.toLowerCase().includes('code')) {
+        response = "I'd be happy to help debug your code! Please share the code snippet and describe the issue you're encountering, and I'll help you identify and fix the problem.";
+        } else if (text.toLowerCase().includes('hi') || text.toLowerCase().includes('hello')) {
+        response = "Hi! I'm Indy! How can I help today?";
+      } else {
+        response += "I'm here to help with coding, creative writing, studying, and more. Try asking me something specific!";
       }
       
-      const remaining = maxMessages - messageCount;
-      limitNotice.textContent = remaining > 0 
-        ? `${remaining} message${remaining === 1 ? '' : 's'} remaining`
-        : 'Demo complete. Sign up for unlimited access →';
+      addMessage(response, false);
       
-      if (messageCount >= maxMessages) {
-        userInput.disabled = true;
-        userInput.placeholder = 'Try the full version for unlimited access';
+      if (messageCount < maxMessages) {
+        demoSend.disabled = false;
       } else {
-        sendBtn.disabled = false;
+        demoInput.disabled = true;
+        demoInput.placeholder = 'Demo complete! Sign up for unlimited access';
       }
     }
 
-    sendBtn.addEventListener('click', sendMessage);
-    userInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && !sendBtn.disabled) sendMessage();
+    demoSend.addEventListener('click', () => {
+      sendDemoMessage(demoInput.value.trim());
     });
+
+    demoInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !demoSend.disabled) {
+        sendDemoMessage(demoInput.value.trim());
+      }
+    });
+
+    suggestionChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const text = chip.dataset.text;
+        demoInput.value = text;
+        sendDemoMessage(text);
+      });
+    });
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Tunes play button → Deezer 30s preview
+document.addEventListener('DOMContentLoaded', () => {
+  const playButton = document.querySelector('.control-btn.play');
+  
+  if (!playButton) return; // safety check
+
+  // The direct Deezer preview URL (30-second clip)
+  const previewUrl = 'https://cdns-files.dzcdn.net/cache/preview/3050/3050380851/30s.mp3?cid=140685';
+
+  let audio = null;
+  let isPlaying = false;
+
+  playButton.addEventListener('click', () => {
+    // Create audio element only once
+    if (!audio) {
+      audio = new Audio(previewUrl);
+      audio.volume = 0.7; // reasonable default
+      
+      // Optional: visual feedback while playing
+      audio.onplay = () => {
+        playButton.innerHTML = '⏸';
+        playButton.style.background = 'linear-gradient(135deg, #ff6b6b, #ff8e53)';
+      };
+      
+      audio.onpause = audio.onended = () => {
+        playButton.innerHTML = '▶';
+        playButton.style.background = 'var(--color-accent)';
+        isPlaying = false;
+      };
+    }
+
+    if (isPlaying) {
+      audio.pause();
+    } else {
+      // Optional: stop any previous playback and start fresh
+      audio.currentTime = 0;
+      audio.play().catch(err => {
+        console.warn("Preview playback prevented:", err);
+        alert("Browser may block autoplay. Try clicking again or check your autoplay settings.");
+      });
+    }
+    
+    isPlaying = !isPlaying;
+  });
+});
   </script>
 
 </body>
