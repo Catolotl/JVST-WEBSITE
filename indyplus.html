@@ -1,514 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J V S T</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JVST Tunes</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="shortcut icon" type="image/png" href="faviconindy.png">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      color: #111;
-      background: #fff;
-      line-height: 1.6;
-    }
+    <link rel="shortcut icon" type="image/png" href="tunesf.png">
 
-    /* Announcement Banner - Infinite seamless scroll */
-    .announcement {
-      background: #000;
-      color: #fff;
-      text-align: center;
-      padding: 14px 0;
-      font-weight: 500;
-      font-size: 1.15rem;
-      overflow: hidden;
-      white-space: nowrap;
-      position: relative;
-            position: sticky;
-    }
-    .announcement .track {
-      display: inline-flex;
-      animation: scroll 20s linear infinite;
-      will-change: transform;
-    }
-    .announcement .track span {
-      padding: 0 2rem;
-      flex-shrink: 0;
-    }
-    @keyframes scroll {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    /* Navbar */
-    nav {
-      background: #fff;
-      padding: 1.2rem 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #eee;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .logo {
-      font-size: 1.8rem;
-      font-weight: bold;
-      letter-spacing: 2px;
-    }
-    .nav-links {
-      display: flex;
-      gap: 2.5rem;
-      font-weight: 500;
-    }
-    .nav-links a {
-      text-decoration: none;
-      color: #000;
-      transition: color 0.3s;
-    }
-    .nav-links a:hover {
-      color: #666;
-    }
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
-    .nav-right a {
-      text-decoration: none;
-      color: #000;
-      font-weight: 500;
-    }
-    .heart {
-      font-size: 1.4rem;
-      transition: transform 0.3s;
-    }
-    .heart:hover {
-      transform: scale(1.2);
-    }
-    .login-btn {
-      background: #000;
-      color: #fff !important;
-      padding: 0.5rem 1.2rem;
-      border-radius: 6px;
-      transition: all 0.3s ease;
-    }
-    .login-btn:hover {
-      background: #222;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-
-    /* Hero */
-    .hero {
-      height: 90vh;
-      min-height: 600px;
-      background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)),
-                  url('static.png') center/cover no-repeat;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 0 5%;
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.9s ease, transform 0.9s ease;
-    }
-    .hero.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .hero h1 {
-      font-size: 6.5rem;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-      letter-spacing: 8px;
-    }
-    .hero p {
-      font-size: 2.2rem;
-      margin-bottom: 2.5rem;
-      opacity: 0.95;
-    }
-    .hero-buttons {
-      display: flex;
-      gap: 1.5rem;
-    }
-    .btn {
-      padding: 1rem 2.2rem;
-      font-size: 1.2rem;
-      font-weight: 600;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      border: 2px solid #000;
-    }
-    .btn-explore {
-      background: white;
-      color: black;
-    }
-    .btn-explore:hover {
-      background: #f0f0f0;
-      transform: translateY(-3px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-    }
-    .btn-login {
-      background: black;
-      color: white;
-      border-color: black;
-    }
-    .btn-login:hover {
-      background: #222;
-      transform: translateY(-3px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-    }
-
-    /* Sections */
-    .section {
-      padding: 8rem 5%;
-      display: flex;
-      align-items: center;
-      gap: 6rem;
-      flex-wrap: wrap;
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 1s ease, transform 1s ease;
-    }
-    .section.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .section.reverse {
-      flex-direction: row-reverse;
-    }
-    .section-text {
-      flex: 1;
-      min-width: 320px;
-    }
-    .section-text h2 {
-      font-size: 3.5rem;
-      margin-bottom: 1.2rem;
-      line-height: 1.1;
-    }
-    .section-text p.subtitle {
-      font-size: 1.4rem;
-      font-weight: 500;
-      margin-bottom: 1.8rem;
-      opacity: 0.8;
-    }
-    .section-text p {
-      font-size: 1.25rem;
-      line-height: 1.7;
-      max-width: 580px;
-      margin-bottom: 2rem;
-    }
-    .section-buttons {
-      display: flex;
-      gap: 1.2rem;
-    }
-    .btn-sec {
-      padding: 0.9rem 1.8rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-      border-radius: 6px;
-      text-decoration: none;
-      transition: all 0.3s;
-    }
-    .btn-primary {
-      background: #000;
-      color: white;
-    }
-    .btn-primary:hover {
-      background: #222;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
-    }
-    .btn-outline {
-      background: white;
-      color: #000;
-      border: 2px solid #000;
-    }
-    .btn-outline:hover {
-      background: #f8f8f8;
-      transform: translateY(-2px);
-    }
-
-
-    /* Footer - more detailed */
-    footer {
-      background: #000;
-      color: #ccc;
-      padding: 4rem 5% 2rem;
-      text-align: center;
-    }
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 2.5rem;
-      margin-bottom: 3rem;
-    }
-    .footer-col h4 {
-      color: white;
-      font-size: 1.2rem;
-      margin-bottom: 1.2rem;
-    }
-    .footer-col ul {
-      list-style: none;
-    }
-    .footer-col ul li {
-      margin-bottom: 0.8rem;
-    }
-    .footer-col a {
-      color: #ccc;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .footer-col a:hover {
-      color: white;
-    }
-    .footer-bottom {
-      border-top: 1px solid #333;
-      padding-top: 2rem;
-      font-size: 0.95rem;
-    }
-
-    
-
-    @media (max-width: 900px) {
-      .section, .section.reverse {
-        flex-direction: column;
-        text-align: center;
-      }
-      .hero h1 { font-size: 5rem; }
-      .hero p { font-size: 1.8rem; }
-      .nav-links { display: none; }
-      .section-buttons {
-        flex-direction: column;
-      }
-    }
-
-.section-img {
-  flex: 1;
-  min-width: 320px;
-  max-width: 580px;           /* keeps it from getting too wide; adjust or remove */
-  display: flex;              /* helps child (img) fill without gaps */
-  align-items: center;        /* vertical centering if needed */
-  justify-content: center;
-}
-
-.section-img img {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 12px;
-  /* Removed box-shadow completely for clean look */
-  transition: transform 0.3s ease;   /* keep subtle zoom on hover */
-}
-
-.section-img img:hover {
-  transform: scale(1.03);     /* gentle lift/zoom, no shadow change needed */
-}
-
-    /* Dropdown styles */
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-toggle {
-  cursor: pointer;
-  padding: 0.5rem 0; /* better click/tap area */
-}
-
-.dropdown-toggle::after {
-  content: "▾";
-  margin-left: 4px;
-  font-size: 0.9rem;
-  transition: transform 0.2s;
-}
-
-.dropdown:hover .dropdown-toggle::after,
-.dropdown.active .dropdown-toggle::after {
-  transform: rotate(180deg);
-}
-
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: white;
-  min-width: 140px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-  border-radius: 8px;
-  overflow: hidden;
-  z-index: 200;
-  margin-top: 8px;
-  border: 1px solid #eee;
-}
-
-.dropdown-menu a {
-  display: block;
-  padding: 12px 20px;
-  color: #111;
-  text-decoration: none;
-  font-weight: 500;
-  transition: background 0.15s, color 0.15s;
-}
-
-.dropdown-menu a:hover {
-  background: #f8f8f8;
-  color: #000;
-}
-
-/* Show dropdown */
-.dropdown:hover .dropdown-menu,
-.dropdown.active .dropdown-menu {
-  display: block;
-}
-
-.gradient-text {
-  background: linear-gradient(
-    90deg,
-    rgba(0, 183, 255, 1) 0%,
-    rgba(193, 87, 199, 1) 25%,
-    rgba(242, 39, 39, 1) 75%,
-    rgba(237, 221, 83, 1) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-    
-/* Mobile: make sure it works on tap */
-@media (max-width: 900px) {
-  .nav-links {
-    display: flex; /* override your existing display:none for now */
-    flex-direction: row;
-    gap: 1.8rem;
-  }
-
-  .dropdown-menu {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    min-width: 160px;
-  }
-}
-
-              /* Embed area */
-        .embed-wrapper {
-            margin-top: 96px; /* approx navbar height */
-            width: 100%;
-            height: calc(100vh - 96px);
+    <style>
+        /* Reset everything */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
+        /* Make the page itself full screen */
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background: #fff;
+            color: #111;
+        }
+
+        /* Fullscreen embed wrapper */
+        .embed-wrapper {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Fullscreen iframe */
         .embed-wrapper iframe {
             width: 100%;
             height: 100%;
             border: none;
+            display: block;
         }
-
-        @media (max-width: 768px) {
-            .nav-container {
-                padding: 20px 30px;
-            }
-            .nav-links {
-                gap: 24px;
-            }
-            .dropdown-menu {
-                left: 0;
-                transform: translateX(0) translateY(10px);
-            }
-            .nav-dropdown:hover .dropdown-menu,
-            .nav-dropdown.active .dropdown-menu {
-                transform: translateX(0) translateY(0);
-            }
-        }
-  </style>
+    </style>
 </head>
-
 <body>
 
-<nav>
-  <div class="logo">JVST</div>
-  <div class="nav-links">
-    <a href="index.html">Home</a>
-
-    <!-- Products becomes a dropdown container -->
-    <div class="dropdown">
-      <a href="#" class="dropdown-toggle">Products</a>
-      <div class="dropdown-menu">
-        <a href="tv.html">TV</a>       <!-- change href if needed -->
-        <a href="tunes.html">Tunes</a>
-      </div>
+    <div class="embed-wrapper">
+        <iframe
+            src="https://catolotl.github.io/Blade-2.0-Apollo-/premium.html"
+            loading="lazy"
+            allowfullscreen
+            referrerpolicy="no-referrer"
+        ></iframe>
     </div>
 
-    <a href="indy.html">AI</a>
-  </div>
-  <div class="nav-right">
-    <a href="#" class="heart">♡</a>
-    <a href="login.html" class="login-btn">Log In</a>
-  </div>
-</nav>
-
-<!-- EMBED CONTENT -->
-<div class="embed-wrapper">
-    <iframe 
-        src="https://catolotl.github.io/Blade-2.0-Apollo-/premium.html"
-        loading="lazy"
-        allowfullscreen>
-    </iframe>
-</div>
-
-    <script>
-        // Dropdown (hover + click support)
-        document.addEventListener('DOMContentLoaded', () => {
-            const dropdowns = document.querySelectorAll('.nav-dropdown');
-
-            dropdowns.forEach(dropdown => {
-                const trigger = dropdown.querySelector('.dropdown-trigger');
-                const menu = dropdown.querySelector('.dropdown-menu');
-
-                dropdown.addEventListener('mouseenter', () => {
-                    dropdown.classList.add('active');
-                });
-
-                dropdown.addEventListener('mouseleave', () => {
-                    dropdown.classList.remove('active');
-                });
-
-                trigger.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const isActive = dropdown.classList.contains('active');
-                    dropdowns.forEach(d => d.classList.remove('active'));
-                    if (!isActive) {
-                        dropdown.classList.add('active');
-                    }
-                });
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.nav-dropdown')) {
-                    document.querySelectorAll('.nav-dropdown').forEach(d => {
-                        d.classList.remove('active');
-                    });
-                }
-            });
-        });
-    </script>
-    
 </body>
 </html>
