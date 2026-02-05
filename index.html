@@ -2056,6 +2056,197 @@ h1, h2, h3, .product-tile-title, .track-info h3 {
   .hero h1 { font-size: clamp(56px, 14vw, 100px) !important; }
   .music-player-window { border-radius: 24px !important; }
 }
+    /* ───────────────────────────────────────────────
+   FINAL POLISH – 2026 Apple-level refinement
+   - Fixes white-on-white text (headers now adaptive)
+   - Liquid Glass maxed: deeper blur + subtle glows
+   - Ultra-clean contrast + spacious minimalism
+   - Paste AFTER previous Apple Music block – at VERY END
+─────────────────────────────────────────────── */
+
+:root {
+  --liquid-glass-bg:      rgba(255,255,255,0.65);
+  --liquid-glass-dark:    rgba(18,18,25,0.82);
+  --glass-glow:           inset 0 1px 0 rgba(255,255,255,0.12),
+                          inset 0 -1px 0 rgba(0,0,0,0.08);
+  --text-primary-light:   #0a0a0e;
+  --text-primary-dark:    #f5f5f7;
+  --text-secondary:       #6e6e73;
+  --transition-ease:      cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* ── Global fixes & enhancements ── */
+body {
+  background: linear-gradient(145deg, #f9f9fc 0%, #f2f4f8 100%) !important;
+  color: var(--text-primary-light) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(145deg, #000 0%, #0a0a0e 100%) !important;
+    color: var(--text-primary-dark) !important;
+  }
+}
+
+/* Adaptive section headers – never white-on-white again */
+.section-header h2,
+.hero h1,
+.product-tile-title,
+.track-info h3,
+.models-table th {
+  color: inherit !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+}
+
+.section-header {
+  margin-bottom: 80px !important;
+}
+
+.section-header h2 {
+  font-size: clamp(60px, 9vw, 110px) !important;
+  font-weight: 675 !important;
+  letter-spacing: -0.045em !important;
+  line-height: 0.95 !important;
+  margin-bottom: 16px !important;
+}
+
+/* Light backgrounds → dark text */
+.hero,
+.feature-section,
+.stats-section,
+.outages-section,
+.ads-gallery-section,
+.comparison-section,
+.cta-section,
+.models-section,
+.product-showcase {
+  color: var(--text-primary-light) !important;
+}
+
+.hero h1,
+.section-header h2:not(.demo-section-black *):not(.testimonials-section *) {
+  color: var(--text-primary-light) !important;
+}
+
+/* Dark backgrounds → white/bright text */
+.demo-section-black,
+.testimonials-section,
+.artists-section,
+.tunes-desktop-section {
+  color: var(--text-primary-dark) !important;
+}
+
+.demo-section-black .section-header h2,
+.testimonials-section .section-header h2 {
+  color: white !important;
+}
+
+/* Liquid Glass – elevated everywhere */
+.glass-card,
+.pricing-card,
+.feature-card,
+.testimonial-card,
+.glass-card-dark,
+.music-player-window,
+.ad-window,
+.demo-window,
+.models-table-container,
+.comparison-table-container,
+.outage-summary,
+.outage-graph {
+  background: var(--liquid-glass-bg) !important;
+  backdrop-filter: blur(42px) saturate(145%) !important;
+  -webkit-backdrop-filter: blur(42px) saturate(145%) !important;
+  border: 1px solid rgba(140,140,160,0.20) !important;
+  box-shadow: 0 24px 72px rgba(0,0,0,0.14),
+              var(--glass-glow) !important;
+  border-radius: 28px !important;
+  transition: all 0.55s var(--transition-ease) !important;
+}
+
+.glass-card-dark,
+.demo-section-black .glass-card-dark,
+.testimonial-card {
+  background: var(--liquid-glass-dark) !important;
+  border-color: rgba(100,100,130,0.32) !important;
+  box-shadow: 0 32px 90px rgba(0,0,0,0.55),
+              inset 0 1px 0 rgba(255,255,255,0.10) !important;
+}
+
+.glass-card:hover,
+.pricing-card:hover,
+.feature-card:hover,
+.ad-window:hover,
+.testimonial-card:hover {
+  transform: translateY(-12px) scale(1.018) !important;
+  box-shadow: 0 40px 120px rgba(0,0,0,0.22),
+              var(--glass-glow) !important;
+  border-color: rgba(80,140,255,0.35) !important;
+}
+
+/* Typography refinement – SF Pro variable feel */
+h1, h2, h3, h4 {
+  font-variation-settings: "wght" 640, "wdth" 95 !important;
+}
+
+p, li, .pricing-features li, .feature-card p {
+  font-weight: 420 !important;
+  letter-spacing: -0.008em !important;
+  line-height: 1.48 !important;
+  color: var(--text-secondary) !important;
+}
+
+/* Buttons – final Apple polish */
+.btn {
+  font-weight: 560 !important;
+  padding: 14px 36px !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+  transition: all 0.4s var(--transition-ease) !important;
+}
+
+.btn-primary, .btn-primary.gradient {
+  background: linear-gradient(135deg, #0071e3 0%, #0062c9 100%) !important;
+  color: white !important;
+  box-shadow: 0 6px 20px rgba(0,113,227,0.28) !important;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #007aff 0%, #0074e0 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 32px rgba(0,113,227,0.38) !important;
+}
+
+/* Pricing cards – featured one pops more elegantly */
+.pricing-card.featured {
+  background: linear-gradient(to bottom, rgba(255,255,255,0.88), rgba(240,248,255,0.82)) !important;
+  border-color: rgba(0,113,227,0.40) !important;
+  box-shadow: 0 28px 80px rgba(0,113,227,0.25),
+              var(--glass-glow) !important;
+}
+
+/* Hero – cinematic final touch */
+.hero {
+  background: linear-gradient(135deg, #f0f4ff 0%, #e5efff 100%) !important;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 80%, rgba(0,114,255,0.09) 0%, transparent 70%);
+  z-index: 0;
+}
+
+/* Mobile – keep elegance */
+@media (max-width: 768px) {
+  .section-header h2 { font-size: clamp(48px, 10vw, 80px) !important; }
+  .pricing-card, .feature-card { padding: 48px 32px !important; }
+  .music-player-window { border-radius: 24px !important; }
+}
   </style>
 </head>
 <body>
