@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poppy Playtime - 3D Recreation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            background: #000;
+        }
+
+        #gameCanvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            color: white;
+            font-size: 16px;
+        }
+
+        #crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        #crosshair::before,
+        #crosshair::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        #crosshair::before {
+            top: 50%;
+            left: 2px;
+            right: 2px;
+            height: 2px;
+            transform: translateY(-50%);
+        }
+
+        #crosshair::after {
+            left: 50%;
+            top: 2px;
+            bottom: 2px;
+            width: 2px;
+            transform: translateX(-50%);
+        }
+
+        #handIndicator {
+            display: none; /* Remove button UI */
+        }
+
+        .hand {
+            display: none;
+        }
+
+        .hand.active {
+            display: none;
+        }
+
+        .hand-icon {
+            display: none;
+        }
+
+        .hand-blue .hand-icon {
+            display: none;
+        }
+
+        .hand-red .hand-icon {
+            display: none;
+        }
+
+        #objectiveText {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 30px;
+            border-radius: 8px;
+            border-left: 4px solid #4A90E2;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        #interaction {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        #startScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            pointer-events: all;
+        }
+
+        #startScreen h1 {
+            font-size: 72px;
+            margin-bottom: 20px;
+            color: #E24A4A;
+            text-shadow: 0 0 20px rgba(226, 74, 74, 0.5);
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        #startScreen p {
+            font-size: 24px;
+            margin-bottom: 40px;
+            color: #aaa;
+        }
+
+        #startButton {
+            padding: 20px 50px;
+            font-size: 24px;
+            background: #E24A4A;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            pointer-events: all;
+        }
+
+        #startButton:hover {
+            background: #C23939;
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(226, 74, 74, 0.6);
+        }
+
+        .controls-info {
+            margin-top: 40px;
+            text-align: center;
+            color: #888;
+            font-size: 16px;
+        }
+
+        .controls-info div {
+            margin: 8px 0;
+        }
+
+        #handExtension {
+            position: absolute;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        #minimap {
+            position: absolute;
+            bottom: 120px;
+            right: 30px;
+            width: 200px;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        #puzzleStatus {
+            position: absolute;
+            top: 100px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4A90E2;
+            min-width: 200px;
+        }
+
+        .puzzle-item {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .puzzle-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #4A90E2;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .puzzle-checkbox.completed {
+            background: #4A90E2;
+        }
+
+        .puzzle-checkbox.completed::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    
+    <div id="ui">
+        <div id="crosshair"></div>
+        
+        <div id="objectiveText">
+            Find the power room and restore electricity to the factory
+        </div>
+
+        <div id="handIndicator">
+            <div class="hand hand-blue active">
+                <div class="hand-icon"></div>
+                <span>LEFT HAND (1)</span>
+            </div>
+            <div class="hand hand-red">
+                <div class="hand-icon"></div>
+                <span>RIGHT HAND (2)</span>
+            </div>
+        </div>
+
+        <div id="interaction"></div>
+
+        <div id="puzzleStatus">
+            <div style="font-weight: bold; margin-bottom: 10px;">OBJECTIVES</div>
+            <div class="puzzle-item">
+                <div class="puzzle-checkbox" id="power1"></div>
+                <span>Restore Main Power</span>
+            </div>
+            <div class="puzzle-item">
+                <div class="puzzle-checkbox" id="keycard"></div>
+                <span>Find Security Keycard</span>
+            </div>
+            <div class="puzzle-item">
+                <div class="puzzle-checkbox" id="door1"></div>
+                <span>Open Security Door</span>
+            </div>
+            <div class="puzzle-item">
+                <div class="puzzle-checkbox" id="puzzle1"></div>
+                <span>Solve Electrical Puzzle</span>
+            </div>
+        </div>
+
+        <canvas id="minimap"></canvas>
+    </div>
+
+    <div id="startScreen">
+        <h1>POPPY PLAYTIME</h1>
+        <p>Can you survive the factory?</p>
+        <button id="startButton">START GAME</button>
+        <div class="controls-info">
+            <div><strong>WASD</strong> - Move</div>
+            <div><strong>Mouse</strong> - Look Around</div>
+            <div><strong>Hold Click</strong> - Scan with Hand</div>
+            <div><strong>1/2</strong> - Switch Hands (Blue/Red)</div>
+            <div><strong>E</strong> - Interact</div>
+            <div><strong>Shift</strong> - Sprint</div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        console.log('Three.js loaded:', typeof THREE !== 'undefined');
+        
+        // Game State
+        const gameState = {
+            currentHand: 'blue',
+            handExtended: false,
+            handGrabbing: null,
+            powerRestored: false,
+            hasKeycard: false,
+            doorUnlocked: false,
+            puzzleSolved: false,
+            puzzleConnections: [],
+            electricalNodes: []
+        };
+
+        // Three.js Setup
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x4a4a5e);  // Lighter gray-blue background
+        scene.fog = new THREE.Fog(0x4a4a5e, 30, 100);
+
+        const canvas = document.getElementById('gameCanvas');
+        const renderer = new THREE.WebGLRenderer({ 
+            canvas: canvas,
+            antialias: true
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 1.6, 5);  // Start position looking into the scene
+        scene.add(camera);
+        
+        console.log('Scene initialized:', scene);
+        console.log('Camera position:', camera.position);
+
+        // Player setup
+        const player = {
+            position: new THREE.Vector3(0, 1.6, 5),
+            velocity: new THREE.Vector3(0, 0, 0),
+            rotation: { x: 0, y: 0 },
+            speed: 0.15,
+            sprintMultiplier: 1.8,
+            isSprinting: false
+        };
+
+        camera.position.copy(player.position);
+        
+        console.log('Player initialized at:', player.position);
+
+        // Create visual hand models
+        let leftHandMesh, rightHandMesh;
+        
+        function createHandModel(color) {
+            const handGroup = new THREE.Group();
+            
+            // Palm
+            const palmGeometry = new THREE.BoxGeometry(0.4, 0.15, 0.6);
+            const handMaterial = new THREE.MeshStandardMaterial({ 
+                color: color,
+                roughness: 0.6,
+                metalness: 0.3
+            });
+            const palm = new THREE.Mesh(palmGeometry, handMaterial);
+            handGroup.add(palm);
+            
+            // Fingers
+            const fingerPositions = [
+                [-0.15, 0, 0.35],
+                [-0.05, 0, 0.4],
+                [0.05, 0, 0.4],
+                [0.15, 0, 0.35]
+            ];
+            
+            fingerPositions.forEach(pos => {
+                const finger = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.08, 0.12, 0.3),
+                    handMaterial
+                );
+                finger.position.set(pos[0], pos[1], pos[2]);
+                handGroup.add(finger);
+            });
+            
+            // Thumb
+            const thumb = new THREE.Mesh(
+                new THREE.BoxGeometry(0.1, 0.12, 0.25),
+                handMaterial
+            );
+            thumb.position.set(0.25, 0, 0);
+            thumb.rotation.z = Math.PI / 6;
+            handGroup.add(thumb);
+            
+            // Wrist connector
+            const wrist = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.15, 0.15, 0.3),
+                handMaterial
+            );
+            wrist.rotation.x = Math.PI / 2;
+            wrist.position.z = -0.4;
+            handGroup.add(wrist);
+            
+            return handGroup;
+        }
+        
+        leftHandMesh = createHandModel(0x4A90E2);
+        rightHandMesh = createHandModel(0xE24A4A);
+        
+        // Position hands in world space (will be rendered as if at screen corners)
+        leftHandMesh.position.set(-1.2, -0.8, -2);
+        leftHandMesh.rotation.set(0.3, -0.5, 0.2);
+        rightHandMesh.position.set(1.2, -0.8, -2);
+        rightHandMesh.rotation.set(0.3, 0.5, -0.2);
+        
+        // Attach to camera so they move with view
+        camera.add(leftHandMesh);
+        camera.add(rightHandMesh);
+
+        // Lighting - VERY BRIGHT for debugging
+        const ambientLight = new THREE.AmbientLight(0xffffff, 2.0);  // Super bright white light
+        scene.add(ambientLight);
+
+        const mainLight = new THREE.DirectionalLight(0xffffff, 2.0);  // Super bright
+        mainLight.position.set(10, 20, 10);
+        mainLight.castShadow = true;
+        mainLight.shadow.mapSize.width = 2048;
+        mainLight.shadow.mapSize.height = 2048;
+        mainLight.shadow.camera.near = 0.5;
+        mainLight.shadow.camera.far = 100;
+        mainLight.shadow.camera.left = -50;
+        mainLight.shadow.camera.right = 50;
+        mainLight.shadow.camera.top = 50;
+        mainLight.shadow.camera.bottom = -50;
+        scene.add(mainLight);
+        
+        // Add hemisphere light for even better visibility
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
+        hemiLight.position.set(0, 20, 0);
+        scene.add(hemiLight);
+        
+        console.log('Lighting added. Ambient:', ambientLight.intensity, 'Directional:', mainLight.intensity);
+
+        // Flickering lights
+        const flickeringLights = [];
+        function createFlickeringLight(x, y, z, color) {
+            const light = new THREE.PointLight(color, 1.5, 20);  // Brighter and larger range
+            light.position.set(x, y, z);
+            light.castShadow = true;
+            scene.add(light);
+            flickeringLights.push({ light, baseIntensity: 1.5, time: Math.random() * 100 });
+            return light;
+        }
+
+        // Interactive Objects
+        const interactiveObjects = [];
+        const grabbableObjects = [];
+
+        // Create Factory Environment
+        function createFactory() {
+            console.log('Creating factory...');
+            
+            // Floor - BRIGHT and visible
+            const floorGeometry = new THREE.PlaneGeometry(100, 100);
+            const floorMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x6a6a8e,  // Much lighter purple-gray
+                roughness: 0.7,
+                metalness: 0.1
+            });
+            const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+            floor.rotation.x = -Math.PI / 2;
+            floor.position.y = 0;
+            floor.receiveShadow = true;
+            scene.add(floor);
+            console.log('Floor added');
+
+            // Grid pattern on floor
+            for (let i = -50; i <= 50; i += 5) {
+                const line1 = createLine(
+                    new THREE.Vector3(i, 0.01, -50),
+                    new THREE.Vector3(i, 0.01, 50),
+                    0x3a3a4e
+                );
+                const line2 = createLine(
+                    new THREE.Vector3(-50, 0.01, i),
+                    new THREE.Vector3(50, 0.01, i),
+                    0x3a3a4e
+                );
+                scene.add(line1, line2);
+            }
+
+            // Walls - Create rooms
+            createRoom(0, 0, 30, 30, 6); // Main lobby
+            createRoom(35, 0, 25, 20, 6); // Power room
+            createRoom(-35, 0, 20, 20, 6); // Security room
+            createRoom(0, 35, 25, 25, 6); // Assembly area
+            createRoom(-30, 35, 20, 20, 6); // Storage
+
+            // Hallways
+            createHallway(15, 0, 5, 20, 6); // Lobby to power
+            createHallway(-15, 0, 5, 20, 6); // Lobby to security
+            createHallway(0, 17, 20, 5, 6); // Lobby to assembly
+
+            // Doors
+            createDoor(14, 0, 10, 0x4A90E2, 'power_room');
+            createDoor(-14, 0, 10, 0xE24A4A, 'security_room');
+            createDoor(0, 0, 16, 0x888888, 'assembly_room');
+
+            // Power Room Setup
+            createPowerBox(38, 1.5, 5);
+            createElectricalPuzzle(38, 1.5, -5);
+
+            // Security Room
+            createKeycard(-38, 1, -8);
+            
+            // Props and atmosphere
+            createProps();
+            createLighting();
+        }
+
+        function createRoom(x, z, width, depth, height) {
+            const wallMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x7a7a9e,  // Much lighter walls
+                roughness: 0.8,
+                metalness: 0.1
+            });
+
+            // Walls
+            const wallThickness = 0.5;
+            
+            // Front wall
+            const frontWall = new THREE.Mesh(
+                new THREE.BoxGeometry(width, height, wallThickness),
+                wallMaterial
+            );
+            frontWall.position.set(x, height/2, z - depth/2);
+            frontWall.castShadow = true;
+            frontWall.receiveShadow = true;
+            scene.add(frontWall);
+
+            // Back wall
+            const backWall = new THREE.Mesh(
+                new THREE.BoxGeometry(width, height, wallThickness),
+                wallMaterial
+            );
+            backWall.position.set(x, height/2, z + depth/2);
+            backWall.castShadow = true;
+            backWall.receiveShadow = true;
+            scene.add(backWall);
+
+            // Left wall
+            const leftWall = new THREE.Mesh(
+                new THREE.BoxGeometry(wallThickness, height, depth),
+                wallMaterial
+            );
+            leftWall.position.set(x - width/2, height/2, z);
+            leftWall.castShadow = true;
+            leftWall.receiveShadow = true;
+            scene.add(leftWall);
+
+            // Right wall
+            const rightWall = new THREE.Mesh(
+                new THREE.BoxGeometry(wallThickness, height, depth),
+                wallMaterial
+            );
+            rightWall.position.set(x + width/2, height/2, z);
+            rightWall.castShadow = true;
+            rightWall.receiveShadow = true;
+            scene.add(rightWall);
+
+            // Ceiling
+            const ceiling = new THREE.Mesh(
+                new THREE.PlaneGeometry(width, depth),
+                wallMaterial
+            );
+            ceiling.rotation.x = Math.PI / 2;
+            ceiling.position.set(x, height, z);
+            ceiling.receiveShadow = true;
+            scene.add(ceiling);
+        }
+
+        function createHallway(x, z, width, length, height) {
+            const wallMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x3a3a4e,
+                roughness: 0.9
+            });
+
+            const wallThickness = 0.5;
+
+            // Left wall
+            const leftWall = new THREE.Mesh(
+                new THREE.BoxGeometry(wallThickness, height, length),
+                wallMaterial
+            );
+            leftWall.position.set(x - width/2, height/2, z);
+            leftWall.castShadow = true;
+            scene.add(leftWall);
+
+            // Right wall
+            const rightWall = new THREE.Mesh(
+                new THREE.BoxGeometry(wallThickness, height, length),
+                wallMaterial
+            );
+            rightWall.position.set(x + width/2, height/2, z);
+            rightWall.castShadow = true;
+            scene.add(rightWall);
+
+            // Ceiling
+            const ceiling = new THREE.Mesh(
+                new THREE.PlaneGeometry(width, length),
+                wallMaterial
+            );
+            ceiling.rotation.x = Math.PI / 2;
+            ceiling.position.set(x, height, z);
+            scene.add(ceiling);
+        }
+
+        function createDoor(x, y, z, color, id) {
+            const doorGroup = new THREE.Group();
+            
+            // Door frame
+            const frameMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x1a1a2e,
+                roughness: 0.7,
+                metalness: 0.3
+            });
+            
+            const leftFrame = new THREE.Mesh(
+                new THREE.BoxGeometry(0.3, 4, 0.5),
+                frameMaterial
+            );
+            leftFrame.position.set(-1.2, 2, 0);
+            doorGroup.add(leftFrame);
+
+            const rightFrame = new THREE.Mesh(
+                new THREE.BoxGeometry(0.3, 4, 0.5),
+                frameMaterial
+            );
+            rightFrame.position.set(1.2, 2, 0);
+            doorGroup.add(rightFrame);
+
+            const topFrame = new THREE.Mesh(
+                new THREE.BoxGeometry(2.7, 0.3, 0.5),
+                frameMaterial
+            );
+            topFrame.position.set(0, 4, 0);
+            doorGroup.add(topFrame);
+
+            // Door
+            const doorMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x2a2a3e,
+                roughness: 0.6,
+                metalness: 0.4
+            });
+            
+            const door = new THREE.Mesh(
+                new THREE.BoxGeometry(2.2, 3.5, 0.2),
+                doorMaterial
+            );
+            door.position.set(0, 1.75, 0);
+            door.castShadow = true;
+            doorGroup.add(door);
+
+            // Hand Scanner (instead of indicator)
+            const scannerBase = new THREE.Mesh(
+                new THREE.BoxGeometry(0.6, 0.8, 0.15),
+                new THREE.MeshStandardMaterial({ 
+                    color: 0x1a1a2e,
+                    roughness: 0.6,
+                    metalness: 0.5
+                })
+            );
+            scannerBase.position.set(0.9, 2.5, 0.15);
+            doorGroup.add(scannerBase);
+
+            // Scanner screen
+            const scannerScreen = new THREE.Mesh(
+                new THREE.PlaneGeometry(0.5, 0.6),
+                new THREE.MeshStandardMaterial({ 
+                    color: color,
+                    emissive: color,
+                    emissiveIntensity: 0.3
+                })
+            );
+            scannerScreen.position.set(0.9, 2.5, 0.23);
+            doorGroup.add(scannerScreen);
+
+            // Progress bar background
+            const progressBg = new THREE.Mesh(
+                new THREE.PlaneGeometry(0.4, 0.1),
+                new THREE.MeshStandardMaterial({ 
+                    color: 0x000000,
+                    emissive: 0x111111,
+                    emissiveIntensity: 0.5
+                })
+            );
+            progressBg.position.set(0.9, 2.2, 0.24);
+            doorGroup.add(progressBg);
+
+            // Progress bar fill
+            const progressFill = new THREE.Mesh(
+                new THREE.PlaneGeometry(0.001, 0.08),
+                new THREE.MeshStandardMaterial({ 
+                    color: color,
+                    emissive: color,
+                    emissiveIntensity: 1
+                })
+            );
+            progressFill.position.set(0.7, 2.2, 0.25);
+            progressFill.visible = false;
+            doorGroup.add(progressFill);
+
+            doorGroup.position.set(x, y, z);
+            doorGroup.userData = { 
+                type: 'door', 
+                id: id,
+                locked: true,
+                requiredHand: color === 0x4A90E2 ? 'blue' : 'red',
+                scannerScreen: scannerScreen,
+                progressBg: progressBg,
+                progressFill: progressFill,
+                scanning: false,
+                scanProgress: 0,
+                doorMesh: door
+            };
+            
+            scene.add(doorGroup);
+            interactiveObjects.push(doorGroup);
+        }
+
+        function createPowerBox(x, y, z) {
+            const boxGroup = new THREE.Group();
+            
+            // Main box
+            const boxGeometry = new THREE.BoxGeometry(2, 2, 0.5);
+            const boxMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x4a4a5e,
+                roughness: 0.8,
+                metalness: 0.3
+            });
+            const box = new THREE.Mesh(boxGeometry, boxMaterial);
+            box.castShadow = true;
+            boxGroup.add(box);
+
+            // Screen
+            const screenGeometry = new THREE.PlaneGeometry(1.5, 1.2);
+            const screenMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x000000,
+                emissive: 0x001100,
+                emissiveIntensity: 0.5
+            });
+            const screen = new THREE.Mesh(screenGeometry, screenMaterial);
+            screen.position.z = 0.26;
+            boxGroup.add(screen);
+
+            // Power symbol
+            const symbolGeometry = new THREE.CircleGeometry(0.3, 32);
+            const symbolMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0xff0000,
+                emissive: 0xff0000,
+                emissiveIntensity: 1
+            });
+            const symbol = new THREE.Mesh(symbolGeometry, symbolMaterial);
+            symbol.position.set(0, -0.5, 0.27);
+            boxGroup.add(symbol);
+
+            // Lever
+            const leverGeometry = new THREE.CylinderGeometry(0.1, 0.1, 0.8);
+            const leverMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0xff0000,
+                roughness: 0.5,
+                metalness: 0.5
+            });
+            const lever = new THREE.Mesh(leverGeometry, leverMaterial);
+            lever.position.set(0, 0.5, 0.3);
+            lever.rotation.z = Math.PI / 4;
+            leverGroup = new THREE.Group();
+            leverGroup.add(lever);
+            boxGroup.add(leverGroup);
+
+            boxGroup.position.set(x, y, z);
+            boxGroup.userData = { 
+                type: 'powerBox',
+                active: false,
+                lever: leverGroup
+            };
+            
+            scene.add(boxGroup);
+            interactiveObjects.push(boxGroup);
+            grabbableObjects.push(boxGroup);
+        }
+
+        function createElectricalPuzzle(x, y, z) {
+            const puzzleGroup = new THREE.Group();
+            
+            // Base panel
+            const panelGeometry = new THREE.BoxGeometry(3, 3, 0.3);
+            const panelMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x2a2a3e,
+                roughness: 0.9
+            });
+            const panel = new THREE.Mesh(panelGeometry, panelMaterial);
+            puzzleGroup.add(panel);
+
+            // Create electrical nodes
+            const nodePositions = [
+                [-1, 1, 0.2],
+                [1, 1, 0.2],
+                [-1, -1, 0.2],
+                [1, -1, 0.2],
+                [0, 0, 0.2]
+            ];
+
+            nodePositions.forEach((pos, index) => {
+                const nodeGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+                const nodeMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0x4A90E2,
+                    emissive: 0x4A90E2,
+                    emissiveIntensity: 0.5,
+                    roughness: 0.3,
+                    metalness: 0.7
+                });
+                const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
+                node.position.set(...pos);
+                node.userData = { 
+                    type: 'electricalNode',
+                    index: index,
+                    connected: false
+                };
+                puzzleGroup.add(node);
+                gameState.electricalNodes.push(node);
+            });
+
+            puzzleGroup.position.set(x, y, z);
+            puzzleGroup.userData = { type: 'electricalPuzzle' };
+            
+            scene.add(puzzleGroup);
+            interactiveObjects.push(puzzleGroup);
+        }
+
+        function createKeycard(x, y, z) {
+            const cardGroup = new THREE.Group();
+            
+            const cardGeometry = new THREE.BoxGeometry(0.3, 0.5, 0.02);
+            const cardMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0xE24A4A,
+                emissive: 0xE24A4A,
+                emissiveIntensity: 0.5,
+                roughness: 0.3,
+                metalness: 0.7
+            });
+            const card = new THREE.Mesh(cardGeometry, cardMaterial);
+            card.castShadow = true;
+            cardGroup.add(card);
+
+            // Add glow
+            const glowGeometry = new THREE.SphereGeometry(0.4, 16, 16);
+            const glowMaterial = new THREE.MeshBasicMaterial({ 
+                color: 0xE24A4A,
+                transparent: true,
+                opacity: 0.3
+            });
+            const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+            cardGroup.add(glow);
+
+            cardGroup.position.set(x, y, z);
+            cardGroup.userData = { type: 'keycard' };
+            
+            scene.add(cardGroup);
+            interactiveObjects.push(cardGroup);
+            grabbableObjects.push(cardGroup);
+
+            // Animate floating
+            cardGroup.userData.update = function(time) {
+                this.position.y = y + Math.sin(time * 2) * 0.1;
+                this.rotation.y += 0.02;
+            };
+        }
+
+        function createProps() {
+            // Boxes scattered around
+            for (let i = 0; i < 20; i++) {
+                const size = 0.5 + Math.random() * 1;
+                const boxGeometry = new THREE.BoxGeometry(size, size, size);
+                const boxMaterial = new THREE.MeshStandardMaterial({ 
+                    color: Math.random() * 0x666666,
+                    roughness: 0.8
+                });
+                const box = new THREE.Mesh(boxGeometry, boxMaterial);
+                box.position.set(
+                    (Math.random() - 0.5) * 80,
+                    size / 2,
+                    (Math.random() - 0.5) * 80
+                );
+                box.rotation.y = Math.random() * Math.PI;
+                box.castShadow = true;
+                box.receiveShadow = true;
+                scene.add(box);
+            }
+
+            // Pipes on ceiling
+            for (let i = 0; i < 15; i++) {
+                const pipeGeometry = new THREE.CylinderGeometry(0.1, 0.1, 10, 8);
+                const pipeMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0x444444,
+                    roughness: 0.7,
+                    metalness: 0.5
+                });
+                const pipe = new THREE.Mesh(pipeGeometry, pipeMaterial);
+                pipe.position.set(
+                    (Math.random() - 0.5) * 60,
+                    5.5,
+                    (Math.random() - 0.5) * 60
+                );
+                pipe.rotation.z = Math.PI / 2;
+                pipe.castShadow = true;
+                scene.add(pipe);
+            }
+        }
+
+        function createLighting() {
+            // Ceiling lights in rooms
+            const lightPositions = [
+                [0, 5.5, 0],
+                [35, 5.5, 0],
+                [-35, 5.5, 0],
+                [0, 5.5, 35],
+                [-30, 5.5, 35]
+            ];
+
+            lightPositions.forEach(pos => {
+                createFlickeringLight(pos[0], pos[1], pos[2], 0xffffcc);
+                
+                // Light fixture
+                const fixtureGeometry = new THREE.CylinderGeometry(0.3, 0.5, 0.2, 16);
+                const fixtureMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0x1a1a2e,
+                    emissive: 0xffffcc,
+                    emissiveIntensity: 0.3
+                });
+                const fixture = new THREE.Mesh(fixtureGeometry, fixtureMaterial);
+                fixture.position.set(pos[0], pos[1], pos[2]);
+                scene.add(fixture);
+            });
+        }
+
+        function createLine(start, end, color) {
+            const material = new THREE.LineBasicMaterial({ color: color });
+            const geometry = new THREE.BufferGeometry().setFromPoints([start, end]);
+            return new THREE.Line(geometry, material);
+        }
+
+        // Hand visualization
+        let handLine = null;
+        let handTarget = null;
+
+        function updateHandVisualization() {
+            // Remove old line if exists
+            if (handLine) {
+                scene.remove(handLine);
+                handLine = null;
+            }
+
+            if (gameState.handExtended && handTarget) {
+                const handColor = gameState.currentHand === 'blue' ? 0x4A90E2 : 0xE24A4A;
+                const points = [];
+                points.push(camera.position.clone());
+                points.push(handTarget.clone());
+
+                const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                const material = new THREE.LineBasicMaterial({ 
+                    color: handColor,
+                    linewidth: 3,
+                    opacity: 0.8,
+                    transparent: true
+                });
+                
+                handLine = new THREE.Line(geometry, material);
+                scene.add(handLine);
+
+                // Add particle effect at target
+                const particleGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+                const particleMaterial = new THREE.MeshBasicMaterial({ 
+                    color: handColor,
+                    transparent: true,
+                    opacity: 0.6
+                });
+                const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+                particle.position.copy(handTarget);
+                scene.add(particle);
+                
+                setTimeout(() => scene.remove(particle), 100);
+            }
+        }
+
+        // Raycaster for interaction
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2(0, 0); // Center of screen
+
+        function checkInteraction() {
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(interactiveObjects, true);
+            
+            const interaction = document.getElementById('interaction');
+            
+            if (intersects.length > 0) {
+                const object = intersects[0].object;
+                let parentObject = object;
+                
+                // Find the parent interactive object
+                while (parentObject.parent && !parentObject.userData.type) {
+                    parentObject = parentObject.parent;
+                }
+
+                if (parentObject.userData.type) {
+                    const distance = intersects[0].distance;
+                    
+                    if (distance < 5) {
+                        switch (parentObject.userData.type) {
+                            case 'powerBox':
+                                interaction.textContent = '[E] Activate Power / [Click] Pull Lever';
+                                interaction.style.display = 'block';
+                                break;
+                            case 'door':
+                                if (parentObject.userData.locked) {
+                                    const handMatch = parentObject.userData.requiredHand === gameState.currentHand;
+                                    if (handMatch) {
+                                        interaction.textContent = '[Hold Click] Scan ' + gameState.currentHand + ' hand';
+                                    } else {
+                                        interaction.textContent = 'Need ' + parentObject.userData.requiredHand + ' hand (press 1 or 2)';
+                                    }
+                                } else {
+                                    interaction.textContent = 'Door unlocked';
+                                }
+                                interaction.style.display = 'block';
+                                break;
+                            case 'keycard':
+                                interaction.textContent = '[Click] Grab Keycard';
+                                interaction.style.display = 'block';
+                                break;
+                            case 'electricalNode':
+                                interaction.textContent = '[Click] Connect Node';
+                                interaction.style.display = 'block';
+                                break;
+                        }
+                        return parentObject;
+                    }
+                }
+            }
+            
+            interaction.style.display = 'none';
+            return null;
+        }
+
+        // Input handling
+        const keys = {};
+        let mouseMovementX = 0;
+        let mouseMovementY = 0;
+
+        document.addEventListener('keydown', (e) => {
+            keys[e.key.toLowerCase()] = true;
+            
+            if (e.key === '1') {
+                gameState.currentHand = 'blue';
+                updateHandUI();
+            } else if (e.key === '2') {
+                gameState.currentHand = 'red';
+                updateHandUI();
+            } else if (e.key.toLowerCase() === 'e') {
+                const target = checkInteraction();
+                if (target && target.userData.type === 'powerBox') {
+                    activatePowerBox(target);
+                }
+            } else if (e.key === 'Shift') {
+                player.isSprinting = true;
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            keys[e.key.toLowerCase()] = false;
+            
+            if (e.key === 'Shift') {
+                player.isSprinting = false;
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (document.pointerLockElement === renderer.domElement) {
+                mouseMovementX = e.movementX;
+                mouseMovementY = e.movementY;
+            }
+        });
+
+        let isMouseDown = false;
+        let scanningDoor = null;
+
+        document.addEventListener('mousedown', (e) => {
+            if (document.pointerLockElement === renderer.domElement) {
+                isMouseDown = true;
+                const target = checkInteraction();
+                if (target) {
+                    if (target.userData.type === 'door' && 
+                        target.userData.locked && 
+                        target.userData.requiredHand === gameState.currentHand) {
+                        // Start scanning
+                        scanningDoor = target;
+                        target.userData.scanning = true;
+                        target.userData.scanProgress = 0;
+                        target.userData.progressFill.visible = true;
+                    } else {
+                        handleObjectInteraction(target, e);
+                    }
+                } else {
+                    // Extend hand to point in space
+                    raycaster.setFromCamera(mouse, camera);
+                    const distance = 10;
+                    handTarget = camera.position.clone().add(
+                        raycaster.ray.direction.multiplyScalar(distance)
+                    );
+                    gameState.handExtended = true;
+                    updateHandVisualization();
+                    
+                    setTimeout(() => {
+                        gameState.handExtended = false;
+                        updateHandVisualization();
+                    }, 500);
+                }
+            }
+        });
+
+        document.addEventListener('mouseup', (e) => {
+            isMouseDown = false;
+            if (scanningDoor) {
+                // Stop scanning if released early
+                scanningDoor.userData.scanning = false;
+                scanningDoor.userData.scanProgress = 0;
+                scanningDoor.userData.progressFill.visible = false;
+                scanningDoor = null;
+            }
+        });
+
+        function handleObjectInteraction(object, event) {
+            const distance = camera.position.distanceTo(object.position);
+            
+            if (distance > 10) return; // Too far
+            
+            switch (object.userData.type) {
+                case 'keycard':
+                    collectKeycard(object);
+                    break;
+                    
+                case 'powerBox':
+                    if (gameState.currentHand === 'blue') {
+                        handTarget = object.position.clone();
+                        gameState.handExtended = true;
+                        gameState.handGrabbing = object;
+                        updateHandVisualization();
+                    }
+                    break;
+                    
+                case 'electricalNode':
+                    connectElectricalNode(object);
+                    break;
+            }
+        }
+
+        function activatePowerBox(powerBox) {
+            if (!gameState.powerRestored && powerBox.userData.lever) {
+                powerBox.userData.lever.rotation.z = -Math.PI / 4;
+                powerBox.userData.active = true;
+                gameState.powerRestored = true;
+                
+                // Update visuals
+                powerBox.children.forEach(child => {
+                    if (child.material && child.material.emissive) {
+                        child.material.emissive.setHex(0x00ff00);
+                    }
+                });
+                
+                // Turn on all lights
+                mainLight.intensity = 0.8;
+                flickeringLights.forEach(fl => fl.baseIntensity = 1.2);
+                
+                updateObjective('Main power restored! Find the security keycard.');
+                markPuzzleComplete('power1');
+            }
+        }
+
+        function openDoor(door) {
+            if (!door.userData.locked) return;
+            
+            door.userData.locked = false;
+            
+            // Animate door opening
+            const doorMesh = door.children.find(child => child.geometry && child.geometry.type === 'BoxGeometry');
+            if (doorMesh) {
+                let openAmount = 0;
+                const openInterval = setInterval(() => {
+                    openAmount += 0.05;
+                    doorMesh.position.x = -openAmount * 2;
+                    if (openAmount >= 1) {
+                        clearInterval(openInterval);
+                    }
+                }, 16);
+            }
+            
+            if (door.userData.id === 'security_room') {
+                markPuzzleComplete('door1');
+                updateObjective('Search the security room for the keycard.');
+            }
+        }
+
+        function collectKeycard(keycard) {
+            scene.remove(keycard);
+            gameState.hasKeycard = true;
+            markPuzzleComplete('keycard');
+            updateObjective('Keycard acquired! Head to the electrical puzzle room.');
+            
+            // Remove from interactive objects
+            const index = interactiveObjects.indexOf(keycard);
+            if (index > -1) interactiveObjects.splice(index, 1);
+        }
+
+        function connectElectricalNode(node) {
+            node.userData.connected = !node.userData.connected;
+            
+            if (node.userData.connected) {
+                node.material.emissive.setHex(0x00ff00);
+                node.material.emissiveIntensity = 1;
+                gameState.puzzleConnections.push(node.userData.index);
+            } else {
+                node.material.emissive.setHex(0x4A90E2);
+                node.material.emissiveIntensity = 0.5;
+                const idx = gameState.puzzleConnections.indexOf(node.userData.index);
+                if (idx > -1) gameState.puzzleConnections.splice(idx, 1);
+            }
+            
+            // Check if puzzle is solved (all nodes connected in correct order)
+            if (gameState.puzzleConnections.length === 5) {
+                const correctOrder = [0, 4, 1, 4, 2, 4, 3];
+                // For simplicity, just check if all are connected
+                gameState.puzzleSolved = true;
+                markPuzzleComplete('puzzle1');
+                updateObjective('Electrical puzzle solved! You can now access new areas.');
+                
+                // Create victory effect
+                gameState.electricalNodes.forEach(node => {
+                    node.material.emissive.setHex(0x00ff00);
+                    node.material.emissiveIntensity = 2;
+                });
+            }
+        }
+
+        function updateHandUI() {
+            // Visual feedback is now handled by the 3D hand models in the animation loop
+            // No need for button UI updates
+        }
+
+        function updateObjective(text) {
+            document.getElementById('objectiveText').textContent = text;
+        }
+
+        function markPuzzleComplete(id) {
+            const checkbox = document.getElementById(id);
+            if (checkbox) {
+                checkbox.classList.add('completed');
+            }
+        }
+
+        // Movement
+        function updateMovement() {
+            const moveSpeed = player.speed * (player.isSprinting ? player.sprintMultiplier : 1);
+            
+            const forward = new THREE.Vector3(0, 0, -1);
+            const right = new THREE.Vector3(1, 0, 0);
+            
+            forward.applyQuaternion(camera.quaternion);
+            forward.y = 0;
+            forward.normalize();
+            
+            right.applyQuaternion(camera.quaternion);
+            right.y = 0;
+            right.normalize();
+            
+            player.velocity.set(0, 0, 0);
+            
+            if (keys['w']) player.velocity.add(forward.clone().multiplyScalar(moveSpeed));
+            if (keys['s']) player.velocity.add(forward.clone().multiplyScalar(-moveSpeed));
+            if (keys['d']) player.velocity.add(right.clone().multiplyScalar(moveSpeed));
+            if (keys['a']) player.velocity.add(right.clone().multiplyScalar(-moveSpeed));
+            
+            player.position.add(player.velocity);
+            
+            // Collision detection (simple bounds)
+            player.position.x = Math.max(-48, Math.min(48, player.position.x));
+            player.position.z = Math.max(-48, Math.min(48, player.position.z));
+            
+            camera.position.copy(player.position);
+        }
+
+        function updateCamera() {
+            const sensitivity = 0.002;
+            
+            player.rotation.y -= mouseMovementX * sensitivity;
+            player.rotation.x -= mouseMovementY * sensitivity;
+            
+            player.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, player.rotation.x));
+            
+            camera.rotation.order = 'YXZ';
+            camera.rotation.y = player.rotation.y;
+            camera.rotation.x = player.rotation.x;
+            
+            mouseMovementX = 0;
+            mouseMovementY = 0;
+        }
+
+        // Minimap
+        const minimapCanvas = document.getElementById('minimap');
+        const minimapCtx = minimapCanvas.getContext('2d');
+        minimapCanvas.width = 200;
+        minimapCanvas.height = 200;
+
+        function updateMinimap() {
+            minimapCtx.fillStyle = '#000';
+            minimapCtx.fillRect(0, 0, 200, 200);
+            
+            // Draw map outline
+            minimapCtx.strokeStyle = '#444';
+            minimapCtx.strokeRect(10, 10, 180, 180);
+            
+            // Draw player
+            const playerX = ((player.position.x + 50) / 100) * 180 + 10;
+            const playerY = ((player.position.z + 50) / 100) * 180 + 10;
+            
+            minimapCtx.fillStyle = '#4A90E2';
+            minimapCtx.beginPath();
+            minimapCtx.arc(playerX, playerY, 5, 0, Math.PI * 2);
+            minimapCtx.fill();
+            
+            // Draw direction indicator
+            minimapCtx.strokeStyle = '#4A90E2';
+            minimapCtx.beginPath();
+            minimapCtx.moveTo(playerX, playerY);
+            const dirX = playerX + Math.sin(player.rotation.y) * 15;
+            const dirY = playerY + Math.cos(player.rotation.y) * 15;
+            minimapCtx.lineTo(dirX, dirY);
+            minimapCtx.stroke();
+            
+            // Draw objectives
+            if (!gameState.hasKeycard) {
+                const keycardX = ((-38 + 50) / 100) * 180 + 10;
+                const keycardY = ((-8 + 50) / 100) * 180 + 10;
+                minimapCtx.fillStyle = '#E24A4A';
+                minimapCtx.fillRect(keycardX - 3, keycardY - 3, 6, 6);
+            }
+        }
+
+        // Animation loop
+        let time = 0;
+        let frameCount = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.016;
+            frameCount++;
+            
+            if (frameCount === 1) {
+                console.log('First frame rendering!');
+                console.log('Scene has', scene.children.length, 'children');
+            }
+            
+            updateMovement();
+            updateCamera();
+            checkInteraction();
+            updateMinimap();
+            
+            // Handle door scanning
+            if (scanningDoor && scanningDoor.userData.scanning) {
+                scanningDoor.userData.scanProgress += 0.005;
+                
+                // Update progress bar
+                const progress = Math.min(scanningDoor.userData.scanProgress, 1);
+                scanningDoor.userData.progressFill.scale.x = progress * 400; // Scale from tiny to full width
+                scanningDoor.userData.progressFill.position.x = 0.7 + (progress * 0.2);
+                
+                // Pulse scanner screen
+                const pulseIntensity = 0.3 + Math.sin(time * 20) * 0.2;
+                scanningDoor.userData.scannerScreen.material.emissiveIntensity = pulseIntensity;
+                
+                // Animate active hand extending
+                const activeHand = gameState.currentHand === 'blue' ? leftHandMesh : rightHandMesh;
+                const targetZ = -2 + Math.sin(time * 5) * 0.1;
+                activeHand.position.z = targetZ;
+                
+                // Complete scan
+                if (scanningDoor.userData.scanProgress >= 1) {
+                    openDoor(scanningDoor);
+                    scanningDoor.userData.scanning = false;
+                    scanningDoor.userData.progressFill.visible = false;
+                    scanningDoor.userData.scannerScreen.material.emissive.setHex(0x00ff00);
+                    scanningDoor.userData.scannerScreen.material.emissiveIntensity = 1;
+                    
+                    // Reset hand position
+                    activeHand.position.z = -2;
+                    scanningDoor = null;
+                }
+            }
+            
+            // Animate hands based on current hand
+            if (!scanningDoor) {
+                const activeHand = gameState.currentHand === 'blue' ? leftHandMesh : rightHandMesh;
+                const inactiveHand = gameState.currentHand === 'blue' ? rightHandMesh : leftHandMesh;
+                
+                // Active hand slightly forward and animated
+                activeHand.position.z = -2 + Math.sin(time * 2) * 0.05;
+                activeHand.rotation.x = 0.3 + Math.sin(time * 2) * 0.05;
+                
+                // Inactive hand back and dimmed
+                inactiveHand.position.z = -2.3;
+                inactiveHand.rotation.x = 0.3;
+            }
+            
+            // Flickering lights
+            flickeringLights.forEach(fl => {
+                const flicker = Math.sin(fl.time + time * 10) * 0.1 + 0.9;
+                fl.light.intensity = fl.baseIntensity * flicker;
+                fl.time += 0.1;
+            });
+            
+            // Animate floating objects
+            interactiveObjects.forEach(obj => {
+                if (obj.userData.update) {
+                    obj.userData.update(time);
+                }
+            });
+            
+            renderer.render(scene, camera);
+        }
+
+        // Start game
+        document.getElementById('startButton').addEventListener('click', () => {
+            console.log('Start button clicked!');
+            document.getElementById('startScreen').style.display = 'none';
+            renderer.domElement.requestPointerLock();
+            createFactory();
+            console.log('Factory created, starting animation...');
+            console.log('Scene now has', scene.children.length, 'children');
+            animate();
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Pointer lock
+        document.addEventListener('pointerlockchange', () => {
+            if (!document.pointerLockElement) {
+                // Paused
+            }
+        });
+    </script>
+</body>
+</html>
