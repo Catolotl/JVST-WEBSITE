@@ -2,38 +2,42 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>JVST — Built Different</title>
+  <title>JVST — Intelligence, refined.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="AI with taste. Culture-first technology for the next generation.">
+  <meta name="description" content="AI with taste. Clean, powerful, and thoughtfully designed.">
   <link rel="shortcut icon" type="image/png" href="favicon.png">
   
-  <!-- Fonts: Space Grotesk for modern feel, Space Mono for terminal -->
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Fonts: SF Pro inspired (Inter) + SF Mono for technical elements -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   
   <style>
     /* ================= DESIGN SYSTEM ================= */
     :root {
-      --black: #0a0a0a;
-      --white: #ffffff;
-      --cream: #fafafa;
-      --gray: #6e6e73;
-      --light-gray: #f5f5f7;
-      --border: rgba(0, 0, 0, 0.08);
+      /* Apple Dark Mode palette */
+      --bg-primary: #000000;
+      --bg-secondary: #0a0a0c;
+      --bg-tertiary: #141417;
+      --bg-elevated: #1c1c1e;
+      --bg-card: #1c1c1e;
       
-      /* Subtle accent colors - NOT crazy 80's */
-      --accent-red: #ff2d2d;
-      --accent-blue: #0071e3;
-      --accent-soft: rgba(255, 45, 45, 0.08);
+      --text-primary: #ffffff;
+      --text-secondary: #98989e;
+      --text-tertiary: #6c6c74;
+      --text-quaternary: #3a3a3c;
       
-      /* Very subtle pastels for cards only */
-      --soft-pink: #fff5f7;
-      --soft-blue: #f5f9ff;
-      --soft-mint: #f5fff9;
+      --separator: #262628;
+      --separator-light: #38383a;
       
-      /* Terminal colors */
-      --terminal-bg: #0a0a0a;
-      --terminal-text: #00ff41;
-      --terminal-glow: rgba(0, 255, 65, 0.3);
+      --accent: #ff2d2d;
+      --accent-hover: #ff4d4d;
+      --accent-soft: rgba(255, 45, 45, 0.15);
+      --accent-glow: rgba(255, 45, 45, 0.3);
+      
+      --gradient-start: #ff2d2d;
+      --gradient-end: #ff8c8c;
+      
+      --blur-intensity: 20px;
+      --spacing-unit: 8px;
     }
 
     /* ================= RESET ================= */
@@ -45,14 +49,15 @@
 
     html {
       scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     body {
-      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-      background: var(--white);
-      color: var(--black);
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.4;
       overflow-x: hidden;
     }
 
@@ -61,648 +66,592 @@
       text-decoration: none;
     }
 
+    /* ================= TYPOGRAPHY SCALE ================= */
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .display-1 {
+      font-size: clamp(4rem, 10vw, 6rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .display-2 {
+      font-size: clamp(3rem, 8vw, 4.5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .title-1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .title-2 {
+      font-size: 2rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .title-3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .body-large {
+      font-size: 1.25rem;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+
+    .body-regular {
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+
+    .caption {
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+    }
+
+    /* ================= LAYOUT ================= */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    .section {
+      padding: 120px 0;
+    }
+
+    .section-sm {
+      padding: 80px 0;
+    }
+
     /* ================= NAVIGATION ================= */
     nav {
       position: sticky;
       top: 0;
-      z-index: 1000;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid var(--border);
-      transition: all 0.3s ease;
-    }
-
-    nav.scrolled {
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(var(--blur-intensity));
+      -webkit-backdrop-filter: blur(var(--blur-intensity));
+      border-bottom: 1px solid var(--separator);
     }
 
     .nav-container {
-      max-width: 1200px;
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 16px 24px;
+      padding: 16px 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     .logo {
-      font-weight: 700;
-      font-size: 20px;
-      letter-spacing: 0.5px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff, #98989e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-
-    .logo:hover {
-      transform: scale(1.05);
     }
 
     .nav-links {
       display: flex;
-      gap: 32px;
+      gap: 40px;
       align-items: center;
     }
 
     .nav-links a {
-      font-size: 14px;
+      font-size: 0.9375rem;
       font-weight: 500;
-      color: var(--gray);
+      color: var(--text-secondary);
       transition: color 0.2s ease;
-      position: relative;
     }
 
     .nav-links a:hover {
-      color: var(--black);
+      color: var(--text-primary);
+    }
+
+    .nav-links a.active {
+      color: var(--text-primary);
     }
 
     .nav-links a.active::after {
       content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      right: 0;
+      display: block;
       height: 2px;
-      background: var(--accent-red);
+      background: var(--accent);
+      margin-top: 4px;
+      border-radius: 2px;
+    }
+
+    .nav-button {
+      background: var(--accent);
+      color: var(--text-primary) !important;
+      padding: 8px 20px !important;
+      border-radius: 980px;
+      font-weight: 600 !important;
+    }
+
+    .nav-button:hover {
+      background: var(--accent-hover);
+      color: var(--text-primary) !important;
     }
 
     .mobile-menu-btn {
       display: none;
       background: none;
       border: none;
+      color: var(--text-primary);
       font-size: 24px;
       cursor: pointer;
-      padding: 4px;
     }
 
-    /* ================= HERO SECTION - Clean with subtle personality ================= */
+    /* ================= HERO ================= */
     .hero {
       min-height: 90vh;
-      background: var(--white);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 100px 24px 80px;
+      text-align: center;
       position: relative;
       overflow: hidden;
     }
 
-    /* Very subtle grid - barely visible */
+    /* Apple-style gradient orb */
     .hero::before {
-      content: "";
+      content: '';
       position: absolute;
-      inset: 0;
-      background: 
-        linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
-      background-size: 60px 60px;
-      opacity: 0.5;
-    }
-
-    /* Single floating element - subtle */
-    .hero::after {
-      content: "✦";
-      position: absolute;
-      top: 15%;
-      right: 10%;
-      font-size: 120px;
-      opacity: 0.05;
-      animation: gentleFloat 8s ease-in-out infinite;
-    }
-
-    @keyframes gentleFloat {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-20px) rotate(15deg); }
+      width: 80vw;
+      height: 80vw;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle at center, var(--accent-soft) 0%, transparent 70%);
+      filter: blur(80px);
+      opacity: 0.3;
+      pointer-events: none;
     }
 
     .hero-content {
       max-width: 900px;
-      text-align: center;
+      padding: 0 24px;
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
 
-    .eyebrow {
-      font-size: 13px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--gray);
-      margin-bottom: 24px;
+    .hero-eyebrow {
+      font-size: 0.875rem;
       font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 24px;
     }
 
-    .hero h1 {
-      font-size: clamp(3.5rem, 10vw, 7rem);
+    .hero-title {
+      font-size: clamp(3.5rem, 10vw, 6rem);
       font-weight: 700;
-      line-height: 0.95;
-      margin-bottom: 32px;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 24px;
     }
 
-    .hero h1 .highlight {
-      color: var(--accent-red);
-      text-shadow: 4px 4px 0 var(--accent-soft);
+    .hero-title span {
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
-    .hero p {
-      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-      color: #444;
+    .hero-description {
+      font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+      color: var(--text-secondary);
       max-width: 700px;
-      margin: 0 auto 48px;
-      font-weight: 400;
+      margin: 0 auto 40px;
     }
 
     .hero-actions {
       display: flex;
       gap: 16px;
       justify-content: center;
-      flex-wrap: wrap;
     }
 
+    /* ================= BUTTONS ================= */
     .btn {
-      padding: 16px 32px;
-      border-radius: 999px;
-      font-size: 16px;
+      display: inline-block;
+      padding: 12px 32px;
+      border-radius: 980px;
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
       border: none;
       font-family: inherit;
     }
 
     .btn-primary {
-      background: var(--black);
-      color: var(--white);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      background: var(--accent);
+      color: var(--text-primary);
     }
 
     .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+      background: var(--accent-hover);
+      transform: scale(1.02);
     }
 
     .btn-secondary {
-      background: var(--white);
-      color: var(--black);
-      border: 2px solid var(--black);
+      background: transparent;
+      border: 1px solid var(--separator-light);
+      color: var(--text-primary);
     }
 
     .btn-secondary:hover {
-      background: var(--cream);
+      background: var(--bg-elevated);
     }
 
-    /* ================= TICKER STRIP ================= */
-    .ticker-strip {
-      padding: 24px 0;
-      background: var(--cream);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+    /* ================= TICKER ================= */
+    .ticker {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--separator);
+      border-bottom: 1px solid var(--separator);
+      padding: 20px 0;
       overflow: hidden;
-      white-space: nowrap;
     }
 
     .ticker-content {
       display: inline-block;
-      animation: scroll 30s linear infinite;
+      white-space: nowrap;
+      animation: ticker 40s linear infinite;
     }
 
     .ticker-content span {
       display: inline-block;
-      margin-right: 60px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      color: var(--gray);
-      font-size: 14px;
+      margin-right: 48px;
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
 
-    @keyframes scroll {
+    @keyframes ticker {
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
     }
 
-    /* ================= TERMINAL SECTION - Techy but clean ================= */
-    .terminal-section {
-      padding: 120px 24px;
-      background: var(--white);
-    }
-
-    .terminal-container {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .section-header {
-      text-align: center;
-      margin-bottom: 60px;
-    }
-
-    .section-tag {
-      font-size: 12px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--accent-red);
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-
-    .section-title {
-      font-size: clamp(2.5rem, 6vw, 4rem);
-      font-weight: 700;
-      line-height: 1.1;
-      margin-bottom: 24px;
-      letter-spacing: -0.02em;
-    }
-
-    .section-subtitle {
-      font-size: 1.2rem;
-      color: var(--gray);
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    /* Terminal Window - Clean and professional */
-    .terminal-window {
-      background: var(--terminal-bg);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-    }
-
-    .terminal-header {
-      background: #1a1a1a;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .terminal-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-    }
-
-    .dot-red { background: #ff5f56; }
-    .dot-yellow { background: #ffbd2e; }
-    .dot-green { background: #27c93f; }
-
-    .terminal-title {
-      flex: 1;
-      text-align: center;
-      color: #666;
-      font-family: 'Space Mono', monospace;
-      font-size: 12px;
-    }
-
-    .terminal-body {
-      padding: 32px;
-      font-family: 'Space Mono', monospace;
-      font-size: 14px;
-      color: var(--terminal-text);
-      line-height: 1.8;
-      min-height: 280px;
-    }
-
-    .terminal-line {
-      opacity: 0;
-      animation: fadeIn 0.5s ease forwards;
-    }
-
-    .terminal-line:nth-child(1) { animation-delay: 0.2s; }
-    .terminal-line:nth-child(2) { animation-delay: 0.6s; }
-    .terminal-line:nth-child(3) { animation-delay: 1s; }
-    .terminal-line:nth-child(4) { animation-delay: 1.4s; }
-    .terminal-line:nth-child(5) { animation-delay: 1.8s; }
-    .terminal-line:nth-child(6) { animation-delay: 2.2s; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateX(-10px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    .terminal-prompt {
-      color: #00d9ff;
-      font-weight: 700;
-    }
-
-    .terminal-command {
-      color: #ff6b9d;
-    }
-
-    .terminal-output {
-      color: var(--terminal-text);
-      text-shadow: 0 0 5px var(--terminal-glow);
-    }
-
-    .cursor {
-      display: inline-block;
-      width: 10px;
-      height: 18px;
-      background: var(--terminal-text);
-      animation: blink 1s step-end infinite;
-      margin-left: 4px;
-    }
-
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
-    }
-
-    /* ================= VALUES SECTION - Subtle card backgrounds ================= */
-    .values-section {
-      padding: 120px 24px;
-      background: var(--cream);
-    }
-
-    .values-grid {
+    /* ================= GRIDS ================= */
+    .grid-2 {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 24px;
-      max-width: 1200px;
-      margin: 0 auto;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 60px;
     }
 
-    .value-card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 40px;
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+    }
+
+    /* ================= CARDS ================= */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--separator);
+      border-radius: 24px;
+      padding: 32px;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
     }
 
-    .value-card:hover {
+    .card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+      border-color: var(--text-quaternary);
     }
 
-    /* Very subtle color hints - barely noticeable */
-    .value-card:nth-child(1) {
-      background: var(--soft-pink);
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 24px;
     }
 
-    .value-card:nth-child(2) {
-      background: var(--soft-blue);
-    }
-
-    .value-card:nth-child(3) {
-      background: var(--soft-mint);
-    }
-
-    .value-card h3 {
+    .card-title {
       font-size: 1.5rem;
-      margin-bottom: 16px;
-      letter-spacing: -0.01em;
+      font-weight: 600;
+      margin-bottom: 12px;
     }
 
-    .value-card p {
-      color: #444;
+    .card-description {
+      color: var(--text-secondary);
       line-height: 1.6;
     }
 
-    /* ================= PRICING SECTION ================= */
-    .pricing-section {
-      padding: 120px 24px;
-      background: var(--white);
-    }
-
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 32px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .price-card {
-      background: var(--white);
-      border: 2px solid var(--border);
-      border-radius: 20px;
+    /* Feature cards (larger) */
+    .feature-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--separator);
+      border-radius: 32px;
       padding: 48px;
-      position: relative;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
     }
 
-    .price-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    .feature-card:hover {
+      border-color: var(--text-quaternary);
     }
 
-    .price-card.featured {
-      border-color: var(--accent-red);
-      background: linear-gradient(180deg, var(--white), var(--soft-pink));
-      transform: translateY(-8px);
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 32px;
     }
 
-    .price-card.featured:hover {
-      transform: translateY(-12px);
-    }
-
-    .price-badge {
-      position: absolute;
-      top: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--accent-red);
-      color: var(--white);
-      padding: 6px 16px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .price-card h3 {
-      font-size: 1.8rem;
+    .feature-title {
+      font-size: 2rem;
+      font-weight: 600;
       margin-bottom: 16px;
     }
 
-    .price {
-      font-size: 3.5rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-      letter-spacing: -0.02em;
-    }
-
-    .price span {
-      font-size: 1.2rem;
-      color: var(--gray);
-      font-weight: 500;
-    }
-
-    .price-features {
-      margin: 32px 0;
-      list-style: none;
-    }
-
-    .price-features li {
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-      font-size: 15px;
-      color: #333;
-    }
-
-    .price-features li:last-child {
-      border-bottom: none;
-    }
-
-    .price-features li::before {
-      content: '✓';
-      color: var(--accent-red);
-      font-weight: 700;
-      margin-right: 12px;
-    }
-
-    .price-cta {
-      width: 100%;
-      margin-top: 32px;
+    .feature-description {
+      color: var(--text-secondary);
+      font-size: 1.125rem;
+      line-height: 1.6;
     }
 
     /* ================= MUSIC PREVIEW ================= */
-    .music-preview {
-      padding: 120px 24px;
-      background: var(--cream);
-    }
-
-    .preview-container {
-      max-width: 1000px;
-      margin: 0 auto;
-      background: var(--white);
-      border-radius: 24px;
+    .preview-card {
+      background: linear-gradient(135deg, var(--bg-elevated), var(--bg-tertiary));
+      border: 1px solid var(--separator);
+      border-radius: 32px;
       padding: 48px;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
       display: grid;
       grid-template-columns: 300px 1fr;
       gap: 48px;
       align-items: center;
     }
 
-    .album-artwork {
+    .album-art {
       position: relative;
     }
 
-    .album-cover {
+    .album-image {
       width: 100%;
       aspect-ratio: 1;
-      border-radius: 16px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease;
+    }
+
+    .album-image:hover {
+      transform: scale(1.02);
     }
 
     .preview-badge {
       position: absolute;
-      top: -12px;
-      right: -12px;
-      background: var(--black);
-      color: var(--white);
-      padding: 8px 16px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1px;
+      top: -8px;
+      right: -8px;
+      background: var(--accent);
+      color: var(--text-primary);
+      padding: 6px 16px;
+      border-radius: 980px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
     }
 
-    .track-info h3 {
+    .track-title {
       font-size: 2.5rem;
+      font-weight: 700;
       margin-bottom: 8px;
-      letter-spacing: -0.01em;
     }
 
     .track-artist {
-      color: var(--gray);
-      font-size: 1.3rem;
+      font-size: 1.25rem;
+      color: var(--text-secondary);
       margin-bottom: 32px;
     }
 
-    .player-controls {
+    .player {
       display: flex;
       align-items: center;
-      gap: 20px;
-      margin-bottom: 12px;
+      gap: 24px;
     }
 
-    .play-btn {
+    .play-button {
       width: 64px;
       height: 64px;
       border-radius: 50%;
-      background: var(--black);
-      color: var(--white);
+      background: var(--accent);
       border: none;
+      color: var(--text-primary);
       font-size: 24px;
       cursor: pointer;
-      transition: all 0.3s ease;
-      flex-shrink: 0;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .play-btn:hover {
+    .play-button:hover {
+      background: var(--accent-hover);
       transform: scale(1.05);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     }
 
-    .progress-wrapper {
+    .progress-area {
       flex: 1;
     }
 
     .progress-bar {
-      height: 6px;
-      background: #e0e0e0;
-      border-radius: 999px;
-      overflow: hidden;
+      height: 4px;
+      background: var(--text-quaternary);
+      border-radius: 2px;
       cursor: pointer;
       margin-bottom: 8px;
     }
 
     .progress-fill {
-      height: 100%;
-      background: var(--black);
       width: 0%;
-      transition: width 0.1s linear;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      position: relative;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: -4px;
+      width: 12px;
+      height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .progress-bar:hover .progress-fill::after {
+      opacity: 1;
     }
 
     .time-labels {
       display: flex;
       justify-content: space-between;
-      font-size: 13px;
-      color: var(--gray);
-      font-variant-numeric: tabular-nums;
-      font-family: 'Space Mono', monospace;
+      font-size: 0.875rem;
+      color: var(--text-tertiary);
+      font-family: 'JetBrains Mono', monospace;
     }
 
-    .loading-status {
-      color: var(--gray);
-      font-style: italic;
-      font-size: 14px;
-      margin-top: 16px;
+    /* ================= PRICING ================= */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 60px;
     }
 
-    /* ================= COMMUNITY SECTION ================= */
-    .community-section {
-      padding: 120px 24px;
-      background: var(--white);
-    }
-
-    .community-box {
-      max-width: 900px;
-      margin: 48px auto 0;
-      background: var(--white);
-      border: 1px solid var(--border);
+    .pricing-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--separator);
       border-radius: 24px;
-      padding: 56px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+      padding: 32px;
+      position: relative;
     }
 
-    .community-box h3 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      letter-spacing: -0.01em;
+    .pricing-card.featured {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, var(--bg-elevated), var(--accent-soft));
     }
 
-    .rainbow-heart {
+    .pricing-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: var(--text-primary);
+      padding: 4px 16px;
+      border-radius: 980px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .pricing-name {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .pricing-price {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .pricing-price span {
+      font-size: 1rem;
+      color: var(--text-tertiary);
+      font-weight: 400;
+    }
+
+    .pricing-features {
+      margin: 32px 0;
+      list-style: none;
+    }
+
+    .pricing-features li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--separator);
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+    }
+
+    .pricing-features li:last-child {
+      border-bottom: none;
+    }
+
+    .pricing-features li::before {
+      content: '✓';
+      color: var(--accent);
+      font-weight: 600;
+      margin-right: 12px;
+    }
+
+    /* ================= COMMUNITY ================= */
+    .community-card {
+      background: linear-gradient(135deg, var(--bg-elevated), transparent);
+      border: 1px solid var(--separator);
+      border-radius: 32px;
+      padding: 64px;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    .community-title {
       font-size: 2.5rem;
-      margin-left: 12px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .community-title span {
       display: inline-block;
       animation: heartbeat 2s ease-in-out infinite;
     }
@@ -713,397 +662,399 @@
       20% { transform: scale(1); }
     }
 
-    .community-box p {
-      color: #3b3b41;
-      line-height: 1.7;
-      font-size: 1.1rem;
-      margin-bottom: 28px;
+    .community-description {
+      color: var(--text-secondary);
+      font-size: 1.25rem;
+      line-height: 1.6;
+      max-width: 700px;
+      margin: 0 auto 32px;
     }
 
     .support-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
+      justify-content: center;
     }
 
     .support-tag {
-      background: var(--cream);
-      border: 1px solid var(--border);
-      padding: 10px 20px;
-      border-radius: 999px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #323642;
+      padding: 8px 20px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--separator);
+      border-radius: 980px;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
     }
 
     /* ================= FOOTER ================= */
     footer {
-      background: var(--cream);
-      border-top: 1px solid var(--border);
-      padding: 64px 24px;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--separator);
+      padding: 80px 0 40px;
     }
 
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      text-align: center;
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: 60px;
+      margin-bottom: 60px;
     }
 
     .footer-logo {
-      font-size: 24px;
-      font-weight: 700;
+      font-size: 1.5rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #ffffff, #98989e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+
+    .footer-description {
+      color: var(--text-tertiary);
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    .footer-column h4 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
       margin-bottom: 24px;
     }
 
-    .footer-links {
-      display: flex;
-      gap: 32px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 32px;
-    }
-
-    .footer-links a {
-      color: var(--gray);
-      font-size: 14px;
+    .footer-column a {
+      display: block;
+      color: var(--text-tertiary);
+      font-size: 0.9375rem;
+      margin-bottom: 16px;
       transition: color 0.2s ease;
     }
 
-    .footer-links a:hover {
-      color: var(--black);
+    .footer-column a:hover {
+      color: var(--text-primary);
     }
 
-    .footer-copy {
-      color: var(--gray);
-      font-size: 14px;
+    .footer-bottom {
+      text-align: center;
+      padding-top: 40px;
+      border-top: 1px solid var(--separator);
+      color: var(--text-tertiary);
+      font-size: 0.875rem;
     }
 
     /* ================= RESPONSIVE ================= */
+    @media (max-width: 1024px) {
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
     @media (max-width: 900px) {
       .nav-links {
         position: fixed;
-        top: 60px;
+        top: 72px;
         left: 0;
         right: 0;
-        background: rgba(255, 255, 255, 0.98);
-        backdrop-filter: blur(20px);
+        background: var(--bg-elevated);
+        backdrop-filter: blur(var(--blur-intensity));
         flex-direction: column;
-        padding: 24px;
-        gap: 20px;
-        border-bottom: 1px solid var(--border);
+        padding: 32px;
+        gap: 24px;
+        border-bottom: 1px solid var(--separator);
         transform: translateY(-100%);
         opacity: 0;
         transition: all 0.3s ease;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        pointer-events: none;
       }
 
       .nav-links.active {
         transform: translateY(0);
         opacity: 1;
+        pointer-events: all;
       }
 
       .mobile-menu-btn {
         display: block;
       }
 
-      .preview-container {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      
+      .preview-card {
         grid-template-columns: 1fr;
-        gap: 40px;
-      }
-
-      .pricing-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .price-card.featured {
-        transform: none;
-      }
-
-      .community-box {
-        padding: 40px 28px;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .hero {
-        min-height: 85vh;
-        padding: 80px 20px 60px;
-      }
-
-      .hero h1 {
-        font-size: 3rem;
+        padding: 32px;
       }
 
       .hero-actions {
         flex-direction: column;
-        width: 100%;
-      }
-
-      .btn {
-        width: 100%;
-      }
-
-      .value-card {
-        padding: 32px 24px;
-      }
-
-      .preview-container {
-        padding: 32px 24px;
-      }
-
-      .track-info h3 {
-        font-size: 2rem;
-      }
-
-      .player-controls {
-        flex-direction: column;
         align-items: stretch;
       }
 
-      .terminal-body {
-        padding: 20px;
-        font-size: 12px;
+      .btn {
+        text-align: center;
       }
+    }
+
+    @media (max-width: 640px) {
+      .container { padding: 0 20px; }
+      .section { padding: 80px 0; }
+      .feature-card { padding: 32px; }
+      .community-card { padding: 32px; }
     }
   </style>
 </head>
 <body>
-
   <!-- NAVIGATION -->
   <nav id="navbar">
     <div class="nav-container">
-      <div class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">✦ JVST</div>
+      <div class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">JVST</div>
       <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">☰</button>
       <div class="nav-links" id="navLinks">
-        <a href="tunes.html">Music</a>
+        <a href="tunes.html" class="active">Music</a>
         <a href="indy.html">Indy 3</a>
         <a href="#values">Values</a>
         <a href="#pricing">Pricing</a>
         <a href="#community">Community</a>
-        <a href="login.html">Sign In</a>
+        <a href="login.html" class="nav-button">Sign In</a>
       </div>
     </div>
   </nav>
 
-  <!-- HERO SECTION -->
+  <!-- HERO -->
   <section class="hero" id="music">
     <div class="hero-content">
-      <p class="eyebrow">Built with Orgullo</p>
-      <h1>AI with <span class="highlight">taste</span>.</h1>
-      <p>JVST blends culture and intelligence — tools that feel human, expressive, and unapologetically different.</p>
+      <div class="hero-eyebrow">Introducing JVST</div>
+      <h1 class="hero-title">Intelligence,<br><span>refined.</span></h1>
+      <p class="hero-description">
+        AI that understands culture. Clean, powerful, and thoughtfully designed for the way you actually think.
+      </p>
       <div class="hero-actions">
-        <button class="btn btn-primary" onclick="window.location.href='#preview'">Try Music</button>
-        <button class="btn btn-secondary" onclick="window.location.href='#values'">Our Values</button>
+        <button class="btn btn-primary" onclick="window.location.href='#preview'">Experience Music</button>
+        <button class="btn btn-secondary" onclick="window.location.href='#values'">Learn More</button>
       </div>
     </div>
   </section>
 
-  <!-- TICKER STRIP -->
-  <div class="ticker-strip">
+  <!-- TICKER -->
+  <div class="ticker">
     <div class="ticker-content">
       <span>✦ JVST</span>
-      <span>✦ CULTURE</span>
-      <span>✦ AI</span>
-      <span>✦ MUSIC</span>
-      <span>✦ COMMUNITY</span>
+      <span>✦ CULTURE FIRST</span>
+      <span>✦ PRIVACY BY DESIGN</span>
+      <span>✦ HUMAN CENTERED</span>
       <span>✦ JVST</span>
-      <span>✦ CULTURE</span>
-      <span>✦ AI</span>
-      <span>✦ MUSIC</span>
-      <span>✦ COMMUNITY</span>
+      <span>✦ CULTURE FIRST</span>
+      <span>✦ PRIVACY BY DESIGN</span>
+      <span>✦ HUMAN CENTERED</span>
     </div>
   </div>
 
-  <!-- TERMINAL SECTION -->
-  <section class="terminal-section" id="terminal">
-    <div class="terminal-container">
-      <div class="section-header">
-        <div class="section-tag">INDY 3</div>
-        <h2 class="section-title">Everyday AI,<br>done right.</h2>
-        <p class="section-subtitle">No fluff. No corporate tone. Just fast, smart responses that understand context, culture, and how real people think.</p>
-      </div>
-
-      <div class="terminal-window">
-        <div class="terminal-header">
-          <div class="terminal-dot dot-red"></div>
-          <div class="terminal-dot dot-yellow"></div>
-          <div class="terminal-dot dot-green"></div>
-          <div class="terminal-title">jvst@indy3:~</div>
+  <!-- INDY 3 SECTION -->
+  <section class="section" id="indy">
+    <div class="container">
+      <div class="grid-2" style="align-items: center;">
+        <div>
+          <div class="caption">Indy 3</div>
+          <h2 class="display-2" style="margin-bottom: 24px;">Everyday AI,<br>done right.</h2>
+          <p class="body-large" style="color: var(--text-secondary); margin-bottom: 32px;">
+            No fluff. No corporate tone. Just fast, smart responses that understand context, culture, and how real people communicate.
+          </p>
+          <button class="btn btn-primary" onclick="window.location.href='indy.html'">Meet Indy 3 →</button>
         </div>
-        <div class="terminal-body">
-          <div class="terminal-line">
-            <span class="terminal-prompt">$</span> <span class="terminal-command">jvst --init</span>
-          </div>
-          <div class="terminal-line">
-            <span class="terminal-output">Initializing JVST AI system...</span>
-          </div>
-          <div class="terminal-line">
-            <span class="terminal-output">✓ Loading culture-aware models</span>
-          </div>
-          <div class="terminal-line">
-            <span class="terminal-output">✓ Connecting to music database</span>
-          </div>
-          <div class="terminal-line">
-            <span class="terminal-output">✓ Ready for authentic conversations</span>
-          </div>
-          <div class="terminal-line">
-            <span class="terminal-prompt">$</span> <span class="terminal-command">echo "Welcome to the future"</span><span class="cursor"></span>
-          </div>
+        <div class="feature-card">
+          <div class="feature-icon">🧠</div>
+          <h3 class="feature-title">Culture-aware</h3>
+          <p class="feature-description">Understands context, slang, and cultural nuances that other AI models miss. Built for real conversations.</p>
         </div>
       </div>
 
-      <div style="text-align: center; margin-top: 40px;">
-        <button class="btn btn-primary" onclick="window.location.href='indy.html'">Launch Indy 3</button>
+      <div class="grid-3" style="margin-top: 60px;">
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <h4 class="card-title">Lightning fast</h4>
+          <p class="card-description">Responses in milliseconds. No waiting, no lag. Just instant intelligence.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔒</div>
+          <h4 class="card-title">Privacy first</h4>
+          <p class="card-description">Your conversations stay yours. We don't train on your data. Ever.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🌎</div>
+          <h4 class="card-title">Globally aware</h4>
+          <p class="card-description">Trained on diverse perspectives. Built for everyone, everywhere.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MUSIC PREVIEW -->
+  <section class="section" id="preview">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: 60px;">
+        <div class="caption">Experience</div>
+        <h2 class="display-2">Live Music Preview</h2>
+        <p class="body-large" style="color: var(--text-secondary);">Feel the culture. Hear the difference.</p>
+      </div>
+
+      <div class="preview-card">
+        <div class="album-art">
+          <img id="albumCover" class="album-image" src="https://cdn-images.dzcdn.net/images/cover/d98eaccfbb945bdf68241d6de7fe6a49/1900x1900-000000-80-0-0.jpg" alt="Album Cover">
+          <div class="preview-badge">Preview</div>
+        </div>
+
+        <div>
+          <h3 class="track-title" id="trackTitle">NUEVAYoL</h3>
+          <p class="track-artist" id="trackArtist">Bad Bunny</p>
+
+          <div class="player">
+            <button class="play-button" id="playBtn" aria-label="Play">▶</button>
+            <div class="progress-area">
+              <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+              <div class="time-labels">
+                <span id="currentTime">0:00</span>
+                <span id="duration">0:30</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="caption" id="loadingStatus" style="margin-top: 20px;">Loading preview...</p>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- VALUES SECTION -->
-  <section class="values-section" id="values">
-    <div class="section-header">
-      <div class="section-tag">Our Foundation</div>
-      <h2 class="section-title">Modern design.<br>Human-first values.</h2>
-      <p class="section-subtitle">Clean aesthetics meet authentic culture. We build for everyone, with extra care for communities navigating hard times.</p>
-    </div>
-    
-    <div class="values-grid">
-      <div class="value-card">
-        <h3>Street energy, premium execution</h3>
-        <p>Confident aesthetics and modern polish inspired by NYC and barrio culture—never cluttered, never chaotic, always intentional.</p>
+  <section class="section" id="values">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: 60px;">
+        <div class="caption">Our Foundation</div>
+        <h2 class="display-2">Modern design.<br>Human-first values.</h2>
+        <p class="body-large" style="color: var(--text-secondary);">Clean aesthetics meet authentic culture. Built for everyone.</p>
       </div>
-      
-      <div class="value-card">
-        <h3>Warm, safe, welcoming to all</h3>
-        <p>Designed for all races, identities, and backgrounds. Good tech should feel safe, respectful, and personal for everyone using it.</p>
-      </div>
-      
-      <div class="value-card">
-        <h3>Hispanic support is not optional</h3>
-        <p>We stand with Hispanic families and immigrant communities through difficult moments with empathy, representation, and real support.</p>
+
+      <div class="grid-3">
+        <div class="card">
+          <h4 class="card-title">Street energy, premium execution</h4>
+          <p class="card-description">Confident aesthetics inspired by NYC and barrio culture—never cluttered, always intentional.</p>
+        </div>
+        
+        <div class="card">
+          <h4 class="card-title">Warm, safe, welcoming to all</h4>
+          <p class="card-description">Designed for all races, identities, and backgrounds. Tech should feel personal and respectful.</p>
+        </div>
+        
+        <div class="card">
+          <h4 class="card-title">Hispanic support is not optional</h4>
+          <p class="card-description">We stand with Hispanic families and immigrant communities with empathy and real support.</p>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- PRICING SECTION -->
-  <section class="pricing-section" id="pricing">
-    <div class="section-header">
-      <div class="section-tag">Transparent Pricing</div>
-      <h2 class="section-title">Choose Your Plan</h2>
-      <p class="section-subtitle">Simple tiers, clear value, premium structure.</p>
-    </div>
-
-    <div class="pricing-grid">
-      <div class="price-card">
-        <h3>Free</h3>
-        <div class="price">$0<span>/forever</span></div>
-        <ul class="price-features">
-          <li>Basic access to AI</li>
-          <li>30 min per session</li>
-          <li>Community support</li>
-          <li>Standard models</li>
-        </ul>
-        <button class="btn btn-primary price-cta" onclick="window.location.href='login.html'">Get Started</button>
+  <section class="section" id="pricing">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: 60px;">
+        <div class="caption">Transparent Pricing</div>
+        <h2 class="display-2">Choose your plan</h2>
+        <p class="body-large" style="color: var(--text-secondary);">Simple tiers, clear value, premium structure.</p>
       </div>
 
-      <div class="price-card featured">
-        <div class="price-badge">Most Popular</div>
-        <h3>Indy+</h3>
-        <div class="price">$0.25<span>/forever</span></div>
-        <ul class="price-features">
-          <li>Unlimited AI messages</li>
-          <li>Image generation</li>
-          <li>Priority support</li>
-          <li>Advanced models</li>
-        </ul>
-        <button class="btn btn-primary price-cta" onclick="window.location.href='login.html'">Upgrade Now</button>
-      </div>
-
-      <div class="price-card">
-        <h3>One</h3>
-        <div class="price">$0.50<span>/forever</span></div>
-        <ul class="price-features">
-          <li>Everything in Indy+</li>
-          <li>Digital Blade Card</li>
-          <li>TV code access</li>
-          <li>Exclusive perks</li>
-        </ul>
-        <button class="btn btn-primary price-cta" onclick="window.location.href='login.html'">Go All In</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- MUSIC PREVIEW SECTION -->
-  <section class="music-preview" id="preview">
-    <div class="section-header">
-      <div class="section-tag">Experience</div>
-      <h2 class="section-title">Live Music Preview</h2>
-      <p class="section-subtitle">Feel the culture. Hear the difference.</p>
-    </div>
-
-    <div class="preview-container">
-      <div class="album-artwork">
-        <img id="albumCover" class="album-cover" src="https://cdn-images.dzcdn.net/images/cover/d98eaccfbb945bdf68241d6de7fe6a49/1900x1900-000000-80-0-0.jpg" alt="Album Cover">
-        <div class="preview-badge">Preview</div>
-      </div>
-
-      <div class="track-info">
-        <h3 id="trackTitle">NUEVAYoL</h3>
-        <p class="track-artist" id="trackArtist">Bad Bunny</p>
-
-        <div class="player-controls">
-          <button class="play-btn" id="playBtn" aria-label="Play">▶</button>
-          <div class="progress-wrapper">
-            <div class="progress-bar" id="progressBar">
-              <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <div class="time-labels">
-              <span id="currentTime">0:00</span>
-              <span id="duration">0:30</span>
-            </div>
-          </div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3 class="pricing-name">Free</h3>
+          <div class="pricing-price">$0<span>/forever</span></div>
+          <ul class="pricing-features">
+            <li>Basic AI access</li>
+            <li>30 min per session</li>
+            <li>Community support</li>
+            <li>Standard models</li>
+          </ul>
+          <button class="btn btn-secondary" style="width: 100%;" onclick="window.location.href='login.html'">Get Started</button>
         </div>
 
-        <p class="loading-status" id="loadingStatus">Loading preview...</p>
+        <div class="pricing-card featured">
+          <div class="pricing-badge">Most Popular</div>
+          <h3 class="pricing-name">Indy+</h3>
+          <div class="pricing-price">$0.25<span>/forever</span></div>
+          <ul class="pricing-features">
+            <li>Unlimited AI messages</li>
+            <li>Image generation</li>
+            <li>Priority support</li>
+            <li>Advanced models</li>
+          </ul>
+          <button class="btn btn-primary" style="width: 100%;" onclick="window.location.href='login.html'">Upgrade Now</button>
+        </div>
+
+        <div class="pricing-card">
+          <h3 class="pricing-name">One</h3>
+          <div class="pricing-price">$0.50<span>/forever</span></div>
+          <ul class="pricing-features">
+            <li>Everything in Indy+</li>
+            <li>Digital Blade Card</li>
+            <li>TV code access</li>
+            <li>Exclusive perks</li>
+          </ul>
+          <button class="btn btn-secondary" style="width: 100%;" onclick="window.location.href='login.html'">Go All In</button>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- COMMUNITY SECTION -->
-  <section class="community-section" id="community">
-    <div class="section-header">
-      <div class="section-tag">Together</div>
-      <h2 class="section-title">We are all welcome here.</h2>
-      <p class="section-subtitle">JVST is built for everyone—and we are explicit about protecting dignity, identity, and belonging.</p>
-    </div>
-
-    <div class="community-box">
-      <h3>Safety, dignity, and solidarity for our people.<span class="rainbow-heart" aria-hidden="true">🏳️‍🌈❤️</span></h3>
-      <p>
-        We proudly support LGBTQ+ communities, Hispanic communities, and immigrant families across the U.S.
-        During hard times, this platform should feel like a safe digital home: respectful, affirming, and rooted in care.
-      </p>
-      <div class="support-tags">
-        <span class="support-tag">LGBTQ+ inclusion</span>
-        <span class="support-tag">Hispanic community support</span>
-        <span class="support-tag">Immigrant dignity & safety</span>
-        <span class="support-tag">All races welcome</span>
+  <section class="section" id="community">
+    <div class="container">
+      <div class="community-card">
+        <h2 class="community-title">We are all welcome here <span>🏳️‍🌈❤️</span></h2>
+        <p class="community-description">
+          JVST is built for everyone—LGBTQ+ communities, Hispanic families, immigrants, and all backgrounds. 
+          This is a safe digital home: respectful, affirming, and rooted in care.
+        </p>
+        <div class="support-tags">
+          <span class="support-tag">LGBTQ+ inclusion</span>
+          <span class="support-tag">Hispanic community</span>
+          <span class="support-tag">Immigrant dignity</span>
+          <span class="support-tag">All races welcome</span>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    <div class="footer-content">
-      <div class="footer-logo">✦ JVST</div>
-      <div class="footer-links">
-        <a href="#music">Music</a>
-        <a href="indy.html">Indy 3</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#community">Community</a>
-        <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-logo">JVST</div>
+          <p class="footer-description">Intelligence, refined.<br>Built different, on purpose.</p>
+        </div>
+        <div class="footer-column">
+          <h4>Product</h4>
+          <a href="#music">Music</a>
+          <a href="#indy">Indy 3</a>
+          <a href="#pricing">Pricing</a>
+        </div>
+        <div class="footer-column">
+          <h4>Company</h4>
+          <a href="#values">Values</a>
+          <a href="#community">Community</a>
+          <a href="privacy.html">Privacy</a>
+        </div>
+        <div class="footer-column">
+          <h4>Legal</h4>
+          <a href="terms.html">Terms</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="cookies.html">Cookies</a>
+        </div>
       </div>
-      <p class="footer-copy">© 2026 JVST — Built different, on purpose</p>
+      <div class="footer-bottom">
+        <p>© 2026 JVST. All rights reserved.</p>
+      </div>
     </div>
   </footer>
 
@@ -1111,7 +1062,7 @@
   <audio id="audioPlayer" preload="metadata"></audio>
 
   <script>
-    // ================= MOBILE MENU ================= 
+    // Mobile menu
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const navLinks = document.getElementById('navLinks');
 
@@ -1127,17 +1078,26 @@
       });
     });
 
-    // ================= NAVBAR SCROLL EFFECT =================
-    const navbar = document.getElementById('navbar');
+    // Active nav links
+    const sections = document.querySelectorAll('section[id]');
     window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 50) {
-        navbar.classList.add('scrolled');
-      } else {
-        navbar.classList.remove('scrolled');
-      }
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (pageYOffset >= sectionTop - 200) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+          link.classList.add('active');
+        }
+      });
     });
 
-    // ================= MUSIC PLAYER =================
+    // Music player
     const audio = document.getElementById('audioPlayer');
     const playBtn = document.getElementById('playBtn');
     const progressBar = document.getElementById('progressBar');
@@ -1235,7 +1195,7 @@
 
     loadTrack();
 
-    // ================= SMOOTH SCROLL =================
+    // Smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
         e.preventDefault();
@@ -1249,6 +1209,5 @@
       });
     });
   </script>
-
 </body>
 </html>
