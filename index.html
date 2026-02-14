@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>JVST — Intelligence, refined.</title>
+  <title>JVST — Collaborations</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="AI with taste. Clean, powerful, and thoughtfully designed.">
+  <meta name="description" content="AI with taste. Culture-first technology for the next generation.">
   <link rel="shortcut icon" type="image/png" href="favicon.png">
   
-  <!-- Fonts: SF Pro inspired (Inter) + SF Mono for technical elements -->
+  <!-- Fonts: Inter + JetBrains Mono -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   
   <style>
@@ -66,59 +66,37 @@
       text-decoration: none;
     }
 
-    /* ================= TYPOGRAPHY SCALE ================= */
+    /* ================= TYPOGRAPHY ================= */
     h1, h2, h3, h4, h5, h6 {
       font-weight: 600;
       letter-spacing: -0.02em;
     }
 
     .display-1 {
-      font-size: clamp(4rem, 10vw, 6rem);
+      font-size: clamp(3rem, 8vw, 5rem);
       font-weight: 700;
       letter-spacing: -0.03em;
       line-height: 1.1;
     }
 
     .display-2 {
-      font-size: clamp(3rem, 8vw, 4.5rem);
+      font-size: clamp(2.5rem, 6vw, 4rem);
       font-weight: 700;
       letter-spacing: -0.02em;
       line-height: 1.2;
-    }
-
-    .title-1 {
-      font-size: 2.5rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-
-    .title-2 {
-      font-size: 2rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-
-    .title-3 {
-      font-size: 1.5rem;
-      font-weight: 600;
     }
 
     .body-large {
       font-size: 1.25rem;
       font-weight: 400;
       line-height: 1.6;
-    }
-
-    .body-regular {
-      font-size: 1rem;
-      font-weight: 400;
-      line-height: 1.6;
+      color: var(--text-secondary);
     }
 
     .caption {
       font-size: 0.875rem;
       font-weight: 500;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
       color: var(--text-tertiary);
     }
@@ -134,14 +112,12 @@
       padding: 120px 0;
     }
 
-    .section-sm {
-      padding: 80px 0;
-    }
-
     /* ================= NAVIGATION ================= */
     nav {
-      position: sticky;
+      position: fixed;
       top: 0;
+      left: 0;
+      right: 0;
       z-index: 100;
       background: rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(var(--blur-intensity));
@@ -209,7 +185,6 @@
 
     .nav-button:hover {
       background: var(--accent-hover);
-      color: var(--text-primary) !important;
     }
 
     .mobile-menu-btn {
@@ -221,74 +196,179 @@
       cursor: pointer;
     }
 
-    /* ================= HERO ================= */
-    .hero {
-      min-height: 90vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+    /* ================= HERO VIDEO CAROUSEL ================= */
+    .hero-carousel {
+      height: 100vh;
       position: relative;
       overflow: hidden;
     }
 
-    /* Apple-style gradient orb */
-    .hero::before {
-      content: '';
+    .carousel-slides {
+      height: 100%;
+      position: relative;
+    }
+
+    .carousel-slide {
       position: absolute;
-      width: 80vw;
-      height: 80vw;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: radial-gradient(circle at center, var(--accent-soft) 0%, transparent 70%);
-      filter: blur(80px);
-      opacity: 0.3;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
       pointer-events: none;
     }
 
-    .hero-content {
-      max-width: 900px;
-      padding: 0 24px;
-      position: relative;
-      z-index: 2;
+    .carousel-slide.active {
+      opacity: 1;
+      pointer-events: all;
     }
 
-    .hero-eyebrow {
-      font-size: 0.875rem;
+    .carousel-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Dark overlay for text readability */
+    .carousel-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.3) 50%,
+        rgba(0, 0, 0, 0.7) 100%
+      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .carousel-content {
+      max-width: 900px;
+      padding: 0 24px;
+      transform: translateY(0);
+      animation: slideUp 1s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .carousel-eyebrow {
+      font-size: 1rem;
       font-weight: 600;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--text-tertiary);
+      color: var(--accent);
       margin-bottom: 24px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
 
-    .hero-title {
-      font-size: clamp(3.5rem, 10vw, 6rem);
+    .carousel-title {
+      font-size: clamp(2.5rem, 8vw, 5rem);
       font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.05;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
       margin-bottom: 24px;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     }
 
-    .hero-title span {
-      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero-description {
-      font-size: clamp(1.25rem, 2.5vw, 1.5rem);
-      color: var(--text-secondary);
+    .carousel-description {
+      font-size: clamp(1.1rem, 2vw, 1.3rem);
+      color: rgba(255, 255, 255, 0.9);
       max-width: 700px;
-      margin: 0 auto 40px;
+      margin: 0 auto 32px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
 
-    .hero-actions {
+    .carousel-tag {
+      display: inline-block;
+      padding: 8px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 980px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: white;
+    }
+
+    /* Carousel Controls */
+    .carousel-controls {
+      position: absolute;
+      bottom: 60px;
+      left: 0;
+      right: 0;
       display: flex;
-      gap: 16px;
       justify-content: center;
+      gap: 16px;
+      z-index: 10;
+    }
+
+    .carousel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: all 0.3s ease;
+    }
+
+    .carousel-dot:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .carousel-dot.active {
+      background: var(--accent);
+      transform: scale(1.2);
+    }
+
+    .carousel-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .carousel-arrow:hover {
+      background: rgba(0, 0, 0, 0.8);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .carousel-arrow.prev {
+      left: 40px;
+    }
+
+    .carousel-arrow.next {
+      right: 40px;
     }
 
     /* ================= BUTTONS ================= */
@@ -315,13 +395,14 @@
     }
 
     .btn-secondary {
-      background: transparent;
-      border: 1px solid var(--separator-light);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       color: var(--text-primary);
     }
 
     .btn-secondary:hover {
-      background: var(--bg-elevated);
+      background: rgba(255, 255, 255, 0.15);
     }
 
     /* ================= TICKER ================= */
@@ -747,6 +828,10 @@
 
     /* ================= RESPONSIVE ================= */
     @media (max-width: 1024px) {
+      .carousel-arrow {
+        display: none;
+      }
+      
       .grid-4 { grid-template-columns: repeat(2, 1fr); }
       .footer-grid { grid-template-columns: repeat(2, 1fr); }
     }
@@ -786,15 +871,6 @@
         grid-template-columns: 1fr;
         padding: 32px;
       }
-
-      .hero-actions {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .btn {
-        text-align: center;
-      }
     }
 
     @media (max-width: 640px) {
@@ -802,18 +878,27 @@
       .section { padding: 80px 0; }
       .feature-card { padding: 32px; }
       .community-card { padding: 32px; }
+      
+      .carousel-title {
+        font-size: 2.5rem;
+      }
+      
+      .carousel-description {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- NAVIGATION -->
+  <!-- NAVIGATION (fixed at top) -->
   <nav id="navbar">
     <div class="nav-container">
       <div class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">JVST</div>
       <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">☰</button>
       <div class="nav-links" id="navLinks">
-        <a href="tunes.html" class="active">Music</a>
-        <a href="indy.html">Indy 3</a>
+        <a href="#home" class="active">Home</a>
+        <a href="#collabs">Collaborations</a>
+        <a href="#indy">Indy 3</a>
         <a href="#values">Values</a>
         <a href="#pricing">Pricing</a>
         <a href="#community">Community</a>
@@ -822,34 +907,134 @@
     </div>
   </nav>
 
-  <!-- HERO -->
-  <section class="hero" id="music">
-    <div class="hero-content">
-      <div class="hero-eyebrow">Introducing JVST</div>
-      <h1 class="hero-title">Intelligence,<br><span>refined.</span></h1>
-      <p class="hero-description">
-        AI that understands culture. Clean, powerful, and thoughtfully designed for the way you actually think.
-      </p>
-      <div class="hero-actions">
-        <button class="btn btn-primary" onclick="window.location.href='#preview'">Experience Music</button>
-        <button class="btn btn-secondary" onclick="window.location.href='#values'">Learn More</button>
+  <!-- HERO VIDEO CAROUSEL (first thing you see) -->
+  <section class="hero-carousel" id="home">
+    <div class="carousel-slides" id="carouselSlides">
+      <div class="carousel-slide active" id="slide1">
+        <!-- Video background - replace with your actual video files -->
+        <video class="carousel-video" autoplay muted loop playsinline>
+          <source src="video1.mp4" type="video/mp4">
+          <!-- Fallback image if video doesn't load -->
+          <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=1600" alt="Fallback">
+        </video>
+        <div class="carousel-overlay">
+          <div class="carousel-content">
+            <div class="carousel-eyebrow">Exclusive Collaboration</div>
+            <h2 class="carousel-title">JVST × Rainn Blais</h2>
+            <p class="carousel-description">Experience the fusion of sports and technology. Limited edition release coming soon.</p>
+            <span class="carousel-tag">#TeenSports</span>
+          </div>
+        </div>
       </div>
+
+      <!-- Slide 2: Artist Spotlight -->
+      <div class="carousel-slide" id="slide2">
+        <video class="carousel-video" autoplay muted loop playsinline>
+          <source src="video2.mp4" type="video/mp4">
+          <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1600" alt="Fallback">
+        </video>
+        <div class="carousel-overlay">
+          <div class="carousel-content">
+            <div class="carousel-eyebrow">Artist Spotlight</div>
+            <h2 class="carousel-title">Noah & Evan × JVST</h2>
+            <p class="carousel-description">A new dimension of sound. Experience music like never before with our AI-powered audio engine.</p>
+            <span class="carousel-tag">#SupportLocalArtists</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3: Cultural Movement -->
+      <div class="carousel-slide" id="slide3">
+        <video class="carousel-video" autoplay muted loop playsinline>
+          <source src="video3.mp4" type="video/mp4">
+          <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1600" alt="Fallback">
+        </video>
+        <div class="carousel-overlay">
+          <div class="carousel-content">
+            <div class="carousel-eyebrow">Cultural Movement</div>
+            <h2 class="carousel-title">Barrio Sessions</h2>
+            <p class="carousel-description">Amplifying voices from the streets. A global platform for authentic expression.</p>
+            <span class="carousel-tag">#Orgullo</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4: Tech x Music -->
+      <div class="carousel-slide" id="slide4">
+        <video class="carousel-video" autoplay muted loop playsinline>
+          <source src="video4.mp4" type="video/mp4">
+          <img src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1600" alt="Fallback">
+        </video>
+        <div class="carousel-overlay">
+          <div class="carousel-content">
+            <div class="carousel-eyebrow">Innovation</div>
+            <h2 class="carousel-title">Indy 3 Live</h2>
+            <p class="carousel-description">Watch our AI generate images in real-time. The future of creativity is here.</p>
+            <span class="carousel-tag">#Indy3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carousel Navigation Arrows -->
+    <button class="carousel-arrow prev" id="prevSlide" aria-label="Previous slide">←</button>
+    <button class="carousel-arrow next" id="nextSlide" aria-label="Next slide">→</button>
+
+    <!-- Carousel Dots -->
+    <div class="carousel-controls" id="carouselControls">
+      <button class="carousel-dot active" data-index="0" aria-label="Go to slide 1"></button>
+      <button class="carousel-dot" data-index="1" aria-label="Go to slide 2"></button>
+      <button class="carousel-dot" data-index="2" aria-label="Go to slide 3"></button>
+      <button class="carousel-dot" data-index="3" aria-label="Go to slide 4"></button>
     </div>
   </section>
 
-  <!-- TICKER -->
-  <div class="ticker">
-    <div class="ticker-content">
-      <span>✦ JVST</span>
-      <span>✦ CULTURE FIRST</span>
-      <span>✦ PRIVACY BY DESIGN</span>
-      <span>✦ HUMAN CENTERED</span>
-      <span>✦ JVST</span>
-      <span>✦ CULTURE FIRST</span>
-      <span>✦ PRIVACY BY DESIGN</span>
-      <span>✦ HUMAN CENTERED</span>
-    </div>
+<!-- TICKER (separates hero from content) -->
+<div class="ticker">
+  <div class="ticker-content">
+    <span>✦ RAINN BLAIS</span>
+    <span>✦ NOAH LOKE</span>
+    <span>✦ EVAN DUFFY</span>
+    <span>✦ BARRIO SESSIONS</span>
+    <span>✦ INDY 3</span>
+    <span>✦ RAINN BLAIS</span>
+    <span>✦ NOAH LOKE</span>
+    <span>✦ EVAN DUFFY</span>
+    <span>✦ BARRIO SESSIONS</span>
+    <span>✦ INDY 3</span>
   </div>
+</div>
+
+  <!-- COLLABORATIONS SECTION (new) -->
+  <section class="section" id="collabs">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: 60px;">
+        <div class="caption">Featured Collaborations</div>
+        <h2 class="display-2">Culture meets technology</h2>
+        <p class="body-large" style="color: var(--text-secondary);">Partnering with people who shape the world.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="feature-card" style="text-align: center;">
+          <div style="font-size: 4rem; margin-bottom: 24px;">🎤</div>
+          <h3 class="feature-title">Noah Loke</h3>
+          <p class="feature-description">Exclusive AI-powered music experiences and limited edition drops.</p>
+        </div>
+        
+        <div class="feature-card" style="text-align: center;">
+          <div style="font-size: 4rem; margin-bottom: 24px;">🎸</div>
+          <h3 class="feature-title">Evan Duffy</h3>
+          <p class="feature-description">Reimagining flamenco through technology. Interactive music experiences.</p>
+        </div>
+        
+        <div class="feature-card" style="text-align: center;">
+          <div style="font-size: 4rem; margin-bottom: 24px;">🏀</div>
+          <h3 class="feature-title">Rainn Blais</h3>
+          <p class="feature-description">A star from the local school boys basketball team has started a long partnership with JVST to help small musicians and artists alike.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- INDY 3 SECTION -->
   <section class="section" id="indy">
@@ -1097,7 +1282,79 @@
       });
     });
 
-    // Music player
+    // ================= VIDEO CAROUSEL =================
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const prevBtn = document.getElementById('prevSlide');
+    const nextBtn = document.getElementById('nextSlide');
+    let currentSlide = 0;
+    const totalSlides = slides.length;
+    let slideInterval;
+
+    function showSlide(index) {
+      // Handle wrap-around
+      if (index < 0) index = totalSlides - 1;
+      if (index >= totalSlides) index = 0;
+      
+      // Update slides
+      slides.forEach(slide => slide.classList.remove('active'));
+      slides[index].classList.add('active');
+      
+      // Update dots
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+      });
+      
+      currentSlide = index;
+    }
+
+    function nextSlide() {
+      showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+      showSlide(currentSlide - 1);
+    }
+
+    // Auto-advance slides every 8 seconds
+    function startCarousel() {
+      slideInterval = setInterval(nextSlide, 8000);
+    }
+
+    function stopCarousel() {
+      clearInterval(slideInterval);
+    }
+
+    // Event listeners for controls
+    prevBtn.addEventListener('click', () => {
+      stopCarousel();
+      prevSlide();
+      startCarousel();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      stopCarousel();
+      nextSlide();
+      startCarousel();
+    });
+
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        stopCarousel();
+        showSlide(index);
+        startCarousel();
+      });
+    });
+
+    // Pause carousel on hover
+    const carousel = document.querySelector('.hero-carousel');
+    carousel.addEventListener('mouseenter', stopCarousel);
+    carousel.addEventListener('mouseleave', startCarousel);
+
+    // Start the carousel
+    startCarousel();
+
+    // ================= MUSIC PLAYER =================
     const audio = document.getElementById('audioPlayer');
     const playBtn = document.getElementById('playBtn');
     const progressBar = document.getElementById('progressBar');
