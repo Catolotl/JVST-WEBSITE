@@ -1,1471 +1,1661 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>JVST — Hi from Indy3 👋</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <title>JVST — AI with taste</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="AI with taste. Culture-first technology for the next generation.">
   <link rel="shortcut icon" type="image/png" href="favicon.png">
-  
-  <!-- Fonts: Inter + JetBrains Mono -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  
-  <style>
-    /* ================= DESIGN SYSTEM ================= */
-    :root {
-      /* Apple Dark Mode palette */
-      --bg-primary: #000000;
-      --bg-secondary: #0a0a0c;
-      --bg-tertiary: #141417;
-      --bg-elevated: #1c1c1e;
-      --bg-card: #1c1c1e;
-      
-      --text-primary: #ffffff;
-      --text-secondary: #98989e;
-      --text-tertiary: #6c6c74;
-      --text-quaternary: #3a3a3c;
-      
-      --separator: #262628;
-      --separator-light: #38383a;
-      
-      --accent: #ff2d2d;
-      --accent-hover: #ff4d4d;
-      --accent-soft: rgba(255, 45, 45, 0.15);
-      --accent-glow: rgba(255, 45, 45, 0.3);
-      
-      --gradient-start: #ff2d2d;
-      --gradient-end: #ff8c8c;
-      
-      --blur-intensity: 20px;
-      --spacing-unit: 8px;
-    }
-
-    /* ================= RESET ================= */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      line-height: 1.4;
-      overflow-x: hidden;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    /* ================= TYPOGRAPHY ================= */
-    h1, h2, h3, h4, h5, h6 {
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-
-    .display-1 {
-      font-size: clamp(3rem, 8vw, 5rem);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-    }
-
-    .display-2 {
-      font-size: clamp(2.5rem, 6vw, 4rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-    }
-
-    .body-large {
-      font-size: 1.25rem;
-      font-weight: 400;
-      line-height: 1.6;
-      color: var(--text-secondary);
-    }
-
-    .caption {
-      font-size: 0.875rem;
-      font-weight: 500;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--text-tertiary);
-    }
-
-    /* ================= LAYOUT ================= */
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 32px;
-    }
-
-    .section {
-      padding: 120px 0;
-    }
-
-    /* ================= NAVIGATION ================= */
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(var(--blur-intensity));
-      -webkit-backdrop-filter: blur(var(--blur-intensity));
-      border-bottom: 1px solid var(--separator);
-    }
-
-    .nav-container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 16px 32px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #ffffff, #98989e);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      cursor: pointer;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 40px;
-      align-items: center;
-    }
-
-    .nav-links a {
-      font-size: 0.9375rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      transition: color 0.2s ease;
-    }
-
-    .nav-links a:hover {
-      color: var(--text-primary);
-    }
-
-    .nav-links a.active {
-      color: var(--text-primary);
-    }
-
-    .nav-links a.active::after {
-      content: '';
-      display: block;
-      height: 2px;
-      background: var(--accent);
-      margin-top: 4px;
-      border-radius: 2px;
-    }
-
-    .nav-button {
-      background: var(--accent);
-      color: var(--text-primary) !important;
-      padding: 8px 20px !important;
-      border-radius: 980px;
-      font-weight: 600 !important;
-    }
-
-    .nav-button:hover {
-      background: var(--accent-hover);
-    }
-
-    .mobile-menu-btn {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--text-primary);
-      font-size: 24px;
-      cursor: pointer;
-    }
-
-    /* ================= HERO VIDEO CAROUSEL ================= */
-    .hero-carousel {
-      height: 100vh;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .carousel-slides {
-      height: 100%;
-      position: relative;
-    }
-
-    .carousel-slide {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-      pointer-events: none;
-    }
-
-    .carousel-slide.active {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .carousel-video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* Dark overlay for text readability */
-    .carousel-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(
-        90deg,
-        rgba(0, 0, 0, 0.7) 0%,
-        rgba(0, 0, 0, 0.3) 50%,
-        rgba(0, 0, 0, 0.7) 100%
-      );
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .carousel-content {
-      max-width: 900px;
-      padding: 0 24px;
-      transform: translateY(0);
-      animation: slideUp 1s ease-out;
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .carousel-eyebrow {
-      font-size: 1rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 24px;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    .carousel-title {
-      font-size: clamp(2.5rem, 8vw, 5rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-      margin-bottom: 24px;
-      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    }
-
-    .carousel-description {
-      font-size: clamp(1.1rem, 2vw, 1.3rem);
-      color: rgba(255, 255, 255, 0.9);
-      max-width: 700px;
-      margin: 0 auto 32px;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    .carousel-tag {
-      display: inline-block;
-      padding: 8px 20px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 980px;
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: white;
-    }
-
-    /* Carousel Controls */
-    .carousel-controls {
-      position: absolute;
-      bottom: 60px;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      z-index: 10;
-    }
-
-    .carousel-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.3);
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      transition: all 0.3s ease;
-    }
-
-    .carousel-dot:hover {
-      background: rgba(255, 255, 255, 0.5);
-    }
-
-    .carousel-dot.active {
-      background: var(--accent);
-      transform: scale(1.2);
-    }
-
-    .carousel-arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: white;
-      font-size: 24px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-      z-index: 10;
-    }
-
-    .carousel-arrow:hover {
-      background: rgba(0, 0, 0, 0.8);
-      border-color: rgba(255, 255, 255, 0.3);
-    }
-
-    .carousel-arrow.prev {
-      left: 40px;
-    }
-
-    .carousel-arrow.next {
-      right: 40px;
-    }
-
-    /* ================= BUTTONS ================= */
-    .btn {
-      display: inline-block;
-      padding: 12px 32px;
-      border-radius: 980px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border: none;
-      font-family: inherit;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: var(--text-primary);
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-hover);
-      transform: scale(1.02);
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: var(--text-primary);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    /* ================= TICKER ================= */
-    .ticker {
-      background: var(--bg-secondary);
-      border-top: 1px solid var(--separator);
-      border-bottom: 1px solid var(--separator);
-      padding: 20px 0;
-      overflow: hidden;
-    }
-
-    .ticker-content {
-      display: inline-block;
-      white-space: nowrap;
-      animation: ticker 40s linear infinite;
-    }
-
-    .ticker-content span {
-      display: inline-block;
-      margin-right: 48px;
-      color: var(--text-secondary);
-      font-size: 0.9375rem;
-      font-weight: 500;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    @keyframes ticker {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    /* ================= GRIDS ================= */
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 60px;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 30px;
-    }
-
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 30px;
-    }
-
-    /* ================= CARDS ================= */
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--separator);
-      border-radius: 24px;
-      padding: 32px;
-      transition: all 0.3s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: var(--text-quaternary);
-    }
-
-    .card-icon {
-      font-size: 2.5rem;
-      margin-bottom: 24px;
-    }
-
-    .card-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    .card-description {
-      color: var(--text-secondary);
-      line-height: 1.6;
-    }
-
-    /* Feature cards (larger) */
-    .feature-card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--separator);
-      border-radius: 32px;
-      padding: 48px;
-      transition: all 0.3s ease;
-    }
-
-    .feature-card:hover {
-      border-color: var(--text-quaternary);
-    }
-
-    .feature-icon {
-      font-size: 3rem;
-      margin-bottom: 32px;
-    }
-
-    .feature-title {
-      font-size: 2rem;
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
-
-    .feature-description {
-      color: var(--text-secondary);
-      font-size: 1.125rem;
-      line-height: 1.6;
-    }
-
-    /* ================= MUSIC PREVIEW ================= */
-    .preview-card {
-      background: linear-gradient(135deg, var(--bg-elevated), var(--bg-tertiary));
-      border: 1px solid var(--separator);
-      border-radius: 32px;
-      padding: 48px;
-      display: grid;
-      grid-template-columns: 300px 1fr;
-      gap: 48px;
-      align-items: center;
-    }
-
-    .album-art {
-      position: relative;
-    }
-
-    .album-image {
-      width: 100%;
-      aspect-ratio: 1;
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-      transition: transform 0.3s ease;
-    }
-
-    .album-image:hover {
-      transform: scale(1.02);
-    }
-
-    .preview-badge {
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      background: var(--accent);
-      color: var(--text-primary);
-      padding: 6px 16px;
-      border-radius: 980px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    .track-title {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .track-artist {
-      font-size: 1.25rem;
-      color: var(--text-secondary);
-      margin-bottom: 32px;
-    }
-
-    .player {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-    }
-
-    .play-button {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: var(--accent);
-      border: none;
-      color: var(--text-primary);
-      font-size: 24px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .play-button:hover {
-      background: var(--accent-hover);
-      transform: scale(1.05);
-    }
-
-    .progress-area {
-      flex: 1;
-    }
-
-    .progress-bar {
-      height: 4px;
-      background: var(--text-quaternary);
-      border-radius: 2px;
-      cursor: pointer;
-      margin-bottom: 8px;
-    }
-
-    .progress-fill {
-      width: 0%;
-      height: 100%;
-      background: var(--accent);
-      border-radius: 2px;
-      position: relative;
-    }
-
-    .progress-fill::after {
-      content: '';
-      position: absolute;
-      right: -4px;
-      top: -4px;
-      width: 12px;
-      height: 12px;
-      background: var(--accent);
-      border-radius: 50%;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-
-    .progress-bar:hover .progress-fill::after {
-      opacity: 1;
-    }
-
-    .time-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.875rem;
-      color: var(--text-tertiary);
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    /* ================= PRICING ================= */
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-top: 60px;
-    }
-
-    .pricing-card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--separator);
-      border-radius: 24px;
-      padding: 32px;
-      position: relative;
-    }
-
-    .pricing-card.featured {
-      border-color: var(--accent);
-      background: linear-gradient(135deg, var(--bg-elevated), var(--accent-soft));
-    }
-
-    .pricing-badge {
-      position: absolute;
-      top: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--accent);
-      color: var(--text-primary);
-      padding: 4px 16px;
-      border-radius: 980px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    .pricing-name {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
-
-    .pricing-price {
-      font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .pricing-price span {
-      font-size: 1rem;
-      color: var(--text-tertiary);
-      font-weight: 400;
-    }
-
-    .pricing-features {
-      margin: 32px 0;
-      list-style: none;
-    }
-
-    .pricing-features li {
-      padding: 12px 0;
-      border-bottom: 1px solid var(--separator);
-      color: var(--text-secondary);
-      font-size: 0.9375rem;
-    }
-
-    .pricing-features li:last-child {
-      border-bottom: none;
-    }
-
-    .pricing-features li::before {
-      content: '✓';
-      color: var(--accent);
-      font-weight: 600;
-      margin-right: 12px;
-    }
-
-    /* ================= COMMUNITY ================= */
-    .community-card {
-      background: linear-gradient(135deg, var(--bg-elevated), transparent);
-      border: 1px solid var(--separator);
-      border-radius: 32px;
-      padding: 64px;
-      text-align: center;
-      margin-top: 60px;
-    }
-
-    .community-title {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 24px;
-    }
-
-    .community-title span {
-      display: inline-block;
-      animation: heartbeat 2s ease-in-out infinite;
-    }
-
-    @keyframes heartbeat {
-      0%, 100% { transform: scale(1); }
-      10% { transform: scale(1.1); }
-      20% { transform: scale(1); }
-    }
-
-    .community-description {
-      color: var(--text-secondary);
-      font-size: 1.25rem;
-      line-height: 1.6;
-      max-width: 700px;
-      margin: 0 auto 32px;
-    }
-
-    .support-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      justify-content: center;
-    }
-
-    .support-tag {
-      padding: 8px 20px;
-      background: var(--bg-tertiary);
-      border: 1px solid var(--separator);
-      border-radius: 980px;
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-    }
-
-    /* ================= FOOTER ================= */
-    footer {
-      background: var(--bg-secondary);
-      border-top: 1px solid var(--separator);
-      padding: 80px 0 40px;
-    }
-
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 2fr repeat(3, 1fr);
-      gap: 60px;
-      margin-bottom: 60px;
-    }
-
-    .footer-logo {
-      font-size: 1.5rem;
-      font-weight: 600;
-      background: linear-gradient(135deg, #ffffff, #98989e);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 16px;
-    }
-
-    .footer-description {
-      color: var(--text-tertiary);
-      font-size: 0.9375rem;
-      line-height: 1.6;
-    }
-
-    .footer-column h4 {
-      font-size: 0.875rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-secondary);
-      margin-bottom: 24px;
-    }
-
-    .footer-column a {
-      display: block;
-      color: var(--text-tertiary);
-      font-size: 0.9375rem;
-      margin-bottom: 16px;
-      transition: color 0.2s ease;
-    }
-
-    .footer-column a:hover {
-      color: var(--text-primary);
-    }
-
-    .footer-bottom {
-      text-align: center;
-      padding-top: 40px;
-      border-top: 1px solid var(--separator);
-      color: var(--text-tertiary);
-      font-size: 0.875rem;
-    }
-
-    /* ================= RESPONSIVE ================= */
-    @media (max-width: 1024px) {
-      .carousel-arrow {
-        display: none;
-      }
-      
-      .grid-4 { grid-template-columns: repeat(2, 1fr); }
-      .footer-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    @media (max-width: 900px) {
-      .nav-links {
-        position: fixed;
-        top: 72px;
-        left: 0;
-        right: 0;
-        background: var(--bg-elevated);
-        backdrop-filter: blur(var(--blur-intensity));
-        flex-direction: column;
-        padding: 32px;
-        gap: 24px;
-        border-bottom: 1px solid var(--separator);
-        transform: translateY(-100%);
-        opacity: 0;
-        transition: all 0.3s ease;
-        pointer-events: none;
-      }
-
-      .nav-links.active {
-        transform: translateY(0);
-        opacity: 1;
-        pointer-events: all;
-      }
-
-      .mobile-menu-btn {
-        display: block;
-      }
-
-      .grid-2, .grid-3 { grid-template-columns: 1fr; }
-      .pricing-grid { grid-template-columns: 1fr; }
-      
-      .preview-card {
-        grid-template-columns: 1fr;
-        padding: 32px;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .container { padding: 0 20px; }
-      .section { padding: 80px 0; }
-      .feature-card { padding: 32px; }
-      .community-card { padding: 32px; }
-      
-      .carousel-title {
-        font-size: 2.5rem;
-      }
-      
-      .carousel-description {
-        font-size: 1rem;
-      }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#000; --bg2:#0c0c0c; --bg3:#141414; --bg4:#1c1c1c;
+  --b:#242424; --b2:#333;
+  --t:#fff; --t2:#999; --t3:#555;
+  --red:#ff2d2d; --red0:rgba(255,45,45,0.10); --red1:rgba(255,45,45,0.22);
+  --yellow:#f5c842;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'JetBrains Mono','Inter',system-ui,monospace;background:var(--bg);color:var(--t);line-height:1.6;overflow-x:hidden;letter-spacing:-.01em}
+a{color:inherit;text-decoration:none}
+img{display:block}
+button{font-family:inherit;cursor:pointer}
+.container{max-width:1200px;margin:0 auto;padding:0 32px}
+section{padding:96px 0}
+
+/* ── GRAIN OVERLAY ── */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;opacity:.032;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px 200px}
+
+/* ── SECTION ACCENT LINE ── */
+.section-accent{height:1px;background:linear-gradient(to right,transparent 0%,var(--red) 50%,transparent 100%);opacity:.3}
+
+/* ── LIVE PULSE DOT ── */
+.pulse-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-right:5px;vertical-align:middle;animation:pdot 2s ease-out infinite}
+@keyframes pdot{0%{box-shadow:0 0 0 0 rgba(255,45,45,.7)}70%{box-shadow:0 0 0 8px rgba(255,45,45,0)}100%{box-shadow:0 0 0 0 rgba(255,45,45,0)}}
+
+/* ── TICKER PAUSE ON HOVER ── */
+.ticker:hover .ticker-inner,.lyric-ticker:hover .lyric-inner{animation-play-state:paused}
+
+/* ── ANIMATED LOGO SHIMMER ── */
+@keyframes shimmer{0%,100%{opacity:1}50%{opacity:.7}}
+.logo{animation:none}.logo:hover span{animation:shimmer .8s ease-in-out}
+
+/* ── HIGHLIGHT UTILITY ── */
+.hl{background:var(--yellow);color:#000;font-style:italic;padding:0 4px;border-radius:2px}
+.hl-red{background:var(--red);color:#fff;font-style:italic;padding:0 4px;border-radius:2px}
+
+/* ── SECTION HEADER ── */
+.sh{margin-bottom:44px}
+.sh.center{text-align:center}
+.sh.center .sh-sub{margin-left:auto;margin-right:auto}
+.sh-label{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:10px}
+.sh-title{font-size:clamp(1.75rem,3.5vw,2.5rem);font-weight:700;letter-spacing:-.03em;line-height:1.15}
+.sh-sub{margin-top:12px;font-size:.95rem;color:var(--t2);line-height:1.65;max-width:520px}
+
+/* ── BUTTONS ── */
+.btn{display:inline-block;padding:10px 22px;border-radius:6px;font-size:.875rem;font-weight:600;border:none;transition:opacity .15s,border-color .15s;cursor:pointer;font-family:inherit}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{opacity:.88}
+.btn-ghost{background:transparent;color:var(--t);border:1px solid var(--b2)}.btn-ghost:hover{border-color:var(--t)}
+.btn-yellow{background:var(--yellow);color:#000;font-style:italic;font-weight:700}.btn-yellow:hover{opacity:.9}
+
+/* ── CARDS ── */
+.card{background:var(--bg2);border:1px solid var(--b);border-radius:10px;padding:24px;transition:border-color .2s,transform .2s,box-shadow .2s;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--red);transform:scaleY(0);transform-origin:bottom;transition:transform .3s ease}
+.card:hover{border-color:var(--b2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.card:hover::before{transform:scaleY(1)}
+.card-icon{font-size:1.5rem;margin-bottom:14px}
+.card-title{font-size:.95rem;font-weight:600;margin-bottom:7px}
+.card-body{font-size:.85rem;color:var(--t2);line-height:1.6}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(0,0,0,.92);backdrop-filter:blur(18px);border-bottom:1px solid var(--b)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:1.2rem;font-weight:700;letter-spacing:-.02em;cursor:pointer;transition:opacity .15s}
+.logo:hover{opacity:.8}
+.logo span{color:var(--red)}
+.nav-links{display:flex;gap:24px;align-items:center}
+.nav-links a{font-size:.84rem;font-weight:500;color:var(--t2);transition:color .15s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--red);transition:width .25s ease}
+.nav-links a:hover{color:var(--t)}
+.nav-links a:hover::after{width:100%}
+.nav-cta{background:var(--red);color:#fff!important;padding:7px 18px;border-radius:6px;font-weight:600!important}
+.nav-cta:hover{opacity:.88}
+.nav-cta::after{display:none!important}
+.mob-btn{display:none;background:none;border:none;color:var(--t);font-size:20px}
+
+/* ── HERO CAROUSEL ── */
+.hero{height:100vh;position:relative;overflow:hidden}
+.c-slides{height:100%;position:relative}
+.c-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease;pointer-events:none}
+.c-slide.active{opacity:1;pointer-events:all}
+.c-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.c-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.c-overlay{position:absolute;inset:0;z-index:2;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;text-align:center}
+.c-content{max-width:680px;padding:0 40px;animation:fadeUp .7s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.c-label{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:14px}
+.c-title{font-size:clamp(2rem,5vw,3.2rem);font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-bottom:14px}
+.c-desc{font-size:.95rem;color:rgba(255,255,255,.65);margin-bottom:24px;line-height:1.65}
+.c-tag{display:inline-block;padding:5px 12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:4px;font-size:.78rem;font-weight:500}
+.c-dots{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10}
+.c-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.3);border:none;padding:0;transition:all .2s;cursor:pointer}
+.c-dot.active{background:var(--red);width:20px;border-radius:3px}
+.c-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.14);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.c-arrow:hover{background:rgba(0,0,0,.8)}
+.c-arrow.prev{left:24px}
+.c-arrow.next{right:24px}
+
+/* ── TICKER ── */
+.ticker{background:var(--bg2);border-top:1px solid var(--b);border-bottom:1px solid var(--b);padding:13px 0;overflow:hidden;cursor:default}
+.ticker-inner{display:inline-block;white-space:nowrap;animation:tick 40s linear infinite}
+.ticker-inner span{display:inline-block;margin-right:40px;font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);transition:color .3s}
+.ticker-inner span.hot{color:var(--red)}
+.ticker:hover .ticker-inner span{color:var(--t2)}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── INDY 3 ── */
+.indy-hero{background:var(--bg2);border:1px solid var(--b);border-radius:14px;padding:52px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;overflow:hidden}
+.indy-hero::after{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,45,45,.07) 0%,transparent 70%);pointer-events:none}
+.indy-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:var(--red0);border:1px solid var(--red1);border-radius:4px;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:18px}
+.indy-title{font-size:clamp(1.8rem,3.5vw,2.75rem);font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-bottom:14px}
+.indy-sub{font-size:.95rem;color:var(--t2);line-height:1.65;margin-bottom:28px}
+.indy-feats{display:flex;flex-direction:column;gap:14px}
+.indy-feat{display:flex;gap:12px;align-items:flex-start}
+.indy-icon{width:30px;height:30px;border-radius:7px;background:var(--bg4);border:1px solid var(--b);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;margin-top:2px}
+.indy-feat-text strong{display:block;font-size:.875rem;font-weight:600;margin-bottom:1px}
+.indy-feat-text span{font-size:.82rem;color:var(--t2)}
+
+/* Chat mockup */
+.chat-mock{background:var(--bg3);border:1px solid var(--b);border-radius:10px;overflow:hidden}
+.chat-bar{padding:10px 14px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:7px;background:var(--bg4)}
+.cdot{width:9px;height:9px;border-radius:50%}
+.chat-name{font-size:.78rem;font-weight:600;margin-left:4px;color:var(--t2)}
+.chat-msgs{padding:18px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:88%}
+.msg.user{align-self:flex-end}
+.bubble{padding:9px 13px;border-radius:10px;font-size:.82rem;line-height:1.5}
+.msg.user .bubble{background:var(--red);color:#fff;border-radius:10px 10px 2px 10px}
+.msg.bot .bubble{background:var(--bg4);border:1px solid var(--b);border-radius:10px 10px 10px 2px}
+.msg-t{font-size:.68rem;color:var(--t3);margin-top:3px;font-family:'JetBrains Mono',monospace}
+.msg.user .msg-t{text-align:right}
+.typing{display:flex;gap:4px;align-items:center;padding:9px 13px;background:var(--bg4);border:1px solid var(--b);border-radius:10px;width:fit-content}
+.typing span{width:5px;height:5px;background:var(--t3);border-radius:50%;animation:blink 1.4s infinite}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+
+/* Stats strip */
+.stats-strip{border:1px solid var(--b);border-radius:10px;overflow:hidden;display:grid;grid-template-columns:repeat(4,1fr);margin-top:20px}
+.stat-cell{padding:28px 24px;border-right:1px solid var(--b);background:var(--bg2);transition:background .2s}
+.stat-cell:hover{background:var(--bg3)}
+.stat-cell:last-child{border-right:none}
+.stat-num{font-size:1.7rem;font-weight:700;letter-spacing:-.03em;margin-bottom:3px}
+.stat-num span{color:var(--red)}
+.stat-label{font-size:.78rem;color:var(--t2)}
+
+/* ── SCROLLABLE SHELF ── */
+.shelf-wrap{position:relative}
+.shelf{display:flex;gap:16px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.shelf::-webkit-scrollbar{display:none}
+.shelf-card{flex:0 0 280px;scroll-snap-align:start;background:var(--bg2);border:1px solid var(--b);border-radius:10px;padding:22px;cursor:pointer;transition:border-color .2s,transform .18s,box-shadow .18s;position:relative}
+.shelf-card:hover{border-color:var(--red);transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.5),0 0 0 1px rgba(255,45,45,.12)}
+.shelf-card-tag{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:8px}
+.shelf-card-title{font-size:.95rem;font-weight:600;margin-bottom:7px;line-height:1.35}
+.shelf-card-body{font-size:.8rem;color:var(--t2);line-height:1.6}
+.shelf-card-footer{margin-top:14px;font-size:.72rem;color:var(--t3);font-family:'JetBrains Mono',monospace;display:flex;justify-content:space-between;align-items:center}
+.shelf-card-arrow{font-size:.85rem;color:var(--red)}
+.shelf-card.yellow-accent{border-color:rgba(245,200,66,.22);background:linear-gradient(135deg,var(--bg2) 80%,rgba(245,200,66,.05) 100%)}
+.shelf-card.yellow-accent:hover{border-color:var(--yellow)}
+.shelf-nav{display:flex;gap:8px;margin-top:14px;justify-content:flex-end}
+.shelf-btn{width:32px;height:32px;border-radius:50%;background:var(--bg2);border:1px solid var(--b);color:var(--t2);font-size:14px;display:flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s}
+.shelf-btn:hover{border-color:var(--b2);color:var(--t)}
+
+/* ── MUSIC PLAYER ── */
+.player-wrap{background:var(--bg2);border:1px solid var(--b);border-radius:14px;padding:36px;display:grid;grid-template-columns:auto 1fr;gap:36px;align-items:center}
+.player-img{width:160px;height:160px;border-radius:8px;object-fit:cover;display:block}
+.player-badge-wrap{position:relative}
+.player-badge{position:absolute;top:-7px;right:-7px;background:var(--red);color:#fff;padding:3px 9px;border-radius:4px;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.player-title{font-size:1.4rem;font-weight:700;letter-spacing:-.02em;margin-bottom:4px}
+.player-artist{font-size:.875rem;color:var(--t2);margin-bottom:24px}
+.player-row{display:flex;align-items:center;gap:18px}
+.play-btn{width:44px;height:44px;border-radius:50%;background:var(--red);border:none;color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:opacity .15s;flex-shrink:0}
+.play-btn:hover{opacity:.85}
+.prog-zone{flex:1}
+.prog-track{height:3px;background:var(--b2);border-radius:2px;cursor:pointer;margin-bottom:7px}
+.prog-fill{width:0%;height:100%;background:var(--red);border-radius:2px}
+.time-row{display:flex;justify-content:space-between;font-size:.72rem;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.player-status{margin-top:10px;font-size:.72rem;color:var(--t3);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+
+/* ── CULTURE ── */
+.culture-wrap{background:var(--bg2);border-top:1px solid var(--b);border-bottom:1px solid var(--b)}
+.bb-split{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+.bb-quote{font-size:clamp(1.1rem,2vw,1.5rem);font-weight:400;font-style:italic;line-height:1.55;color:var(--t);margin-bottom:16px}
+.bb-attr{font-size:.75rem;color:var(--red);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:24px}
+.tag{padding:4px 11px;border:1px solid var(--b2);border-radius:4px;font-size:.73rem;font-weight:500;color:var(--t2);background:var(--bg3);cursor:pointer;transition:all .15s}
+.tag:hover,.tag.on{border-color:var(--red);color:var(--red);background:var(--red0)}
+.culture-nums{display:grid;grid-template-columns:1fr 1fr;gap:1px;border:1px solid var(--b);border-radius:10px;overflow:hidden;margin-top:28px}
+.cnum-cell{padding:22px 20px;background:var(--bg3)}
+.cnum{font-size:1.75rem;font-weight:700;letter-spacing:-.03em;margin-bottom:3px}
+.cnum-label{font-size:.78rem;color:var(--t2);line-height:1.4}
+.bb-albums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bb-album{position:relative;border-radius:7px;overflow:hidden;aspect-ratio:1;cursor:pointer}
+.bb-album img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s;filter:brightness(.75)}
+.bb-album:hover img{transform:scale(1.06);filter:brightness(.95)}
+.bb-album-name{position:absolute;bottom:7px;left:8px;font-size:.65rem;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.8);text-shadow:0 1px 4px rgba(0,0,0,.9)}
+.disco-list{display:flex;flex-direction:column;gap:4px;margin-top:14px}
+.disco-row{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:7px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+.disco-row:hover{background:var(--bg3);border-color:var(--b)}
+.disco-row.on{background:var(--red0);border-color:rgba(255,45,45,.18)}
+.disco-num{font-size:.72rem;color:var(--t3);font-family:'JetBrains Mono',monospace;width:18px;text-align:center;flex-shrink:0}
+.disco-thumb{width:36px;height:36px;border-radius:5px;object-fit:cover;flex-shrink:0}
+.disco-thumb.spin{animation:vspin 3s linear infinite}
+@keyframes vspin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.disco-info{flex:1;min-width:0}
+.disco-track{font-size:.84rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.disco-year{font-size:.7rem;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.disco-icon{font-size:.75rem;color:var(--t3);flex-shrink:0}
+.disco-row:hover .disco-icon,.disco-row.on .disco-icon{color:var(--red)}
+.wave{display:flex;align-items:flex-end;gap:2px;height:12px}
+.wave span{display:block;width:2px;background:var(--red);border-radius:1px;animation:wv 1s ease-in-out infinite}
+.wave span:nth-child(2){animation-delay:.15s}
+.wave span:nth-child(3){animation-delay:.3s}
+@keyframes wv{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
+
+/* ── LYRIC TICKER ── */
+.lyric-ticker{background:var(--red);padding:11px 0;overflow:hidden}
+.lyric-inner{display:inline-block;white-space:nowrap;animation:tick 55s linear infinite}
+.lyric-inner span{display:inline-block;margin-right:44px;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(0,0,0,.35)}
+.lyric-inner span.lit{color:rgba(255,255,255,.88)}
+
+/* ── COLLABS ── */
+.collab-flip{perspective:1000px;height:230px;cursor:pointer}
+.collab-flip-inner{position:relative;width:100%;height:100%;transition:transform .6s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
+.collab-flip:hover .collab-flip-inner,.collab-flip.flipped .collab-flip-inner{transform:rotateY(180deg)}
+.collab-front,.collab-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:10px;padding:24px;border:1px solid var(--b)}
+.collab-front{background:var(--bg2);display:flex;flex-direction:column}
+.collab-back{background:var(--bg3);border-color:var(--red);transform:rotateY(180deg);display:flex;flex-direction:column;justify-content:space-between}
+.collab-emoji{font-size:1.75rem;margin-bottom:14px}
+.collab-name{font-size:1rem;font-weight:600;margin-bottom:7px}
+.collab-bio{font-size:.84rem;color:var(--t2);line-height:1.6;flex:1}
+.collab-hint{font-size:.65rem;color:var(--t3);margin-top:auto;letter-spacing:.06em;text-transform:uppercase;padding-top:10px;display:flex;align-items:center;gap:4px}
+.collab-hint::after{content:'›';font-size:.9rem;transition:transform .2s}
+.collab-flip:hover .collab-hint::after{transform:translateX(4px)}
+.collab-back-title{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:8px}
+.collab-back-body{font-size:.82rem;color:var(--t2);line-height:1.6;flex:1}
+.collab-back-tag{display:inline-block;padding:4px 10px;background:var(--red0);border:1px solid var(--red1);border-radius:4px;font-size:.72rem;font-weight:600;color:var(--red);margin-top:10px}
+
+/* Collab submit */
+.collab-submit{margin-top:44px;background:var(--bg2);border:1px solid var(--b);border-radius:12px;padding:36px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.collab-submit h3{font-size:1.4rem;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
+.collab-submit p{font-size:.88rem;color:var(--t2);line-height:1.65}
+.collab-form{display:flex;flex-direction:column;gap:10px}
+.collab-input{background:var(--bg3);border:1px solid var(--b2);border-radius:7px;padding:10px 14px;color:var(--t);font-family:inherit;font-size:.84rem;outline:none;transition:border-color .2s}
+.collab-input:focus{border-color:var(--red)}
+.collab-input::placeholder{color:var(--t3)}
+
+/* ── BARRIO SESSIONS ── */
+.barrio-wrap{background:linear-gradient(135deg,#0a0a0a 0%,#110808 50%,#0a0a0a 100%);border-top:1px solid var(--b);border-bottom:1px solid var(--b)}
+.barrio-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.barrio-title{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-bottom:14px}
+.barrio-sub{font-size:.95rem;color:var(--t2);line-height:1.65;margin-bottom:24px}
+.barrio-steps{display:flex;flex-direction:column;gap:16px}
+.barrio-step{display:flex;gap:14px;align-items:flex-start}
+.barrio-num{width:28px;height:28px;border-radius:50%;background:var(--red);color:#fff;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.barrio-step-text strong{display:block;font-size:.875rem;font-weight:600;margin-bottom:2px}
+.barrio-step-text span{font-size:.82rem;color:var(--t2)}
+.barrio-card-stack{position:relative;height:220px}
+.barrio-card{position:absolute;border-radius:12px;border:1px solid var(--b);padding:20px;background:var(--bg2);left:0;right:0}
+.barrio-card:nth-child(1){top:0;right:40px;z-index:3;background:var(--bg3);border-color:var(--red)}
+.barrio-card:nth-child(2){top:18px;left:18px;right:22px;z-index:2}
+.barrio-card:nth-child(3){top:36px;left:36px;right:4px;z-index:1;opacity:.55}
+.barrio-card-label{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:6px}
+.barrio-card-name{font-size:1rem;font-weight:700;margin-bottom:4px}
+.barrio-card-genre{font-size:.78rem;color:var(--t2)}
+.barrio-card-wave{display:flex;align-items:flex-end;gap:3px;height:28px;margin-top:14px}
+.barrio-card-wave span{display:block;width:3px;border-radius:2px;background:var(--red);animation:wv 1.2s ease-in-out infinite}
+.barrio-card-wave span:nth-child(1){height:40%}
+.barrio-card-wave span:nth-child(2){height:100%;animation-delay:.1s}
+.barrio-card-wave span:nth-child(3){height:60%;animation-delay:.2s}
+.barrio-card-wave span:nth-child(4){height:85%;animation-delay:.15s}
+.barrio-card-wave span:nth-child(5){height:45%;animation-delay:.3s}
+
+/* ── BLADE CARD ── */
+.blade-wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.blade-card-inner{background:linear-gradient(135deg,#1a0505 0%,#2d0808 50%,#1a0505 100%);border:1px solid rgba(255,45,45,.35);border-radius:16px;padding:28px;position:relative;overflow:hidden;transition:transform .3s ease,box-shadow .3s ease;box-shadow:0 0 40px rgba(255,45,45,.08)}
+.blade-card-inner:hover{transform:rotateY(-5deg) rotateX(2deg);box-shadow:0 0 60px rgba(255,45,45,.18)}
+.blade-card-logo{font-size:1.1rem;font-weight:700;letter-spacing:-.02em;margin-bottom:40px}
+.blade-card-logo span{color:var(--red)}
+.blade-card-name{font-size:1.3rem;font-weight:700;letter-spacing:-.02em;margin-bottom:4px}
+.blade-card-handle{font-size:.8rem;color:rgba(255,255,255,.45);margin-bottom:24px}
+.blade-card-tier{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;background:var(--red0);border:1px solid rgba(255,45,45,.3);border-radius:4px;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red)}
+.blade-chip{position:absolute;top:28px;right:28px;width:36px;height:28px;background:linear-gradient(135deg,#c8960c,#ffd700);border-radius:5px;opacity:.8}
+.blade-glow{position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,45,45,.12) 0%,transparent 70%);pointer-events:none}
+.blade-features{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.blade-feat{display:flex;gap:10px;align-items:center;font-size:.84rem;color:var(--t2)}
+.blade-feat-check{color:var(--red);font-weight:700}
+
+/* ── NEW SERVICES ── */
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--b);border:1px solid var(--b);border-radius:12px;overflow:hidden;margin-top:44px}
+.svc-cell{background:var(--bg2);padding:28px 24px;transition:background .2s;position:relative;overflow:hidden;cursor:pointer}
+.svc-cell:hover{background:var(--bg3)}
+.svc-cell::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 80%,var(--red0) 0%,transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none}
+.svc-cell:hover::after{opacity:1}
+.svc-icon{font-size:1.5rem;margin-bottom:12px}
+.svc-label{font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:6px}
+.svc-title{font-size:.95rem;font-weight:600;margin-bottom:8px}
+.svc-body{font-size:.82rem;color:var(--t2);line-height:1.6}
+.svc-badge{display:inline-block;margin-top:12px;padding:3px 8px;border-radius:3px;font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--bg4);border:1px solid var(--b2);color:var(--t3)}
+.svc-badge.soon{background:var(--red0);border-color:var(--red1);color:var(--red)}
+.svc-badge.yellow{background:rgba(245,200,66,.12);border-color:rgba(245,200,66,.3);color:var(--yellow);font-style:italic}
+
+/* ── VALUES ── */
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+
+/* ── PRICING ── */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:44px}
+.plan{background:var(--bg2);border:1px solid var(--b);border-radius:10px;padding:26px;position:relative;transition:transform .2s,box-shadow .2s}
+.plan:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.plan.pop{border-color:var(--red)}
+.plan.pop:hover{box-shadow:0 12px 32px rgba(255,45,45,.15)}
+.plan-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--red);color:#fff;padding:3px 11px;border-radius:4px;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.plan-name{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t2);margin-bottom:10px}
+.plan-price{font-size:2.2rem;font-weight:700;letter-spacing:-.03em;margin-bottom:3px}
+.plan-price small{font-size:.78rem;color:var(--t3);font-weight:400}
+.plan-divider{height:1px;background:var(--b);margin:20px 0}
+.plan-feats{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:22px}
+.plan-feats li{font-size:.84rem;color:var(--t2);display:flex;gap:8px}
+.plan-feats li::before{content:'✓';color:var(--red);font-weight:700;flex-shrink:0}
+
+/* ── COMMUNITY ── */
+.community-box{border:1px solid var(--b);border-radius:12px;padding:52px;text-align:center;background:linear-gradient(135deg,var(--bg) 0%,#0d0608 50%,var(--bg) 100%);position:relative;overflow:hidden}
+.community-box::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:200px;background:radial-gradient(ellipse,rgba(255,45,45,.05) 0%,transparent 70%);pointer-events:none}
+.community-title{font-size:clamp(1.5rem,2.8vw,2rem);font-weight:700;letter-spacing:-.02em;margin-bottom:14px}
+.community-sub{font-size:.95rem;color:var(--t2);line-height:1.65;max-width:520px;margin:0 auto 24px}
+.pill-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.pill{padding:5px 14px;background:var(--bg2);border:1px solid var(--b);border-radius:4px;font-size:.78rem;color:var(--t2);transition:border-color .2s,color .2s}
+.pill:hover{border-color:var(--b2);color:var(--t)}
+
+/* ── FOOTER ── */
+footer{background:var(--bg2);border-top:1px solid var(--b);padding:56px 0 28px;position:relative}
+footer::before{content:'';display:block;height:1px;background:linear-gradient(to right,transparent 0%,var(--red) 50%,transparent 100%);opacity:.25;position:absolute;top:0;left:0;right:0}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;margin-bottom:44px}
+.foot-logo{font-size:1.1rem;font-weight:700;margin-bottom:9px}
+.foot-logo span{color:var(--red)}
+.foot-desc{font-size:.82rem;color:var(--t3);line-height:1.65}
+.foot-col h4{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:14px}
+.foot-col a{display:block;font-size:.84rem;color:var(--t2);margin-bottom:9px;transition:color .15s}
+.foot-col a:hover{color:var(--t)}
+.foot-bottom{border-top:1px solid var(--b);padding-top:22px;display:flex;justify-content:space-between;align-items:center}
+.foot-copy{font-size:.78rem;color:var(--t3)}
+
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ── POPUP MODAL ── */
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:24px}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--bg2);border:1px solid var(--b2);border-radius:14px;max-width:640px;width:100%;max-height:80vh;overflow-y:auto;position:relative;animation:modalIn .25s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:none}}
+.modal-close{position:sticky;top:0;float:right;width:34px;height:34px;border-radius:50%;background:var(--bg3);border:1px solid var(--b2);color:var(--t2);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin:16px;z-index:1;transition:color .15s}
+.modal-close:hover{color:var(--t)}
+.modal-content{padding:0 32px 32px}
+.modal-tag{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:10px}
+.modal-title{font-size:1.5rem;font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-bottom:16px}
+.modal-body{font-size:.9rem;color:var(--t2);line-height:1.75}
+.modal-body p{margin-bottom:14px}
+.modal-body p:last-child{margin-bottom:0}
+.modal-body strong{color:var(--t);font-weight:600}
+.modal-body .modal-hl{background:var(--yellow);color:#000;font-style:italic;padding:1px 5px;border-radius:2px}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .values-split{grid-template-columns:1fr!important}
+  .c-arrow{display:none}
+  .stats-strip{grid-template-columns:repeat(2,1fr)}
+  .stat-cell:nth-child(2){border-right:none}
+  .stat-cell:nth-child(3){border-top:1px solid var(--b)}
+  .stat-cell:nth-child(4){border-top:1px solid var(--b);border-right:none}
+  .foot-grid{grid-template-columns:repeat(2,1fr)}
+  .culture-nums{grid-template-columns:repeat(2,1fr)}
+  .services-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:860px){
+  .nav-links{display:none;flex-direction:column;position:fixed;top:60px;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--b);padding:22px 28px;gap:18px;z-index:199}
+  .nav-links.open{display:flex}
+  .mob-btn{display:block}
+  .indy-hero,.bb-split,.barrio-grid,.blade-wrap,.collab-submit{grid-template-columns:1fr;gap:28px}
+  .indy-hero{padding:30px}
+  .g2,.g3,.g4,.values-grid,.pricing-grid{grid-template-columns:1fr}
+  .player-wrap{grid-template-columns:1fr;gap:20px}
+  .player-img{width:130px;height:130px}
+  .c-content{padding:0 28px}
+  .services-grid{grid-template-columns:1fr}
+  .community-box{padding:32px 20px}
+}
+/* ── INSTA SOCIAL SECTION ── */
+.insta-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.phone-mock{width:240px;background:#0f0f0f;border-radius:32px;border:2px solid var(--b2);padding:10px;box-shadow:0 24px 60px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.04);position:relative}
+.phone-notch{width:80px;height:18px;background:#0f0f0f;border-radius:0 0 12px 12px;margin:0 auto 4px;border:2px solid var(--b2);border-top:none}
+.phone-screen{background:var(--bg);border-radius:22px;overflow:hidden}
+.insta-post{background:#0a0a0a}
+.insta-header{display:flex;align-items:center;gap:9px;padding:10px 12px}
+.insta-av{width:28px;height:28px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0}
+.insta-user{font-size:.72rem;font-weight:600}
+.insta-loc{font-size:.6rem;color:var(--t3)}
+.insta-more{margin-left:auto;font-size:.9rem;color:var(--t3);letter-spacing:.12em}
+.insta-img-placeholder{height:160px;background:var(--bg3);position:relative;overflow:hidden}
+.insta-actions{display:flex;gap:14px;padding:10px 12px 4px;font-size:1rem;color:var(--t)}
+.insta-cap{padding:4px 12px 8px;font-size:.68rem;line-height:1.55;color:var(--t)}
+.insta-ask{display:flex;justify-content:space-between;align-items:center;padding:6px 12px 10px;border-top:1px solid var(--b)}
+.insta-ask-label{font-size:.6rem;color:var(--red);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.insta-regen{font-size:.62rem;color:var(--t3);cursor:pointer;padding:3px 8px;border:1px solid var(--b);border-radius:4px;transition:border-color .15s,color .15s}
+.insta-regen:hover{border-color:var(--b2);color:var(--t2)}
+
+/* ── YOUTH SECTION ── */
+.youth-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:36px}
+.youth-card{background:var(--bg2);border:1px solid var(--b);border-radius:12px;padding:24px;cursor:pointer;transition:border-color .2s,transform .2s,box-shadow .2s;position:relative;overflow:hidden}
+.youth-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 120%,rgba(255,45,45,.08),transparent 70%);opacity:0;transition:opacity .3s;pointer-events:none}
+.youth-card:hover{border-color:var(--red);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.youth-card:hover::after{opacity:1}
+.youth-card.yellow{border-color:rgba(245,200,66,.2);background:linear-gradient(135deg,var(--bg2),rgba(245,200,66,.04))}
+.youth-card.yellow:hover{border-color:var(--yellow)}
+.youth-card.yellow::after{background:radial-gradient(circle at 50% 120%,rgba(245,200,66,.1),transparent 70%)}
+.youth-card-emoji{font-size:1.75rem;margin-bottom:14px}
+.youth-card-title{font-size:1rem;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
+.youth-card-body{font-size:.82rem;color:var(--t2);line-height:1.65;margin-bottom:14px}
+.youth-card-tag{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
+.youth-card.yellow .youth-card-tag{color:var(--yellow)}
+.youth-cta{background:var(--bg2);border:1px solid var(--b);border-radius:12px;padding:32px 36px;display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap}
+
+/* ── FOOTER UPGRADES ── */
+footer{background:var(--bg2);border-top:1px solid var(--b);padding:60px 0 28px}
+.foot-news{display:flex;justify-content:space-between;align-items:center;gap:24px;background:var(--bg3);border:1px solid var(--b);border-radius:10px;padding:24px 28px;margin-bottom:44px;flex-wrap:wrap}
+.foot-divider{height:1px;background:var(--b);margin:36px 0}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr 1fr;gap:32px;margin-bottom:36px}
+.foot-brand{}
+.foot-logo{font-size:1.1rem;font-weight:700;margin-bottom:9px}
+.foot-logo span{color:var(--red)}
+.foot-desc{font-size:.78rem;color:var(--t3);line-height:1.7}
+.foot-pill{display:inline-block;margin-right:6px;margin-bottom:4px;padding:4px 12px;background:var(--bg4);border:1px solid var(--b2);border-radius:4px;font-size:.72rem;color:var(--t2);transition:border-color .15s,color .15s}
+.foot-pill:hover{border-color:var(--t);color:var(--t)}
+.foot-col h4{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:14px}
+.foot-col a{display:block;font-size:.8rem;color:var(--t3);margin-bottom:8px;transition:color .15s}
+.foot-col a:hover{color:var(--t2)}
+.foot-legal-block{background:var(--bg3);border:1px solid var(--b);border-radius:8px;padding:18px 20px;margin-bottom:24px}
+.foot-legal-block p{font-size:.66rem;color:var(--t3);line-height:1.75;letter-spacing:.01em}
+.foot-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.foot-copy{font-size:.75rem;color:var(--t3)}
+
+/* ── FEATURE DROP POPUP ── */
+.nl-overlay{position:fixed;inset:0;z-index:1001;background:rgba(0,0,0,.82);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:24px}
+.nl-overlay.open{display:flex}
+.nl-box{background:var(--bg2);border:1px solid var(--b2);border-radius:14px;max-width:480px;width:100%;padding:40px;position:relative;animation:modalIn .3s ease;overflow:hidden}
+.nl-box::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,45,45,.08) 0%,transparent 70%);pointer-events:none}
+.nl-close{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:50%;background:var(--bg3);border:1px solid var(--b2);color:var(--t2);font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:color .15s}
+.nl-close:hover{color:var(--t)}
+.nl-tag{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:12px}
+.nl-title{font-size:1.5rem;font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-bottom:10px}
+.nl-sub{font-size:.88rem;color:var(--t2);line-height:1.65}
+.nl-features{display:flex;flex-direction:column;gap:8px;margin:16px 0 20px}
+.nl-feat-row{display:flex;align-items:center;gap:10px;font-size:.82rem;color:var(--t2)}
+.nl-feat-row span:first-child{font-size:1rem;flex-shrink:0}
+.nl-feat-status{margin-left:auto;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--red);background:var(--red0);border:1px solid var(--red1);padding:2px 7px;border-radius:3px}
+
+@media(max-width:1100px){.foot-grid{grid-template-columns:1fr 1fr 1fr;}.foot-brand{grid-column:1/-1}}
+@media(max-width:860px){.insta-grid,.youth-cta{grid-template-columns:1fr;gap:28px}.youth-grid{grid-template-columns:1fr 1fr}.phone-mock{margin:0 auto}}
+@media(max-width:600px){.youth-grid{grid-template-columns:1fr}.foot-grid{grid-template-columns:1fr 1fr}.foot-news{flex-direction:column;align-items:flex-start}}
+
+@media(max-width:600px){
+  .container{padding:0 18px}
+  section{padding:68px 0}
+  .stats-strip{grid-template-columns:1fr 1fr}
+  .modal-content{padding:0 20px 24px}
+}
+</style>
 </head>
 <body>
-  <!-- NAVIGATION (fixed at top) -->
-  <nav id="navbar">
-    <div class="nav-container">
-      <div class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">JVST</div>
-      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">☰</button>
-      <div class="nav-links" id="navLinks">
-        <a href="index.html" class="active">Home</a>
-        <a href="tunes.html" class="active">Music</a>
-        <a href="#collabs">Collaborations</a>
-        <a href="indy.html">Indy 3</a>
-        <a href="#values">Values</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#community">Community</a>
-        <a href="login.html" class="nav-button">Sign In</a>
-      </div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">JV<span>ST</span></div>
+    <button class="mob-btn" id="mobBtn">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="indy.html">Indy 3</a>
+      <a href="tunes.html">Music</a>
+      <a href="tv.html">TV</a>
+      <a href="#collabs">Collabs</a>
+      <a href="#barrio">Barrio</a>
+      <a href="#blade">Blade Card</a>
+      <a href="#services">Services</a>
+      <a href="#culture">Culture</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#community">Community</a>
+      <a href="login.html" class="nav-cta">Sign In</a>
     </div>
-  </nav>
+  </div>
+</nav>
 
-  <!-- HERO VIDEO CAROUSEL (first thing you see) -->
-  <section class="hero-carousel" id="home">
-    <div class="carousel-slides" id="carouselSlides">
-      <div class="carousel-slide active" id="slide1">
-        <!-- Video background - replace with your actual video files -->
-        <video class="carousel-video" autoplay muted loop playsinline>
-          <source src="video1.mp4" type="video/mp4">
-          <!-- Fallback image if video doesn't load -->
-          <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=1600" alt="Fallback">
-        </video>
-        <div class="carousel-overlay">
-          <div class="carousel-content">
-            <div class="carousel-eyebrow">Exclusive Collaboration</div>
-            <h2 class="carousel-title">JVST × Rainn Blais</h2>
-            <p class="carousel-description">Experience the fusion of sports and technology. Limited edition release coming soon.</p>
-            <span class="carousel-tag">#TeenSports</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Slide 2: Artist Spotlight -->
-      <div class="carousel-slide" id="slide2">
-        <video class="carousel-video" autoplay muted loop playsinline>
-          <source src="video2.mp4" type="video/mp4">
-          <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1600" alt="Fallback">
-        </video>
-        <div class="carousel-overlay">
-          <div class="carousel-content">
-            <div class="carousel-eyebrow">Artist Spotlight</div>
-            <h2 class="carousel-title">Noah & Evan × JVST</h2>
-            <p class="carousel-description">A new dimension of sound. Experience music like never before with our AI-powered audio engine.</p>
-            <span class="carousel-tag">#SupportLocalArtists</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Slide 3: Cultural Movement -->
-      <div class="carousel-slide" id="slide3">
-        <video class="carousel-video" autoplay muted loop playsinline>
-          <source src="video3.mp4" type="video/mp4">
-          <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1600" alt="Fallback">
-        </video>
-        <div class="carousel-overlay">
-          <div class="carousel-content">
-            <div class="carousel-eyebrow">Cultural Movement</div>
-            <h2 class="carousel-title">Barrio Sessions</h2>
-            <p class="carousel-description">Amplifying voices from the streets. A global platform for authentic expression.</p>
-            <span class="carousel-tag">#Orgullo</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Slide 4: Tech x Music -->
-      <div class="carousel-slide" id="slide4">
-        <video class="carousel-video" autoplay muted loop playsinline>
-          <source src="video4.mp4" type="video/mp4">
-          <img src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1600" alt="Fallback">
-        </video>
-        <div class="carousel-overlay">
-          <div class="carousel-content">
-            <div class="carousel-eyebrow">Innovation</div>
-            <h2 class="carousel-title">Indy 3 Live</h2>
-            <p class="carousel-description">Watch our AI generate images in real-time. The future of creativity is here.</p>
-            <span class="carousel-tag">#Indy3</span>
-          </div>
-        </div>
-      </div>
+<!-- HERO CAROUSEL -->
+<section class="hero" id="home">
+  <div class="c-slides">
+    <div class="c-slide active">
+      <video class="c-vid" autoplay muted loop playsinline><source src="video1.mp4" type="video/mp4"></video>
+      <img class="c-img" src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=1600" alt="">
+      <div class="c-overlay"><div class="c-content">
+        <div class="c-label">Exclusive Collaboration</div>
+        <h2 class="c-title">JVST × Rainn Blais</h2>
+        <p class="c-desc">Sports meets technology. Limited edition release coming soon.</p>
+        <span class="c-tag">#TeenSports</span>
+      </div></div>
     </div>
-
-    <!-- Carousel Navigation Arrows -->
-    <button class="carousel-arrow prev" id="prevSlide" aria-label="Previous slide">←</button>
-    <button class="carousel-arrow next" id="nextSlide" aria-label="Next slide">→</button>
-
-    <!-- Carousel Dots -->
-    <div class="carousel-controls" id="carouselControls">
-      <button class="carousel-dot active" data-index="0" aria-label="Go to slide 1"></button>
-      <button class="carousel-dot" data-index="1" aria-label="Go to slide 2"></button>
-      <button class="carousel-dot" data-index="2" aria-label="Go to slide 3"></button>
-      <button class="carousel-dot" data-index="3" aria-label="Go to slide 4"></button>
+    <div class="c-slide">
+      <video class="c-vid" autoplay muted loop playsinline><source src="video2.mp4" type="video/mp4"></video>
+      <img class="c-img" src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1600" alt="">
+      <div class="c-overlay"><div class="c-content">
+        <div class="c-label">Artist Spotlight</div>
+        <h2 class="c-title">Noah & Evan × JVST</h2>
+        <p class="c-desc">A new dimension of sound. Music meets AI.</p>
+        <span class="c-tag">#SupportLocalArtists</span>
+      </div></div>
     </div>
-  </section>
+    <div class="c-slide">
+      <video class="c-vid" autoplay muted loop playsinline><source src="video3.mp4" type="video/mp4"></video>
+      <img class="c-img" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1600" alt="">
+      <div class="c-overlay"><div class="c-content">
+        <div class="c-label">Cultural Movement</div>
+        <h2 class="c-title">Barrio Sessions</h2>
+        <p class="c-desc">Amplifying voices from the streets. A global platform for authentic expression.</p>
+        <span class="c-tag">#Orgullo</span>
+      </div></div>
+    </div>
+    <div class="c-slide">
+      <video class="c-vid" autoplay muted loop playsinline><source src="video4.mp4" type="video/mp4"></video>
+      <img class="c-img" src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1600" alt="">
+      <div class="c-overlay"><div class="c-content">
+        <div class="c-label">Innovation</div>
+        <h2 class="c-title">Indy 3 Live</h2>
+        <p class="c-desc">AI-generated images in real-time. The future of creativity is here.</p>
+        <span class="c-tag">#Indy3</span>
+      </div></div>
+    </div>
+  </div>
+  <button class="c-arrow prev" id="cPrev">←</button>
+  <button class="c-arrow next" id="cNext">→</button>
+  <div class="c-dots">
+    <button class="c-dot active" data-i="0"></button>
+    <button class="c-dot" data-i="1"></button>
+    <button class="c-dot" data-i="2"></button>
+    <button class="c-dot" data-i="3"></button>
+  </div>
+</section>
 
-<!-- TICKER (separates hero from content) -->
+<!-- TICKER -->
 <div class="ticker">
-  <div class="ticker-content">
-    <span>✦ RAINN BLAIS</span>
-    <span>✦ NOAH LOKE</span>
-    <span>✦ EVAN DUFFY</span>
-    <span>✦ BARRIO SESSIONS</span>
-    <span>✦ INDY 3</span>
-    <span>✦ RAINN BLAIS</span>
-    <span>✦ NOAH LOKE</span>
-    <span>✦ EVAN DUFFY</span>
-    <span>✦ BARRIO SESSIONS</span>
-    <span>✦ INDY 3</span>
+  <div class="ticker-inner">
+    <span class="hot">✦ RAINN BLAIS</span><span>✦ NOAH LOKE</span><span>✦ EVAN DUFFY</span><span class="hot">✦ BARRIO SESSIONS</span><span>✦ INDY 3</span><span>✦ BLADE CARD</span><span class="hot">✦ CREATIVE MODE</span><span>✦ VOICE MODE</span><span>✦ ESPAÑOL MODE</span><span>✦ MUSIC ANALYSIS</span>
+    <span class="hot">✦ RAINN BLAIS</span><span>✦ NOAH LOKE</span><span>✦ EVAN DUFFY</span><span class="hot">✦ BARRIO SESSIONS</span><span>✦ INDY 3</span><span>✦ BLADE CARD</span><span class="hot">✦ CREATIVE MODE</span><span>✦ VOICE MODE</span><span>✦ ESPAÑOL MODE</span><span>✦ MUSIC ANALYSIS</span>
   </div>
 </div>
 
-  <!-- COLLABORATIONS SECTION (new) -->
-  <section class="section" id="collabs">
-    <div class="container">
-      <div style="text-align: center; margin-bottom: 60px;">
-        <div class="caption">Featured Collaborations</div>
-        <h2 class="display-2">Culture meets technology</h2>
-        <p class="body-large" style="color: var(--text-secondary);">Partnering with people who shape the world.</p>
-      </div>
+<div class="section-accent"></div>
 
-      <div class="grid-3">
-        <div class="feature-card" style="text-align: center;">
-          <div style="font-size: 4rem; margin-bottom: 24px;">🎤</div>
-          <h3 class="feature-title">Noah Loke</h3>
-          <p class="feature-description">Exclusive AI-powered music experiences and limited edition drops.</p>
+<!-- INDY 3 -->
+<section id="indy">
+  <div class="container">
+    <div class="indy-hero reveal">
+      <div>
+        <div class="indy-badge"><span class="pulse-dot"></span> Now Available</div>
+        <h2 class="indy-title">Meet Indy 3.<br><span class="hl">AI that actually gets it.</span></h2>
+        <p class="indy-sub">No corporate tone. No fluff. Fast, smart responses that understand context, culture, and how real people talk — not how textbooks say they do.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:36px;">
+          <button class="btn btn-red" onclick="window.location.href='indy.html'">Try Indy 3 →</button>
+          <button class="btn btn-ghost" onclick="document.querySelector('#pricing').scrollIntoView({behavior:'smooth'})">See Pricing</button>
         </div>
-        
-        <div class="feature-card" style="text-align: center;">
-          <div style="font-size: 4rem; margin-bottom: 24px;">🎸</div>
-          <h3 class="feature-title">Evan Duffy</h3>
-          <p class="feature-description">Reimagining flamenco through technology. Interactive music experiences.</p>
-        </div>
-        
-        <div class="feature-card" style="text-align: center;">
-          <div style="font-size: 4rem; margin-bottom: 24px;">🏀</div>
-          <h3 class="feature-title">Rainn Blais</h3>
-          <p class="feature-description">A star from the local school boys basketball team has started a long partnership with JVST to help small musicians and artists alike.</p>
+        <div class="indy-feats">
+          <div class="indy-feat"><div class="indy-icon">⚡</div><div class="indy-feat-text"><strong>Lightning fast</strong><span>Responses under a second. No lag, no loading screen theatrics.</span></div></div>
+          <div class="indy-feat"><div class="indy-icon">🌎</div><div class="indy-feat-text"><strong>Culture-aware</strong><span>Understands slang, Spanglish, nuance, and context others miss completely.</span></div></div>
+          <div class="indy-feat"><div class="indy-icon">🔒</div><div class="indy-feat-text"><strong>Private by default</strong><span>We never train on your conversations. Your words stay yours.</span></div></div>
+          <div class="indy-feat"><div class="indy-icon">🖼️</div><div class="indy-feat-text"><strong>Image generation</strong><span>Create visuals on the fly — no extra apps, no extra cost on Indy+.</span></div></div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- INDY 3 SECTION -->
-  <section class="section" id="indy">
-    <div class="container">
-      <div class="grid-2" style="align-items: center;">
-        <div>
-          <div class="caption">Indy 3</div>
-          <h2 class="display-2" style="margin-bottom: 24px;">Everyday AI,<br>done right.</h2>
-          <p class="body-large" style="color: var(--text-secondary); margin-bottom: 32px;">
-            No fluff. No corporate tone. Just fast, smart responses that understand context, culture, and how real people communicate.
-          </p>
-          <button class="btn btn-primary" onclick="window.location.href='indy.html'">Meet Indy 3 →</button>
+      <div class="chat-mock">
+        <div class="chat-bar">
+          <div class="cdot" style="background:#ff5f57"></div>
+          <div class="cdot" style="background:#febc2e"></div>
+          <div class="cdot" style="background:#28c840"></div>
+          <div class="chat-name">Indy 3</div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">🧠</div>
-          <h3 class="feature-title">Culture-aware</h3>
-          <p class="feature-description">Understands context, slang, and cultural nuances that other AI models miss. Built for real conversations.</p>
-        </div>
-      </div>
-
-      <div class="grid-3" style="margin-top: 60px;">
-        <div class="card">
-          <div class="card-icon">⚡</div>
-          <h4 class="card-title">Lightning fast</h4>
-          <p class="card-description">Responses in milliseconds. No waiting, no lag. Just instant intelligence.</p>
-        </div>
-        <div class="card">
-          <div class="card-icon">🔒</div>
-          <h4 class="card-title">Privacy first</h4>
-          <p class="card-description">Your conversations stay yours. We don't train on your data. Ever.</p>
-        </div>
-        <div class="card">
-          <div class="card-icon">🌎</div>
-          <h4 class="card-title">Globally aware</h4>
-          <p class="card-description">Trained on diverse perspectives. Built for everyone, everywhere.</p>
+        <div class="chat-msgs">
+          <div class="msg user"><div class="bubble">yo translate this for my abuela but keep it warm</div><div class="msg-t">now</div></div>
+          <div class="msg bot"><div class="bubble">Of course — I'll keep it warm and natural, the way family actually talks. Paste it whenever you're ready 🙂</div><div class="msg-t">Indy 3 · just now</div></div>
+          <div class="msg user"><div class="bubble">write me a hook, reggaeton vibes, summer nights energy</div><div class="msg-t">now</div></div>
+          <div class="msg bot"><div class="typing"><span></span><span></span><span></span></div><div class="msg-t">Indy 3 · typing…</div></div>
         </div>
       </div>
     </div>
-  </section>
+    <div class="stats-strip">
+      <div class="stat-cell"><div class="stat-num"><span>&lt;1</span>s</div><div class="stat-label">Average response time</div></div>
+      <div class="stat-cell"><div class="stat-num"><span>3</span></div><div class="stat-label">Plans — starting free</div></div>
+      <div class="stat-cell"><div class="stat-num"><span>∞</span></div><div class="stat-label">Messages on Indy+</div></div>
+      <div class="stat-cell"><div class="stat-num"><span>0</span></div><div class="stat-label">Data sold to third parties</div></div>
+    </div>
+  </div>
+</section>
 
-  <!-- MUSIC PREVIEW -->
-  <section class="section" id="preview">
-    <div class="container">
-      <div style="text-align: center; margin-bottom: 60px;">
-        <div class="caption">Experience</div>
-        <h2 class="display-2">Live Music Preview</h2>
-        <p class="body-large" style="color: var(--text-secondary);">Feel the culture. Hear the difference.</p>
+<!-- ARTICLES SHELF -->
+<section style="background:var(--bg2);border-top:1px solid var(--b);border-bottom:1px solid var(--b);padding:60px 0">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px;border-bottom:1px solid var(--b);padding-bottom:20px;">
+      <div>
+        <div class="sh-label" style="color:var(--t3)">JVST Journal</div>
+        <h2 class="sh-title" style="margin-bottom:0;font-size:clamp(1.2rem,2.5vw,1.75rem)">From the JVST world</h2>
       </div>
-
-      <div class="preview-card">
-        <div class="album-art">
-          <img id="albumCover" class="album-image" src="https://cdn-images.dzcdn.net/images/cover/d98eaccfbb945bdf68241d6de7fe6a49/1900x1900-000000-80-0-0.jpg" alt="Album Cover">
-          <div class="preview-badge">Preview</div>
+      <div style="display:flex;align-items:center;gap:16px">
+        <span style="font-size:.72rem;color:var(--t3);font-family:'JetBrains Mono',monospace">Latest · Feb 2026</span>
+        <div class="shelf-nav" style="margin-top:0">
+          <button class="shelf-btn" id="artPrev">←</button>
+          <button class="shelf-btn" id="artNext">→</button>
         </div>
+      </div>
+    </div>
+    <div class="shelf" id="articleShelf">
+      <div class="shelf-card" onclick="openModal('art1')">
+        <div class="shelf-card-tag">Announcement</div>
+        <div class="shelf-card-title">Indy 3 is here — and it speaks your language</div>
+        <div class="shelf-card-body">The AI the culture has been waiting for. Culture-aware, Spanglish-ready, and built for real conversations.</div>
+        <div class="shelf-card-footer"><span>Feb 2026</span><span class="shelf-card-arrow">→</span></div>
+      </div>
+      <div class="shelf-card" onclick="openModal('art2')">
+        <div class="shelf-card-tag">Collab</div>
+        <div class="shelf-card-title">Why Rainn Blais chose JVST over the big players</div>
+        <div class="shelf-card-body">A local basketball star with big values. Here's the full story of how the partnership started.</div>
+        <div class="shelf-card-footer"><span>Jan 2026</span><span class="shelf-card-arrow">→</span></div>
+      </div>
+      <div class="shelf-card yellow-accent" onclick="openModal('art3')">
+        <div class="shelf-card-tag" style="color:var(--yellow)">Opinion</div>
+        <div class="shelf-card-title"><span class="hl">Latin music runs the world</span> — and JVST was built knowing that</div>
+        <div class="shelf-card-body">Bad Bunny. Ozuna. Karol G. The numbers don't lie. Here's what it means for a culture-first tech platform.</div>
+        <div class="shelf-card-footer"><span>Jan 2026</span><span class="shelf-card-arrow" style="color:var(--yellow)">→</span></div>
+      </div>
+      <div class="shelf-card" onclick="openModal('art4')">
+        <div class="shelf-card-tag">Community</div>
+        <div class="shelf-card-title">Barrio Sessions — what it is, why it matters, who it's for</div>
+        <div class="shelf-card-body">We're building a pipeline from the streets to the stage. No gatekeepers, no pay-to-play.</div>
+        <div class="shelf-card-footer"><span>Dec 2025</span><span class="shelf-card-arrow">→</span></div>
+      </div>
+      <div class="shelf-card" onclick="openModal('art5')">
+        <div class="shelf-card-tag">Tech</div>
+        <div class="shelf-card-title">How Evan Duffy is using AI to reinvent music</div>
+        <div class="shelf-card-body">Tradition and technology, side by side. Evan's vision for interactive performance powered by Indy 3.</div>
+        <div class="shelf-card-footer"><span>Dec 2025</span><span class="shelf-card-arrow">→</span></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <div>
-          <h3 class="track-title" id="trackTitle">NUEVAYoL</h3>
-          <p class="track-artist" id="trackArtist">Bad Bunny</p>
+<!-- MUSIC PLAYER -->
+<section id="music" style="border-top:1px solid var(--b);border-bottom:1px solid var(--b);">
+  <div class="container">
+    <div class="sh">
+      <div class="sh-label">Live Previews</div>
+      <h2 class="sh-title">Music, <span class="hl">powered by JVST</span></h2>
+      <p class="sh-sub">Hear the culture we're built on. Real previews, right here.</p>
+    </div>
+    <div class="player-wrap reveal">
+      <div class="player-badge-wrap">
+        <img id="albumCover" class="player-img" src="https://cdn-images.dzcdn.net/images/cover/d98eaccfbb945bdf68241d6de7fe6a49/1900x1900-000000-80-0-0.jpg" alt="">
+        <div class="player-badge">Preview</div>
+      </div>
+      <div>
+        <div class="player-title" id="trackTitle">NUEVAYoL</div>
+        <div class="player-artist" id="trackArtist">Bad Bunny</div>
+        <div class="player-row">
+          <button class="play-btn" id="playBtn">▶</button>
+          <div class="prog-zone">
+            <div class="prog-track" id="progressBar"><div class="prog-fill" id="progressFill"></div></div>
+            <div class="time-row"><span id="currentTime">0:00</span><span id="duration">0:30</span></div>
+          </div>
+        </div>
+        <div class="player-status" id="loadingStatus">Loading…</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-          <div class="player">
-            <button class="play-button" id="playBtn" aria-label="Play">▶</button>
-            <div class="progress-area">
-              <div class="progress-bar" id="progressBar">
-                <div class="progress-fill" id="progressFill"></div>
+<!-- CULTURE -->
+<section id="culture" class="culture-wrap">
+  <div class="container">
+    <div class="sh">
+      <div class="sh-label">Cultural Roots</div>
+      <h2 class="sh-title">Inspired by the world's <span class="hl">biggest artist</span></h2>
+      <p class="sh-sub">Bad Bunny's music and ethos is in JVST's DNA. Not a gimmick — a genuine love for what the culture builds.</p>
+    </div>
+    <div class="bb-split">
+      <div>
+        <p class="bb-quote">"The fact that a song in Spanish can top the global charts isn't a surprise to us. It was always possible — the world just needed to catch up."</p>
+        <div class="bb-attr">— JVST on Latin music's global rise</div>
+        <div class="tags" id="eraTags">
+          <button class="tag on" data-era="all">All Eras</button>
+          <button class="tag" data-era="x100">X100PRE</button>
+          <button class="tag" data-era="yhlq">YHLQMDLG</button>
+          <button class="tag" data-era="uvst">Un Verano Sin Ti</button>
+          <button class="tag" data-era="nadie">Nadie Sabe</button>
+        </div>
+        <div class="culture-nums">
+          <div class="cnum-cell"><div class="cnum">18B+</div><div class="cnum-label">All-time streams — most-streamed Spanish-language artist ever</div></div>
+          <div class="cnum-cell"><div class="cnum" style="color:var(--red)">5×</div><div class="cnum-label">Latin Grammy Awards, plus mainstream Grammy nominations</div></div>
+          <div class="cnum-cell"><div class="cnum">🇵🇷</div><div class="cnum-label">Puerto Rico — the island that gave the world its pulse</div></div>
+          <div class="cnum-cell"><div class="cnum">#1</div><div class="cnum-label">Most streamed Spotify artist globally, multiple years running</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="bb-albums">
+          <div class="bb-album"><img src="https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/cf/3a/db/cf3adbe6-8ea1-f60f-60fd-713eefda3962/193483317984.jpg/600x600bf-60.jpg" alt="X100PRE" onerror="this.style.background='#1c1c1c'"><div class="bb-album-name">X100PRE</div></div>
+          <div class="bb-album"><img src="https://i.scdn.co/image/ab67616d0000b273548f7ec52da7313de0c5e4a0" alt="YHLQMDLG" onerror="this.style.background='#1c1c1c'"><div class="bb-album-name">YHLQMDLG</div></div>
+          <div class="bb-album"><img src="https://media.pitchfork.com/photos/5fc9015ac61c34a7841b1eb3/1:1/w_3000,h_3000,c_limit/EL%20U%CC%81LTIMO%20TOUR%20DEL%20MUNDO_Bad%20Bunny%20.jpg" alt="El Último Tour" onerror="this.style.background='#1c1c1c'"><div class="bb-album-name">El Último Tour</div></div>
+          <div class="bb-album"><img src="https://media.pitchfork.com/photos/627425dbc85171592b8a6e6a/master/pass/Bad-Bunny-Un-Verano-Sin-Ti.jpg" alt="Un Verano Sin Ti" onerror="this.style.background='#1c1c1c'"><div class="bb-album-name">Un Verano</div></div>
+          <div class="bb-album"><img src="https://media.pitchfork.com/photos/65242c9caeb62be7989dbc83/master/pass/Bad-Bunny.jpg" alt="Nadie Sabe" onerror="this.style.background='#1c1c1c'"><div class="bb-album-name">Nadie Sabe</div></div>
+          <div class="bb-album"><img src="https://i.scdn.co/image/ab67616d0000b2734891d9b25d8919448388f3bb" alt="Oasis" onerror="this.style.background='#1c1c1c'"><div class="bb-album-name">Oasis</div></div>
+        </div>
+        <div style="margin-top:16px;">
+          <div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:8px;display:flex;justify-content:space-between;">
+            <span>Preview a track</span><span id="discoStatus">Choose one →</span>
+          </div>
+          <div class="disco-list" id="discoList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LYRIC TICKER -->
+<div class="lyric-ticker">
+  <div class="lyric-inner">
+    <span>🐰</span><span class="lit">YO PERREO SOLA</span><span>·</span><span class="lit">TITÍ ME PREGUNTÓ</span><span>·</span><span class="lit">EFECTO</span><span>·</span><span class="lit">EL APAGÓN</span><span>·</span><span class="lit">MOSCOW MULE</span><span>·</span><span class="lit">ME PORTO BONITO</span><span>·</span><span class="lit">CALLAÍTA</span><span>·</span><span class="lit">SAFAERA</span><span>·</span>
+    <span>🐰</span><span class="lit">YO PERREO SOLA</span><span>·</span><span class="lit">TITÍ ME PREGUNTÓ</span><span>·</span><span class="lit">EFECTO</span><span>·</span><span class="lit">EL APAGÓN</span><span>·</span><span class="lit">MOSCOW MULE</span><span>·</span><span class="lit">ME PORTO BONITO</span>
+  </div>
+</div>
+
+<!-- COLLABS -->
+<section id="collabs">
+  <div class="container">
+    <div class="sh">
+      <div class="sh-label">Collaborations</div>
+      <h2 class="sh-title">Culture meets <span class="hl">technology</span></h2>
+      <p class="sh-sub">Real people, real communities, real partnerships. Hover a card to learn what we're actually building together.</p>
+    </div>
+    <div class="g3">
+      <div class="collab-flip reveal" onclick="this.classList.toggle('flipped')">
+        <div class="collab-flip-inner">
+          <div class="collab-front">
+            <div class="collab-emoji">🎤</div>
+            <div class="collab-name">Noah Loke</div>
+            <div class="collab-bio">AI-powered music experiences and limited edition drops with one of the most exciting emerging voices around.</div>
+            <div class="collab-hint">Hover to explore</div>
+          </div>
+          <div class="collab-back">
+            <div>
+              <div class="collab-back-title">What we're building</div>
+              <div class="collab-back-body">Noah and JVST are co-developing an AI-powered songwriting suite — real tools for real artists. Limited edition merch drops tied to each release milestone.</div>
+            </div>
+            <div class="collab-back-tag">#SupportLocalArtists</div>
+          </div>
+        </div>
+      </div>
+      <div class="collab-flip reveal" onclick="this.classList.toggle('flipped')">
+        <div class="collab-flip-inner">
+          <div class="collab-front">
+            <div class="collab-emoji">🎸</div>
+            <div class="collab-name">Evan Duffy</div>
+            <div class="collab-bio">Reimagining music through technology. Interactive experiences that bridge tradition and the future of sound.</div>
+            <div class="collab-hint">Hover to explore</div>
+          </div>
+          <div class="collab-back">
+            <div>
+              <div class="collab-back-title">The vision</div>
+              <div class="collab-back-body">Evan's music roots fused with Indy 3's generative capabilities — interactive performances where the audience shapes the music in real time.</div>
+            </div>
+            <div class="collab-back-tag">#musicFuture</div>
+          </div>
+        </div>
+      </div>
+      <div class="collab-flip reveal" onclick="this.classList.toggle('flipped')">
+        <div class="collab-flip-inner">
+          <div class="collab-front">
+            <div class="collab-emoji">🏀</div>
+            <div class="collab-name">Rainn Blais</div>
+            <div class="collab-bio">Local basketball star turned JVST partner — using his platform to spotlight small musicians who deserve to be heard.</div>
+            <div class="collab-hint">Hover to explore</div>
+          </div>
+          <div class="collab-back">
+            <div>
+              <div class="collab-back-title">The mission</div>
+              <div class="collab-back-body">Rainn brings athlete energy and community trust. Together we're building a pipeline from local schools to real platforms — sports and music, united.</div>
+            </div>
+            <div class="collab-back-tag">#TeenSports</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="collab-submit reveal">
+      <div>
+        <div class="sh-label" style="margin-bottom:8px">Want in?</div>
+        <h3 style="font-size:1.4rem;font-weight:700;letter-spacing:-.02em;margin-bottom:8px">Work with <span class="hl">JVST</span></h3>
+        <p style="font-size:.88rem;color:var(--t2);line-height:1.65">We're always looking for artists, athletes, and creators who share our values. No gatekeeping — just tell us who you are.</p>
+      </div>
+      <div class="collab-form">
+        <input class="collab-input" type="text" placeholder="Your name or project"/>
+        <input class="collab-input" type="text" placeholder="What you do (music, sports, art...)"/>
+        <input class="collab-input" type="text" placeholder="Link to your work"/>
+        <button class="btn btn-red" onclick="alert('Thanks! We\'ll be in touch soon 🙌')">Submit →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BARRIO SESSIONS -->
+<section id="barrio" class="barrio-wrap">
+  <div class="container">
+    <div class="barrio-grid">
+      <div class="reveal">
+        <div class="sh-label" style="margin-bottom:10px">Barrio Sessions</div>
+        <h2 class="barrio-title">Your voice deserves <span class="hl-red">a stage.</span></h2>
+        <p class="barrio-sub">Barrio Sessions is JVST's open platform for unsigned artists from underrepresented communities. Submit your music, get featured, get heard — no label required.</p>
+        <div class="barrio-steps">
+          <div class="barrio-step">
+            <div class="barrio-num">1</div>
+            <div class="barrio-step-text"><strong>Submit your track</strong><span>Send us your best work — any genre, any language, any city.</span></div>
+          </div>
+          <div class="barrio-step">
+            <div class="barrio-num">2</div>
+            <div class="barrio-step-text"><strong>Community review</strong><span>Real listeners, real feedback — no algorithm deciding your fate.</span></div>
+          </div>
+          <div class="barrio-step">
+            <div class="barrio-num">3</div>
+            <div class="barrio-step-text"><strong>Get featured on JVST</strong><span>Top submissions appear on the homepage and earn a Creator Pass.</span></div>
+          </div>
+        </div>
+        <div style="margin-top:28px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-red" onclick="alert('Barrio Sessions submissions open soon. Drop your email to get notified! 🎤')">Submit Your Music →</button>
+          <button class="btn btn-ghost" onclick="openModal('barrio-info')">Learn More</button>
+        </div>
+      </div>
+      <div>
+        <div class="barrio-card-stack">
+          <div class="barrio-card">
+            <div class="barrio-card-label"><span class="pulse-dot"></span> Featured Now</div>
+            <div class="barrio-card-name">La Nueva Voz</div>
+            <div class="barrio-card-genre">Reggaeton · Miami, FL</div>
+            <div class="barrio-card-wave"><span></span><span></span><span></span><span></span><span></span></div>
+          </div>
+          <div class="barrio-card">
+            <div class="barrio-card-label">Next Up</div>
+            <div class="barrio-card-name">El Espíritu</div>
+            <div class="barrio-card-genre">Afrobeats · Houston, TX</div>
+          </div>
+          <div class="barrio-card">
+            <div class="barrio-card-label">In Queue</div>
+            <div class="barrio-card-name">Noche Sola</div>
+            <div class="barrio-card-genre">R&B · Brooklyn, NY</div>
+          </div>
+        </div>
+        <div style="margin-top:14px;font-size:.75rem;color:var(--t3)">Placeholder artists — real submissions coming soon.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLADE CARD -->
+<section id="blade" style="border-top:1px solid var(--b)">
+  <div class="container">
+    <div class="blade-wrap">
+      <div class="reveal">
+        <div class="sh-label" style="margin-bottom:10px">Digital Product</div>
+        <h2 class="sh-title" style="margin-bottom:14px">The <span class="hl">Blade Card.</span></h2>
+        <p style="font-size:.95rem;color:var(--t2);line-height:1.65;margin-bottom:24px">Your digital identity, done right. The Blade Card is your JVST profile in card form — shareable, stylish, tied to your membership. One link for your music, your socials, your story.</p>
+        <div class="blade-features">
+          <div class="blade-feat"><span class="blade-feat-check">✓</span> One link for everything you do — music, socials, bio</div>
+          <div class="blade-feat"><span class="blade-feat-check">✓</span> Collab edition designs (Rainn, Noah, Barrio Sessions)</div>
+          <div class="blade-feat"><span class="blade-feat-check">✓</span> Included free with the <em>One</em> membership tier</div>
+          <div class="blade-feat"><span class="blade-feat-check">✓</span> Shareable link, scannable QR, mobile-first</div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+          <button class="btn btn-red" onclick="window.location.href='login.html'">Get Your Blade Card →</button>
+          <button class="btn btn-ghost" onclick="openModal('blade-info')">See All Editions</button>
+        </div>
+      </div>
+      <div style="perspective:1000px">
+        <div class="blade-card-inner">
+          <div class="blade-glow"></div>
+          <div class="blade-chip"></div>
+          <div class="blade-card-logo">JV<span>ST</span></div>
+          <div class="blade-card-name">Your Name Here</div>
+          <div class="blade-card-handle">@yourhandle · JVST One</div>
+          <div class="blade-card-tier">⭐ One Member</div>
+        </div>
+        <p style="font-size:.72rem;color:var(--t3);margin-top:12px;text-align:center">Hover the card to feel the tilt</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEW SERVICES SHELF + GRID -->
+<section id="services" style="background:var(--bg2);border-top:1px solid var(--b);border-bottom:1px solid var(--b)">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px">
+      <div>
+        <div class="sh-label">What's Coming</div>
+        <h2 class="sh-title">New services, <span class="hl">built for you</span></h2>
+        <p class="sh-sub" style="margin-top:8px">Click any card to learn more about what's dropping soon.</p>
+      </div>
+      <div class="shelf-nav">
+        <button class="shelf-btn" id="svcPrev">←</button>
+        <button class="shelf-btn" id="svcNext">→</button>
+      </div>
+    </div>
+    <div class="shelf" id="serviceShelf">
+      <div class="shelf-card" onclick="openModal('svc-creative')">
+        <div class="shelf-card-tag">Indy 3 · Coming Soon</div>
+        <div class="shelf-card-title">✍️ Creative Mode</div>
+        <div class="shelf-card-body">Write hooks, bios, captions, and song titles with an AI that understands your genre and your audience.</div>
+        <div class="shelf-card-footer"><span style="color:var(--red)">Coming Soon</span><span class="shelf-card-arrow">→</span></div>
+      </div>
+      <div class="shelf-card" onclick="openModal('svc-voice')">
+        <div class="shelf-card-tag">Indy 3 · Coming Soon</div>
+        <div class="shelf-card-title">🎙️ Voice Mode</div>
+        <div class="shelf-card-body">Talk to Indy out loud. No typing needed — just say what you need and get an instant response.</div>
+        <div class="shelf-card-footer"><span style="color:var(--red)">Coming Soon</span><span class="shelf-card-arrow">→</span></div>
+      </div>
+      <div class="shelf-card yellow-accent" onclick="openModal('svc-espanol')">
+        <div class="shelf-card-tag" style="color:var(--yellow)">Indy 3 · Coming Soon</div>
+        <div class="shelf-card-title">🌎 <span class="hl">Español Mode</span></div>
+        <div class="shelf-card-body">Full Spanish and Spanglish support. Indy adapts to how your community actually talks.</div>
+        <div class="shelf-card-footer"><span style="color:var(--yellow);font-style:italic">Coming Soon</span><span class="shelf-card-arrow" style="color:var(--yellow)">→</span></div>
+      </div>
+      <div class="shelf-card" onclick="openModal('svc-music')">
+        <div class="shelf-card-tag">Indy 3 · Planned</div>
+        <div class="shelf-card-title">🎵 Music Analysis</div>
+        <div class="shelf-card-body">Upload a track. Indy breaks down the genre, mood, tempo, and gives feedback like a real A&R — not a robot.</div>
+        <div class="shelf-card-footer"><span style="color:var(--t3)">Planned</span><span class="shelf-card-arrow">→</span></div>
+      </div>
+      <div class="shelf-card" onclick="openModal('svc-blade-pro')">
+        <div class="shelf-card-tag">Digital Product · Planned</div>
+        <div class="shelf-card-title">🪪 Blade Card Pro</div>
+        <div class="shelf-card-body">Custom collab edition Blade Cards. Rainn Blais edition. Barrio Sessions edition. Limited drops only.</div>
+        <div class="shelf-card-footer"><span style="color:var(--t3)">Planned</span><span class="shelf-card-arrow">→</span></div>
+      </div>
+      <div class="shelf-card" onclick="openModal('svc-gift')">
+        <div class="shelf-card-tag">Community · Planned</div>
+        <div class="shelf-card-title">🎁 JVST Gift Cards</div>
+        <div class="shelf-card-body">Give someone the gift of Indy+. Simple, shareable — the perfect way to bring someone into the JVST community.</div>
+        <div class="shelf-card-footer"><span style="color:var(--t3)">Planned</span><span class="shelf-card-arrow">→</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section id="values" style="border-top:1px solid var(--b);border-bottom:1px solid var(--b)">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:64px;align-items:center" class="values-split">
+      <div>
+        <div class="sh-label" style="margin-bottom:12px">What we stand for</div>
+        <h2 style="font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-.04em;line-height:1.05;margin-bottom:20px">Not adapted<br>for you.<br><span class="hl-red">Made</span> for you.</h2>
+        <p style="font-size:.9rem;color:var(--t2);line-height:1.7">Every decision at JVST comes back to one question: does this feel like it was built for our community, or just aimed at it? There's a difference.</p>
+      </div>
+      <div class="values-grid">
+        <div class="card reveal" style="background:var(--bg3)"><div class="card-icon">🏙️</div><div class="card-title">Street energy, premium execution</div><div class="card-body">Confident and intentional — inspired by NYC and barrio culture. Never cluttered, always clean. We don't dress it up, we level it up.</div></div>
+        <div class="card reveal"><div class="card-icon">🤝</div><div class="card-title">Warm and welcoming to all</div><div class="card-body">Designed for all races, identities, and backgrounds. Technology should feel personal and respectful — not sterile, not corporate, not cold.</div></div>
+        <div class="card reveal" style="background:var(--bg3)"><div class="card-icon">❤️</div><div class="card-title">Hispanic community, always</div><div class="card-body">We stand with Hispanic families and immigrant communities with real empathy — not a marketing badge, not a flag for a month.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INDY FOR SOCIAL — youth-targeted Instagram section -->
+<section id="social" style="background:var(--bg2);border-top:1px solid var(--b);border-bottom:1px solid var(--b)">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center" class="insta-grid">
+      <div class="reveal">
+        <div class="sh-label" style="margin-bottom:10px">Indy 3 × Social</div>
+        <h2 class="sh-title" style="margin-bottom:16px">Your <span class="hl">captions</span> just got a glow-up.</h2>
+        <p style="font-size:.9rem;color:var(--t2);line-height:1.7;margin-bottom:24px">Tell Indy your vibe — the photo, the mood, the hashtags you're going for — and it writes captions that actually sound like <em>you</em>. Not a robot. Not cringe. Just clean copy that hits.</p>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:28px">
+          <div style="display:flex;gap:10px;align-items:flex-start">
+            <span style="color:var(--yellow);font-weight:700;font-size:.9rem;flex-shrink:0">✦</span>
+            <span style="font-size:.85rem;color:var(--t2)">Instagram captions in your tone — no "level up your journey" energy</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start">
+            <span style="color:var(--yellow);font-weight:700;font-size:.9rem;flex-shrink:0">✦</span>
+            <span style="font-size:.85rem;color:var(--t2)">TikTok hooks that stop the scroll in the first 2 seconds</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start">
+            <span style="color:var(--yellow);font-weight:700;font-size:.9rem;flex-shrink:0">✦</span>
+            <span style="font-size:.85rem;color:var(--t2)">Hashtag sets tailored to your niche, not just #blessed</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start">
+            <span style="color:var(--yellow);font-weight:700;font-size:.9rem;flex-shrink:0">✦</span>
+            <span style="font-size:.85rem;color:var(--t2)">Spanish, English, or Spanglish — Indy matches your voice</span>
+          </div>
+        </div>
+        <button class="btn btn-yellow" onclick="window.location.href='indy.html'"><em>Try it for free →</em></button>
+      </div>
+      <!-- Phone mockup with Instagram-style captions -->
+      <div style="display:flex;justify-content:center">
+        <div class="phone-mock">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="insta-post">
+              <div class="insta-header">
+                <div class="insta-av">J</div>
+                <div>
+                  <div class="insta-user">@yourhandle</div>
+                  <div class="insta-loc">Miami, FL</div>
+                </div>
+                <div class="insta-more">···</div>
               </div>
-              <div class="time-labels">
-                <span id="currentTime">0:00</span>
-                <span id="duration">0:30</span>
+              <div class="insta-img-placeholder">
+                <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:0">
+                <div style="position:absolute;inset:0;background:rgba(0,0,0,.15)"></div>
+              </div>
+              <div class="insta-actions">
+                <span>♡</span><span>💬</span><span>✈</span>
+              </div>
+              <div class="insta-cap" id="instaCaption">
+                <span style="font-weight:600">yourhandle</span> la noche nos pertenece ✨ summer energy on max, no cap 🔥 <span style="color:#aaa">#vibes #miami #summer2026</span>
+              </div>
+              <div class="insta-ask" id="instaAsk">
+                <span class="insta-ask-label">↑ written by Indy 3</span>
+                <div class="insta-regen" onclick="regenCaption()">↻ regenerate</div>
               </div>
             </div>
           </div>
-
-          <p class="caption" id="loadingStatus" style="margin-top: 20px;">Loading preview...</p>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- VALUES SECTION -->
-  <section class="section" id="values">
-    <div class="container">
-      <div style="text-align: center; margin-bottom: 60px;">
-        <div class="caption">Our Foundation</div>
-        <h2 class="display-2">Modern design.<br>Human-first values.</h2>
-        <p class="body-large" style="color: var(--text-secondary);">Clean aesthetics meet authentic culture. Built for everyone.</p>
+<!-- GEN Z / YOUTH SECTION -->
+<section id="youth" style="border-top:1px solid var(--b);background:var(--bg)">
+  <div class="container">
+    <div class="sh center">
+      <div class="sh-label">For the next generation</div>
+      <h2 class="sh-title">Built for how <span class="hl">you</span> actually live</h2>
+      <p class="sh-sub" style="margin:12px auto 0">You're not looking for an AI assistant. You're looking for something that understands your world.</p>
+    </div>
+    <div class="youth-grid">
+      <div class="youth-card reveal" onclick="openModal('youth-study')">
+        <div class="youth-card-emoji">📚</div>
+        <div class="youth-card-title">Homework? Done.</div>
+        <div class="youth-card-body">Essays, research, study guides — Indy helps you actually understand stuff instead of just copying it. Ask it anything.</div>
+        <div class="youth-card-tag">#StudentLife</div>
       </div>
-
-      <div class="grid-3">
-        <div class="card">
-          <h4 class="card-title">Street energy, premium execution</h4>
-          <p class="card-description">Confident aesthetics inspired by NYC and barrio culture—never cluttered, always intentional.</p>
-        </div>
-        
-        <div class="card">
-          <h4 class="card-title">Warm, safe, welcoming to all</h4>
-          <p class="card-description">Designed for all races, identities, and backgrounds. Tech should feel personal and respectful.</p>
-        </div>
-        
-        <div class="card">
-          <h4 class="card-title">Hispanic support is not optional</h4>
-          <p class="card-description">We stand with Hispanic families and immigrant communities with empathy and real support.</p>
-        </div>
+      <div class="youth-card yellow reveal" onclick="openModal('youth-create')">
+        <div class="youth-card-emoji">🎨</div>
+        <div class="youth-card-title">Create anything.</div>
+        <div class="youth-card-body">Song lyrics. Reel scripts. Concept art prompts. Merch ideas. If you can imagine it, Indy helps you build it.</div>
+        <div class="youth-card-tag">#CreateEveryday</div>
+      </div>
+      <div class="youth-card reveal" onclick="openModal('youth-hustle')">
+        <div class="youth-card-emoji">💸</div>
+        <div class="youth-card-title">Side hustle fuel.</div>
+        <div class="youth-card-body">Brand names, product descriptions, DM scripts, pricing strategies. Indy helps your small business look big.</div>
+        <div class="youth-card-tag">#HustleSmart</div>
+      </div>
+      <div class="youth-card reveal" onclick="openModal('youth-real')">
+        <div class="youth-card-emoji">💬</div>
+        <div class="youth-card-title">Real talk only.</div>
+        <div class="youth-card-body">No lectures. No disclaimers every two sentences. Indy talks to you like a smart friend — not a textbook or a helpdesk bot.</div>
+        <div class="youth-card-tag">#NoBS</div>
       </div>
     </div>
-  </section>
-
-  <!-- PRICING SECTION -->
-  <section class="section" id="pricing">
-    <div class="container">
-      <div style="text-align: center; margin-bottom: 60px;">
-        <div class="caption">Transparent Pricing</div>
-        <h2 class="display-2">Choose your plan</h2>
-        <p class="body-large" style="color: var(--text-secondary);">Simple tiers, clear value, premium structure.</p>
+    <div class="youth-cta reveal" style="background:linear-gradient(135deg,var(--bg2) 0%,#0d0a00 100%);border-color:rgba(245,200,66,.18)">
+      <div>
+        <div style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--yellow);margin-bottom:8px">No gatekeeping</div>
+        <h3 style="font-size:1.4rem;font-weight:700;letter-spacing:-.02em;margin-bottom:8px">Free forever. Seriously.</h3>
+        <p style="font-size:.88rem;color:var(--t2);line-height:1.65">No credit card. No 7-day trial. The free plan doesn't expire. When you want more, upgrading costs <span class="hl">less than a pack of gum.</span></p>
       </div>
-
-      <div class="pricing-grid">
-        <div class="pricing-card">
-          <h3 class="pricing-name">Free</h3>
-          <div class="pricing-price">$0<span>/forever</span></div>
-          <ul class="pricing-features">
-            <li>Basic AI access</li>
-            <li>30 min per session</li>
-            <li>Community support</li>
-            <li>Standard models</li>
-          </ul>
-          <button class="btn btn-secondary" style="width: 100%;" onclick="window.location.href='login.html'">Get Started</button>
-        </div>
-
-        <div class="pricing-card featured">
-          <div class="pricing-badge">Most Popular</div>
-          <h3 class="pricing-name">Indy+</h3>
-          <div class="pricing-price">$0.25<span>/forever</span></div>
-          <ul class="pricing-features">
-            <li>Unlimited AI messages</li>
-            <li>Image generation</li>
-            <li>Priority support</li>
-            <li>Advanced models</li>
-          </ul>
-          <button class="btn btn-primary" style="width: 100%;" onclick="window.location.href='login.html'">Upgrade Now</button>
-        </div>
-
-        <div class="pricing-card">
-          <h3 class="pricing-name">One</h3>
-          <div class="pricing-price">$0.50<span>/forever</span></div>
-          <ul class="pricing-features">
-            <li>Everything in Indy+</li>
-            <li>Digital Blade Card</li>
-            <li>TV code access</li>
-            <li>Exclusive perks</li>
-          </ul>
-          <button class="btn btn-secondary" style="width: 100%;" onclick="window.location.href='login.html'">Go All In</button>
-        </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button class="btn btn-yellow" onclick="window.location.href='login.html'"><em>Start for free →</em></button>
+        <button class="btn btn-ghost" onclick="openModal('youth-faq')" style="border-color:rgba(245,200,66,.3)">Got questions?</button>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- COMMUNITY SECTION -->
-  <section class="section" id="community">
-    <div class="container">
-      <div class="community-card">
-        <h2 class="community-title">We are all welcome here <span>🏳️‍🌈❤️</span></h2>
-        <p class="community-description">
-          JVST is built for everyone—LGBTQ+ communities, Hispanic families, immigrants, and all backgrounds. 
-          This is a safe digital home: respectful, affirming, and rooted in care.
-        </p>
-        <div class="support-tags">
-          <span class="support-tag">LGBTQ+ inclusion</span>
-          <span class="support-tag">Hispanic community</span>
-          <span class="support-tag">Immigrant dignity</span>
-          <span class="support-tag">All races welcome</span>
-        </div>
+<!-- PRICING -->
+<section id="pricing" style="background:var(--bg2);border-top:1px solid var(--b);position:relative;overflow:hidden">
+  <div style="position:absolute;bottom:-30px;left:50%;transform:translateX(-50%);font-size:clamp(6rem,14vw,12rem);font-weight:900;letter-spacing:-.06em;color:rgba(255,255,255,.025);white-space:nowrap;pointer-events:none;user-select:none;font-family:'JetBrains Mono',monospace">JVST</div>
+  <div class="container" style="position:relative;z-index:1">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:44px">
+      <div>
+        <div class="sh-label">Pricing</div>
+        <h2 class="sh-title">Simple, <span class="hl">honest</span> pricing</h2>
+        <p class="sh-sub" style="margin-top:10px">No tricks. No subscriptions that quietly triple. Start free, upgrade when it makes sense.</p>
+      </div>
+      <div style="font-size:.8rem;color:var(--t3);font-style:italic;max-width:200px;text-align:right;line-height:1.55">These are one-time unlocks.<br>Not subscriptions.</div>
+    </div>
+    <div class="pricing-grid">
+      <div class="plan reveal">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">$0 <small>/ forever</small></div>
+        <div class="plan-divider"></div>
+        <ul class="plan-feats"><li>Basic AI access</li><li>30 min per session</li><li>Community support</li><li>Standard models</li></ul>
+        <button class="btn btn-ghost" style="width:100%" onclick="window.location.href='login.html'">Get Started</button>
+      </div>
+      <div class="plan pop reveal">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-name">Indy+</div>
+        <div class="plan-price">$0.25 <small>/ forever</small></div>
+        <div class="plan-divider"></div>
+        <ul class="plan-feats"><li>Unlimited AI messages</li><li>Image generation</li><li>Priority support</li><li>Advanced models</li><li>Creative Mode (coming soon)</li></ul>
+        <button class="btn btn-red" style="width:100%" onclick="window.location.href='login.html'">Upgrade Now</button>
+      </div>
+      <div class="plan reveal" style="border-color:rgba(245,200,66,.2);background:linear-gradient(160deg,var(--bg2) 70%,rgba(245,200,66,.04) 100%)">
+        <div class="plan-name" style="color:var(--yellow)">One</div>
+        <div class="plan-price">$0.50 <small>/ forever</small></div>
+        <div class="plan-divider"></div>
+        <ul class="plan-feats"><li>Everything in Indy+</li><li>Digital Blade Card</li><li>TV code access</li><li>Exclusive collab perks</li><li>Early access to new features</li></ul>
+        <button class="btn btn-ghost" style="width:100%;border-color:rgba(245,200,66,.3)" onclick="window.location.href='login.html'">Go All In</button>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="container">
-      <div class="footer-grid">
+<!-- COMMUNITY -->
+<section id="community" style="border-top:1px solid var(--b)">
+  <div class="container">
+    <div class="community-box reveal">
+      <div style="display:inline-flex;gap:6px;padding:4px 14px;background:rgba(255,45,45,.08);border:1px solid rgba(255,45,45,.2);border-radius:4px;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:20px">Safe space · Always open</div>
+      <div class="community-title">Everyone belongs here 🏳️‍🌈❤️</div>
+      <div class="community-sub">JVST is built for everyone — LGBTQ+ communities, Hispanic families, immigrants, all backgrounds. A safe digital home: respectful, affirming, and rooted in real care.</div>
+      <div class="pill-row">
+        <span class="pill">LGBTQ+ inclusion</span>
+        <span class="pill">Hispanic community</span>
+        <span class="pill">Immigrant dignity</span>
+        <span class="pill">All races welcome</span>
+        <span class="pill">Neurodiversity</span>
+      </div>
+      <div style="margin-top:28px;padding-top:28px;border-top:1px solid var(--b);display:flex;justify-content:center;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-red" onclick="window.location.href='indy.html'">Join for free →</button>
+        <button class="btn btn-ghost" onclick="openModal('about')">Our story</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <!-- Community CTA bar -->
+    <div class="foot-news" style="background:linear-gradient(135deg,var(--bg3) 0%,#140808 100%);border-color:rgba(255,45,45,.18);align-items:stretch;flex-direction:column;gap:20px;padding:28px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
         <div>
-          <div class="footer-logo">JVST</div>
-          <p class="footer-description">Intelligence, refined.<br>Built different, on purpose.</p>
+          <div style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:6px">The movement</div>
+          <div style="font-size:1.05rem;font-weight:700;letter-spacing:-.02em">Culture-first. Built different. <em style="font-weight:400;color:var(--t2)">Para la gente.</em></div>
         </div>
-        <div class="footer-column">
-          <h4>Product</h4>
-          <a href="#music">Music</a>
-          <a href="#indy">Indy 3</a>
-          <a href="#pricing">Pricing</a>
-        </div>
-        <div class="footer-column">
-          <h4>Company</h4>
-          <a href="#values">Values</a>
-          <a href="#community">Community</a>
-          <a href="privacy.html">Privacy</a>
-        </div>
-        <div class="footer-column">
-          <h4>Legal</h4>
-          <a href="terms.html">Terms</a>
-          <a href="privacy.html">Privacy</a>
-          <a href="cookies.html">Cookies</a>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <a href="indy.html" class="btn btn-red" style="font-size:.8rem">Try Indy 3 →</a>
+          <a href="login.html" class="btn btn-ghost" style="font-size:.8rem">Sign In</a>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>© 2026 JVST. All rights reserved.</p>
+      <div style="height:1px;background:var(--b);opacity:.6"></div>
+      <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+        <span style="font-size:.72rem;color:var(--t3);font-weight:600;letter-spacing:.06em;text-transform:uppercase">Reach us</span>
+        <a href="#" style="font-size:.8rem;color:var(--t2);transition:color .15s" onmouseover="this.style.color='var(--t)'" onmouseout="this.style.color='var(--t2)'">N/A</a>
+        <span style="margin-left:auto;font-size:.72rem;color:var(--t3);font-style:italic">Hecho con amor 🐰</span>
       </div>
     </div>
-  </footer>
+    <div class="foot-divider"></div>
+    <!-- Main grid -->
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="foot-logo">JV<span>ST</span></div>
+        <p class="foot-desc">Intelligence, refined.<br>Built different, on purpose.<br><em>Hecho con amor 🐰</em></p>
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+          <a href="indy.html" class="foot-pill">Try Indy 3</a>
+          <a href="login.html" class="foot-pill">Sign In</a>
+        </div>
+      </div>
+      <div class="foot-col">
+        <h4>Product</h4>
+        <a href="#indy">Indy 3</a>
+        <a href="#services">Services</a>
+        <a href="#music">Music</a>
+        <a href="#blade">Blade Card</a>
+        <a href="#pricing">Pricing</a>
+        <a href="indy.html">Launch App</a>
+      </div>
+      <div class="foot-col">
+        <h4>Community</h4>
+        <a href="#collabs">Collaborations</a>
+        <a href="#barrio">Barrio Sessions</a>
+        <a href="#social">Indy × Social</a>
+        <a href="#youth">For Students</a>
+        <a href="#values">Our Values</a>
+        <a href="#community">Inclusion</a>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <a href="javascript:void(0)" onclick="openModal('about')">About JVST</a>
+        <a href="javascript:void(0)" onclick="openModal('press')">Press</a>
+        <a href="javascript:void(0)" onclick="openModal('careers')">Careers</a>
+        <a href="javascript:void(0)" onclick="openModal('contact')">Contact</a>
+      </div>
+      <div class="foot-col">
+        <h4>Legal</h4>
+        <a href="terms.html">Terms of Service</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="cookies.html">Cookie Policy</a>
+        <a href="javascript:void(0)" onclick="openModal('accessibility')">Accessibility</a>
+        <a href="javascript:void(0)" onclick="openModal('dmca')">DMCA / IP</a>
+        <a href="javascript:void(0)" onclick="openModal('licenses')">Open Source Licenses</a>
+      </div>
+    </div>
+    <div class="foot-divider"></div>
+    <!-- Legal disclaimer -->
+    <div class="foot-legal-block">
+      <p>JVST and Indy 3 are operated by JVST Inc. ("the Company"). All AI-generated content produced by Indy 3 is the responsibility of the user. JVST does not guarantee accuracy of AI outputs and recommends independent verification for any information used in professional, medical, legal, or financial contexts. Music previews are provided via the iTunes Search API and are owned by their respective rights holders. Album artwork is displayed under fair use for identification purposes only. JVST does not claim ownership of any third-party trademarks, logos, or media displayed on this site. Barrio Sessions submissions remain the intellectual property of the submitting artist. By using JVST services you agree to our Terms of Service and Privacy Policy.</p>
+    </div>
+    <div class="foot-bottom">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <div class="foot-copy">© 2026 JVST Inc. All rights reserved.</div>
+        <div class="foot-copy" style="color:var(--b2)">·</div>
+        <div class="foot-copy">Registered in the United States.</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <div class="foot-copy">Culture-first. Always.</div>
+        <div class="foot-copy" style="color:var(--b2)">·</div>
+        <div class="foot-copy" style="font-style:italic">para la gente 🌎</div>
+      </div>
+    </div>
+  </div>
+</footer>
 
-  <!-- Hidden Audio Element -->
-  <audio id="audioPlayer" preload="metadata"></audio>
+<!-- FEATURE DROP POPUP (fires after 15s) -->
+<div class="nl-overlay" id="nlOverlay" onclick="if(event.target===this)closeNl()">
+  <div class="nl-box">
+    <button class="nl-close" onclick="closeNl()">✕</button>
+    <div class="nl-tag"><span class="pulse-dot"></span> Dropping soon</div>
+    <h2 class="nl-title">Be first when<br><span class="hl">new features drop.</span></h2>
+    <p class="nl-sub">Voice Mode. Español Mode. Creative Mode. These are launching soon — leave your email to get first access, no spam.</p>
+    <div class="nl-features">
+      <div class="nl-feat-row"><span>🎙️</span><span>Voice Mode — talk to Indy hands-free</span><span class="nl-feat-status">Soon</span></div>
+      <div class="nl-feat-row"><span>🌎</span><span>Español Mode — native Spanish + Spanglish</span><span class="nl-feat-status">Soon</span></div>
+      <div class="nl-feat-row"><span>✍️</span><span>Creative Mode — for artists and creators</span><span class="nl-feat-status">Soon</span></div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <input class="collab-input" type="email" placeholder="your@email.com" id="nlEmail" style="flex:1;min-width:200px"/>
+      <button class="btn btn-red" onclick="submitNl()">Notify me →</button>
+    </div>
+    <p style="font-size:.68rem;color:var(--t3);margin-top:10px">One email when it drops. That's it. See our <a href='privacy.html' style='color:var(--t2);text-decoration:underline'>Privacy Policy</a>.</p>
+  </div>
+</div>
 
-  <script>
-    // Mobile menu
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const navLinks = document.getElementById('navLinks');
+<!-- MODAL OVERLAY -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+</div>
 
-    mobileMenuBtn.addEventListener('click', () => {
-      navLinks.classList.toggle('active');
-      mobileMenuBtn.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
-    });
+<audio id="audioPlayer" preload="metadata"></audio>
+<audio id="discoAudio" preload="none"></audio>
 
-    navLinks.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.classList.remove('active');
-        mobileMenuBtn.textContent = '☰';
-      });
-    });
+<script>
+// ── NAV ──
+const mobBtn = document.getElementById('mobBtn');
+const navLinks = document.getElementById('navLinks');
+mobBtn.addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+  mobBtn.textContent = navLinks.classList.contains('open') ? '✕' : '☰';
+});
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { navLinks.classList.remove('open'); mobBtn.textContent = '☰'; }));
 
-    // Active nav links
-    const sections = document.querySelectorAll('section[id]');
-    window.addEventListener('scroll', () => {
-      let current = '';
-      sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        if (pageYOffset >= sectionTop - 200) {
-          current = section.getAttribute('id');
-        }
-      });
+// ── CAROUSEL ──
+const slides = document.querySelectorAll('.c-slide');
+const dots = document.querySelectorAll('.c-dot');
+let cur = 0, timer;
+function go(n) {
+  if (n < 0) n = slides.length - 1;
+  if (n >= slides.length) n = 0;
+  slides.forEach(s => s.classList.remove('active'));
+  dots.forEach((d, i) => d.classList.toggle('active', i === n));
+  slides[n].classList.add('active'); cur = n;
+}
+function start() { timer = setInterval(() => go(cur + 1), 8000); }
+function stop() { clearInterval(timer); }
+document.getElementById('cPrev').addEventListener('click', () => { stop(); go(cur - 1); start(); });
+document.getElementById('cNext').addEventListener('click', () => { stop(); go(cur + 1); start(); });
+dots.forEach((d, i) => d.addEventListener('click', () => { stop(); go(i); start(); }));
+document.querySelector('.hero').addEventListener('mouseenter', stop);
+document.querySelector('.hero').addEventListener('mouseleave', start);
+start();
 
-      navLinks.querySelectorAll('a').forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) {
-          link.classList.add('active');
-        }
-      });
-    });
+// ── MAIN PLAYER ──
+const audio = document.getElementById('audioPlayer');
+const playBtn = document.getElementById('playBtn');
+const progressFill = document.getElementById('progressFill');
+const progressBar = document.getElementById('progressBar');
+const currentTimeEl = document.getElementById('currentTime');
+const durationEl = document.getElementById('duration');
+const loadingStatus = document.getElementById('loadingStatus');
+let playing = false;
+function fmt(s) { return `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`; }
+async function loadMain() {
+  try {
+    const r = await fetch('https://itunes.apple.com/search?term=nuevayol+bad+bunny&media=music&limit=1');
+    const d = await r.json();
+    if (d.results?.[0]) {
+      const t = d.results[0];
+      document.getElementById('trackTitle').textContent = t.trackName;
+      document.getElementById('trackArtist').textContent = t.artistName;
+      document.getElementById('albumCover').src = t.artworkUrl100.replace('100x100','600x600');
+      audio.src = t.previewUrl;
+      audio.addEventListener('loadedmetadata', () => { durationEl.textContent = fmt(Math.floor(audio.duration)); loadingStatus.textContent = 'Ready'; }, {once:true});
+    } else { loadingStatus.textContent = 'Unavailable'; }
+  } catch { loadingStatus.textContent = 'Could not load'; }
+}
+playBtn.addEventListener('click', async () => {
+  if (!audio.src) return;
+  if (playing) { audio.pause(); playBtn.textContent = '▶'; playing = false; loadingStatus.textContent = 'Paused'; }
+  else { try { await audio.play(); playBtn.textContent = '||'; playing = true; loadingStatus.textContent = 'Now playing'; } catch { loadingStatus.textContent = 'Tap again to play'; } }
+});
+audio.addEventListener('timeupdate', () => { if (audio.duration) { progressFill.style.width = `${(audio.currentTime/audio.duration)*100}%`; currentTimeEl.textContent = fmt(audio.currentTime); } });
+audio.addEventListener('ended', () => { playBtn.textContent = '▶'; playing = false; progressFill.style.width = '0%'; currentTimeEl.textContent = '0:00'; loadingStatus.textContent = 'Done'; });
+progressBar.addEventListener('click', e => { if (!audio.duration) return; const r = progressBar.getBoundingClientRect(); audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration; });
+loadMain();
 
-    // ================= VIDEO CAROUSEL =================
-    const slides = document.querySelectorAll('.carousel-slide');
-    const dots = document.querySelectorAll('.carousel-dot');
-    const prevBtn = document.getElementById('prevSlide');
-    const nextBtn = document.getElementById('nextSlide');
-    let currentSlide = 0;
-    const totalSlides = slides.length;
-    let slideInterval;
+// ── DISCO PLAYER ──
+const discoTracks = [
+  { label:'Mía', album:'X100PRE · 2018', query:'mia bad bunny drake', art:'https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/cf/3a/db/cf3adbe6-8ea1-f60f-60fd-713eefda3962/193483317984.jpg/600x600bf-60.jpg' },
+  { label:'Yo Perreo Sola', album:'YHLQMDLG · 2020', query:'yo perreo sola bad bunny', art:'https://i.scdn.co/image/ab67616d0000b273548f7ec52da7313de0c5e4a0' },
+  { label:'Tití Me Preguntó', album:'Un Verano Sin Ti · 2022', query:'titi me pregunto bad bunny', art:'https://media.pitchfork.com/photos/627425dbc85171592b8a6e6a/master/pass/Bad-Bunny-Un-Verano-Sin-Ti.jpg' },
+  { label:'El Apagón', album:'Un Verano Sin Ti · 2022', query:'el apagon bad bunny', art:'https://media.pitchfork.com/photos/627425dbc85171592b8a6e6a/master/pass/Bad-Bunny-Un-Verano-Sin-Ti.jpg' },
+  { label:'La Canción', album:'Oasis · 2019', query:'la cancion bad bunny j balvin', art:'https://i.scdn.co/image/ab67616d0000b2734891d9b25d8919448388f3bb' },
+];
+const discoAudio = document.getElementById('discoAudio');
+let activeRow = null, activeIdx = null;
+function buildDisco() {
+  const list = document.getElementById('discoList');
+  discoTracks.forEach((t, i) => {
+    const row = document.createElement('div');
+    row.className = 'disco-row';
+    row.innerHTML = `<div class="disco-num">${i+1}</div><img class="disco-thumb" src="${t.art}" alt="" onerror="this.src='https://cdn-images.dzcdn.net/images/cover/d98eaccfbb945bdf68241d6de7fe6a49/1900x1900-000000-80-0-0.jpg'"><div class="disco-info"><div class="disco-track">${t.label}</div><div class="disco-year">${t.album}</div></div><div class="disco-icon">▶</div>`;
+    row.addEventListener('click', () => playDisco(row, i));
+    list.appendChild(row);
+  });
+}
+async function playDisco(row, i) {
+  const statusEl = document.getElementById('discoStatus');
+  const thumb = row.querySelector('.disco-thumb');
+  const icon = row.querySelector('.disco-icon');
+  if (activeIdx === i) { discoAudio.pause(); row.classList.remove('on'); thumb.classList.remove('spin'); icon.innerHTML = '▶'; activeIdx = null; activeRow = null; statusEl.textContent = 'Choose one →'; return; }
+  if (activeRow) { activeRow.classList.remove('on'); activeRow.querySelector('.disco-thumb').classList.remove('spin'); activeRow.querySelector('.disco-icon').innerHTML = '▶'; }
+  icon.innerHTML = '…'; statusEl.textContent = `Loading ${discoTracks[i].label}…`;
+  try {
+    const r = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(discoTracks[i].query)}&media=music&limit=1`);
+    const d = await r.json();
+    if (d.results?.[0]) {
+      discoAudio.src = d.results[0].previewUrl;
+      await discoAudio.play();
+      row.classList.add('on'); thumb.classList.add('spin');
+      icon.innerHTML = '<div class="wave"><span style="height:40%"></span><span style="height:100%"></span><span style="height:60%"></span></div>';
+      activeRow = row; activeIdx = i; statusEl.textContent = `▶ ${d.results[0].trackName}`;
+    } else { icon.innerHTML = '▶'; statusEl.textContent = 'Preview unavailable'; }
+  } catch { icon.innerHTML = '▶'; statusEl.textContent = 'Could not load'; }
+}
+discoAudio.addEventListener('ended', () => {
+  if (activeRow) { activeRow.classList.remove('on'); activeRow.querySelector('.disco-thumb').classList.remove('spin'); activeRow.querySelector('.disco-icon').innerHTML = '▶'; }
+  activeRow = null; activeIdx = null;
+  const s = document.getElementById('discoStatus');
+  if (s) s.textContent = 'Choose one →';
+});
+buildDisco();
 
-    function showSlide(index) {
-      // Handle wrap-around
-      if (index < 0) index = totalSlides - 1;
-      if (index >= totalSlides) index = 0;
-      
-      // Update slides
-      slides.forEach(slide => slide.classList.remove('active'));
-      slides[index].classList.add('active');
-      
-      // Update dots
-      dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === index);
-      });
-      
-      currentSlide = index;
+// ── ERA TAGS ──
+document.getElementById('eraTags').addEventListener('click', e => {
+  if (e.target.classList.contains('tag')) {
+    document.querySelectorAll('.tag').forEach(t => t.classList.remove('on'));
+    e.target.classList.add('on');
+  }
+});
+
+// ── SHELF SCROLLERS ──
+function makeShelfScroller(shelfId, prevId, nextId) {
+  const shelf = document.getElementById(shelfId);
+  document.getElementById(nextId).addEventListener('click', () => shelf.scrollBy({left:296, behavior:'smooth'}));
+  document.getElementById(prevId).addEventListener('click', () => shelf.scrollBy({left:-296, behavior:'smooth'}));
+}
+makeShelfScroller('articleShelf','artPrev','artNext');
+makeShelfScroller('serviceShelf','svcPrev','svcNext');
+
+// ── MODAL CONTENT ──
+const modalData = {
+  'art1': {
+    tag: 'Announcement · Feb 2026',
+    title: 'Indy 3 is here — and it speaks your language',
+    body: `<p>After months of development, <strong>Indy 3</strong> is live and available to everyone. It's the AI assistant built for people who have always felt like technology wasn't built for them.</p><p>Indy 3 understands <strong>Spanglish</strong>, street slang, cultural nuance, and the kind of casual back-and-forth that most AI tools completely fumble. It doesn't talk at you — it talks <em>with</em> you.</p><p>The three tiers — <strong>Free</strong>, <span class="modal-hl">Indy+</span>, and <strong>One</strong> — are priced for real people. This isn't subscription-ware. It's a one-time unlock. Forever.</p><p>Coming soon to Indy 3: Creative Mode (hooks, bios, captions), Voice Mode (hands-free), and full Español Mode. The roadmap is public. The mission is clear.</p>`
+  },
+  'art2': {
+    tag: 'Collab · Jan 2026',
+    title: 'Why Rainn Blais chose JVST over the big players',
+    body: `<p>Rainn Blais is a local basketball standout at his school — the kind of athlete that big brands circle but rarely actually invest in. When JVST reached out, the pitch was simple: <strong>we don't want to use your platform, we want to build something together.</strong></p><p>Rainn's goal has always been to use whatever reach he builds to lift up musicians in his community. JVST shares that exact DNA — Barrio Sessions, the Artist Pass, the whole collab pipeline was built for moments exactly like this.</p><p><span class="modal-hl">Together, they're building a bridge from local schools to real platforms.</span> Sports and music, side by side. No gatekeepers. No exclusivity clauses. Just real partnership.</p><p>The first limited edition Rainn × JVST Blade Card edition drops when the partnership officially launches publicly. Watch this space.</p>`
+  },
+  'art3': {
+    tag: 'Opinion · Jan 2026',
+    title: 'Latin music runs the world — and JVST was built knowing that',
+    body: `<p>Bad Bunny has been the most streamed artist on Spotify multiple years in a row. Not the most streamed <em>Latin</em> artist — <strong>the most streamed artist, full stop.</strong> Karol G sells out arenas globally. Ozuna. J Balvin. Rosalía.</p><p>This isn't a trend. This is a shift that was always going to happen — because the culture was always this powerful. It just took the world a minute to catch up.</p><p><span class="modal-hl">JVST was built with this reality in mind from day one.</span> Not as a marketing angle. As a foundation. The language support, the Barrio Sessions platform, the values around immigrant dignity and Hispanic community — these aren't features. They're the whole point.</p><p>AI that truly gets culture is the next frontier. And we intend to be there first.</p>`
+  },
+  'art4': {
+    tag: 'Community · Dec 2025',
+    title: 'Barrio Sessions — what it is, why it matters, who it\'s for',
+    body: `<p><strong>Barrio Sessions</strong> is JVST's open submission platform for unsigned artists. No label. No co-sign needed. No geographic limit. If you make music, you can submit.</p><p>The process is simple: submit your track, our community reviews it, and the top submissions get featured on the JVST homepage with a digital <strong>Creator Pass</strong> badge.</p><p>Creator Pass holders get priority consideration for future JVST collabs, early access to new features, and — most importantly — a real audience that actually cares about the music.</p><p><span class="modal-hl">This platform exists because we know talent is everywhere.</span> Resources aren't. Barrio Sessions is the bridge.</p><p>Submissions open soon. Any genre, any language, any city.</p>`
+  },
+  'art5': {
+    tag: 'Tech · Dec 2025',
+    title: 'How Evan Duffy is using AI to reinvent music',
+    body: `<p>Evan Duffy has spent years mastering music — one of the most technically demanding and emotionally raw art forms in the world. His JVST collaboration is something genuinely new: <strong>interactive performances where the audience shapes the sound in real time.</strong></p><p>Using Indy 3's generative capabilities, Evan is building performance systems that respond to crowd energy, input, and mood. The music structure stays — the tradition, the footwork, the rawness — but the improvisation layer gets supercharged by AI.</p><p><span class="modal-hl">Tradition and technology, not competing but collaborating.</span> Evan's vision: a performance you've never seen before, every single night.</p><p>A full breakdown of the technical architecture drops when the project goes public. For now, follow Evan directly for updates.</p>`
+  },
+  'barrio-info': {
+    tag: 'Barrio Sessions',
+    title: 'Everything you need to know',
+    body: `<p><strong>Barrio Sessions</strong> is JVST's commitment to the culture that built it. Unsigned artists from underrepresented communities submit their music — any genre, any language — and get featured to a real audience.</p><p><strong>Who can submit?</strong> Anyone. We specifically want to hear from artists who have never had a platform — local, independent, unsigned. Hip-hop, reggaeton, R&B, music, afrobeats, cumbia, all of it.</p><p><strong>What happens after you submit?</strong> Community review, then a JVST curatorial pass. Top submissions get homepage placement, a Creator Pass, and the chance to be considered for future JVST partnerships.</p><p><span class="modal-hl">No pay-to-play. No follower requirements. No gatekeepers.</span> Just music and merit.</p><p>Submissions open soon — drop your email in the form to be first to know.</p>`
+  },
+  'blade-info': {
+    tag: 'Digital Product',
+    title: 'All Blade Card editions, explained',
+    body: `<p>The <strong>Blade Card</strong> is your JVST digital identity — one link that holds your music, your bio, your socials, and your JVST membership tier, all in a shareable card format.</p><p><strong>Standard Edition</strong> — Comes with the One membership. Clean, minimal JVST branding. Customizable handle and links.</p><p><strong>Rainn Blais Edition</strong> — Limited drop tied to the official Rainn × JVST partnership launch. Sports-forward aesthetic, exclusive badge.</p><p><strong>Barrio Sessions Edition</strong> — Awarded to featured Barrio Sessions artists. Marks you as part of the creator community officially.</p><p><span class="modal-hl">All editions are digital-first, mobile-optimized, and include a scannable QR code.</span> No physical cards. No shipping. Just your identity, instantly shareable.</p><p>Blade Card Pro (limited collab editions in physical format) is planned for later in 2026.</p>`
+  },
+  'svc-creative': {
+    tag: 'Indy 3 · Coming Soon',
+    title: 'Creative Mode — AI that writes with you, not for you',
+    body: `<p><strong>Creative Mode</strong> is a dedicated mode within Indy 3 built specifically for artists and creators. It knows the difference between a trap hook and a corrido, between an Instagram caption and a press bio.</p><p>Use it to: <strong>write song hooks</strong> in your genre and language, <strong>draft bios</strong> that don't sound like a LinkedIn page, <strong>brainstorm titles</strong> that actually land, and <strong>punch up captions</strong> before you post.</p><p><span class="modal-hl">This isn't a generic writing tool.</span> It's been specifically tuned on creative culture — music, fashion, art — so the output sounds like something a person would actually say, not a machine trying to sound human.</p><p>Available on Indy+ and One tiers. Launching soon — One members get early access.</p>`
+  },
+  'svc-voice': {
+    tag: 'Indy 3 · Coming Soon',
+    title: 'Voice Mode — Indy, hands-free',
+    body: `<p>Voice Mode lets you talk to Indy 3 out loud — no typing, no keyboard, just conversation. It's built for the moments when you can't type: in the studio, on the court, in the car, on a walk.</p><p>Voice Mode isn't just speech-to-text. It's <strong>real conversational AI</strong> — Indy listens, processes context, and responds intelligently. You can ask follow-up questions, clarify, even go back and forth the way you would with a person.</p><p><span class="modal-hl">Accessibility was a core reason this is being built.</span> Not everyone types easily. Not everyone should have to.</p><p>Voice Mode launches first on mobile. Available on all tiers — Indy+ and One get priority queue access.</p>`
+  },
+  'svc-espanol': {
+    tag: 'Indy 3 · Coming Soon',
+    title: 'Español Mode — not a translation, a conversation',
+    body: `<p>Most AI handles Spanish by running your input through an English model and translating back. <strong>Español Mode is different.</strong> It's a full-language mode that processes Spanish and Spanglish natively — with the slang, the rhythm, the regional variations, all of it.</p><p>Ask Indy to help your abuela. Write in Puerto Rican Spanish. Switch between English and Spanish mid-sentence. Español Mode follows without missing a beat.</p><p><span class="modal-hl">This exists because most AI tools treat Spanish as an afterthought.</span> For a lot of JVST's community, it's the first language. That deserves a first-class experience.</p><p>Launching on all tiers. Spanish-language Creative Mode and Voice Mode will follow as part of the same rollout.</p>`
+  },
+  'svc-music': {
+    tag: 'Indy 3 · Planned',
+    title: 'Music Analysis — feedback like a real A&R',
+    body: `<p>Upload a track. Indy 3 listens. Then it gives you a real breakdown: <strong>genre classification, mood mapping, tempo and energy analysis</strong>, and most importantly — honest feedback about what's working and what isn't.</p><p>This isn't a visualizer or a BPM counter. It's designed to tell you what a knowledgeable human listener would tell you — but available at 2am when no one else is around.</p><p><span class="modal-hl">Built specifically for unsigned artists who don't have access to A&R departments</span> or industry mentors. Democratizing the feedback loop.</p><p>This feature requires deeper audio processing and is planned for a later release. One members will get first access when it launches.</p>`
+  },
+  'svc-blade-pro': {
+    tag: 'Digital Product · Planned',
+    title: 'Blade Card Pro — limited collab editions',
+    body: `<p>Blade Card Pro is the limited-edition layer of the Blade Card system. While the standard Blade Card is digital and infinite, <strong>Pro editions are tied to specific collab drops and produced in limited quantities.</strong></p><p>Planned Pro editions: <strong>Rainn Blais Edition</strong> (sports aesthetic, limited to the first drop), <strong>Barrio Sessions Edition</strong> (for featured artists only), and future collab editions tied to new JVST partnerships.</p><p><span class="modal-hl">Pro editions may include physical card formats</span> for collectors — printed, mailed, real. Details TBD as the collab pipeline grows.</p><p>Pro editions won't be purchasable — they'll be earned through participation, collab, or early membership. This is about recognition, not revenue.</p>`
+  },
+  'svc-gift': {
+    tag: 'Community · Planned',
+    title: 'JVST Gift Cards — bring someone in',
+    body: `<p>The simplest new product on the roadmap. <strong>Buy a gift card for Indy+ or One, send it to someone you think needs it.</strong> That's it.</p><p>Gift cards will be fully digital — a link, a code, and a short note from you. No account required to receive one. The recipient claims it when they sign up.</p><p><span class="modal-hl">This is about community growth the right way — word of mouth, real relationships,</span> not ads. Every gift card is someone saying "this is worth your time" to someone they care about.</p><p>Pricing mirrors the tier: $0.25 for Indy+, $0.50 for One. No markup. Available in packs of 1, 5, or 10 for community organizers and educators.</p>`
+  }
+};
+
+// openModal/closeModal defined below
+
+// ── SCROLL REVEAL ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); observer.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── SMOOTH SCROLL ──
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+});
+
+// ── CHAT TYPEWRITER ──
+(function() {
+  const reply = 'Bajo las luces de neón, la noche me llama — sin ti, el verano no es lo mismo 🌙';
+  const botMsgs = document.querySelectorAll('.msg.bot');
+  const lastBot = botMsgs[botMsgs.length - 1];
+  if (!lastBot) return;
+  let typed = false;
+  const chatObserver = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting && !typed) {
+      typed = true;
+      setTimeout(() => {
+        const typingEl = lastBot.querySelector('.typing');
+        const bubble = lastBot.querySelector('.bubble') || lastBot;
+        let i = 0;
+        const newBubble = document.createElement('div');
+        newBubble.className = 'bubble';
+        newBubble.textContent = '';
+        if (typingEl) typingEl.replaceWith(newBubble);
+        const iv = setInterval(() => {
+          newBubble.textContent += reply[i];
+          i++;
+          if (i >= reply.length) clearInterval(iv);
+        }, 38);
+      }, 1200);
     }
+  }, { threshold: 0.5 });
+  chatObserver.observe(document.querySelector('.chat-mock'));
+})();
 
-    function nextSlide() {
-      showSlide(currentSlide + 1);
-    }
-
-    function prevSlide() {
-      showSlide(currentSlide - 1);
-    }
-
-    // Auto-advance slides every 8 seconds
-    function startCarousel() {
-      slideInterval = setInterval(nextSlide, 8000);
-    }
-
-    function stopCarousel() {
-      clearInterval(slideInterval);
-    }
-
-    // Event listeners for controls
-    prevBtn.addEventListener('click', () => {
-      stopCarousel();
-      prevSlide();
-      startCarousel();
-    });
-
-    nextBtn.addEventListener('click', () => {
-      stopCarousel();
-      nextSlide();
-      startCarousel();
-    });
-
-    dots.forEach((dot, index) => {
-      dot.addEventListener('click', () => {
-        stopCarousel();
-        showSlide(index);
-        startCarousel();
-      });
-    });
-
-    // Pause carousel on hover
-    const carousel = document.querySelector('.hero-carousel');
-    carousel.addEventListener('mouseenter', stopCarousel);
-    carousel.addEventListener('mouseleave', startCarousel);
-
-    // Start the carousel
-    startCarousel();
-
-    // ================= MUSIC PLAYER =================
-    const audio = document.getElementById('audioPlayer');
-    const playBtn = document.getElementById('playBtn');
-    const progressBar = document.getElementById('progressBar');
-    const progressFill = document.getElementById('progressFill');
-    const currentTimeEl = document.getElementById('currentTime');
-    const durationEl = document.getElementById('duration');
-    const loadingStatus = document.getElementById('loadingStatus');
-    const trackTitle = document.getElementById('trackTitle');
-    const trackArtist = document.getElementById('trackArtist');
-    const albumCover = document.getElementById('albumCover');
-
-    let isPlaying = false;
-
-    async function loadTrack() {
-      try {
-        loadingStatus.textContent = 'Loading preview...';
-        const searchUrl = 'https://itunes.apple.com/search?term=nuevayol+bad+bunny&media=music&limit=1';
-        const response = await fetch(searchUrl);
-        const data = await response.json();
-
-        if (data.results && data.results.length > 0) {
-          const track = data.results[0];
-          
-          trackTitle.textContent = track.trackName;
-          trackArtist.textContent = track.artistName;
-          albumCover.src = track.artworkUrl100.replace('100x100', '600x600');
-          audio.src = track.previewUrl;
-
-          audio.addEventListener('loadedmetadata', () => {
-            const duration = Math.floor(audio.duration);
-            durationEl.textContent = formatTime(duration);
-            loadingStatus.textContent = 'Ready to play';
-          });
-        } else {
-          loadingStatus.textContent = 'Track not available';
-        }
-      } catch (error) {
-        console.error('Error loading track:', error);
-        loadingStatus.textContent = 'Could not load preview';
+// ── NAV ACTIVE STATE ──
+(function() {
+  const sections = document.querySelectorAll('section[id]');
+  const navAs = document.querySelectorAll('.nav-links a[href^="#"]');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navAs.forEach(a => { a.style.color = a.getAttribute('href') === '#' + e.target.id ? 'var(--t)' : ''; });
       }
-    }
-
-    function formatTime(seconds) {
-      const mins = Math.floor(seconds / 60);
-      const secs = Math.floor(seconds % 60);
-      return `${mins}:${secs.toString().padStart(2, '0')}`;
-    }
-
-    playBtn.addEventListener('click', async () => {
-      if (!audio.src) {
-        loadingStatus.textContent = 'No preview available';
-        return;
-      }
-
-      if (isPlaying) {
-        audio.pause();
-        playBtn.textContent = '▶';
-        isPlaying = false;
-      } else {
-        try {
-          await audio.play();
-          playBtn.textContent = '||';
-          isPlaying = true;
-          loadingStatus.textContent = 'Now playing';
-        } catch (error) {
-          console.error('Playback error:', error);
-          loadingStatus.textContent = 'Click again to play';
-        }
-      }
     });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  sections.forEach(s => io.observe(s));
+})();
 
-    audio.addEventListener('timeupdate', () => {
-      if (audio.duration) {
-        const progress = (audio.currentTime / audio.duration) * 100;
-        progressFill.style.width = `${progress}%`;
-        currentTimeEl.textContent = formatTime(audio.currentTime);
-      }
-    });
+// ── INSTAGRAM CAPTION REGEN ──
+const instaCaption = document.getElementById('instaCaption');
+const captions = [
+  '<span style="font-weight:600">yourhandle</span> la noche nos pertenece ✨ summer energy on max, no cap 🔥 <span style="color:#aaa">#vibes #miami #summer2026</span>',
+  '<span style="font-weight:600">yourhandle</span> built different fr 🌊 they\'re watching and that\'s okay 😭✨ <span style="color:#aaa">#authentic #jvst #nosleep</span>',
+  '<span style="font-weight:600">yourhandle</span> the glow-up is quiet until it isn\'t 🤫🔥 new era loading... <span style="color:#aaa">#newchapter #grind #2026</span>',
+  '<span style="font-weight:600">yourhandle</span> verano forever 🌴 if you know you know 💫 <span style="color:#aaa">#latinapower #summer #blessed</span>',
+  '<span style="font-weight:600">yourhandle</span> main character energy, always 👑 no apologies <span style="color:#aaa">#selfcare #culture #jvst</span>',
+];
+let capIdx = 0;
+function regenCaption() {
+  capIdx = (capIdx + 1) % captions.length;
+  if (instaCaption) {
+    instaCaption.style.opacity = '0';
+    setTimeout(() => { instaCaption.innerHTML = captions[capIdx]; instaCaption.style.opacity = '1'; instaCaption.style.transition = 'opacity .3s'; }, 200);
+  }
+}
 
-    audio.addEventListener('ended', () => {
-      playBtn.textContent = '▶';
-      isPlaying = false;
-      progressFill.style.width = '0%';
-      currentTimeEl.textContent = '0:00';
-      loadingStatus.textContent = 'Preview ended';
-    });
+// ── NEWSLETTER POPUP ──
+let nlShown = false;
+function showNl() {
+  if (!nlShown && !sessionStorage.getItem('nlDismissed')) {
+    document.getElementById('nlOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    nlShown = true;
+  }
+}
+function closeNl() {
+  document.getElementById('nlOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  sessionStorage.setItem('nlDismissed', '1');
+}
+function submitNl() {
+  const v = document.getElementById('nlEmail')?.value;
+  if (v && v.includes('@')) {
+    document.getElementById('nlOverlay').innerHTML = `<div class="nl-box" style="text-align:center;padding:52px 40px"><div style="font-size:2rem;margin-bottom:16px">✓</div><h2 class="nl-title">You're on the list.</h2><p class="nl-sub">We'll hit you once — right when the features drop. Promise.</p></div>`;
+    setTimeout(closeNl, 2400);
+  } else {
+    const input = document.getElementById('nlEmail');
+    if (input) { input.style.borderColor = 'var(--red)'; setTimeout(() => input.style.borderColor = '', 1200); }
+  }
+}
+function submitNewsletter() {
+  // footer newsletter removed — kept for safety
+}
+setTimeout(showNl, 15000);
 
-    progressBar.addEventListener('click', (e) => {
-      if (!audio.duration) return;
-      const rect = progressBar.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const percentage = clickX / rect.width;
-      audio.currentTime = percentage * audio.duration;
-    });
+// ── EXTENDED MODAL DATA ──
+const extraModalData = {
+  'youth-study': {
+    tag: 'For Students',
+    title: 'Homework help that actually teaches you',
+    body: `<p>Indy 3 isn't a homework cheat code — it's a study partner that helps you actually get it. Ask it to explain something in plain language, walk you through a concept step by step, or check your work and tell you where you went wrong.</p><p>For essays: Indy can help you outline your argument, punch up your intro, or refine your thesis — without writing it for you (unless you want that too, we're not judging).</p><p><span class="modal-hl">The difference between Indy and just Googling it</span> is that Indy has a conversation with you. You can ask follow-up questions. You can say "wait, I don't get that part." It doesn't move on until you do.</p><p>Available free. No account required to try. Start with a question right now at <a href="indy.html" style="color:var(--red)">indy.html</a>.</p>`
+  },
+  'youth-create': {
+    tag: 'For Creators',
+    title: 'Indy as your creative co-pilot',
+    body: `<p>Got a half-finished song? A concept that won't come together? Indy 3 is the creative partner that's always available, never judges your early drafts, and actually knows music, art, and culture.</p><p>Use Indy to: brainstorm song titles and album concepts, write verses when you're stuck, generate image prompts for your cover art, and script your Reels or TikToks before you shoot.</p><p><span class="modal-hl">Indy Creative Mode</span> (coming soon) takes this further — a dedicated workspace for artists with genre-specific tone settings, batch caption generation, and more.</p><p>Everything you make with Indy is yours. We don't claim IP on outputs. Create freely.</p>`
+  },
+  'youth-hustle': {
+    tag: 'For Entrepreneurs',
+    title: 'Make your side hustle look like a real business',
+    body: `<p>You've got the idea. Indy helps you package it. Business name brainstorming, tagline generation, product description writing, pricing advice, DM scripts for reaching out to potential clients — Indy does all of it.</p><p>Selling on DepOp, Etsy, or Instagram? Indy writes product listings that convert. Starting a service? Indy helps you pitch it. Building a brand? Indy helps you find your voice and stay consistent.</p><p><span class="modal-hl">No business school needed.</span> Just a phone, a hustle, and access to Indy. The free tier is enough to get started.</p>`
+  },
+  'youth-real': {
+    tag: 'Real Talk',
+    title: 'An AI that doesn\'t talk down to you',
+    body: `<p>Most AI sounds like it was written by a committee. Indy 3 sounds like a person — specifically, a smart, culture-aware person who understands your references, your sense of humor, and when to just give you a straight answer.</p><p>No "I'd be happy to help you with that!" No excessive disclaimers. No switching to lecture mode the second you ask about something interesting. Just real responses to real questions.</p><p><span class="modal-hl">Indy is designed to be the AI you'd actually want to talk to</span> — not the one you're legally required to use. That's the whole point.</p>`
+  },
+  'youth-faq': {
+    tag: 'FAQ',
+    title: 'Quick answers to real questions',
+    body: `<p><strong>Is the free plan actually free?</strong> Yes. No credit card. No trial period. No expiry. Free means free.</p><p><strong>What's the difference between Free and Indy+?</strong> Free has a 30-minute session limit. Indy+ ($0.25, one time) removes the limit, adds image generation, and gives you access to better models including Creative Mode when it launches.</p><p><strong>Do I need an account?</strong> You can try Indy 3 without signing up. Creating an account saves your history and unlocks all plan features.</p><p><strong>Is my data private?</strong> <span class="modal-hl">Yes.</span> JVST does not train on your conversations. Your data is not sold. See our <a href="privacy.html" style="color:var(--red)">Privacy Policy</a> for the full breakdown.</p><p><strong>Can I use it in Spanish?</strong> Absolutely — and Spanglish too. Español Mode (coming soon) will make this even better.</p><p><strong>What if I don't like it?</strong> The free plan costs nothing to walk away from. The paid plans are one-time charges, not subscriptions — but if something goes wrong, contact us and we'll make it right.</p>`
+  },
+  'about': {
+    tag: 'About JVST',
+    title: 'Who we are and why we built this',
+    body: `<p>JVST is a culture-first technology company building AI tools for communities that have historically been ignored by Silicon Valley. We believe the next generation of internet users deserves technology that actually speaks their language — literally and figuratively.</p><p>Indy 3 is our flagship product: an AI assistant that understands Spanglish, slang, cultural nuance, and real human conversation. Barrio Sessions is our commitment to artists who've never had a platform. The Blade Card is our take on digital identity for the next generation.</p><p><span class="modal-hl">We're a small team with a clear mission:</span> build technology that feels like it was made for you, not adapted for you. Every product decision comes back to that.</p><p>JVST is headquartered in the United States. Founded 2025.</p>`
+  },
+  'press': {
+    tag: 'Press',
+    title: 'Media inquiries and press kit',
+    body: `<p>For press inquiries, partnership announcements, interview requests, or media assets, please reach out to our team directly.</p><p><strong>Press contact:</strong>N/A</p><p><strong>Response time:</strong> We aim to respond to all press inquiries within 48 hours on business days.</p><p><strong>What's available:</strong> JVST logo files, brand guidelines, founder statements, product screenshots, and general fact sheets are available on request.</p><p><span class="modal-hl">We welcome coverage that accurately represents our mission</span> and community. We're happy to arrange demos, interviews, or background briefings for journalists covering AI, culture, and youth technology.</p>`
+  },
+  'careers': {
+    tag: 'Careers',
+    title: 'Build the future of culture-first AI with us',
+    body: `<p>JVST is early-stage and growing. We're looking for people who believe technology should serve communities, not extract from them — and who want to build something that actually matters.</p><p><strong>Areas we're hiring in:</strong> Engineering (full-stack, ML), Design (product, brand), Community (moderation, Barrio Sessions curation), and Marketing.</p><p><span class="modal-hl">We especially want to hear from people who are part of the communities we serve</span> — Hispanic, LGBTQ+, immigrant backgrounds, young creators. This is not a diversity checkbox. This is who we're building for and who we want building it.</p><p>Send a short note about yourself and what you'd bring to the team: careers@shopjust.store</p>`
+  },
+  'contact': {
+    tag: 'Contact',
+    title: 'Get in touch with JVST',
+    body: `<p>We're a small team and we read everything. Here's how to reach the right people:</p><p><strong>General inquiries:</strong>N/A </p><p><strong>Partnerships / collabs:</strong> Use the submission form in the Collabs section of this page, or email collabs@shopjust.store</p><p><strong>Barrio Sessions:</strong> barrio@shopjust.store</p><p><strong>Technical support / bugs:</strong> support@shopjust.store</p><p><span class="modal-hl">Response time is typically 1–3 business days.</span> We're real humans reading real emails. No ticket queues, no chatbots.</p>`
+  },
+  'accessibility': {
+    tag: 'Accessibility',
+    title: 'Our commitment to accessibility',
+    body: `<p>JVST is committed to making our products accessible to everyone, including people with disabilities. We aim to meet WCAG 2.1 Level AA standards across our web properties and applications.</p><p>Current accessibility features include: keyboard navigation support, semantic HTML structure, alt text for images, ARIA labels on interactive elements, and sufficient color contrast ratios.</p><p><span class="modal-hl">We know we have work to do</span> — Voice Mode (coming soon) is partly motivated by accessibility. We want Indy 3 usable by people who can't type or who prefer speech.</p><p>If you encounter an accessibility barrier on any JVST property, please contact us at accessibility@shopjust.store and we will address it promptly.</p>`
+  },
+  'dmca': {
+    tag: 'DMCA / Intellectual Property',
+    title: 'Copyright and IP policy',
+    body: `<p>JVST respects intellectual property rights and expects users of Indy 3 to do the same. AI-generated content produced by Indy 3 is the responsibility of the user. JVST does not claim copyright over AI outputs.</p><p><strong>DMCA takedown requests:</strong> If you believe content on JVST properties infringes your copyright, please send a complete DMCA notice to dmca@shopjust.store including: identification of the copyrighted work, identification of the infringing material, your contact information, a statement of good faith belief, and a statement of accuracy under penalty of perjury.</p><p><span class="modal-hl">Music previews on this page are served via the iTunes Search API</span> and are provided by Apple Inc. Album artwork is displayed under fair use for identification purposes. JVST does not host these audio files.</p><p>Barrio Sessions submissions remain the intellectual property of the submitting artist. JVST requests a non-exclusive license to display and promote submitted works on our platform.</p>`
+  },
+  'licenses': {
+    tag: 'Open Source',
+    title: 'Open source licenses',
+    body: `<p>JVST's web properties use the following open source technologies, which are acknowledged here in compliance with their respective licenses:</p><p><strong>Fonts:</strong> JetBrains Mono (Apache License 2.0) and Inter (SIL Open Font License 1.1), served via Google Fonts.</p><p><strong>Images:</strong> Fallback photography provided by Unsplash under the Unsplash License. Music artwork fetched from public CDN sources for identification purposes.</p><p><strong>APIs:</strong> iTunes Search API (Apple Inc.) used for music preview functionality. No API key required; public endpoint. Audio content remains property of respective rights holders.</p><p><span class="modal-hl">Indy 3's underlying AI infrastructure</span> licensing is proprietary to JVST Inc. We are committed to responsible AI development and comply with applicable AI regulations.</p>`
+  }
+};
 
-    loadTrack();
+// Merge extra modal data into existing modalData
+Object.assign(modalData, extraModalData);
 
-    // Smooth scroll
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-      });
-    });
-  </script>
+function openModal(id) {
+  const data = modalData[id];
+  if (!data) return;
+  document.getElementById('modalContent').innerHTML = `<div class="modal-tag">${data.tag}</div><h2 class="modal-title">${data.title}</h2><div class="modal-body">${data.body}</div>`;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeNl(); } });
+</script>
 </body>
 </html>
