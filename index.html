@@ -845,16 +845,14 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
       <div>
         <div class="indy-badge"><span class="pulse-dot"></span> Now Available</div>
         <h2 class="indy-title">Meet Indy 3.<br><span class="hl" id="indyTypeTarget"></span></h2>
-        <p class="indy-sub">No corporate tone. No fluff. Fast, smart responses that understand context, culture, and how real people talk — not how textbooks say they do.</p>
+        <p class="indy-sub">No corporate tone. No fluff. Fast, smart responses that understand context, culture, and how real people actually talk.</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:36px;">
           <button class="btn btn-red" onclick="window.location.href='indy.html'">Try Indy 3 →</button>
           <button class="btn btn-ghost" onclick="document.querySelector('#pricing').scrollIntoView({behavior:'smooth'})">See Pricing</button>
         </div>
         <div class="indy-feats">
-          <div class="indy-feat"><div class="indy-icon">⚡</div><div class="indy-feat-text"><strong>Lightning fast</strong><span>Responses under a second. No lag, no loading screen theatrics.</span></div></div>
-          <div class="indy-feat"><div class="indy-icon">🌎</div><div class="indy-feat-text"><strong>Culture-aware</strong><span>Understands slang, Spanglish, nuance, and context others miss completely.</span></div></div>
+          <div class="indy-feat"><div class="indy-icon">⚡</div><div class="indy-feat-text"><strong>Lightning fast</strong><span>Responses under a second. No lag.</span></div></div>
           <div class="indy-feat"><div class="indy-icon">🔒</div><div class="indy-feat-text"><strong>Private by default</strong><span>We never train on your conversations. Your words stay yours.</span></div></div>
-          <div class="indy-feat"><div class="indy-icon">🖼️</div><div class="indy-feat-text"><strong>Image generation</strong><span>Create visuals on the fly — no extra apps, no extra cost on Indy+.</span></div></div>
         </div>
       </div>
       <div class="chat-mock">
@@ -1170,7 +1168,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
           <div class="collab-back">
             <div>
               <div class="collab-back-title">The mission</div>
-              <div class="collab-back-body">Rainn brings athlete energy and community trust. Together we're building a pipeline from local schools to real platforms — sports and music, united.</div>
+              <div class="collab-back-body">Rainn brings athlete energy and community trust. Together we're building a pipeline from local communities to real platforms — sports and music, united.</div>
             </div>
             <div class="collab-back-tag">#TeenSports</div>
           </div>
@@ -1343,10 +1341,22 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
         <h2 style="font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-.04em;line-height:1.05;margin-bottom:20px">Not adapted<br>for you.<br><span class="hl-red">Made</span> for you.</h2>
         <p style="font-size:.9rem;color:var(--t2);line-height:1.7">Every decision at JVST comes back to one question: does this feel like it was built for our community, or just aimed at it? There's a difference.</p>
       </div>
-      <div class="values-grid">
-        <div class="card reveal" style="background:var(--bg3)"><div class="card-icon">🏙️</div><div class="card-title">Street energy, premium execution</div><div class="card-body">Confident and intentional — inspired by NYC and barrio culture. Never cluttered, always clean. We don't dress it up, we level it up.</div></div>
-        <div class="card reveal"><div class="card-icon">🤝</div><div class="card-title">Warm and welcoming to all</div><div class="card-body">Designed for all races, identities, and backgrounds. Technology should feel personal and respectful — not sterile, not corporate, not cold.</div></div>
-        <div class="card reveal" style="background:var(--bg3)"><div class="card-icon">❤️</div><div class="card-title">Hispanic community, always</div><div class="card-body">We stand with Hispanic families and immigrant communities with real empathy — not a marketing badge, not a flag for a month.</div></div>
+      <div class="values-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px">
+        <div style="padding:24px 0;border-top:2px solid var(--b2)">
+          <div style="font-size:1rem;margin-bottom:10px">🏙️</div>
+          <div style="font-size:.88rem;font-weight:600;margin-bottom:6px">Street energy, premium execution</div>
+          <div style="font-size:.8rem;color:var(--t2);line-height:1.6">Inspired by NYC and barrio culture. Confident and intentional, always.</div>
+        </div>
+        <div style="padding:24px 0;border-top:2px solid var(--red);opacity:.9">
+          <div style="font-size:1rem;margin-bottom:10px">🤝</div>
+          <div style="font-size:.88rem;font-weight:600;margin-bottom:6px">Warm and welcoming to all</div>
+          <div style="font-size:.8rem;color:var(--t2);line-height:1.6">Built for every race, identity, and background. Technology that feels personal.</div>
+        </div>
+        <div style="padding:24px 0;border-top:2px solid var(--b2)">
+          <div style="font-size:1rem;margin-bottom:10px">❤️</div>
+          <div style="font-size:.88rem;font-weight:600;margin-bottom:6px">Hispanic community, always</div>
+          <div style="font-size:.8rem;color:var(--t2);line-height:1.6">Real empathy — not a marketing badge, not a flag for a month.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1363,15 +1373,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
         <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:28px">
           <div style="display:flex;gap:10px;align-items:flex-start">
             <span style="color:var(--yellow);font-weight:700;font-size:.9rem;flex-shrink:0">✦</span>
-            <span style="font-size:.85rem;color:var(--t2)">Instagram captions in your tone — no "level up your journey" energy</span>
-          </div>
-          <div style="display:flex;gap:10px;align-items:flex-start">
-            <span style="color:var(--yellow);font-weight:700;font-size:.9rem;flex-shrink:0">✦</span>
-            <span style="font-size:.85rem;color:var(--t2)">TikTok hooks that stop the scroll in the first 2 seconds</span>
-          </div>
-          <div style="display:flex;gap:10px;align-items:flex-start">
-            <span style="color:var(--yellow);font-weight:700;font-size:.9rem;flex-shrink:0">✦</span>
-            <span style="font-size:.85rem;color:var(--t2)">Hashtag sets tailored to your niche, not just #blessed</span>
+            <span style="font-size:.85rem;color:var(--t2)">Captions, hooks, and hashtags that sound like <em>you</em> — not a generic AI</span>
           </div>
           <div style="display:flex;gap:10px;align-items:flex-start">
             <span style="color:var(--yellow);font-weight:700;font-size:.9rem;flex-shrink:0">✦</span>
@@ -1425,11 +1427,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
       <p class="sh-sub" style="margin:12px auto 0">You're not looking for an AI assistant. You're looking for something that understands your world.</p>
     </div>
     <div class="youth-grid">
-      <div class="youth-card reveal" onclick="openModal('youth-study')">
-        <div class="youth-card-emoji">📚</div>
-        <div class="youth-card-title">Homework? Done.</div>
-        <div class="youth-card-body">Essays, research, study guides — Indy helps you actually understand stuff instead of just copying it. Ask it anything.</div>
-        <div class="youth-card-tag">#StudentLife</div>
+      <div class="youth-card reveal" onclick="openModal('youth-ideas')">
+        <div class="youth-card-emoji">💡</div>
+        <div class="youth-card-title">Ideas, unlocked.</div>
+        <div class="youth-card-body">Stuck on a concept? Indy helps you think it through, explore angles, and turn a rough idea into something real.</div>
+        <div class="youth-card-tag">#ThinkDifferent</div>
       </div>
       <div class="youth-card yellow reveal" onclick="openModal('youth-create')">
         <div class="youth-card-emoji">🎨</div>
@@ -1446,7 +1448,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
       <div class="youth-card reveal" onclick="openModal('youth-real')">
         <div class="youth-card-emoji">💬</div>
         <div class="youth-card-title">Real talk only.</div>
-        <div class="youth-card-body">No lectures. No disclaimers every two sentences. Indy talks to you like a smart friend — not a textbook or a helpdesk bot.</div>
+        <div class="youth-card-body">No lectures. No disclaimers every two sentences. Indy talks to you like a smart friend — direct, clear, and actually useful.</div>
         <div class="youth-card-tag">#NoBS</div>
       </div>
     </div>
@@ -1543,7 +1545,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
       <div style="height:1px;background:var(--b);opacity:.6"></div>
       <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
         <span style="font-size:.72rem;color:var(--t3);font-weight:600;letter-spacing:.06em;text-transform:uppercase">Reach us</span>
-        <a href="#" style="font-size:.8rem;color:var(--t2);transition:color .15s" onmouseover="this.style.color='var(--t)'" onmouseout="this.style.color='var(--t2)'">N/A</a>
+        <a href="https://forms.gle/NvAPe2yG1pXCqyup6" target="_blank" rel="noopener" style="font-size:.8rem;color:var(--t2);transition:color .15s" onmouseover="this.style.color='var(--t)'" onmouseout="this.style.color='var(--t2)'">Contact us →</a>
         <span style="margin-left:auto;font-size:.72rem;color:var(--t3);font-style:italic">Hecho con amor 🐰</span>
       </div>
     </div>
@@ -1572,7 +1574,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
         <a href="#collabs">Collaborations</a>
         <a href="#barrio">Barrio Sessions</a>
         <a href="#social">Indy × Social</a>
-        <a href="#youth">For Students</a>
+        <a href="#youth">For Creators</a>
         <a href="#values">Our Values</a>
         <a href="#community">Inclusion</a>
       </div>
@@ -1585,9 +1587,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
       </div>
       <div class="foot-col">
         <h4>Legal</h4>
-        <a href="terms.html">Terms of Service</a>
-        <a href="privacy.html">Privacy Policy</a>
-        <a href="cookies.html">Cookie Policy</a>
+        <a href="javascript:void(0)" onclick="openModal('terms')">Terms of Service</a>
+        <a href="javascript:void(0)" onclick="openModal('privacy')">Privacy Policy</a>
+        <a href="javascript:void(0)" onclick="openModal('cookies')">Cookie Policy</a>
         <a href="javascript:void(0)" onclick="openModal('accessibility')">Accessibility</a>
         <a href="javascript:void(0)" onclick="openModal('dmca')">DMCA / IP</a>
         <a href="javascript:void(0)" onclick="openModal('licenses')">Open Source Licenses</a>
@@ -1596,7 +1598,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
     <div class="foot-divider"></div>
     <!-- Legal disclaimer -->
     <div class="foot-legal-block">
-      <p>JVST and Indy 3 are operated by JVST Inc. ("the Company"). All AI-generated content produced by Indy 3 is the responsibility of the user. JVST does not guarantee accuracy of AI outputs and recommends independent verification for any information used in professional, medical, legal, or financial contexts. Music previews are provided via the iTunes Search API and are owned by their respective rights holders. Album artwork is displayed under fair use for identification purposes only. JVST does not claim ownership of any third-party trademarks, logos, or media displayed on this site. Barrio Sessions submissions remain the intellectual property of the submitting artist. By using JVST services you agree to our Terms of Service and Privacy Policy.</p>
+      <p>JVST and Indy 3 are operated by JVST Inc. ("the Company"). All AI-generated content produced by Indy 3 is the responsibility of the user. JVST does not guarantee accuracy of AI outputs and recommends independent verification for any information used in professional, medical, legal, or financial contexts. Music previews are provided via the iTunes Search API and are owned by their respective rights holders. Album artwork is displayed under fair use for identification purposes only. JVST does not claim ownership of any third-party trademarks, logos, or media displayed on this site. Barrio Sessions submissions remain the intellectual property of the submitting artist. By using JVST services you agree to our <a href="javascript:void(0)" onclick="openModal('terms')" style="color:var(--t2);text-decoration:underline">Terms of Service</a> and <a href="javascript:void(0)" onclick="openModal('privacy')" style="color:var(--t2);text-decoration:underline">Privacy Policy</a>.</p>
     </div>
     <div class="foot-bottom">
       <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
@@ -1629,7 +1631,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
       <input class="collab-input" type="email" placeholder="your@email.com" id="nlEmail" style="flex:1;min-width:200px"/>
       <button class="btn btn-red" onclick="submitNl()">Notify me →</button>
     </div>
-    <p style="font-size:.68rem;color:var(--t3);margin-top:10px">One email when it drops. That's it. See our <a href='privacy.html' style='color:var(--t2);text-decoration:underline'>Privacy Policy</a>.</p>
+    <p style="font-size:.68rem;color:var(--t3);margin-top:10px">One email when it drops. That's it. See our <a href='javascript:void(0)' onclick='openModal("privacy")' style='color:var(--t2);text-decoration:underline'>Privacy Policy</a>.</p>
   </div>
 </div>
 
@@ -1956,7 +1958,7 @@ const modalData = {
   'art2': {
     tag: 'Collab · Jan 2026',
     title: 'Why Rainn Blais chose JVST over the big players',
-    body: `<p>Rainn Blais is a local basketball standout at his school — the kind of athlete that big brands circle but rarely actually invest in. When JVST reached out, the pitch was simple: <strong>we don't want to use your platform, we want to build something together.</strong></p><p>Rainn's goal has always been to use whatever reach he builds to lift up musicians in his community. JVST shares that exact DNA — Barrio Sessions, the Artist Pass, the whole collab pipeline was built for moments exactly like this.</p><p><span class="modal-hl">Together, they're building a bridge from local schools to real platforms.</span> Sports and music, side by side. No gatekeepers. No exclusivity clauses. Just real partnership.</p><p>The first limited edition Rainn × JVST Blade Card edition drops when the partnership officially launches publicly. Watch this space.</p>`
+    body: `<p>Rainn Blais is a local basketball standout — the kind of athlete that big brands circle but rarely actually invest in. When JVST reached out, the pitch was simple: <strong>we don't want to use your platform, we want to build something together.</strong></p><p>Rainn's goal has always been to use whatever reach he builds to lift up musicians in his community. JVST shares that exact DNA — Barrio Sessions, the Artist Pass, the whole collab pipeline was built for moments exactly like this.</p><p><span class="modal-hl">Together, they're building a bridge from local communities to real platforms.</span> Sports and music, side by side. No gatekeepers. No exclusivity clauses. Just real partnership.</p><p>The first limited edition Rainn × JVST Blade Card edition drops when the partnership officially launches publicly. Watch this space.</p>`
   },
   'art3': {
     tag: 'Opinion · Jan 2026',
@@ -2124,10 +2126,10 @@ setTimeout(showNl, 15000);
 
 // ── EXTENDED MODAL DATA ──
 const extraModalData = {
-  'youth-study': {
-    tag: 'For Students',
-    title: 'Homework help that actually teaches you',
-    body: `<p>Indy 3 isn't a homework cheat code — it's a study partner that helps you actually get it. Ask it to explain something in plain language, walk you through a concept step by step, or check your work and tell you where you went wrong.</p><p>For essays: Indy can help you outline your argument, punch up your intro, or refine your thesis — without writing it for you (unless you want that too, we're not judging).</p><p><span class="modal-hl">The difference between Indy and just Googling it</span> is that Indy has a conversation with you. You can ask follow-up questions. You can say "wait, I don't get that part." It doesn't move on until you do.</p><p>Available free. No account required to try. Start with a question right now at <a href="indy.html" style="color:var(--red)">indy.html</a>.</p>`
+  'youth-ideas': {
+    tag: 'For Creators',
+    title: 'Turn any idea into something real',
+    body: `<p>The hardest part isn't the work — it's figuring out where to start. Indy helps you break any concept down, explore it from different angles, and move from "I don't know where to begin" to a clear plan of action.</p><p>Use it to brainstorm, pressure-test ideas, write out your thinking, or just get a second opinion from something that actually listens. Indy doesn't judge half-baked concepts — it helps you bake them.</p><p><span class="modal-hl">No judgment, no wrong answers.</span> Just a thinking partner that's available whenever the idea hits — 2pm or 2am.</p><p>Start free at <a href="indy.html" style="color:var(--red)">indy.html</a>. No account required to try.</p>`
   },
   'youth-create': {
     tag: 'For Creators',
@@ -2137,7 +2139,7 @@ const extraModalData = {
   'youth-hustle': {
     tag: 'For Entrepreneurs',
     title: 'Make your side hustle look like a real business',
-    body: `<p>You've got the idea. Indy helps you package it. Business name brainstorming, tagline generation, product description writing, pricing advice, DM scripts for reaching out to potential clients — Indy does all of it.</p><p>Selling on DepOp, Etsy, or Instagram? Indy writes product listings that convert. Starting a service? Indy helps you pitch it. Building a brand? Indy helps you find your voice and stay consistent.</p><p><span class="modal-hl">No business school needed.</span> Just a phone, a hustle, and access to Indy. The free tier is enough to get started.</p>`
+    body: `<p>You've got the idea. Indy helps you package it. Business name brainstorming, tagline generation, product description writing, pricing advice, DM scripts for reaching out to potential clients — Indy does all of it.</p><p>Selling on DepOp, Etsy, or Instagram? Indy writes product listings that convert. Starting a service? Indy helps you pitch it. Building a brand? Indy helps you find your voice and stay consistent.</p><p><span class="modal-hl">Just a phone, a hustle, and access to Indy.</span> The free tier is enough to get started.</p>`
   },
   'youth-real': {
     tag: 'Real Talk',
@@ -2147,7 +2149,22 @@ const extraModalData = {
   'youth-faq': {
     tag: 'FAQ',
     title: 'Quick answers to real questions',
-    body: `<p><strong>Is the free plan actually free?</strong> Yes. No credit card. No trial period. No expiry. Free means free.</p><p><strong>What's the difference between Free and Indy+?</strong> Free has a 30-minute session limit. Indy+ ($0.25, one time) removes the limit, adds image generation, and gives you access to better models including Creative Mode when it launches.</p><p><strong>Do I need an account?</strong> You can try Indy 3 without signing up. Creating an account saves your history and unlocks all plan features.</p><p><strong>Is my data private?</strong> <span class="modal-hl">Yes.</span> JVST does not train on your conversations. Your data is not sold. See our <a href="privacy.html" style="color:var(--red)">Privacy Policy</a> for the full breakdown.</p><p><strong>Can I use it in Spanish?</strong> Absolutely — and Spanglish too. Español Mode (coming soon) will make this even better.</p><p><strong>What if I don't like it?</strong> The free plan costs nothing to walk away from. The paid plans are one-time charges, not subscriptions — but if something goes wrong, contact us and we'll make it right.</p>`
+    body: `<p><strong>Is the free plan actually free?</strong> Yes. No credit card. No trial period. No expiry. Free means free.</p><p><strong>What's the difference between Free and Indy+?</strong> Free has a 30-minute session limit. Indy+ ($0.25, one time) removes the limit, adds image generation, and gives you access to better models including Creative Mode when it launches.</p><p><strong>Do I need an account?</strong> You can try Indy 3 without signing up. Creating an account saves your history and unlocks all plan features.</p><p><strong>Is my data private?</strong> <span class="modal-hl">Yes.</span> JVST does not train on your conversations. Your data is not sold. See our <a href="javascript:void(0)" onclick="closeModal();setTimeout(()=>openModal('privacy'),200)" style="color:var(--red)">Privacy Policy</a> for the full breakdown.</p><p><strong>Can I use it in Spanish?</strong> Absolutely — and Spanglish too. Español Mode (coming soon) will make this even better.</p><p><strong>What if I don't like it?</strong> The free plan costs nothing to walk away from. The paid plans are one-time charges, not subscriptions — but if something goes wrong, contact us and we'll make it right.</p>`
+  },
+  'terms': {
+    tag: 'Terms of Service',
+    title: 'Terms of Service',
+    body: `<p>Last updated: February 2026. By accessing or using JVST services — including Indy 3, the Blade Card, Barrio Sessions, and JVST TV — you agree to these terms.</p><p><strong>Use of services:</strong> You must be at least 13 years old to use JVST services. You agree not to use our services for any unlawful purpose, to harass others, to distribute malware, or to violate any applicable laws.</p><p><strong>AI-generated content:</strong> Indy 3 outputs are generated by AI. JVST does not guarantee accuracy and is not liable for decisions made based on AI responses. You are responsible for how you use AI-generated content.</p><p><strong>Intellectual property:</strong> Content you create using Indy 3 is yours. JVST does not claim ownership of your outputs. JVST's platform, design, and branding remain the property of JVST Inc.</p><p><strong>Accounts:</strong> You are responsible for maintaining the security of your account. JVST reserves the right to suspend accounts that violate these terms.</p><p><strong>Modifications:</strong> We may update these terms at any time. Continued use of JVST services after changes constitutes acceptance.</p><p><span class="modal-hl">Questions?</span> Reach us via our <a href="https://forms.gle/NvAPe2yG1pXCqyup6" target="_blank" style="color:var(--red)">contact form</a>.</p>`
+  },
+  'privacy': {
+    tag: 'Privacy Policy',
+    title: 'Privacy Policy',
+    body: `<p>Last updated: February 2026. JVST is committed to protecting your privacy. This policy explains what we collect, how we use it, and what we don't do with it.</p><p><strong>What we collect:</strong> Account information (email, username) when you sign up. Usage data to improve performance. Optional: your submitted content to Barrio Sessions.</p><p><strong>What we don't do:</strong> <span class="modal-hl">We do not sell your data.</span> We do not train AI models on your Indy 3 conversations. We do not share your personal information with advertisers.</p><p><strong>Cookies:</strong> We use minimal cookies for session management and basic analytics. We do not use third-party ad tracking cookies.</p><p><strong>Data retention:</strong> You can request deletion of your account and associated data at any time via our contact form.</p><p><strong>Third-party services:</strong> Music previews are served via the iTunes Search API (Apple Inc.). Images may be served from Unsplash CDN. These third parties have their own privacy policies.</p><p><strong>Your rights:</strong> Depending on your location, you may have rights to access, correct, or delete your data. Contact us via the <a href="https://forms.gle/NvAPe2yG1pXCqyup6" target="_blank" style="color:var(--red)">contact form</a> to make a request.</p>`
+  },
+  'cookies': {
+    tag: 'Cookie Policy',
+    title: 'Cookie Policy',
+    body: `<p>Last updated: February 2026. JVST uses cookies and similar technologies to keep our services working and to understand how people use them.</p><p><strong>Essential cookies:</strong> Required for the site to function — session management, login state, and security. These cannot be disabled.</p><p><strong>Analytics cookies:</strong> We use minimal, privacy-respecting analytics to understand traffic patterns and improve the product. No personally identifiable data is sent to analytics providers.</p><p><strong>What we don't use:</strong> <span class="modal-hl">No advertising cookies. No cross-site tracking. No data broker integrations.</span> We don't run ads, so we have no reason to track you across the web.</p><p><strong>Managing cookies:</strong> You can clear cookies at any time through your browser settings. Note that clearing essential cookies may log you out of your account.</p><p>Questions? Reach us via our <a href="https://forms.gle/NvAPe2yG1pXCqyup6" target="_blank" style="color:var(--red)">contact form</a>.</p>`
   },
   'about': {
     tag: 'About JVST',
@@ -2157,27 +2174,27 @@ const extraModalData = {
   'press': {
     tag: 'Press',
     title: 'Media inquiries and press kit',
-    body: `<p>For press inquiries, partnership announcements, interview requests, or media assets, please reach out to our team directly.</p><p><strong>Press contact:</strong>N/A</p><p><strong>Response time:</strong> We aim to respond to all press inquiries within 48 hours on business days.</p><p><strong>What's available:</strong> JVST logo files, brand guidelines, founder statements, product screenshots, and general fact sheets are available on request.</p><p><span class="modal-hl">We welcome coverage that accurately represents our mission</span> and community. We're happy to arrange demos, interviews, or background briefings for journalists covering AI, culture, and youth technology.</p>`
+    body: `<p>For press inquiries, partnership announcements, interview requests, or media assets, please reach out to our team directly.</p><p><strong>Press contact:</strong> Use our <a href="https://forms.gle/NvAPe2yG1pXCqyup6" target="_blank" style="color:var(--red)">contact form</a> and select "Press" as your inquiry type.</p><p><strong>Response time:</strong> We aim to respond to all press inquiries within 48 hours on business days.</p><p><strong>What's available:</strong> JVST logo files, brand guidelines, founder statements, product screenshots, and general fact sheets are available on request.</p><p><span class="modal-hl">We welcome coverage that accurately represents our mission</span> and community. We're happy to arrange demos, interviews, or background briefings for journalists covering AI, culture, and youth technology.</p>`
   },
   'careers': {
     tag: 'Careers',
     title: 'Build the future of culture-first AI with us',
-    body: `<p>JVST is early-stage and growing. We're looking for people who believe technology should serve communities, not extract from them — and who want to build something that actually matters.</p><p><strong>Areas we're hiring in:</strong> Engineering (full-stack, ML), Design (product, brand), Community (moderation, Barrio Sessions curation), and Marketing.</p><p><span class="modal-hl">We especially want to hear from people who are part of the communities we serve</span> — Hispanic, LGBTQ+, immigrant backgrounds, young creators. This is not a diversity checkbox. This is who we're building for and who we want building it.</p><p>Send a short note about yourself and what you'd bring to the team: careers@shopjust.store</p>`
+    body: `<p>JVST is early-stage and growing. We're looking for people who believe technology should serve communities, not extract from them — and who want to build something that actually matters.</p><p><strong>Areas we're hiring in:</strong> Engineering (full-stack, ML), Design (product, brand), Community (moderation, Barrio Sessions curation), and Marketing.</p><p><span class="modal-hl">We especially want to hear from people who are part of the communities we serve</span> — Hispanic, LGBTQ+, immigrant backgrounds, young creators. This is not a diversity checkbox. This is who we're building for and who we want building it.</p><p>Send a short note about yourself and what you'd bring to the team via our <a href="https://forms.gle/NvAPe2yG1pXCqyup6" target="_blank" style="color:var(--red)">contact form</a> — select "Careers" as your inquiry type.</p>`
   },
   'contact': {
     tag: 'Contact',
     title: 'Get in touch with JVST',
-    body: `<p>We're a small team and we read everything. Here's how to reach the right people:</p><p><strong>General inquiries:</strong>N/A </p><p><strong>Partnerships / collabs:</strong> Use the submission form in the Collabs section of this page, or email collabs@shopjust.store</p><p><strong>Barrio Sessions:</strong> barrio@shopjust.store</p><p><strong>Technical support / bugs:</strong> support@shopjust.store</p><p><span class="modal-hl">Response time is typically 1–3 business days.</span> We're real humans reading real emails. No ticket queues, no chatbots.</p>`
+    body: `<p>We're a small team and we read everything. Use our <a href="https://forms.gle/NvAPe2yG1pXCqyup6" target="_blank" style="color:var(--red)">contact form</a> to reach the right people — just select your inquiry type and we'll route it correctly.</p><p><strong>General inquiries:</strong> <a href="https://forms.gle/NvAPe2yG1pXCqyup6" target="_blank" style="color:var(--red)">Contact form →</a></p><p><strong>Partnerships / collabs:</strong> Use the submission form in the Collabs section of this page, or reach out via the contact form.</p><p><strong>Barrio Sessions:</strong> Use the contact form and select "Barrio Sessions."</p><p><strong>Technical support / bugs:</strong> Use the contact form and select "Support" — we'll get back to you fast.</p><p><span class="modal-hl">Response time is typically 1–3 business days.</span> We're real humans reading real messages. No ticket queues, no bots.</p>`
   },
   'accessibility': {
     tag: 'Accessibility',
     title: 'Our commitment to accessibility',
-    body: `<p>JVST is committed to making our products accessible to everyone, including people with disabilities. We aim to meet WCAG 2.1 Level AA standards across our web properties and applications.</p><p>Current accessibility features include: keyboard navigation support, semantic HTML structure, alt text for images, ARIA labels on interactive elements, and sufficient color contrast ratios.</p><p><span class="modal-hl">We know we have work to do</span> — Voice Mode (coming soon) is partly motivated by accessibility. We want Indy 3 usable by people who can't type or who prefer speech.</p><p>If you encounter an accessibility barrier on any JVST property, please contact us at accessibility@shopjust.store and we will address it promptly.</p>`
+    body: `<p>JVST is committed to making our products accessible to everyone, including people with disabilities. We aim to meet WCAG 2.1 Level AA standards across our web properties and applications.</p><p>Current accessibility features include: keyboard navigation support, semantic HTML structure, alt text for images, ARIA labels on interactive elements, and sufficient color contrast ratios.</p><p><span class="modal-hl">We know we have work to do</span> — Voice Mode (coming soon) is partly motivated by accessibility. We want Indy 3 usable by people who can't type or who prefer speech.</p><p>If you encounter an accessibility barrier on any JVST property, let us know via our <a href="https://forms.gle/NvAPe2yG1pXCqyup6" target="_blank" style="color:var(--red)">contact form</a> and we will address it promptly.</p>`
   },
   'dmca': {
     tag: 'DMCA / Intellectual Property',
     title: 'Copyright and IP policy',
-    body: `<p>JVST respects intellectual property rights and expects users of Indy 3 to do the same. AI-generated content produced by Indy 3 is the responsibility of the user. JVST does not claim copyright over AI outputs.</p><p><strong>DMCA takedown requests:</strong> If you believe content on JVST properties infringes your copyright, please send a complete DMCA notice to dmca@shopjust.store including: identification of the copyrighted work, identification of the infringing material, your contact information, a statement of good faith belief, and a statement of accuracy under penalty of perjury.</p><p><span class="modal-hl">Music previews on this page are served via the iTunes Search API</span> and are provided by Apple Inc. Album artwork is displayed under fair use for identification purposes. JVST does not host these audio files.</p><p>Barrio Sessions submissions remain the intellectual property of the submitting artist. JVST requests a non-exclusive license to display and promote submitted works on our platform.</p>`
+    body: `<p>JVST respects intellectual property rights and expects users of Indy 3 to do the same. AI-generated content produced by Indy 3 is the responsibility of the user. JVST does not claim copyright over AI outputs.</p><p><strong>DMCA takedown requests:</strong> If you believe content on JVST properties infringes your copyright, please submit a complete DMCA notice via our <a href="https://forms.gle/NvAPe2yG1pXCqyup6" target="_blank" style="color:var(--red)">contact form</a> (select "DMCA / Legal"), including: identification of the copyrighted work, identification of the infringing material, your contact information, a statement of good faith belief, and a statement of accuracy under penalty of perjury.</p><p><span class="modal-hl">Music previews on this page are served via the iTunes Search API</span> and are provided by Apple Inc. Album artwork is displayed under fair use for identification purposes. JVST does not host these audio files.</p><p>Barrio Sessions submissions remain the intellectual property of the submitting artist. JVST requests a non-exclusive license to display and promote submitted works on our platform.</p>`
   },
   'licenses': {
     tag: 'Open Source',
