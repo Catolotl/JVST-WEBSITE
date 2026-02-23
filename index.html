@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <title>JVST — 👋 Hello from INDY 3</title>
+  <title>JVST — 👋 Hello From INDY3</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="AI with taste. Culture-first technology for the next generation.">
   <link rel="shortcut icon" type="image/png" href="favicon.png">
@@ -796,7 +796,92 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
 .indy-spec-value{font-size:.95rem;font-weight:600;color:var(--t)}
 @media(max-width:860px){.indy-specs-strip{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.indy-specs-strip{grid-template-columns:1fr 1fr}}
+
+/* ── CHECKOUT MODAL ── */
+#checkout-overlay{position:fixed;inset:0;z-index:1070;background:rgba(0,0,0,.88);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .22s ease}
+#checkout-overlay.open{opacity:1;pointer-events:all}
+.co-sheet{background:var(--bg2);border:1px solid var(--b2);border-radius:22px 22px 0 0;width:100%;max-width:500px;max-height:92dvh;display:flex;flex-direction:column;transform:translateY(40px);transition:transform .32s cubic-bezier(.22,1,.36,1)}
+#checkout-overlay.open .co-sheet{transform:none}
+.co-handle{width:38px;height:4px;background:var(--b2);border-radius:2px;margin:14px auto 0;flex-shrink:0}
+.co-head{padding:20px 24px 4px;flex-shrink:0}
+.co-title{font-size:1.1rem;font-weight:700;letter-spacing:-.025em;margin-bottom:3px}
+.co-sub{font-size:.7rem;color:var(--t3);font-family:'JetBrains Mono',monospace;letter-spacing:.05em}
+.co-body{padding:16px 24px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px}
+/* section label inside sheet */
+.co-label{font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-bottom:6px}
+/* signed-in user strip */
+.co-user-strip{display:flex;align-items:center;gap:12px;background:var(--bg3);border:1px solid var(--b);border-radius:10px;padding:12px 14px}
+.co-avatar{width:32px;height:32px;border-radius:50%;background:var(--t);color:var(--bg);font-size:.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.co-user-name{font-size:.85rem;font-weight:600;line-height:1.2}
+.co-user-email{font-size:.65rem;color:var(--t3);font-family:'JetBrains Mono',monospace}
+/* not-signed-in notice */
+.co-auth-notice{background:rgba(255,45,45,.07);border:1px solid rgba(255,45,45,.18);border-radius:10px;padding:13px 15px;font-size:.78rem;color:var(--t2);font-family:'JetBrains Mono',monospace;line-height:1.65}
+.co-auth-notice a{color:var(--red);text-decoration:underline;cursor:pointer}
+/* balance comparison boxes */
+.co-balance-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.co-bal-box{background:var(--bg3);border:1px solid var(--b);border-radius:10px;padding:14px 16px}
+.co-bal-box.accent{background:var(--bg4);border-color:var(--b2)}
+.co-bal-num{font-size:2rem;font-weight:300;font-family:'JetBrains Mono',monospace;letter-spacing:-.04em;line-height:1;margin-bottom:3px}
+.co-bal-num.warn{color:#ff5f5f}
+.co-bal-unit{font-size:.62rem;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.co-bal-arrow{font-size:1rem;color:var(--t3);text-align:center}
+/* not-enough warning */
+.co-warn{background:rgba(255,95,95,.08);border:1px solid rgba(255,95,95,.22);border-radius:10px;padding:11px 14px;font-size:.75rem;color:#ff5f5f;font-family:'JetBrains Mono',monospace;line-height:1.6;display:none}
+.co-warn.show{display:block}
+/* cart line items */
+.co-items{background:var(--bg3);border:1px solid var(--b);border-radius:10px;overflow:hidden}
+.co-item-row{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--b);gap:10px}
+.co-item-row:last-child{border-bottom:none}
+.co-item-left{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.co-item-emoji{font-size:1.15rem;flex-shrink:0}
+.co-item-name{font-size:.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.co-item-code{font-size:.62rem;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.co-item-right{flex-shrink:0;text-align:right}
+.co-item-cost{font-size:.85rem;font-weight:700;font-family:'JetBrains Mono',monospace}
+.co-item-qty{font-size:.62rem;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-top:1px}
+/* total strip */
+.co-total-strip{display:flex;justify-content:space-between;align-items:center;background:var(--bg4);border:1px solid var(--b2);border-radius:10px;padding:13px 16px}
+.co-total-label{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t2);font-family:'JetBrains Mono',monospace}
+.co-total-val{font-size:1.15rem;font-weight:700;font-family:'JetBrains Mono',monospace}
+.co-foot{padding:14px 24px 32px;flex-shrink:0;display:flex;flex-direction:column;gap:9px}
+.co-btn{width:100%;padding:13px 20px;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;letter-spacing:.04em;cursor:pointer;border:none;transition:opacity .15s,transform .1s;display:flex;align-items:center;justify-content:center;gap:8px}
+.co-btn:active{transform:scale(.98)}
+.co-btn-primary{background:var(--red);color:#fff}
+.co-btn-primary:disabled{background:var(--bg4);color:var(--t3);cursor:not-allowed;border:1px solid var(--b2);transform:none}
+.co-btn-ghost{background:transparent;border:1px solid var(--b2);color:var(--t2)}
+.co-btn-ghost:hover{border-color:var(--t);color:var(--t)}
+.co-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:cospin .55s linear infinite;display:inline-block}
+@keyframes cospin{to{transform:rotate(360deg)}}
+
+/* ── THANK-YOU POPUP ── */
+#ty-overlay{position:fixed;inset:0;z-index:1080;background:rgba(0,0,0,.92);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s ease}
+#ty-overlay.open{opacity:1;pointer-events:all}
+.ty-box{background:var(--bg2);border:1px solid var(--b2);border-radius:20px;max-width:380px;width:100%;padding:36px 28px 30px;text-align:center;position:relative;overflow:hidden;transform:scale(.9);transition:transform .32s cubic-bezier(.22,1,.36,1)}
+#ty-overlay.open .ty-box{transform:scale(1)}
+.ty-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(255,45,45,.06),transparent);pointer-events:none}
+/* animated checkmark */
+.ty-check-ring{width:66px;height:66px;border-radius:50%;border:2px solid var(--b2);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+.ty-check-ring.go{border-color:#28c840;animation:tyRing .38s ease forwards}
+@keyframes tyRing{0%{transform:scale(.7);border-color:var(--b2)}55%{transform:scale(1.1);border-color:#28c840}100%{transform:scale(1);border-color:#28c840}}
+.ty-check-svg{width:30px;height:30px}
+.ty-check-path{fill:none;stroke:#28c840;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:36;stroke-dashoffset:36}
+.ty-check-path.draw{animation:tyDraw .38s .22s ease forwards}
+@keyframes tyDraw{to{stroke-dashoffset:0}}
+.ty-title{font-size:1.3rem;font-weight:700;letter-spacing:-.025em;margin-bottom:8px}
+.ty-msg{font-size:.8rem;color:var(--t2);font-family:'JetBrains Mono',monospace;line-height:1.7;margin-bottom:20px}
+.ty-order-box{background:var(--bg3);border:1px solid var(--b);border-radius:12px;padding:16px 18px;text-align:left;margin-bottom:18px}
+.ty-order-label{font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-bottom:8px}
+.ty-codes{font-size:.88rem;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--t);letter-spacing:.06em;word-break:break-all;line-height:1.75}
+.ty-divider{border:none;border-top:1px solid var(--b);margin:12px 0}
+.ty-balance-row{display:flex;justify-content:space-between;align-items:center}
+.ty-bal-label{font-size:.65rem;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.ty-bal-val{font-size:.9rem;font-weight:700;font-family:'JetBrains Mono',monospace}
+.ty-close{width:100%;padding:12px;border-radius:9px;background:var(--bg3);border:1px solid var(--b2);color:var(--t2);font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:600;cursor:pointer;transition:border-color .15s,color .15s}
+.ty-close:hover{border-color:var(--t);color:var(--t)}
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 <body class="grid-bg">
 
@@ -857,6 +942,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
       <a href="#services">Services</a>
       <a href="#pricing">Pricing</a>
       <a href="#community">Community</a>
+      <a href="store.html">Store</a>
       <a href="shop.html">👤</a>
         <button class="cart-trigger" onclick="openCartPanel()">
         <span class="cart-trigger-icon">🛒</span>
@@ -997,7 +1083,96 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
     <button class="cart-copy-btn" id="cartCopyBtn" onclick="copyCartCodes()">
       <span>⎘</span> Copy Codes
     </button>
+    <button id="cartCheckoutBtn" onclick="openCheckout()" style="display:none;width:100%;padding:13px 20px;margin-bottom:10px;background:var(--red);color:#fff;border:none;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:700;letter-spacing:.04em;cursor:pointer;transition:opacity .15s">
+      Check Out →
+    </button>
     <button class="cart-clear-btn" onclick="clearCart()">Clear cart</button>
+  </div>
+</div>
+
+<!-- ── CHECKOUT MODAL ── -->
+<div id="checkout-overlay">
+  <div class="co-sheet">
+    <div class="co-handle"></div>
+    <div class="co-head">
+      <div class="co-title">Review Order</div>
+      <div class="co-sub" id="coSubLine">// jvst_checkout</div>
+    </div>
+    <div class="co-body">
+
+      <!-- Signed-in user -->
+      <div id="coUserStrip" class="co-user-strip" style="display:none">
+        <div class="co-avatar" id="coAvatar">?</div>
+        <div>
+          <div class="co-user-name" id="coUserName">–</div>
+          <div class="co-user-email" id="coUserEmail">–</div>
+        </div>
+      </div>
+
+      <!-- Not signed in -->
+      <div id="coAuthNotice" class="co-auth-notice">
+        You're not signed in. <a onclick="window.location.href='shop.html'">Go to shop.html</a> to log in — or just copy your codes below and redeem them there.
+      </div>
+
+      <!-- Not enough actions warning -->
+      <div id="coWarn" class="co-warn"></div>
+
+      <!-- Balance -->
+      <div>
+        <div class="co-label">Actions balance</div>
+        <div class="co-balance-row">
+          <div class="co-bal-box">
+            <div class="co-bal-num" id="coBalNow">–</div>
+            <div class="co-bal-unit">current</div>
+          </div>
+          <div class="co-bal-arrow">→</div>
+          <div class="co-bal-box accent">
+            <div class="co-bal-num" id="coBalAfter">–</div>
+            <div class="co-bal-unit">after order</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cart items -->
+      <div>
+        <div class="co-label">Your cart</div>
+        <div class="co-items" id="coItemsList"></div>
+      </div>
+
+      <!-- Total -->
+      <div class="co-total-strip">
+        <span class="co-total-label">Total cost</span>
+        <span class="co-total-val" id="coTotalVal">–</span>
+      </div>
+
+    </div>
+    <div class="co-foot">
+      <button class="co-btn co-btn-primary" id="coConfirmBtn" onclick="executeCheckout()">Confirm &amp; Place Order</button>
+      <button class="co-btn co-btn-ghost" onclick="closeCheckout()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── THANK-YOU POPUP ── -->
+<div id="ty-overlay">
+  <div class="ty-box">
+    <div class="ty-check-ring" id="tyRing">
+      <svg class="ty-check-svg" viewBox="0 0 30 30">
+        <path class="ty-check-path" id="tyCheckPath" d="M5 15 L12 22 L25 8"/>
+      </svg>
+    </div>
+    <div class="ty-title">Order placed!</div>
+    <div class="ty-msg" id="tyMsg">Your actions have been spent.<br>See you at the next drop.</div>
+    <div class="ty-order-box">
+      <div class="ty-order-label">Order codes</div>
+      <div class="ty-codes" id="tyCodes">–</div>
+      <hr class="ty-divider">
+      <div class="ty-balance-row">
+        <span class="ty-bal-label">Remaining actions</span>
+        <span class="ty-bal-val" id="tyBalLeft">–</span>
+      </div>
+    </div>
+    <button class="ty-close" onclick="closeThankyou()">Close</button>
   </div>
 </div>
 
@@ -2382,9 +2557,50 @@ function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
   document.body.style.overflow = '';
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeNl(); closeCatPopup(); closeCartPanel(); document.getElementById('deal-popup').classList.remove('open'); document.getElementById('exit-popup').classList.remove('open'); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeNl(); closeCatPopup(); closeCartPanel(); closeCheckout(); closeThankyou(); document.getElementById('deal-popup').classList.remove('open'); document.getElementById('exit-popup').classList.remove('open'); } });
 
-// ── CATALOG + CART ──
+// ── CATALOG + CART + CHECKOUT ─────────────────────────────────────────────
+
+// ── Firebase init (same project as shop.html) ──────────────────────────────
+const JVST_FB = {
+  apiKey: "AIzaSyC50_wBK3TfERX1gm35puugCD324SxHJR8",
+  authDomain: "tunesandindy.firebaseapp.com",
+  projectId: "tunesandindy",
+  storageBucket: "tunesandindy.firebasestorage.app",
+  messagingSenderId: "335192973371",
+  appId: "1:335192973371:web:ce69d4b67c765d6aaf7c1e"
+};
+const JVST_LIMIT = 10;
+let jvstAuth = null, jvstDb = null;
+let jvstUser = null, jvstUserData = null;
+
+function initFirebase() {
+  try {
+    const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(JVST_FB);
+    jvstAuth = firebase.auth(app);
+    jvstDb   = firebase.firestore(app);
+    jvstAuth.onAuthStateChanged(async u => {
+      jvstUser = u || null;
+      jvstUserData = null;
+      if (!u) return;
+      try {
+        const snap = await jvstDb.collection('shop_users').doc(u.uid).get();
+        if (!snap.exists) return;
+        jvstUserData = snap.data();
+        // auto-reset if new month
+        const mk = monthKey(new Date());
+        if (jvstUserData.actionsMonth !== mk) {
+          jvstUserData.actionsUsed  = 0;
+          jvstUserData.actionsMonth = mk;
+          jvstDb.collection('shop_users').doc(u.uid).update({ actionsUsed: 0, actionsMonth: mk });
+        }
+      } catch(e) { console.warn('jvst user load:', e); }
+    });
+  } catch(e) { console.warn('Firebase init:', e); }
+}
+function monthKey(d) { return `${d.getFullYear()}-${d.getMonth()+1}`; }
+
+// ── product catalogue ──────────────────────────────────────────────────────
 const catProducts = [
   { emoji:'🟥', tag:'Blind Bag',  name:'Breakfast Blind Bag', code:'BBAG',    cost:1, desc:'One of the first Blind Bags produced by MINI CRAFTS in 2024. A mystery morning-themed collectible.' },
   { emoji:'🟦', tag:'Blind Bag',  name:'Lunch Blind Bag',     code:'LBAG',    cost:1, desc:'One of the first Blind Bags produced by MINI CRAFTS in 2024. Midday mystery collectible, randomly assorted.' },
@@ -2396,18 +2612,27 @@ const catProducts = [
   { emoji:'🌟', tag:'Limited',    name:'Starter Pack',        code:'STARTER', cost:5, desc:'The full intro: 5 blind bags + 1 Indy Keychain + a handwritten note from JVST. Custom box. Limited to 100 sets.' },
 ];
 
+// ── cart persistence ───────────────────────────────────────────────────────
 const CART_KEY = 'jvst_cart_v1';
 let activePopupIdx = null;
 
-// ── cart persistence ──
-function loadCart() {
-  try { return JSON.parse(localStorage.getItem(CART_KEY)) || {}; } catch { return {}; }
+function loadCart() { try { return JSON.parse(localStorage.getItem(CART_KEY)) || {}; } catch { return {}; } }
+function saveCart(c) { try { localStorage.setItem(CART_KEY, JSON.stringify(c)); } catch {} }
+
+function cartActionTotal(cart) {
+  return Object.keys(cart).reduce((s, code) => {
+    const p = catProducts.find(x => x.code === code);
+    return s + (p ? p.cost * (cart[code] || 1) : 0);
+  }, 0);
 }
-function saveCart(cart) {
-  try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch {}
+function buildCodeStr(cart) {
+  return Object.keys(cart)
+    .filter(c => catProducts.find(x => x.code === c))
+    .map(c => cart[c] > 1 ? `${c}×${cart[c]}` : c)
+    .join(', ');
 }
 
-// ── render grid ──
+// ── catalog grid ──────────────────────────────────────────────────────────
 function renderGrid() {
   const cart = loadCart();
   const grid = document.getElementById('catalogGrid');
@@ -2416,9 +2641,7 @@ function renderGrid() {
     const inCart = !!cart[p.code];
     return `<div class="cat-card${inCart ? ' in-cart' : ''}" onclick="openCatPopup(${i})">
       <div class="cat-in-cart-pip">✓</div>
-      <div class="cat-img-wrap">
-        <div class="cat-placeholder">${p.emoji}</div>
-      </div>
+      <div class="cat-img-wrap"><div class="cat-placeholder">${p.emoji}</div></div>
       <div class="cat-info">
         <div class="cat-tag">${p.tag}</div>
         <div class="cat-name">${p.name}</div>
@@ -2432,9 +2655,8 @@ function renderGrid() {
   updateCartBadge();
 }
 
-// ── update nav badge ──
 function updateCartBadge() {
-  const cart = loadCart();
+  const cart  = loadCart();
   const total = Object.values(cart).reduce((a, b) => a + b, 0);
   const badge = document.getElementById('cartCountBadge');
   if (!badge) return;
@@ -2443,15 +2665,13 @@ function updateCartBadge() {
   if (total !== prev) { badge.classList.remove('bump'); void badge.offsetWidth; badge.classList.add('bump'); }
 }
 
-// ── popup ──
+// ── product popup ──────────────────────────────────────────────────────────
 function openCatPopup(i) {
   const p = catProducts[i];
   activePopupIdx = i;
-  const cart = loadCart();
-  const inCart = !!cart[p.code];
-  const area = document.getElementById('catPopupImgArea');
-  area.innerHTML = `<span style="font-size:5.5rem">${p.emoji}</span>`;
-  document.getElementById('catPopupTag').textContent = p.tag;
+  const inCart = !!loadCart()[p.code];
+  document.getElementById('catPopupImgArea').innerHTML = `<span style="font-size:5.5rem">${p.emoji}</span>`;
+  document.getElementById('catPopupTag').textContent  = p.tag;
   document.getElementById('catPopupName').textContent = p.name;
   document.getElementById('catPopupDesc').textContent = p.desc;
   document.getElementById('catPopupCode').textContent = p.code;
@@ -2473,16 +2693,16 @@ function closeCatPopup() {
 }
 function popupToggleCart() {
   if (activePopupIdx === null) return;
-  const p = catProducts[activePopupIdx];
+  const p    = catProducts[activePopupIdx];
   const cart = loadCart();
-  if (cart[p.code]) { delete cart[p.code]; } else { cart[p.code] = (cart[p.code] || 0) + 1; }
+  if (cart[p.code]) delete cart[p.code]; else cart[p.code] = 1;
   saveCart(cart);
   refreshPopupBtn(!!cart[p.code]);
   renderGrid();
   renderCartPanel();
 }
 
-// ── cart panel ──
+// ── cart panel ────────────────────────────────────────────────────────────
 function openCartPanel() {
   renderCartPanel();
   document.getElementById('cart-panel').classList.add('open');
@@ -2495,19 +2715,23 @@ function closeCartPanel() {
   document.body.style.overflow = '';
 }
 function renderCartPanel() {
-  const cart = loadCart();
-  const list = document.getElementById('cartItemsList');
-  const codes = document.getElementById('cartCodesOutput');
-  const keys = Object.keys(cart);
+  const cart    = loadCart();
+  const list    = document.getElementById('cartItemsList');
+  const codesEl = document.getElementById('cartCodesOutput');
+  const coBtn   = document.getElementById('cartCheckoutBtn');
+  const keys    = Object.keys(cart).filter(c => catProducts.find(x => x.code === c));
+
   if (!list) return;
-  if (keys.length === 0) {
+
+  if (!keys.length) {
     list.innerHTML = '<div class="cart-empty"><span class="cart-empty-icon">🛒</span><span>Your cart is empty.<br>Add items from the catalog.</span></div>';
-    codes.innerHTML = '<span style="color:var(--t3);font-style:italic;font-size:.72rem">Add items to generate codes</span>';
+    if (codesEl) codesEl.innerHTML = '<span style="color:var(--t3);font-style:italic;font-size:.72rem">Add items to generate codes</span>';
+    if (coBtn)   coBtn.style.display = 'none';
     return;
   }
+
   list.innerHTML = keys.map(code => {
-    const p = catProducts.find(x => x.code === code);
-    if (!p) return '';
+    const p   = catProducts.find(x => x.code === code);
     const qty = cart[code];
     return `<div class="cart-item">
       <div class="cart-item-emoji">${p.emoji}</div>
@@ -2523,9 +2747,10 @@ function renderCartPanel() {
       <div class="cart-item-cost">${p.cost * qty} act.</div>
     </div>`;
   }).join('');
-  // build codes string: CODE×qty if qty > 1, else just CODE
-  const codeStr = keys.map(code => cart[code] > 1 ? `${code}×${cart[code]}` : code).join(', ');
-  codes.textContent = codeStr;
+
+  const codeStr = buildCodeStr(cart);
+  if (codesEl) codesEl.textContent = codeStr || '–';
+  if (coBtn)   coBtn.style.display = 'block';
   updateCartBadge();
 }
 function adjustQty(code, delta) {
@@ -2535,10 +2760,9 @@ function adjustQty(code, delta) {
   saveCart(cart);
   renderCartPanel();
   renderGrid();
-  // refresh popup if open
   if (activePopupIdx !== null) {
     const p = catProducts[activePopupIdx];
-    refreshPopupBtn(!!cart[p.code]);
+    if (p) refreshPopupBtn(!!cart[p.code]);
   }
 }
 function clearCart() {
@@ -2548,10 +2772,8 @@ function clearCart() {
   if (activePopupIdx !== null) refreshPopupBtn(false);
 }
 function copyCartCodes() {
-  const cart = loadCart();
-  const keys = Object.keys(cart);
-  if (!keys.length) return;
-  const codeStr = keys.map(code => cart[code] > 1 ? `${code}×${cart[code]}` : code).join(', ');
+  const codeStr = buildCodeStr(loadCart());
+  if (!codeStr) return;
   navigator.clipboard.writeText(codeStr).then(() => {
     const btn = document.getElementById('cartCopyBtn');
     btn.classList.add('copied');
@@ -2560,9 +2782,197 @@ function copyCartCodes() {
   }).catch(() => {});
 }
 
-// init on load
-document.addEventListener('DOMContentLoaded', () => { renderGrid(); });
+// ── CHECKOUT ──────────────────────────────────────────────────────────────
+function openCheckout() {
+  const cart  = loadCart();
+  const keys  = Object.keys(cart).filter(c => catProducts.find(x => x.code === c));
+  if (!keys.length) return;
+
+  const orderTotal = cartActionTotal(cart);
+  const isAuth     = !!(jvstUser && jvstUserData);
+  const usedNow    = isAuth ? (jvstUserData.actionsUsed || 0) : 0;
+  const balNow     = JVST_LIMIT - usedNow;
+  const balAfter   = balNow - orderTotal;
+  const canAfford  = isAuth && balAfter >= 0;
+
+  // User strip
+  const userStrip  = document.getElementById('coUserStrip');
+  const authNotice = document.getElementById('coAuthNotice');
+  if (isAuth) {
+    const name = jvstUserData.displayName || jvstUser.displayName || jvstUser.email || 'Member';
+    document.getElementById('coAvatar').textContent    = name[0].toUpperCase();
+    document.getElementById('coUserName').textContent  = name;
+    document.getElementById('coUserEmail').textContent = jvstUser.email || '';
+    userStrip.style.display  = 'flex';
+    authNotice.style.display = 'none';
+  } else {
+    userStrip.style.display  = 'none';
+    authNotice.style.display = 'block';
+  }
+
+  // Balance numbers
+  const balNowEl   = document.getElementById('coBalNow');
+  const balAfterEl = document.getElementById('coBalAfter');
+  balNowEl.textContent   = isAuth ? balNow   : '–';
+  balAfterEl.textContent = isAuth ? balAfter : '–';
+  balAfterEl.classList.toggle('warn', isAuth && balAfter < 0);
+
+  // Not-enough warning
+  const warnEl = document.getElementById('coWarn');
+  warnEl.textContent = '';
+  warnEl.classList.remove('show');
+  if (isAuth && !canAfford) {
+    warnEl.textContent = `⚠ You need ${orderTotal} action${orderTotal !== 1 ? 's' : ''} but only have ${balNow}. Remove some items.`;
+    warnEl.classList.add('show');
+  }
+
+  // Confirm button
+  const confirmBtn = document.getElementById('coConfirmBtn');
+  confirmBtn.disabled    = !isAuth || !canAfford;
+  confirmBtn.textContent = !isAuth    ? 'Sign in to checkout'
+                         : !canAfford ? `Not enough actions`
+                         :              'Confirm & Place Order';
+
+  // Cart items in review
+  document.getElementById('coItemsList').innerHTML = keys.map(code => {
+    const p   = catProducts.find(x => x.code === code);
+    const qty = cart[code];
+    return `<div class="co-item-row">
+      <div class="co-item-left">
+        <span class="co-item-emoji">${p.emoji}</span>
+        <div>
+          <div class="co-item-name">${p.name}</div>
+          <div class="co-item-code">${p.code}</div>
+        </div>
+      </div>
+      <div class="co-item-right">
+        <div class="co-item-cost">${p.cost * qty} act.</div>
+        ${qty > 1 ? `<div class="co-item-qty">×${qty}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('coTotalVal').textContent   = `${orderTotal} action${orderTotal !== 1 ? 's' : ''}`;
+  document.getElementById('coSubLine').textContent    = isAuth ? `// ${jvstUser.email}` : '// not signed in';
+
+  document.getElementById('checkout-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCheckout() {
+  document.getElementById('checkout-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+async function executeCheckout() {
+  if (!jvstUser || !jvstUserData) return;
+
+  const cart  = loadCart();
+  const keys  = Object.keys(cart).filter(c => catProducts.find(x => x.code === c));
+  if (!keys.length) return;
+
+  const orderTotal = cartActionTotal(cart);
+
+  const btn = document.getElementById('coConfirmBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="co-spinner"></span> Processing…';
+
+  try {
+    // Always re-fetch to avoid race conditions
+    const ref   = jvstDb.collection('shop_users').doc(jvstUser.uid);
+    const snap  = await ref.get();
+    const fresh = snap.data();
+
+    // Auto-reset month if needed
+    const mk = monthKey(new Date());
+    let freshUsed = fresh.actionsUsed || 0;
+    if (fresh.actionsMonth !== mk) { freshUsed = 0; }
+
+    const freshBalance = JVST_LIMIT - freshUsed;
+    if (freshBalance < orderTotal) {
+      closeCheckout();
+      btn.disabled = false;
+      btn.textContent = 'Confirm & Place Order';
+      alert('Your balance changed — not enough actions. Please refresh and try again.');
+      return;
+    }
+
+    const now       = new Date().toISOString();
+    const newPurchases = keys.flatMap(code => {
+      const p   = catProducts.find(x => x.code === code);
+      const qty = cart[code];
+      return Array.from({ length: qty }, () => ({
+        product:     p.name,
+        date:        now,
+        actionsCost: p.cost,
+        method:      'home_cart',
+        code:        p.code
+      }));
+    });
+
+    await ref.update({
+      actionsUsed:      freshUsed + orderTotal,
+      actionsMonth:     mk,
+      totalActionsUsed: (fresh.totalActionsUsed || 0) + orderTotal,
+      purchases:        [...(fresh.purchases || []), ...newPurchases]
+    });
+
+    // Update local cache
+    jvstUserData.actionsUsed      = freshUsed + orderTotal;
+    jvstUserData.totalActionsUsed = (fresh.totalActionsUsed || 0) + orderTotal;
+
+    const newBalance = JVST_LIMIT - (freshUsed + orderTotal);
+    const codeStr    = buildCodeStr(cart);
+
+    closeCheckout();
+    clearCart();
+    closeCartPanel();
+
+    showThankyou(codeStr, newBalance, orderTotal);
+
+  } catch(e) {
+    console.error('Checkout failed:', e);
+    btn.disabled = false;
+    btn.textContent = 'Confirm & Place Order';
+    alert('Something went wrong. Please try again.');
+  }
+}
+
+// ── THANK-YOU POPUP ───────────────────────────────────────────────────────
+function showThankyou(codeStr, newBalance, spent) {
+  document.getElementById('tyCodes').textContent  = codeStr || '–';
+  document.getElementById('tyBalLeft').textContent = `${newBalance} action${newBalance !== 1 ? 's' : ''}`;
+  document.getElementById('tyMsg').innerHTML = `${spent} action${spent !== 1 ? 's' : ''} spent.<br>See you at the next drop.`;
+
+  const overlay = document.getElementById('ty-overlay');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Animate the check after a frame
+  setTimeout(() => {
+    document.getElementById('tyRing').classList.add('go');
+    document.getElementById('tyCheckPath').classList.add('draw');
+  }, 60);
+}
+function closeThankyou() {
+  const overlay = document.getElementById('ty-overlay');
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  // Reset animation classes so it replays next time
+  setTimeout(() => {
+    document.getElementById('tyRing').classList.remove('go');
+    document.getElementById('tyCheckPath').classList.remove('draw');
+  }, 300);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderGrid();
+  initFirebase();
+});
 document.getElementById('cat-popup').addEventListener('click', function(e) { if (e.target === this) closeCatPopup(); });
+document.getElementById('checkout-overlay').addEventListener('click', function(e) { if (e.target === this) closeCheckout(); });
+document.getElementById('ty-overlay').addEventListener('click', function(e) { if (e.target === this) closeThankyou(); });
 
 // ── PROMO BANNER ──
 document.querySelector('.promo-close').addEventListener('click', function() {
