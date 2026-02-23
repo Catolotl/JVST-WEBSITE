@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <title>JVST — AI with taste</title>
+  <title>JVST — 👋 Hello from INDY 3</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="AI with taste. Culture-first technology for the next generation.">
   <link rel="shortcut icon" type="image/png" href="favicon.png">
@@ -692,6 +692,103 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
 /* ── VALUES GRID FIX ── */
 .values-grid{display:grid;grid-template-columns:1fr;gap:14px}
 
+/* ── CATALOG SECTION ── */
+.catalog-section{padding:88px 0}
+.catalog-top-row{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:48px;flex-wrap:wrap}
+.catalog-eyebrow{font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:10px;font-family:'JetBrains Mono',monospace;opacity:.85}
+.catalog-eyebrow::before{content:'// '}
+.catalog-title{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-bottom:8px}
+.catalog-title em{color:var(--red);font-style:normal}
+.catalog-sub{font-size:.875rem;color:var(--t2);line-height:1.65;max-width:360px}
+
+/* cart button in header */
+.cart-trigger{display:flex;align-items:center;gap:9px;padding:9px 18px;background:var(--bg2);border:1px solid var(--b2);border-radius:8px;color:var(--t);font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600;cursor:pointer;transition:border-color .18s,box-shadow .18s;white-space:nowrap;flex-shrink:0}
+.cart-trigger:hover{border-color:var(--red);box-shadow:0 0 0 1px rgba(255,45,45,.15)}
+.cart-trigger-icon{font-size:.95rem}
+.cart-count-badge{background:var(--red);color:#fff;font-size:.58rem;font-weight:700;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1;transition:transform .2s}
+.cart-count-badge.bump{animation:cartbump .25s ease}
+@keyframes cartbump{0%{transform:scale(1)}50%{transform:scale(1.45)}100%{transform:scale(1)}}
+
+/* product grid */
+.catalog-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:960px){.catalog-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.catalog-grid{grid-template-columns:repeat(2,1fr);gap:10px}}
+
+.cat-card{background:var(--bg2);border:1px solid var(--b);border-radius:12px;overflow:hidden;cursor:pointer;transition:border-color .2s,transform .22s,box-shadow .22s;position:relative;display:flex;flex-direction:column}
+.cat-card:hover{border-color:rgba(255,45,45,.45);transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,0,0,.55),0 0 0 1px rgba(255,45,45,.08)}
+.cat-card.in-cart{border-color:rgba(255,45,45,.35);background:linear-gradient(160deg,var(--bg2) 60%,rgba(255,45,45,.04) 100%)}
+.cat-img-wrap{aspect-ratio:1/1;background:var(--bg3);overflow:hidden;position:relative}
+.cat-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .38s ease}
+.cat-card:hover .cat-img-wrap img{transform:scale(1.06)}
+.cat-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.8rem;background:linear-gradient(135deg,var(--bg3),var(--bg4))}
+.cat-in-cart-pip{position:absolute;top:8px;left:8px;width:20px;height:20px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#fff;font-weight:700;opacity:0;transform:scale(.5);transition:opacity .18s,transform .18s;z-index:3}
+.cat-card.in-cart .cat-in-cart-pip{opacity:1;transform:scale(1)}
+.cat-info{padding:13px 14px 15px;flex:1;display:flex;flex-direction:column;gap:3px}
+.cat-tag{font-size:.56rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.cat-name{font-size:.875rem;font-weight:600;line-height:1.3;color:var(--t)}
+.cat-cost-row{display:flex;align-items:center;gap:6px;margin-top:4px}
+.cat-cost{font-size:.8rem;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--t)}
+.cat-cost-label{font-size:.62rem;color:var(--t3);padding:1px 6px;border:1px solid var(--b2);border-radius:3px}
+
+/* ── PRODUCT POPUP ── */
+#cat-popup{position:fixed;inset:0;z-index:1050;background:rgba(0,0,0,.88);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;padding:20px}
+#cat-popup.open{display:flex}
+.cat-popup-box{background:var(--bg2);border:1px solid var(--b2);border-radius:16px;width:100%;max-width:500px;position:relative;animation:modalIn .28s cubic-bezier(.22,1,.36,1);overflow:hidden;display:flex;flex-direction:column;max-height:90vh}
+.cat-popup-img-area{aspect-ratio:4/3;background:linear-gradient(135deg,var(--bg3),var(--bg4));display:flex;align-items:center;justify-content:center;font-size:5.5rem;flex-shrink:0;position:relative}
+.cat-popup-img-area img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cat-popup-close{position:absolute;top:12px;right:12px;z-index:5;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s,border-color .15s}
+.cat-popup-close:hover{background:var(--red);border-color:var(--red)}
+.cat-popup-body{padding:24px 26px 28px;overflow-y:auto}
+.cat-popup-tag{font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.cat-popup-name{font-size:1.35rem;font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-bottom:8px}
+.cat-popup-desc{font-size:.84rem;color:var(--t2);line-height:1.72;margin-bottom:18px;border-left:2px solid var(--b2);padding-left:12px}
+.cat-popup-code-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding:10px 14px;background:var(--bg3);border:1px solid var(--b);border-radius:8px}
+.cat-popup-code-label{font-size:.62rem;color:var(--t3);font-family:'JetBrains Mono',monospace;letter-spacing:.06em}
+.cat-popup-code{font-size:.95rem;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--t);letter-spacing:.08em}
+.cat-popup-cost-row{display:flex;align-items:center;gap:8px;margin-bottom:20px}
+.cat-popup-cost{font-size:1.6rem;font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:-.02em}
+.cat-popup-cost-tag{font-size:.65rem;font-weight:700;padding:3px 9px;background:var(--red0);border:1px solid var(--red1);border-radius:4px;color:var(--red);letter-spacing:.08em;text-transform:uppercase}
+.cat-popup-add-btn{width:100%;padding:13px 20px;background:var(--red);color:#fff;border:none;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:opacity .15s,transform .12s,box-shadow .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.cat-popup-add-btn:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,45,45,.3)}
+.cat-popup-add-btn:active{transform:none}
+.cat-popup-add-btn.added{background:#1a1a1a;border:1px solid rgba(255,45,45,.4);color:var(--red)}
+.cat-popup-add-btn.added:hover{opacity:.85}
+
+/* ── CART PANEL ── */
+#cart-panel{position:fixed;top:0;right:0;bottom:0;width:min(400px,100vw);z-index:1060;background:var(--bg2);border-left:1px solid var(--b2);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .32s cubic-bezier(.22,1,.36,1);box-shadow:-20px 0 60px rgba(0,0,0,.7)}
+#cart-panel.open{transform:none}
+.cart-panel-head{padding:20px 22px 18px;border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.cart-panel-title{font-size:.95rem;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+.cart-panel-title-code{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--t3);font-weight:400;letter-spacing:.06em}
+.cart-panel-close{width:28px;height:28px;border-radius:50%;background:var(--bg3);border:1px solid var(--b2);color:var(--t2);font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:color .15s,border-color .15s}
+.cart-panel-close:hover{color:var(--t);border-color:var(--t)}
+.cart-items-list{flex:1;overflow-y:auto;padding:14px 22px}
+.cart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--t3);font-family:'JetBrains Mono',monospace;font-size:.78rem;gap:10px;text-align:center;padding:40px}
+.cart-empty-icon{font-size:2.5rem;opacity:.4}
+.cart-item{display:flex;align-items:center;gap:13px;padding:12px 0;border-bottom:1px solid var(--b)}
+.cart-item:last-child{border-bottom:none}
+.cart-item-emoji{width:42px;height:42px;border-radius:8px;background:var(--bg3);border:1px solid var(--b);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.cart-item-info{flex:1;min-width:0}
+.cart-item-name{font-size:.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.cart-item-code{font-size:.65rem;font-family:'JetBrains Mono',monospace;color:var(--red);letter-spacing:.06em}
+.cart-item-qty-row{display:flex;align-items:center;gap:7px;margin-top:5px}
+.cart-qty-btn{width:22px;height:22px;border-radius:4px;background:var(--bg4);border:1px solid var(--b2);color:var(--t2);font-size:.75rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .15s,color .15s;flex-shrink:0}
+.cart-qty-btn:hover{border-color:var(--t);color:var(--t)}
+.cart-qty-val{font-size:.75rem;font-family:'JetBrains Mono',monospace;font-weight:700;min-width:16px;text-align:center}
+.cart-item-cost{font-size:.78rem;font-family:'JetBrains Mono',monospace;color:var(--t2);flex-shrink:0;text-align:right}
+.cart-panel-footer{padding:18px 22px 24px;border-top:1px solid var(--b);flex-shrink:0}
+.cart-codes-box{background:var(--bg3);border:1px solid var(--b);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.cart-codes-label{font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-bottom:7px}
+.cart-codes-output{font-size:.8rem;font-family:'JetBrains Mono',monospace;color:var(--t);letter-spacing:.06em;word-break:break-all;line-height:1.6}
+.cart-codes-output.empty{color:var(--t3);font-style:italic;font-size:.72rem}
+.cart-copy-btn{width:100%;padding:12px 18px;background:transparent;border:1px solid var(--b2);border-radius:8px;color:var(--t2);font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600;cursor:pointer;transition:border-color .15s,color .15s,background .15s;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:10px}
+.cart-copy-btn:hover{border-color:var(--t);color:var(--t)}
+.cart-copy-btn.copied{border-color:#28c840;color:#28c840}
+.cart-clear-btn{width:100%;padding:10px;background:none;border:none;color:var(--t3);font-family:'JetBrains Mono',monospace;font-size:.7rem;cursor:pointer;transition:color .15s;letter-spacing:.04em}
+.cart-clear-btn:hover{color:var(--red)}
+#cart-backdrop{position:fixed;inset:0;z-index:1059;background:rgba(0,0,0,.5);display:none;backdrop-filter:blur(4px)}
+#cart-backdrop.open{display:block}
+
 /* ── SECTION SPLIT for INDY ── */
 .indy-specs-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--b);border:1px solid var(--b);border-radius:10px;overflow:hidden;margin-top:48px}
 .indy-spec-cell{background:var(--bg2);padding:20px 22px}
@@ -760,7 +857,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
       <a href="#services">Services</a>
       <a href="#pricing">Pricing</a>
       <a href="#community">Community</a>
-      <a href="login.html" class="nav-cta">Sign In</a>
+      <a href="shop.html">👤</a>
+        <button class="cart-trigger" onclick="openCartPanel()">
+        <span class="cart-trigger-icon">🛒</span>
+        <span class="cart-count-badge" id="cartCountBadge">0</span>
+      </button>
     </div>
   </div>
 </nav>
@@ -833,6 +934,70 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
     <span class="hot">✦ RAINN BLAIS</span><span>✦ NOAH LOKE</span><span>✦ EVAN DUFFY</span><span class="hot">✦ BARRIO SESSIONS</span><span>✦ INDY 3</span><span>✦ BLADE CARD</span><span class="hot">✦ CREATIVE MODE</span><span>✦ VOICE MODE</span><span>✦ ESPAÑOL MODE</span><span>✦ MUSIC ANALYSIS</span>
     <span class="hot">✦ RAINN BLAIS</span><span>✦ NOAH LOKE</span><span>✦ EVAN DUFFY</span><span class="hot">✦ BARRIO SESSIONS</span><span>✦ INDY 3</span><span>✦ BLADE CARD</span><span class="hot">✦ CREATIVE MODE</span><span>✦ VOICE MODE</span><span>✦ ESPAÑOL MODE</span><span>✦ MUSIC ANALYSIS</span>
   </div>
+  </div>
+</div>
+
+<div class="section-accent"></div>
+
+<!-- CATALOG -->
+<section class="catalog-section" id="catalog">
+  <div class="container">
+    <div class="catalog-top-row reveal">
+      <div>
+        <div class="catalog-eyebrow">Physical Products</div>
+        <h2 class="catalog-title">The <em>Catalog</em></h2>
+        <p class="catalog-sub">Blind bags &amp; limited drops from MINI CRAFTS × JVST — 2026.</p>
+      </div>
+
+    </div>
+    <div class="catalog-grid reveal" id="catalogGrid"></div>
+  </div>
+</section>
+
+<!-- PRODUCT POPUP -->
+<div id="cat-popup">
+  <div class="cat-popup-box">
+    <button class="cat-popup-close" onclick="closeCatPopup()">✕</button>
+    <div class="cat-popup-img-area" id="catPopupImgArea"></div>
+    <div class="cat-popup-body">
+      <div class="cat-popup-tag" id="catPopupTag"></div>
+      <div class="cat-popup-name" id="catPopupName"></div>
+      <div class="cat-popup-desc" id="catPopupDesc"></div>
+      <div class="cat-popup-code-row">
+        <span class="cat-popup-code-label">CODE&nbsp;/</span>
+        <span class="cat-popup-code" id="catPopupCode"></span>
+      </div>
+      <div class="cat-popup-cost-row">
+        <span class="cat-popup-cost" id="catPopupCost"></span>
+        <span class="cat-popup-cost-tag">Action</span>
+      </div>
+      <button class="cat-popup-add-btn" id="catPopupAddBtn" onclick="popupToggleCart()"></button>
+    </div>
+  </div>
+</div>
+
+<!-- CART BACKDROP -->
+<div id="cart-backdrop" onclick="closeCartPanel()"></div>
+
+<!-- CART PANEL -->
+<div id="cart-panel">
+  <div class="cart-panel-head">
+    <div class="cart-panel-title">
+      🛒 Cart
+      <span class="cart-panel-title-code">// jvst_order</span>
+    </div>
+    <button class="cart-panel-close" onclick="closeCartPanel()">✕</button>
+  </div>
+  <div class="cart-items-list" id="cartItemsList"></div>
+  <div class="cart-panel-footer">
+    <div class="cart-codes-box">
+      <div class="cart-codes-label">Order Codes</div>
+      <div class="cart-codes-output" id="cartCodesOutput"><span style="color:var(--t3);font-style:italic;font-size:.72rem">Add items to generate codes</span></div>
+    </div>
+    <button class="cart-copy-btn" id="cartCopyBtn" onclick="copyCartCodes()">
+      <span>⎘</span> Copy Codes
+    </button>
+    <button class="cart-clear-btn" onclick="clearCart()">Clear cart</button>
   </div>
 </div>
 
@@ -2217,7 +2382,187 @@ function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
   document.body.style.overflow = '';
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeNl(); document.getElementById('deal-popup').classList.remove('open'); document.getElementById('exit-popup').classList.remove('open'); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeNl(); closeCatPopup(); closeCartPanel(); document.getElementById('deal-popup').classList.remove('open'); document.getElementById('exit-popup').classList.remove('open'); } });
+
+// ── CATALOG + CART ──
+const catProducts = [
+  { emoji:'🟥', tag:'Blind Bag',  name:'Breakfast Blind Bag', code:'BBAG',    cost:1, desc:'One of the first Blind Bags produced by MINI CRAFTS in 2024. A mystery morning-themed collectible.' },
+  { emoji:'🟦', tag:'Blind Bag',  name:'Lunch Blind Bag',     code:'LBAG',    cost:1, desc:'One of the first Blind Bags produced by MINI CRAFTS in 2024. Midday mystery collectible, randomly assorted.' },
+  { emoji:'🟩', tag:'Blind Bag',  name:'Dinner Blind Bag',    code:'DBAG',    cost:1, desc:'One of the first Blind Bags produced by MINI CRAFTS in 2024. Evening edition with rare night-drop items.' },
+  { emoji:'📦', tag:'Loot Box',   name:'Loot Box #001',       code:'LB01',    cost:3, desc:'Random loot box packed with MINI CRAFTS memorabilia and rare JVST collectibles. No two boxes alike.' },
+  { emoji:'📦', tag:'Loot Box',   name:'Loot Box #002',       code:'LB02',    cost:3, desc:'Second series random loot box. New items, new chances — same rare JVST energy.' },
+  { emoji:'📦', tag:'Loot Box',   name:'Loot Box #003',       code:'LB03',    cost:1, desc:'Entry-level loot box. Great starting point for new collectors, MINI CRAFTS essentials inside.' },
+  { emoji:'🎁', tag:'Bundle',     name:'5-Pack Blind Bags',   code:'BAGBUN',  cost:5, desc:'Five random rare blind bags shipped together with a rare collectors outer box. Best value per pull.' },
+  { emoji:'🌟', tag:'Limited',    name:'Starter Pack',        code:'STARTER', cost:5, desc:'The full intro: 5 blind bags + 1 Indy Keychain + a handwritten note from JVST. Custom box. Limited to 100 sets.' },
+];
+
+const CART_KEY = 'jvst_cart_v1';
+let activePopupIdx = null;
+
+// ── cart persistence ──
+function loadCart() {
+  try { return JSON.parse(localStorage.getItem(CART_KEY)) || {}; } catch { return {}; }
+}
+function saveCart(cart) {
+  try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch {}
+}
+
+// ── render grid ──
+function renderGrid() {
+  const cart = loadCart();
+  const grid = document.getElementById('catalogGrid');
+  if (!grid) return;
+  grid.innerHTML = catProducts.map((p, i) => {
+    const inCart = !!cart[p.code];
+    return `<div class="cat-card${inCart ? ' in-cart' : ''}" onclick="openCatPopup(${i})">
+      <div class="cat-in-cart-pip">✓</div>
+      <div class="cat-img-wrap">
+        <div class="cat-placeholder">${p.emoji}</div>
+      </div>
+      <div class="cat-info">
+        <div class="cat-tag">${p.tag}</div>
+        <div class="cat-name">${p.name}</div>
+        <div class="cat-cost-row">
+          <span class="cat-cost">${p.cost}</span>
+          <span class="cat-cost-label">Action</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  updateCartBadge();
+}
+
+// ── update nav badge ──
+function updateCartBadge() {
+  const cart = loadCart();
+  const total = Object.values(cart).reduce((a, b) => a + b, 0);
+  const badge = document.getElementById('cartCountBadge');
+  if (!badge) return;
+  const prev = parseInt(badge.textContent) || 0;
+  badge.textContent = total;
+  if (total !== prev) { badge.classList.remove('bump'); void badge.offsetWidth; badge.classList.add('bump'); }
+}
+
+// ── popup ──
+function openCatPopup(i) {
+  const p = catProducts[i];
+  activePopupIdx = i;
+  const cart = loadCart();
+  const inCart = !!cart[p.code];
+  const area = document.getElementById('catPopupImgArea');
+  area.innerHTML = `<span style="font-size:5.5rem">${p.emoji}</span>`;
+  document.getElementById('catPopupTag').textContent = p.tag;
+  document.getElementById('catPopupName').textContent = p.name;
+  document.getElementById('catPopupDesc').textContent = p.desc;
+  document.getElementById('catPopupCode').textContent = p.code;
+  document.getElementById('catPopupCost').textContent = p.cost;
+  refreshPopupBtn(inCart);
+  document.getElementById('cat-popup').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function refreshPopupBtn(inCart) {
+  const btn = document.getElementById('catPopupAddBtn');
+  if (!btn) return;
+  btn.className = 'cat-popup-add-btn' + (inCart ? ' added' : '');
+  btn.innerHTML = inCart ? '✓ &nbsp;In Cart — Remove' : '＋ &nbsp;Add to Cart';
+}
+function closeCatPopup() {
+  document.getElementById('cat-popup').classList.remove('open');
+  document.body.style.overflow = '';
+  activePopupIdx = null;
+}
+function popupToggleCart() {
+  if (activePopupIdx === null) return;
+  const p = catProducts[activePopupIdx];
+  const cart = loadCart();
+  if (cart[p.code]) { delete cart[p.code]; } else { cart[p.code] = (cart[p.code] || 0) + 1; }
+  saveCart(cart);
+  refreshPopupBtn(!!cart[p.code]);
+  renderGrid();
+  renderCartPanel();
+}
+
+// ── cart panel ──
+function openCartPanel() {
+  renderCartPanel();
+  document.getElementById('cart-panel').classList.add('open');
+  document.getElementById('cart-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCartPanel() {
+  document.getElementById('cart-panel').classList.remove('open');
+  document.getElementById('cart-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function renderCartPanel() {
+  const cart = loadCart();
+  const list = document.getElementById('cartItemsList');
+  const codes = document.getElementById('cartCodesOutput');
+  const keys = Object.keys(cart);
+  if (!list) return;
+  if (keys.length === 0) {
+    list.innerHTML = '<div class="cart-empty"><span class="cart-empty-icon">🛒</span><span>Your cart is empty.<br>Add items from the catalog.</span></div>';
+    codes.innerHTML = '<span style="color:var(--t3);font-style:italic;font-size:.72rem">Add items to generate codes</span>';
+    return;
+  }
+  list.innerHTML = keys.map(code => {
+    const p = catProducts.find(x => x.code === code);
+    if (!p) return '';
+    const qty = cart[code];
+    return `<div class="cart-item">
+      <div class="cart-item-emoji">${p.emoji}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${p.name}</div>
+        <div class="cart-item-code">${p.code}</div>
+        <div class="cart-item-qty-row">
+          <button class="cart-qty-btn" onclick="adjustQty('${code}',-1)">−</button>
+          <span class="cart-qty-val">${qty}</span>
+          <button class="cart-qty-btn" onclick="adjustQty('${code}',1)">+</button>
+        </div>
+      </div>
+      <div class="cart-item-cost">${p.cost * qty} act.</div>
+    </div>`;
+  }).join('');
+  // build codes string: CODE×qty if qty > 1, else just CODE
+  const codeStr = keys.map(code => cart[code] > 1 ? `${code}×${cart[code]}` : code).join(', ');
+  codes.textContent = codeStr;
+  updateCartBadge();
+}
+function adjustQty(code, delta) {
+  const cart = loadCart();
+  cart[code] = (cart[code] || 0) + delta;
+  if (cart[code] <= 0) delete cart[code];
+  saveCart(cart);
+  renderCartPanel();
+  renderGrid();
+  // refresh popup if open
+  if (activePopupIdx !== null) {
+    const p = catProducts[activePopupIdx];
+    refreshPopupBtn(!!cart[p.code]);
+  }
+}
+function clearCart() {
+  saveCart({});
+  renderCartPanel();
+  renderGrid();
+  if (activePopupIdx !== null) refreshPopupBtn(false);
+}
+function copyCartCodes() {
+  const cart = loadCart();
+  const keys = Object.keys(cart);
+  if (!keys.length) return;
+  const codeStr = keys.map(code => cart[code] > 1 ? `${code}×${cart[code]}` : code).join(', ');
+  navigator.clipboard.writeText(codeStr).then(() => {
+    const btn = document.getElementById('cartCopyBtn');
+    btn.classList.add('copied');
+    btn.innerHTML = '<span>✓</span> Copied!';
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '<span>⎘</span> Copy Codes'; }, 2000);
+  }).catch(() => {});
+}
+
+// init on load
+document.addEventListener('DOMContentLoaded', () => { renderGrid(); });
+document.getElementById('cat-popup').addEventListener('click', function(e) { if (e.target === this) closeCatPopup(); });
 
 // ── PROMO BANNER ──
 document.querySelector('.promo-close').addEventListener('click', function() {
