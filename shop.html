@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ ACTIONS — Indy Actions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #f9f9f9;
+    --surface2: #f0f0f0;
+    --border: #e5e5e5;
+    --border2: #d0d0d0;
+    --text: #0a0a0a;
+    --text2: #404040;
+    --muted: #909090;
+    --danger: #cc0000;
+    --success: #1a7a1a;
+    --accent: #0a0a0a;
+    --accent-soft: rgba(10,10,10,0.06);
+    --gold: #b8972a;
+    --gold-soft: rgba(184,151,42,0.1);
+    --radius: 8px;
+    --radius-lg: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; min-height: 100vh; padding: 24px 20px; animation: fadeIn 0.3s ease; }
+  .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── AUTH / PIN SCREENS ── */
+  .auth-wrap { width: 100%; max-width: 380px; }
+  .wordmark { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 40px; }
+  .screen-title { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .screen-sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; font-family: 'DM Mono', monospace; }
+
+  /* ── CARD ── */
+  .card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; width: 100%; }
+
+  /* ── TOGGLE ── */
+  .seg { display: flex; background: var(--surface2); border-radius: 7px; padding: 3px; margin-bottom: 22px; gap: 2px; }
+  .seg-btn { flex: 1; padding: 9px; border-radius: 5px; border: none; background: transparent; color: var(--muted); font-size: 12px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; transition: all .15s; letter-spacing: 0.02em; }
+  .seg-btn.active { background: var(--bg); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+
+  /* ── FIELDS ── */
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .field input {
+    width: 100%; background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 11px 13px;
+    color: var(--text); font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    outline: none; transition: border-color .15s, box-shadow .15s;
+  }
+  .field input:focus { border-color: var(--text); box-shadow: 0 0 0 3px rgba(0,0,0,.06); }
+
+  /* ── PIN DIGITS ── */
+  .pin-row { display: flex; gap: 8px; justify-content: center; margin: 14px 0; }
+  .pin-digit {
+    width: 50px; height: 56px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); font-size: 20px; text-align: center;
+    color: var(--text); font-family: 'DM Mono', monospace;
+    outline: none; transition: border-color .15s, box-shadow .15s;
+  }
+  .pin-digit:focus { border-color: var(--text); box-shadow: 0 0 0 3px rgba(0,0,0,.06); }
+  .pin-digit.correct { border-color: var(--success); background: #f0fff4; }
+
+  /* ── PIN SUCCESS OVERLAY ── */
+  .pin-success-overlay {
+    position: fixed; inset: 0; z-index: 9000;
+    background: #fff;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s ease;
+  }
+  .pin-success-overlay.show { opacity: 1; pointer-events: all; }
+  .pin-success-check {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    border: 2.5px solid #e0e0e0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    animation: none;
+  }
+  .pin-success-check.animate {
+    border-color: var(--success);
+    animation: checkRing .4s ease forwards;
+  }
+  @keyframes checkRing {
+    0%   { transform: scale(0.7); border-color: #e0e0e0; }
+    60%  { transform: scale(1.08); border-color: var(--success); }
+    100% { transform: scale(1);    border-color: var(--success); }
+  }
+  .pin-success-svg { width: 34px; height: 34px; }
+  .pin-check-path {
+    fill: none;
+    stroke: var(--success);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+  }
+  .pin-check-path.draw { animation: drawCheck .45s .25s ease forwards; }
+  @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+  .pin-success-label {
+    font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted);
+    opacity: 0; transform: translateY(6px);
+    transition: opacity .3s .5s ease, transform .3s .5s ease;
+  }
+  .pin-success-overlay.show .pin-success-label { opacity: 1; transform: none; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    width: 100%; padding: 12px 16px; border-radius: var(--radius);
+    font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+    cursor: pointer; border: none; transition: all .15s;
+    font-family: 'Inter', sans-serif; margin-top: 8px; display: block;
+  }
+  .btn-primary { background: var(--text); color: #fff; }
+  .btn-primary:hover { background: #222; }
+  .btn-primary:disabled { background: var(--border2); color: var(--muted); cursor: not-allowed; }
+  .btn-secondary { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--text); color: var(--text); }
+  .btn-danger { background: transparent; color: var(--danger); border: 1px solid #f0c0c0; }
+  .btn-danger:hover { background: #fff0f0; }
+
+  /* ── MESSAGES ── */
+  .msg { padding: 10px 13px; border-radius: var(--radius); font-size: 12px; margin-bottom: 12px; font-family: 'DM Mono', monospace; display: none; line-height: 1.4; }
+  .msg.error { background: #fff0f0; border: 1px solid #f0c0c0; color: var(--danger); display: block; }
+  .msg.success { background: #f0fff4; border: 1px solid #b0ddb0; color: var(--success); display: block; }
+
+  /* ── DASHBOARD ── */
+  #screen-dashboard { display: none; flex-direction: column; align-items: stretch; justify-content: flex-start; padding: 0; }
+  #screen-dashboard.active { display: flex; }
+
+  /* ── HEADER ── */
+  .dash-header {
+    background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 0 18px; height: 52px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .dash-wordmark {
+    font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--text); font-weight: 500;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .dash-wordmark-star { color: var(--gold); font-size: 10px; }
+  .user-chip { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .user-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--text); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; flex-shrink: 0;
+    font-family: 'Inter', sans-serif;
+  }
+  .user-email { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .dash-content { padding: 0 18px 20px; max-width: 600px; margin: 0 auto; width: 100%; padding-bottom: 80px; }
+
+  /* ── SECTION LABELS ── */
+  .section { margin-bottom: 20px; }
+  .section-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 10px; font-family: 'DM Mono', monospace;
+  }
+
+  /* ── HERO BALANCE CARD ── */
+  .hero-card {
+    background: var(--text); color: #fff;
+    border-radius: var(--radius-lg); overflow: hidden;
+    margin-bottom: 14px; position: relative;
+  }
+  .hero-card-top {
+    padding: 22px 22px 16px;
+    display: flex; align-items: flex-start; justify-content: space-between;
+  }
+  .hero-label { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,.4); font-family: 'DM Mono', monospace; margin-bottom: 6px; }
+  .hero-name  { font-size: 15px; font-weight: 500; color: rgba(255,255,255,.75); letter-spacing: -0.01em; }
+  .hero-balance { text-align: right; }
+  .hero-balance-num {
+    font-size: 52px; font-weight: 300; line-height: 1;
+    font-family: 'DM Mono', monospace; letter-spacing: -0.03em;
+    transition: all .6s cubic-bezier(.4,0,.2,1);
+  }
+  .hero-balance-num.warn { color: #ff8888; }
+  .hero-balance-denom { font-size: 11px; color: rgba(255,255,255,.35); font-family: 'DM Mono', monospace; margin-top: 3px; text-align: right; }
+  .hero-card-bar-area { padding: 0 22px 20px; }
+  .hero-bar-labels { display: flex; justify-content: space-between; font-size: 10px; color: rgba(255,255,255,.4); font-family: 'DM Mono', monospace; margin-bottom: 7px; }
+  .hero-bar-track { height: 3px; background: rgba(255,255,255,.12); border-radius: 2px; overflow: hidden; }
+  .hero-bar-fill { height: 100%; background: rgba(255,255,255,.9); border-radius: 2px; transition: width .9s cubic-bezier(.4,0,.2,1); }
+  .hero-bar-fill.warn { background: #ff8888; }
+  .hero-card-footer { border-top: 1px solid rgba(255,255,255,.08); padding: 10px 22px; display: flex; align-items: center; justify-content: space-between; }
+  .hero-reset-text { font-size: 10px; color: rgba(255,255,255,.35); font-family: 'DM Mono', monospace; }
+  .hero-quick-btn {
+    font-size: 10px; font-weight: 600; font-family: 'DM Mono', monospace;
+    color: rgba(255,255,255,.6); background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.14); border-radius: 5px;
+    padding: 5px 10px; cursor: pointer; letter-spacing: 0.06em;
+    text-transform: uppercase; transition: all .15s;
+  }
+  .hero-quick-btn:hover { background: rgba(255,255,255,.14); color: #fff; }
+
+  /* ── QUICK ACTION TILES ── */
+  .quick-tiles { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 20px; }
+  .quick-tile {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 10px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+    cursor: pointer; transition: all .15s; text-align: center;
+  }
+  .quick-tile:hover { background: var(--bg); border-color: var(--border2); transform: translateY(-1px); box-shadow: 0 3px 12px rgba(0,0,0,.06); }
+  .quick-tile:active { transform: none; }
+  .qt-icon { font-size: 20px; line-height: 1; }
+  .qt-label { font-size: 10px; font-weight: 600; color: var(--text2); letter-spacing: 0.04em; font-family: 'DM Mono', monospace; }
+
+  /* ── 4-STATS GRID ── */
+  .stats-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 20px; }
+  .stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+  .stat-box-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 6px; }
+  .stat-box-val { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); font-family: 'DM Mono', monospace; }
+  .stat-box-unit { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 2px; }
+  .stat-box.accent { background: var(--text); border-color: var(--text); }
+  .stat-box.accent .stat-box-label { color: rgba(255,255,255,.4); }
+  .stat-box.accent .stat-box-val { color: #fff; }
+  .stat-box.accent .stat-box-unit { color: rgba(255,255,255,.35); }
+
+  /* ── SPEND CHART ── */
+  .spend-chart-wrap { margin-bottom: 20px; }
+  .spend-chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .spend-chart-title { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .spend-chart-total { font-size: 12px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--text); }
+  .spend-bars { display: flex; align-items: flex-end; gap: 5px; height: 52px; }
+  .spend-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .spend-bar {
+    width: 100%; border-radius: 3px 3px 0 0; background: var(--surface2);
+    transition: height .6s cubic-bezier(.4,0,.2,1), background .2s;
+    min-height: 3px;
+  }
+  .spend-bar.current { background: var(--text); }
+  .spend-bar.has-data { background: var(--border2); }
+  .spend-bar-label { font-size: 8px; font-family: 'DM Mono', monospace; color: var(--muted); white-space: nowrap; }
+
+  /* ── FAVOURITE ITEM ── */
+  .fav-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px;
+    display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
+  }
+  .fav-icon { width: 38px; height: 38px; border-radius: 8px; background: var(--text); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .fav-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 3px; }
+  .fav-name  { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+  .fav-sub   { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 1px; }
+  .fav-right { margin-left: auto; font-size: 11px; font-family: 'DM Mono', monospace; color: var(--muted); text-align: right; }
+
+  /* ── PANEL CARD ── */
+  .panel-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 20px; }
+  .panel-card-head { padding: 16px 18px 0; }
+  .panel-card-body { padding: 0 18px 18px; }
+
+  /* ── HISTORY ── */
+  .history-item { padding: 13px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+  .history-item:last-child { border-bottom: none; }
+  .hi-left { display: flex; align-items: center; gap: 11px; }
+  .hi-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border2); flex-shrink: 0; }
+  .hi-dot.recent { background: var(--text); }
+  .hi-product { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .hi-date { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .hi-right { text-align: right; flex-shrink: 0; margin-left: 12px; }
+  .hi-cost { font-size: 12px; font-weight: 600; color: var(--text2); font-family: 'DM Mono', monospace; }
+  .hi-method { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 2px; }
+  .empty-state { padding: 40px 18px; text-align: center; color: var(--muted); font-size: 13px; font-family: 'DM Mono', monospace; }
+
+  /* ── NO ACTIONS BANNER ── */
+  .no-actions-banner { background: #fff8f0; border: 1px solid #f0d0b0; border-radius: var(--radius); padding: 12px 14px; margin-bottom: 14px; font-size: 12px; color: #884400; font-family: 'DM Mono', monospace; display: none; line-height: 1.5; }
+  .no-actions-banner.visible { display: block; }
+
+  /* ── HOME PAGE TOP STRIP ── */
+  .home-top { padding: 18px 0 10px; margin-bottom: 4px; }
+  .home-greeting-sub  { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 3px; letter-spacing: 0.04em; }
+  .home-greeting-name { font-size: 22px; font-weight: 600; letter-spacing: -0.025em; }
+
+  /* ── PROFILE ROWS ── */
+  .profile-row { padding: 13px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+  .profile-row:last-child { border-bottom: none; }
+  .pr-key { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .pr-val { font-size: 13px; font-weight: 500; text-align: right; max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ── CODE INPUT ── */
+  .code-input-wrap { position: relative; }
+  .code-input {
+    width: 100%; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 14px 50px 14px 16px;
+    font-size: 22px; font-family: 'DM Mono', monospace;
+    font-weight: 500; letter-spacing: 0.15em;
+    color: var(--text); outline: none;
+    transition: border-color .15s, box-shadow .15s;
+    text-transform: uppercase;
+  }
+  .code-input:focus { border-color: var(--text); box-shadow: 0 0 0 3px rgba(0,0,0,.06); }
+  .code-input::placeholder { color: var(--border2); font-size: 20px; }
+  .code-submit-btn {
+    position: absolute; right: 10px; top: 50%;
+    transform: translateY(-50%);
+    background: var(--text); color: #fff;
+    border: none; border-radius: 6px;
+    width: 34px; height: 34px;
+    font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s;
+  }
+  .code-submit-btn:hover { background: #333; }
+
+  /* ── PRODUCT PREVIEW ── */
+  .product-preview {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 18px;
+    margin-top: 12px; display: none;
+    animation: fadeIn .2s ease;
+  }
+  .product-preview.visible { display: block; }
+  .pp-name { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px; }
+  .pp-meta { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 14px; }
+  .pp-code-badge {
+    display: inline-block; background: var(--surface2);
+    border: 1px solid var(--border2); border-radius: 5px;
+    padding: 2px 8px; font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--text2); margin-right: 6px; margin-bottom: 14px;
+  }
+
+  /* ── SCAN AREA ── */
+  #qr-reader { border-radius: var(--radius); overflow: hidden; background: var(--surface2); }
+
+  /* ── SCAN RESULT ── */
+  .scan-result { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin-top: 12px; display: none; animation: fadeIn .2s ease; }
+  .scan-result.visible { display: block; }
+  .sr-name { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px; }
+  .sr-meta { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 14px; }
+
+  /* ── METHOD TABS ── */
+  .method-tabs { display: flex; gap: 0; margin-bottom: 16px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .method-tab { flex: 1; padding: 10px; font-size: 12px; font-weight: 600; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--muted); border: none; cursor: pointer; transition: all .15s; border-right: 1px solid var(--border); letter-spacing: 0.02em; }
+  .method-tab:last-child { border-right: none; }
+  .method-tab.active { background: var(--text); color: #fff; }
+
+  /* ── CHANGE PIN ── */
+  .change-pin-form { display: none; padding-top: 14px; border-top: 1px solid var(--border); margin-top: 4px; }
+  .change-pin-form.open { display: block; }
+
+  /* ── MODAL ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); display: flex; align-items: flex-end; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--bg); border-radius: 16px 16px 0 0; padding: 24px 24px 32px; width: 100%; max-width: 480px; transform: translateY(20px); transition: transform .25s cubic-bezier(.4,0,.2,1); border-top: 1px solid var(--border); }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-handle { width: 36px; height: 4px; background: var(--border2); border-radius: 2px; margin: 0 auto 20px; }
+  .modal-title { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px; }
+  .modal-body { font-size: 13px; color: var(--muted); line-height: 1.5; font-family: 'DM Mono', monospace; margin-bottom: 20px; }
+  .modal-cost { font-size: 28px; font-weight: 300; font-family: 'DM Mono', monospace; margin-bottom: 6px; letter-spacing: -0.02em; }
+  .modal-btns { display: flex; gap: 8px; }
+  .modal-btns .btn { margin-top: 0; }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--bg); border-top: 1px solid var(--border);
+    display: flex; z-index: 50; padding: 0;
+    height: 56px;
+  }
+  .nav-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 3px;
+    cursor: pointer; color: var(--muted);
+    font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
+    font-family: 'DM Mono', monospace; font-weight: 500;
+    transition: color .15s; border: none; background: transparent;
+    padding: 8px 4px;
+  }
+  .nav-item.active { color: var(--text); }
+  .nav-icon { font-size: 18px; }
+  .nav-active-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--text); margin: 0 auto; opacity: 0; transition: opacity .15s; }
+  .nav-item.active .nav-active-dot { opacity: 1; }
+
+  /* ── TAB PANELS ── */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── LOADING ── */
+  .loading-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px; z-index: 500; transition: opacity .3s; }
+  .loading-screen.hidden { opacity: 0; pointer-events: none; }
+  .loading-wordmark { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text); }
+  .loading-line { width: 40px; height: 1px; background: var(--border2); position: relative; overflow: hidden; }
+  .loading-line::after { content: ''; position: absolute; left: -100%; top: 0; width: 100%; height: 100%; background: var(--text); animation: loadSlide 1s ease infinite; }
+  @keyframes loadSlide { to { left: 200%; } }
+
+  /* ── TOAST ── */
+  #toast { position: fixed; bottom: 72px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text); color: #fff; border-radius: 100px; padding: 10px 18px; font-size: 12px; font-family: 'DM Mono', monospace; z-index: 9999; transition: all .25s cubic-bezier(.4,0,.2,1); white-space: nowrap; pointer-events: none; opacity: 0; }
+  #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  #toast.error { background: var(--danger); }
+  #toast.success { background: var(--success); }
+
+  /* ── SPINNER ── */
+  .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; display: inline-block; vertical-align: middle; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  /* ── MULTI-CODE INPUT ── */
+  .code-input-multi {
+    width: 100%; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 13px 16px;
+    font-size: 15px; font-family: 'DM Mono', monospace;
+    font-weight: 500; letter-spacing: 0.1em;
+    color: var(--text); outline: none;
+    transition: border-color .15s, box-shadow .15s;
+    text-transform: uppercase; resize: none;
+    min-height: 52px; max-height: 120px; overflow-y: auto;
+    line-height: 1.5;
+  }
+  .code-input-multi:focus { border-color: var(--text); box-shadow: 0 0 0 3px rgba(0,0,0,.06); }
+  .code-input-multi::placeholder { color: var(--border2); font-size: 13px; text-transform: none; letter-spacing: 0.04em; }
+
+  /* ── CART LIST ── */
+  .cart-list { display: flex; flex-direction: column; gap: 0; margin-top: 12px; }
+  .cart-row { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--border); animation: fadeIn .15s ease; }
+  .cart-row:last-child { border-bottom: none; }
+  .cart-row-code { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 600; color: var(--text); min-width: 64px; }
+  .cart-row-name { font-size: 12px; color: var(--text2); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cart-row-cost { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); flex-shrink: 0; }
+  .cart-row-qty { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+  .cart-qty-btn { width: 20px; height: 20px; border-radius: 4px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text2); font-size: 13px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color .12s, background .12s; line-height: 1; }
+  .cart-qty-btn:hover { border-color: var(--text); background: var(--surface); }
+  .cart-qty-num { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 600; min-width: 14px; text-align: center; }
+  .cart-row-remove { width: 20px; height: 20px; border: none; background: none; color: var(--muted); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: color .12s, background .12s; flex-shrink: 0; }
+  .cart-row-remove:hover { color: var(--danger); background: #fff0f0; }
+  .cart-summary { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: var(--surface2); border-top: 1px solid var(--border); border-radius: 0 0 var(--radius) var(--radius); font-family: 'DM Mono', monospace; font-size: 12px; }
+  .cart-summary-label { color: var(--muted); }
+  .cart-summary-total { font-weight: 600; color: var(--text); }
+  .cart-summary-total.warn { color: var(--danger); }
+  .unknown-chip { display: inline-flex; align-items: center; gap: 5px; background: #fff0f0; border: 1px solid #f0c0c0; border-radius: 5px; padding: 2px 8px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--danger); margin: 2px; }
+
+  /* ── CATALOG BROWSE ── */
+  .catalog-group-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; padding: 10px 14px 4px; }
+  .catalog-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background .12s; gap: 10px; }
+  .catalog-row:last-child { border-bottom: none; }
+  .catalog-row:hover { background: var(--surface); }
+  .catalog-row-left { flex: 1; min-width: 0; }
+  .catalog-row-name { font-size: 13px; font-weight: 500; margin-bottom: 1px; }
+  .catalog-row-code { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); }
+  .catalog-row-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .catalog-row-cost { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+  .catalog-add-btn { width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--border2); background: var(--bg); color: var(--text); font-size: 15px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .12s; }
+  .catalog-add-btn:hover { background: var(--text); color: #fff; border-color: var(--text); }
+  .catalog-add-btn.added { background: var(--text); color: #fff; border-color: var(--text); }
+
+  /* ── REDEEM TABS ── */
+  .redeem-tabs { display: flex; gap: 0; margin-bottom: 16px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .redeem-tab { flex: 1; padding: 10px; font-size: 11px; font-weight: 600; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--muted); border: none; cursor: pointer; transition: all .15s; border-right: 1px solid var(--border); letter-spacing: 0.04em; text-transform: uppercase; }
+  .redeem-tab:last-child { border-right: none; }
+  .redeem-tab.active { background: var(--text); color: #fff; }
+
+  @media (max-width: 400px) { .stats-grid { grid-template-columns: 1fr 1fr; } .quick-tiles { grid-template-columns: repeat(4,1fr); } }
+  @media (min-width: 600px) { .modal { border-radius: 16px; margin-bottom: 40px; } .modal-overlay { align-items: center; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; min-height: 100vh; padding: 24px 20px; animation: fadeIn 0.3s ease; }
+  .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── AUTH / PIN SCREENS ── */
+  .auth-wrap { width: 100%; max-width: 380px; }
+  .wordmark { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 40px; }
+  .screen-title { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .screen-sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; font-family: 'DM Mono', monospace; }
+
+  /* ── CARD ── */
+  .card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; width: 100%; }
+
+  /* ── TOGGLE ── */
+  .seg { display: flex; background: var(--surface2); border-radius: 7px; padding: 3px; margin-bottom: 22px; gap: 2px; }
+  .seg-btn { flex: 1; padding: 9px; border-radius: 5px; border: none; background: transparent; color: var(--muted); font-size: 12px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; transition: all .15s; letter-spacing: 0.02em; }
+  .seg-btn.active { background: var(--bg); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+
+  /* ── FIELDS ── */
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .field input {
+    width: 100%; background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 11px 13px;
+    color: var(--text); font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    outline: none; transition: border-color .15s, box-shadow .15s;
+  }
+  .field input:focus { border-color: var(--text); box-shadow: 0 0 0 3px rgba(0,0,0,.06); }
+
+  /* ── PIN DIGITS ── */
+  .pin-row { display: flex; gap: 8px; justify-content: center; margin: 14px 0; }
+  .pin-digit {
+    width: 50px; height: 56px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); font-size: 20px; text-align: center;
+    color: var(--text); font-family: 'DM Mono', monospace;
+    outline: none; transition: border-color .15s, box-shadow .15s;
+  }
+  .pin-digit:focus { border-color: var(--text); box-shadow: 0 0 0 3px rgba(0,0,0,.06); }
+
+  /* ── BUTTONS ── */
+  .btn {
+    width: 100%; padding: 12px 16px; border-radius: var(--radius);
+    font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+    cursor: pointer; border: none; transition: all .15s;
+    font-family: 'Inter', sans-serif; margin-top: 8px; display: block;
+  }
+  .btn-primary { background: var(--text); color: #fff; }
+  .btn-primary:hover { background: #222; }
+  .btn-primary:disabled { background: var(--border2); color: var(--muted); cursor: not-allowed; }
+  .btn-secondary { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--text); color: var(--text); }
+  .btn-danger { background: transparent; color: var(--danger); border: 1px solid #f0c0c0; }
+  .btn-danger:hover { background: #fff0f0; }
+
+  /* ── MESSAGES ── */
+  .msg { padding: 10px 13px; border-radius: var(--radius); font-size: 12px; margin-bottom: 12px; font-family: 'DM Mono', monospace; display: none; line-height: 1.4; }
+  .msg.error { background: #fff0f0; border: 1px solid #f0c0c0; color: var(--danger); display: block; }
+  .msg.success { background: #f0fff4; border: 1px solid #b0ddb0; color: var(--success); display: block; }
+
+  /* ── DASHBOARD ── */
+  #screen-dashboard { display: none; flex-direction: column; align-items: stretch; justify-content: flex-start; padding: 0; }
+  #screen-dashboard.active { display: flex; }
+
+  .dash-header {
+    background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 0 20px; height: 52px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .dash-wordmark { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text); font-weight: 400; }
+  .user-chip { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .user-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--text); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; flex-shrink: 0;
+    font-family: 'Inter', sans-serif;
+  }
+  .user-email { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .dash-content { padding: 20px; max-width: 600px; margin: 0 auto; width: 100%; padding-bottom: 80px; }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 20px; }
+  .section-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 10px; font-family: 'DM Mono', monospace;
+  }
+
+  /* ── ACTIONS CARD ── */
+  .actions-card {
+    background: var(--text); color: #fff;
+    border-radius: var(--radius-lg); padding: 20px 22px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .actions-left {}
+  .actions-greeting { font-size: 13px; color: rgba(255,255,255,.5); margin-bottom: 4px; font-family: 'DM Mono', monospace; }
+  .actions-name { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 14px; }
+  .actions-bar-wrap { width: 180px; max-width: 100%; }
+  .actions-bar-label { font-size: 11px; color: rgba(255,255,255,.5); font-family: 'DM Mono', monospace; margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .actions-bar-track { height: 4px; background: rgba(255,255,255,.15); border-radius: 2px; overflow: hidden; }
+  .actions-bar-fill { height: 100%; background: #fff; border-radius: 2px; transition: width .8s cubic-bezier(.4,0,.2,1); }
+  .actions-bar-fill.warn { background: #ff8888; }
+  .actions-right { text-align: right; }
+  .actions-big { font-size: 48px; font-weight: 300; line-height: 1; font-family: 'DM Mono', monospace; }
+  .actions-big.warn { color: #ff8888; }
+  .actions-denom { font-size: 12px; color: rgba(255,255,255,.4); font-family: 'DM Mono', monospace; margin-top: 2px; }
+  .reset-hint { font-size: 11px; color: rgba(255,255,255,.35); font-family: 'DM Mono', monospace; margin-top: 8px; }
+
+  /* ── STATS ROW ── */
+  .stats-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+  .stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+  .stat-box-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 6px; }
+  .stat-box-val { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); font-family: 'DM Mono', monospace; }
+  .stat-box-unit { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 2px; }
+
+  /* ── PANEL CARD ── */
+  .panel-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 20px; }
+  .panel-card-head { padding: 16px 18px 0; }
+  .panel-card-body { padding: 0 18px 18px; }
+
+  /* ── HISTORY ── */
+  .history-item { padding: 13px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+  .history-item:last-child { border-bottom: none; }
+  .hi-product { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .hi-date { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .hi-right { text-align: right; flex-shrink: 0; margin-left: 12px; }
+  .hi-cost { font-size: 12px; color: var(--text2); font-family: 'DM Mono', monospace; }
+  .hi-method { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 2px; }
+  .empty-state { padding: 40px 18px; text-align: center; color: var(--muted); font-size: 13px; font-family: 'DM Mono', monospace; }
+
+  /* ── PROFILE ROWS ── */
+  .profile-row { padding: 13px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+  .profile-row:last-child { border-bottom: none; }
+  .pr-key { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .pr-val { font-size: 13px; font-weight: 500; text-align: right; max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ── CODE INPUT ── */
+  .code-input-wrap { position: relative; }
+  .code-input {
+    width: 100%; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 14px 50px 14px 16px;
+    font-size: 22px; font-family: 'DM Mono', monospace;
+    font-weight: 500; letter-spacing: 0.15em;
+    color: var(--text); outline: none;
+    transition: border-color .15s, box-shadow .15s;
+    text-transform: uppercase;
+  }
+  .code-input:focus { border-color: var(--text); box-shadow: 0 0 0 3px rgba(0,0,0,.06); }
+  .code-input::placeholder { color: var(--border2); font-size: 20px; }
+  .code-submit-btn {
+    position: absolute; right: 10px; top: 50%;
+    transform: translateY(-50%);
+    background: var(--text); color: #fff;
+    border: none; border-radius: 6px;
+    width: 34px; height: 34px;
+    font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s;
+  }
+  .code-submit-btn:hover { background: #333; }
+
+  /* ── PRODUCT PREVIEW ── */
+  .product-preview {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 18px;
+    margin-top: 12px; display: none;
+    animation: fadeIn .2s ease;
+  }
+  .product-preview.visible { display: block; }
+  .pp-name { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px; }
+  .pp-meta { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 14px; }
+  .pp-code-badge {
+    display: inline-block; background: var(--surface2);
+    border: 1px solid var(--border2); border-radius: 5px;
+    padding: 2px 8px; font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--text2); margin-right: 6px; margin-bottom: 14px;
+  }
+
+  /* ── SCAN AREA ── */
+  #qr-reader { border-radius: var(--radius); overflow: hidden; background: var(--surface2); }
+
+  /* ── SCAN RESULT ── */
+  .scan-result { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin-top: 12px; display: none; animation: fadeIn .2s ease; }
+  .scan-result.visible { display: block; }
+  .sr-name { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px; }
+  .sr-meta { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 14px; }
+
+  /* ── METHOD TABS ── */
+  .method-tabs { display: flex; gap: 0; margin-bottom: 16px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .method-tab { flex: 1; padding: 10px; font-size: 12px; font-weight: 600; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--muted); border: none; cursor: pointer; transition: all .15s; border-right: 1px solid var(--border); letter-spacing: 0.02em; }
+  .method-tab:last-child { border-right: none; }
+  .method-tab.active { background: var(--text); color: #fff; }
+
+  /* ── CHANGE PIN ── */
+  .change-pin-form { display: none; padding-top: 14px; border-top: 1px solid var(--border); margin-top: 4px; }
+  .change-pin-form.open { display: block; }
+
+  /* ── MODAL ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); display: flex; align-items: flex-end; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--bg); border-radius: 16px 16px 0 0; padding: 24px 24px 32px; width: 100%; max-width: 480px; transform: translateY(20px); transition: transform .25s cubic-bezier(.4,0,.2,1); border-top: 1px solid var(--border); }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-handle { width: 36px; height: 4px; background: var(--border2); border-radius: 2px; margin: 0 auto 20px; }
+  .modal-title { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px; }
+  .modal-body { font-size: 13px; color: var(--muted); line-height: 1.5; font-family: 'DM Mono', monospace; margin-bottom: 20px; }
+  .modal-cost { font-size: 28px; font-weight: 300; font-family: 'DM Mono', monospace; margin-bottom: 6px; letter-spacing: -0.02em; }
+  .modal-btns { display: flex; gap: 8px; }
+  .modal-btns .btn { margin-top: 0; }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--bg); border-top: 1px solid var(--border);
+    display: flex; z-index: 50; padding: 0;
+    height: 56px;
+  }
+  .nav-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 3px;
+    cursor: pointer; color: var(--muted);
+    font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
+    font-family: 'DM Mono', monospace; font-weight: 500;
+    transition: color .15s; border: none; background: transparent;
+    padding: 8px 4px;
+  }
+  .nav-item.active { color: var(--text); }
+  .nav-icon { font-size: 18px; }
+  .nav-active-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--text); margin: 0 auto; opacity: 0; transition: opacity .15s; }
+  .nav-item.active .nav-active-dot { opacity: 1; }
+
+  /* ── TAB PANELS ── */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── LOADING ── */
+  .loading-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px; z-index: 500; transition: opacity .3s; }
+  .loading-screen.hidden { opacity: 0; pointer-events: none; }
+  .loading-wordmark { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text); }
+  .loading-line { width: 40px; height: 1px; background: var(--border2); position: relative; overflow: hidden; }
+  .loading-line::after { content: ''; position: absolute; left: -100%; top: 0; width: 100%; height: 100%; background: var(--text); animation: loadSlide 1s ease infinite; }
+  @keyframes loadSlide { to { left: 200%; } }
+
+  /* ── TOAST ── */
+  #toast { position: fixed; bottom: 72px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text); color: #fff; border-radius: 100px; padding: 10px 18px; font-size: 12px; font-family: 'DM Mono', monospace; z-index: 9999; transition: all .25s cubic-bezier(.4,0,.2,1); white-space: nowrap; pointer-events: none; opacity: 0; }
+  #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  #toast.error { background: var(--danger); }
+  #toast.success { background: var(--success); }
+
+  /* ── SPINNER ── */
+  .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; display: inline-block; vertical-align: middle; margin-right: 6px; }
+  .btn-primary .spinner { }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── NO ACTIONS BANNER ── */
+  .no-actions-banner { background: #fff0f0; border: 1px solid #f0c0c0; border-radius: var(--radius); padding: 12px 14px; margin-bottom: 16px; font-size: 12px; color: var(--danger); font-family: 'DM Mono', monospace; display: none; }
+  .no-actions-banner.visible { display: block; }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  @media (max-width: 400px) { .stats-row { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 600px) { .modal { border-radius: 16px; margin-bottom: 40px; } .modal-overlay { align-items: center; } }
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-screen" id="loading-screen">
+  <div class="loading-wordmark">✦ ACTIONS</div>
+  <div class="loading-line"></div>
+</div>
+
+<!-- PIN SUCCESS OVERLAY -->
+<div class="pin-success-overlay" id="pin-success-overlay">
+  <div class="pin-success-check" id="pin-success-check">
+    <svg class="pin-success-svg" viewBox="0 0 34 34">
+      <path class="pin-check-path" id="pin-check-path" d="M7 17 L14 24 L27 10"/>
+    </svg>
+  </div>
+  <div class="pin-success-label">Verified</div>
+</div>
+
+<!-- ── AUTH ───────────────────────────────────────────────────────────── -->
+<div class="screen" id="screen-auth">
+  <div class="auth-wrap">
+    <div class="wordmark">✦ Indy Actions</div>
+    <p class="screen-sub" id="auth-sub">Sign in to your account</p>
+
+    <div class="card">
+      <div class="seg">
+        <button class="seg-btn active" id="tab-login" onclick="switchAuthTab('login')">Sign In</button>
+        <button class="seg-btn" id="tab-signup" onclick="switchAuthTab('signup')">Sign Up</button>
+      </div>
+      <div id="msg-auth" class="msg"></div>
+      <div id="form-login">
+        <div class="field"><label>Email</label><input type="email" id="login-email" placeholder="you@example.com" autocomplete="email"></div>
+        <div class="field"><label>Password</label><input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password"></div>
+        <button class="btn btn-primary" id="btn-login" onclick="doLogin()">Sign in</button>
+      </div>
+      <div id="form-signup" style="display:none">
+        <div class="field"><label>Name</label><input type="text" id="signup-name" placeholder="Your name" autocomplete="name"></div>
+        <div class="field"><label>Email</label><input type="email" id="signup-email" placeholder="you@example.com" autocomplete="email"></div>
+        <div class="field"><label>Password</label><input type="password" id="signup-password" placeholder="Min 6 characters" autocomplete="new-password"></div>
+        <button class="btn btn-primary" id="btn-signup" onclick="doSignup()">Create account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PIN SETUP ──────────────────────────────────────────────────────── -->
+<div class="screen" id="screen-pin-setup">
+  <div class="auth-wrap">
+    <div class="wordmark">✦ Indy Actions</div>
+    <h1 class="screen-title">Set a PIN.</h1>
+    <p class="screen-sub">You'll use this each session</p>
+    <div class="card">
+      <div id="msg-pin" class="msg"></div>
+      <div id="pin-step1">
+        <p style="font-size:12px;color:var(--muted);margin-bottom:14px;font-family:'DM Mono',monospace;">Choose a 4-digit PIN</p>
+        <div class="pin-row" id="pin-setup-row1">
+          <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+          <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+          <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+          <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+        </div>
+        <button class="btn btn-primary" onclick="pinSetupNext()">Continue</button>
+      </div>
+      <div id="pin-step2" style="display:none">
+        <p style="font-size:12px;color:var(--muted);margin-bottom:14px;font-family:'DM Mono',monospace;">Confirm your PIN</p>
+        <div class="pin-row" id="pin-setup-row2">
+          <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+          <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+          <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+          <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+        </div>
+        <button class="btn btn-primary" id="btn-set-pin" onclick="pinSetupConfirm()">Set PIN</button>
+        <button class="btn btn-secondary" onclick="pinSetupBack()">Back</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PIN VERIFY ─────────────────────────────────────────────────────── -->
+<div class="screen" id="screen-pin-verify">
+  <div class="auth-wrap">
+    <div class="wordmark">✦ Indy Actions</div>
+    <h1 class="screen-title">Enter PIN.</h1>
+    <p class="screen-sub" id="pin-verify-sub">Quick verification</p>
+    <div class="card">
+      <div id="msg-pin-verify" class="msg"></div>
+      <div class="pin-row" id="pin-verify-row">
+        <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+        <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+        <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+        <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+      </div>
+      <button class="btn btn-primary" onclick="verifyPin()">Verify</button>
+      <button class="btn btn-secondary" onclick="doSignOut()">Sign out</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── DASHBOARD ──────────────────────────────────────────────────────── -->
+<div class="screen" id="screen-dashboard">
+  <div class="dash-header">
+    <div class="dash-wordmark"><span class="dash-wordmark-star">✦</span> ACTIONS</div>
+    <div class="user-chip">
+      <div class="user-avatar" id="user-avatar-letter">?</div>
+      <span class="user-email" id="header-email">–</span>
+    </div>
+  </div>
+
+  <div class="dash-content">
+
+    <!-- HOME -->
+    <div class="tab-panel active" id="panel-home">
+
+      <div class="home-top">
+        <div class="home-greeting-sub">Good to see you</div>
+        <div class="home-greeting-name" id="dash-greeting">—</div>
+      </div>
+
+      <div class="no-actions-banner" id="no-actions-banner">
+        ⚠ No actions remaining this month — resets <span id="banner-reset"></span>.
+      </div>
+
+      <!-- Hero balance card -->
+      <div class="hero-card">
+        <div class="hero-card-top">
+          <div>
+            <div class="hero-label">Indy Actions</div>
+            <div class="hero-name" id="actions-name">—</div>
+          </div>
+          <div class="hero-balance">
+            <div class="hero-balance-num" id="actions-remaining-big">10</div>
+            <div class="hero-balance-denom">/ <span id="actions-limit-denom">10</span> this month</div>
+          </div>
+        </div>
+        <div class="hero-card-bar-area">
+          <div class="hero-bar-labels">
+            <span id="bar-used-label">0 used</span>
+            <span id="bar-remaining-label">10 left</span>
+          </div>
+          <div class="hero-bar-track">
+            <div class="hero-bar-fill" id="actions-bar" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="hero-card-footer">
+          <div class="hero-reset-text">Resets <span id="reset-hint-date">–</span></div>
+          <button class="hero-quick-btn" onclick="switchPanel('redeem', document.querySelector('[data-panel=redeem]'))">Redeem →</button>
+        </div>
+      </div>
+
+      <!-- Quick action tiles -->
+      <div class="quick-tiles">
+        <div class="quick-tile" onclick="switchPanel('redeem', document.querySelector('[data-panel=redeem]'))">
+          <span class="qt-icon">⬡</span>
+          <span class="qt-label">Redeem</span>
+        </div>
+        <div class="quick-tile" onclick="switchPanel('history', document.querySelector('[data-panel=history]'))">
+          <span class="qt-icon">≡</span>
+          <span class="qt-label">History</span>
+        </div>
+        <div class="quick-tile" onclick="switchPanel('profile', document.querySelector('[data-panel=profile]'))">
+          <span class="qt-icon">◇</span>
+          <span class="qt-label">Account</span>
+        </div>
+        <div class="quick-tile" onclick="switchRedeemTabAndGo('browse')">
+          <span class="qt-icon">⊞</span>
+          <span class="qt-label">Browse</span>
+        </div>
+      </div>
+
+      <!-- Stats grid -->
+      <div class="stats-grid">
+        <div class="stat-box accent">
+          <div class="stat-box-label">Total purchases</div>
+          <div class="stat-box-val" id="stat-purchases">0</div>
+          <div class="stat-box-unit">all time</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">Actions used</div>
+          <div class="stat-box-val" id="stat-actions-used">0</div>
+          <div class="stat-box-unit">all time</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">This month</div>
+          <div class="stat-box-val" id="stat-this-month">0</div>
+          <div class="stat-box-unit">actions spent</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">Remaining</div>
+          <div class="stat-box-val" id="stat-remaining">10</div>
+          <div class="stat-box-unit">actions left</div>
+        </div>
+      </div>
+
+      <!-- Spend chart -->
+      <div class="spend-chart-wrap">
+        <div class="spend-chart-header">
+          <span class="spend-chart-title">Monthly spend</span>
+          <span class="spend-chart-total" id="spend-chart-total">–</span>
+        </div>
+        <div class="spend-bars" id="spend-bars"></div>
+      </div>
+
+      <!-- Favourite / most bought -->
+      <div class="section-label">Most purchased</div>
+      <div class="fav-card" id="fav-card" style="display:none;">
+        <div class="fav-icon" id="fav-icon">◈</div>
+        <div>
+          <div class="fav-label">Top item</div>
+          <div class="fav-name" id="fav-name">–</div>
+          <div class="fav-sub" id="fav-sub">–</div>
+        </div>
+        <div class="fav-right" id="fav-right">–</div>
+      </div>
+      <div id="fav-empty" class="empty-state" style="padding:20px 0 0;">No purchases yet</div>
+
+      <!-- Recent purchases -->
+      <div class="section-label" style="margin-top:20px;">Recent</div>
+      <div class="panel-card">
+        <div id="recent-list"></div>
+      </div>
+
+    </div>
+
+    <!-- REDEEM (code + QR) -->
+    <div class="tab-panel" id="panel-redeem">
+      <div style="padding-top:20px;margin-bottom:20px;">
+        <h2 style="font-size:20px;font-weight:600;letter-spacing:-0.02em;margin-bottom:4px;">Redeem</h2>
+        <p style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">Enter a product code or scan a QR</p>
+      </div>
+
+      <div class="method-tabs">
+        <button class="method-tab active" onclick="switchMethod('code', this)">Code</button>
+        <button class="method-tab" onclick="switchMethod('qr', this)">QR Scan</button>
+      </div>
+
+      <!-- CODE METHOD -->
+      <div id="method-code">
+        <div class="section-label">Enter product code</div>
+        <div class="code-input-wrap">
+          <input class="code-input" type="text" id="product-code-input" placeholder="0000" maxlength="10" autocomplete="off" spellcheck="false" oninput="onCodeInput(this)">
+          <button class="code-submit-btn" onclick="lookupCode()">→</button>
+        </div>
+        <div id="msg-code" class="msg"></div>
+
+        <!-- Product preview -->
+        <div class="product-preview" id="code-preview">
+          <div class="pp-name" id="pp-name">–</div>
+          <div>
+            <span class="pp-code-badge" id="pp-code-badge">–</span>
+          </div>
+          <div class="pp-meta" id="pp-meta">–</div>
+          <button class="btn btn-primary" id="btn-code-confirm" onclick="confirmCodePurchase()">Confirm</button>
+          <button class="btn btn-secondary" onclick="dismissCode()">Cancel</button>
+        </div>
+      </div>
+
+      <!-- QR METHOD -->
+      <div id="method-qr" style="display:none">
+        <div class="section-label">Point camera at QR code</div>
+        <div id="qr-reader"></div>
+        <div style="margin-top:10px;">
+          <button class="btn btn-primary" id="btn-start-scan" onclick="startScanner()">Start camera</button>
+          <button class="btn btn-secondary" id="btn-stop-scan" style="display:none" onclick="stopScanner()">Stop</button>
+        </div>
+        <div class="scan-result" id="scan-result">
+          <div class="sr-name" id="sr-name">–</div>
+          <div class="sr-meta" id="sr-meta">–</div>
+          <button class="btn btn-primary" id="btn-qr-confirm" onclick="confirmQRPurchase()">Confirm</button>
+          <button class="btn btn-secondary" onclick="dismissScan()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="tab-panel" id="panel-history">
+      <div style="padding-top:20px;margin-bottom:20px;">
+        <h2 style="font-size:20px;font-weight:600;letter-spacing:-0.02em;margin-bottom:4px;">History</h2>
+        <p style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">All your transactions</p>
+      </div>
+      <div class="panel-card">
+        <div id="full-history-list"></div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="tab-panel" id="panel-profile">
+      <div style="padding-top:20px;margin-bottom:20px;">
+        <h2 style="font-size:20px;font-weight:600;letter-spacing:-0.02em;margin-bottom:4px;">Account</h2>
+        <p style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">Your details & settings</p>
+      </div>
+
+      <div class="section-label">Details</div>
+      <div class="panel-card" style="margin-bottom:20px;">
+        <div class="profile-row"><span class="pr-key">Name</span><span class="pr-val" id="prof-name">–</span></div>
+        <hr class="divider">
+        <div class="profile-row"><span class="pr-key">Email</span><span class="pr-val" id="prof-email">–</span></div>
+        <hr class="divider">
+        <div class="profile-row"><span class="pr-key">Member since</span><span class="pr-val" id="prof-since">–</span></div>
+        <hr class="divider">
+        <div class="profile-row"><span class="pr-key">Actions this month</span><span class="pr-val" id="prof-actions">–</span></div>
+        <hr class="divider">
+        <div class="profile-row"><span class="pr-key">Next reset</span><span class="pr-val" id="prof-reset">–</span></div>
+      </div>
+
+      <div class="section-label">Security</div>
+      <div class="panel-card" style="margin-bottom:20px;">
+        <div style="padding:14px 18px;">
+          <button class="btn btn-secondary" style="margin-top:0;" onclick="toggleChangePinForm()">Change PIN</button>
+          <div class="change-pin-form" id="change-pin-form">
+            <p style="font-size:12px;color:var(--muted);margin-bottom:10px;font-family:'DM Mono',monospace;margin-top:14px;">New 4-digit PIN</p>
+            <div class="pin-row" id="change-pin-row">
+              <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+              <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+              <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+              <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+            </div>
+            <button class="btn btn-primary" onclick="doChangePin()">Save PIN</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">Session</div>
+      <div class="panel-card">
+        <div style="padding:14px 18px;">
+<button class="btn btn-secondary" style="margin-top:0;" onclick="window.location.href='login.html'">View More</button>
+
+        </div>
+        <div style="padding:14px 18px;">
+          <button class="btn btn-danger" style="margin-top:0;" onclick="doSignOut()">Sign out</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <button class="nav-item active" data-panel="home" onclick="switchPanel('home',this)">
+      <span class="nav-icon">○</span><span>Home</span><div class="nav-active-dot"></div>
+    </button>
+    <button class="nav-item" data-panel="redeem" onclick="switchPanel('redeem',this)">
+      <span class="nav-icon">◈</span><span>Redeem</span><div class="nav-active-dot"></div>
+    </button>
+    <button class="nav-item" data-panel="history" onclick="switchPanel('history',this)">
+      <span class="nav-icon">≡</span><span>History</span><div class="nav-active-dot"></div>
+    </button>
+    <button class="nav-item" data-panel="profile" onclick="switchPanel('profile',this)">
+      <span class="nav-icon">◇</span><span>Account</span><div class="nav-active-dot"></div>
+    </button>
+  </div>
+</div>
+
+<!-- ── CONFIRM MODAL ──────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title">Confirm purchase</div>
+    <div class="modal-cost" id="modal-cost">–</div>
+    <div class="modal-body" id="modal-body">–</div>
+    <div class="modal-btns">
+      <button class="btn btn-secondary" onclick="closeModal()" style="margin-top:0;">Cancel</button>
+      <button class="btn btn-primary" onclick="executePurchase()" id="btn-confirm-purchase" style="margin-top:0;">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════
+//  PRODUCT CATALOGUE
+//  Edit this list to add/remove/change products and their codes.
+//  actions = how many monthly actions the item costs (no $ involved)
+// ══════════════════════════════════════════════════════════════════════════
+const CATALOGUE = {
+  // New Products
+  'BBAG':  { name: 'Breakfast blind Bag',             actions: 1 },
+  'BRBB':  { name: 'Brunch Blind blind Bag',          actions: 1 },
+  'LBAG':  { name: 'Lunch blind Bag',                 actions: 1 },
+  'DBAG':  { name: 'Dinner blind Bag',                actions: 1 },
+  'BAGBUN':  { name: '5 pack random Blind Bags',                actions: 5 },
+
+  'WB01':  { name: 'Normal Reusable White Board Book',    actions: 1 },
+  'WB02':  { name: 'Peach Reusable White Board Book',     actions: 1 },
+  'WB03':  { name: 'Reusable Amethyst White Board Book',  actions: 1 },
+  'WB04':  { name: 'Reusable Mint White Board Book',      actions: 1 },
+  'WB05':  { name: 'Pink Reusable White Board Book',      actions: 1 },
+  'WB06':  { name: 'Reusable Vintage White Board Book',   actions: 1 },
+   
+  'LB01':  { name: 'Loot Box 1',      actions: 2 },
+  'LB02':  { name: 'Loot Box 2',      actions: 2 },
+  'LB03':  { name: 'Loot Box 3',      actions: 2 },
+
+  'STARTER':  { name: 'JVST Starter Pack',      actions: 5 },
+};
+// ══════════════════════════════════════════════════════════════════════════
+
+// ── Firebase ──────────────────────────────────────────────────────────────
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyC50_wBK3TfERX1gm35puugCD324SxHJR8",
+  authDomain: "tunesandindy.firebaseapp.com",
+  projectId: "tunesandindy",
+  storageBucket: "tunesandindy.firebasestorage.app",
+  messagingSenderId: "335192973371",
+  appId: "1:335192973371:web:ce69d4b67c765d6aaf7c1e"
+};
+firebase.initializeApp(FIREBASE_CONFIG);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+// ── State ─────────────────────────────────────────────────────────────────
+let currentUser     = null;
+let userData        = null;
+let scannerInstance = null;
+let pendingPurchase = null;   // { product, actions, method, code? }
+let currentMethod   = 'code';
+const ACTIONS_LIMIT = 10;
+const SS_PIN_OK     = 'shop_pin_ok';
+
+// URL params (QR arrival)
+const _p = new URLSearchParams(window.location.search);
+const QR = { product: _p.get('product'), actions: parseInt(_p.get('actions'))||1, sig: _p.get('sig') };
+const hasQR = !!(QR.product && QR.sig);
+
+// ── Auth state ────────────────────────────────────────────────────────────
+auth.onAuthStateChanged(async user => {
+  try {
+    if (user) {
+      currentUser = user;
+      await loadUserData(user.uid);
+      const pinOk = sessionStorage.getItem(SS_PIN_OK);
+      if (!userData.pin) {
+        showScreen('pin-setup');
+        setTimeout(() => focusFirst('pin-setup-row1'), 200);
+      } else if (!pinOk) {
+        showPinVerify(hasQR ? `Verify to purchase ${QR.product}` : 'Quick verification');
+      } else {
+        enterDashboard();
+      }
+    } else {
+      currentUser = null; userData = null;
+      sessionStorage.removeItem(SS_PIN_OK);
+      showScreen('auth');
+    }
+  } catch(e) {
+    console.error(e);
+    showScreen('auth');
+  } finally {
+    hideLoading();
+  }
+});
+
+// ── User data ─────────────────────────────────────────────────────────────
+async function loadUserData(uid) {
+  const ref = db.collection('shop_users').doc(uid);
+  const snap = await ref.get();
+  if (snap.exists) {
+    userData = snap.data();
+    await maybeResetMonth(uid, ref);
+  } else {
+    const now = new Date();
+    userData = {
+      displayName: currentUser.displayName || 'Member',
+      email: currentUser.email,
+      actionsUsed: 0,
+      actionsMonth: monthKey(now),
+      totalActionsUsed: 0,
+      purchases: [],
+      pin: null,
+      memberSince: now.toISOString()
+    };
+    await ref.set(userData);
+  }
+}
+
+function monthKey(d) { return `${d.getFullYear()}-${d.getMonth()+1}`; }
+
+async function maybeResetMonth(uid, ref) {
+  const now = new Date();
+  if (userData.actionsMonth !== monthKey(now)) {
+    userData.actionsUsed  = 0;
+    userData.actionsMonth = monthKey(now);
+    await ref.update({ actionsUsed: 0, actionsMonth: monthKey(now) });
+  }
+}
+
+async function saveUserData(updates) {
+  await db.collection('shop_users').doc(currentUser.uid).update(updates);
+  Object.assign(userData, updates);
+}
+
+// ── Screens ───────────────────────────────────────────────────────────────
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + name);
+  if (el) el.classList.add('active');
+}
+function hideLoading() { document.getElementById('loading-screen').classList.add('hidden'); }
+function focusFirst(rowId) {
+  const f = document.querySelector('#' + rowId + ' .pin-digit');
+  if (f) setTimeout(() => f.focus(), 50);
+}
+function showPinVerify(sub) {
+  document.getElementById('pin-verify-sub').textContent = sub;
+  clearPinRow('pin-verify-row');
+  clearMsg('msg-pin-verify');
+  showScreen('pin-verify');
+  focusFirst('pin-verify-row');
+}
+function enterDashboard() {
+  showScreen('dashboard');
+  renderDashboard();
+  if (hasQR) {
+    pendingPurchase = { product: QR.product, actions: QR.actions, method: 'qr' };
+    const btn = document.querySelector('[data-panel="redeem"]');
+    if (btn) switchPanel('redeem', btn);
+    switchMethod('qr', document.querySelectorAll('.method-tab')[1]);
+    showQRResult(pendingPurchase);
+  }
+}
+
+// ── Auth ──────────────────────────────────────────────────────────────────
+function switchAuthTab(tab) {
+  document.getElementById('tab-login').classList.toggle('active', tab==='login');
+  document.getElementById('tab-signup').classList.toggle('active', tab==='signup');
+  document.getElementById('form-login').style.display  = tab==='login'  ? 'block' : 'none';
+  document.getElementById('form-signup').style.display = tab==='signup' ? 'block' : 'none';
+  document.getElementById('auth-title').textContent  = tab==='login' ? 'Welcome back.' : 'Create account.';
+  document.getElementById('auth-sub').textContent    = tab==='login' ? 'Sign in to your account' : 'Join the shop';
+  clearMsg('msg-auth');
+}
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-password').value;
+  if (!email || !pass) return showMsg('msg-auth', 'Fill in all fields', 'error');
+  setBtn('btn-login', true, 'Signing in...');
+  try { await auth.signInWithEmailAndPassword(email, pass); }
+  catch(e) { showMsg('msg-auth', friendlyError(e), 'error'); setBtn('btn-login', false, 'Sign in'); }
+}
+async function doSignup() {
+  const name  = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const pass  = document.getElementById('signup-password').value;
+  if (!name||!email||!pass) return showMsg('msg-auth', 'Fill in all fields', 'error');
+  if (pass.length < 6) return showMsg('msg-auth', 'Password must be at least 6 characters', 'error');
+  setBtn('btn-signup', true, 'Creating...');
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    await cred.user.updateProfile({ displayName: name });
+  } catch(e) { showMsg('msg-auth', friendlyError(e), 'error'); setBtn('btn-signup', false, 'Create account'); }
+}
+function doSignOut() { stopScanner(); sessionStorage.removeItem(SS_PIN_OK); auth.signOut(); }
+function friendlyError(e) {
+  const m = e.message || '';
+  if (m.includes('user-not-found')||m.includes('wrong-password')||m.includes('invalid-credential')) return 'Incorrect email or password';
+  if (m.includes('email-already-in-use')) return 'Email already in use';
+  if (m.includes('too-many-requests')) return 'Too many attempts — try later';
+  if (m.includes('invalid-email')) return 'Invalid email address';
+  return 'Something went wrong';
+}
+
+// ── PIN ───────────────────────────────────────────────────────────────────
+let pinStep1 = '';
+function setupPinInputs(rowId) {
+  const row = document.getElementById(rowId);
+  if (!row) return;
+  const inputs = Array.from(row.querySelectorAll('.pin-digit'));
+  inputs.forEach((inp, i) => {
+    inp.addEventListener('input', e => {
+      const v = e.target.value.replace(/\D/g,'');
+      e.target.value = v ? v[0] : '';
+      if (v && i < inputs.length-1) inputs[i+1].focus();
+    });
+    inp.addEventListener('keydown', e => {
+      if (e.key==='Backspace' && !e.target.value && i > 0) { inputs[i-1].focus(); inputs[i-1].value=''; }
+    });
+    inp.addEventListener('paste', e => {
+      e.preventDefault();
+      const text = (e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'');
+      inputs.forEach((x,j) => x.value = text[j]||'');
+      inputs[Math.min(text.length, inputs.length-1)].focus();
+    });
+  });
+}
+function getPinValue(rowId) {
+  return Array.from(document.getElementById(rowId).querySelectorAll('.pin-digit')).map(x=>x.value).join('');
+}
+function clearPinRow(rowId) {
+  const r = document.getElementById(rowId);
+  if (r) r.querySelectorAll('.pin-digit').forEach(x=>x.value='');
+}
+function simpleHash(str) {
+  let h=0;
+  for (let i=0;i<str.length;i++) h=(Math.imul(31,h)+str.charCodeAt(i))|0;
+  return h.toString(36);
+}
+function pinSetupNext() {
+  const pin = getPinValue('pin-setup-row1');
+  if (pin.length < 4) return showMsg('msg-pin','Enter all 4 digits','error');
+  pinStep1 = pin;
+  document.getElementById('pin-step1').style.display='none';
+  document.getElementById('pin-step2').style.display='block';
+  clearPinRow('pin-setup-row2'); clearMsg('msg-pin');
+  focusFirst('pin-setup-row2');
+}
+function pinSetupBack() {
+  document.getElementById('pin-step1').style.display='block';
+  document.getElementById('pin-step2').style.display='none';
+}
+async function pinSetupConfirm() {
+  const pin = getPinValue('pin-setup-row2');
+  if (pin.length < 4) return showMsg('msg-pin','Enter all 4 digits','error');
+  if (pin !== pinStep1) { clearPinRow('pin-setup-row2'); showMsg('msg-pin','PINs don\'t match','error'); focusFirst('pin-setup-row2'); return; }
+  setBtn('btn-set-pin', true, 'Saving...');
+  try {
+    await saveUserData({ pin: simpleHash(pin + currentUser.uid) });
+    sessionStorage.setItem(SS_PIN_OK,'1');
+    enterDashboard();
+  } catch(e) { showMsg('msg-pin','Failed to save PIN','error'); setBtn('btn-set-pin',false,'Set PIN'); }
+}
+async function verifyPin() {
+  const pin = getPinValue('pin-verify-row');
+  if (pin.length < 4) return showMsg('msg-pin-verify','Enter all 4 digits','error');
+  if (simpleHash(pin + currentUser.uid) !== userData.pin) {
+    clearPinRow('pin-verify-row');
+    showMsg('msg-pin-verify','Incorrect PIN','error');
+    focusFirst('pin-verify-row');
+    return;
+  }
+  sessionStorage.setItem(SS_PIN_OK,'1');
+  clearMsg('msg-pin-verify');
+  // Animate all pin digits green
+  document.querySelectorAll('#pin-verify-row .pin-digit').forEach(d => d.classList.add('correct'));
+  // Show CSS checkmark overlay
+  const overlay = document.getElementById('pin-success-overlay');
+  const ring    = document.getElementById('pin-success-check');
+  const path    = document.getElementById('pin-check-path');
+  overlay.classList.add('show');
+  setTimeout(() => { ring.classList.add('animate'); path.classList.add('draw'); }, 50);
+  setTimeout(() => {
+    overlay.classList.remove('show');
+    ring.classList.remove('animate');
+    path.classList.remove('draw');
+    document.querySelectorAll('#pin-verify-row .pin-digit').forEach(d => d.classList.remove('correct'));
+    enterDashboard();
+  }, 1600);
+}
+async function doChangePin() {
+  const pin = getPinValue('change-pin-row');
+  if (pin.length < 4) return showToast('Enter all 4 digits','error');
+  try {
+    await saveUserData({ pin: simpleHash(pin + currentUser.uid) });
+    clearPinRow('change-pin-row');
+    document.getElementById('change-pin-form').classList.remove('open');
+    showToast('PIN updated');
+  } catch(e) { showToast('Failed to update PIN','error'); }
+}
+function toggleChangePinForm() { document.getElementById('change-pin-form').classList.toggle('open'); }
+
+// ── Dashboard ─────────────────────────────────────────────────────────────
+function renderDashboard() {
+  if (!currentUser || !userData) return;
+  const name      = userData.displayName || currentUser.displayName || 'Member';
+  const used      = userData.actionsUsed || 0;
+  const remaining = Math.max(0, ACTIONS_LIMIT - used);
+  const pct       = Math.min(100, (used / ACTIONS_LIMIT) * 100);
+  const resetDate = getNextResetDate();
+  const firstName = name.split(' ')[0];
+  const purchases = userData.purchases || [];
+
+  // Header
+  document.getElementById('user-avatar-letter').textContent = name[0].toUpperCase();
+  document.getElementById('header-email').textContent = userData.email || currentUser.email || '–';
+
+  // Home hero
+  document.getElementById('dash-greeting').textContent     = firstName;
+  document.getElementById('actions-name').textContent      = name;
+  document.getElementById('actions-remaining-big').textContent = remaining;
+  document.getElementById('actions-remaining-big').classList.toggle('warn', remaining === 0);
+  document.getElementById('bar-used-label').textContent    = `${used} used`;
+  document.getElementById('bar-remaining-label').textContent = `${remaining} left`;
+  document.getElementById('actions-bar').style.width       = pct + '%';
+  document.getElementById('actions-bar').classList.toggle('warn', remaining === 0);
+  document.getElementById('actions-bar').classList.toggle('warn', remaining === 0);
+  document.getElementById('reset-hint-date').textContent   = resetDate;
+  document.getElementById('banner-reset').textContent      = resetDate;
+  document.getElementById('no-actions-banner').classList.toggle('visible', remaining === 0);
+  document.getElementById('actions-limit-denom').textContent = ACTIONS_LIMIT;
+
+  // Stats
+  const totalActionsAllTime = userData.totalActionsUsed || 0;
+  document.getElementById('stat-purchases').textContent    = purchases.length;
+  document.getElementById('stat-actions-used').textContent = totalActionsAllTime;
+  document.getElementById('stat-this-month').textContent   = used;
+  document.getElementById('stat-remaining').textContent    = remaining;
+
+  // Profile
+  document.getElementById('prof-name').textContent    = name;
+  document.getElementById('prof-email').textContent   = userData.email || currentUser.email || '–';
+  document.getElementById('prof-since').textContent   = userData.memberSince
+    ? new Date(userData.memberSince).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})
+    : '–';
+  document.getElementById('prof-actions').textContent = `${used} / ${ACTIONS_LIMIT}`;
+  document.getElementById('prof-reset').textContent   = resetDate;
+
+  // History
+  const sorted = purchases.slice().reverse();
+  renderHistory('recent-list', sorted.slice(0,5));
+  renderHistory('full-history-list', sorted);
+
+  // Spend chart
+  renderSpendChart(purchases);
+
+  // Favourite item
+  renderFavItem(purchases);
+}
+
+function getNextResetDate() {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth()+1, 1)
+    .toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+function renderSpendChart(purchases) {
+  const barsEl = document.getElementById('spend-bars');
+  const totalEl = document.getElementById('spend-chart-total');
+  if (!barsEl) return;
+
+  // Build last 6 months of data
+  const now = new Date();
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push({
+      key: `${d.getFullYear()}-${d.getMonth()+1}`,
+      label: d.toLocaleDateString('en-US',{month:'short'}),
+      isCurrent: i === 0,
+      total: 0
+    });
+  }
+  purchases.forEach(p => {
+    const d = new Date(p.date);
+    const key = `${d.getFullYear()}-${d.getMonth()+1}`;
+    const m = months.find(x => x.key === key);
+    if (m) m.total += p.actionsCost || 1;
+  });
+
+  const max = Math.max(...months.map(m => m.total), 1);
+  const grandTotal = months.reduce((s,m) => s+m.total, 0);
+  totalEl.textContent = `${grandTotal} actions / 6mo`;
+
+  barsEl.innerHTML = months.map(m => {
+    const h = Math.max(3, Math.round((m.total / max) * 48));
+    const cls = m.isCurrent ? 'current' : (m.total > 0 ? 'has-data' : '');
+    return `<div class="spend-bar-col">
+      <div class="spend-bar ${cls}" style="height:${h}px" title="${m.total} actions"></div>
+      <div class="spend-bar-label">${m.label}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderFavItem(purchases) {
+  const favCard  = document.getElementById('fav-card');
+  const favEmpty = document.getElementById('fav-empty');
+  if (!purchases.length) {
+    favCard.style.display  = 'none';
+    favEmpty.style.display = 'block';
+    return;
+  }
+  // Count by product name
+  const counts = {};
+  purchases.forEach(p => { counts[p.product] = (counts[p.product]||0)+1; });
+  const top = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
+  const topName = top[0], topCount = top[1];
+  const totalSpent = purchases.filter(p=>p.product===topName).reduce((s,p)=>s+(p.actionsCost||1),0);
+
+  document.getElementById('fav-name').textContent  = topName;
+  document.getElementById('fav-sub').textContent   = `${topCount} order${topCount!==1?'s':''}`;
+  document.getElementById('fav-right').textContent = `${totalSpent} act. total`;
+  document.getElementById('fav-icon').textContent  = '◈';
+  favCard.style.display  = 'flex';
+  favEmpty.style.display = 'none';
+}
+
+function renderHistory(id, list) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!list||!list.length) {
+    el.innerHTML = '<div class="empty-state">No purchases yet</div>'; return;
+  }
+  const now = Date.now();
+  el.innerHTML = list.map(p => {
+    const age = now - new Date(p.date).getTime();
+    const isRecent = age < 48*3600*1000;
+    return `<div class="history-item">
+      <div class="hi-left">
+        <div class="hi-dot${isRecent?' recent':''}"></div>
+        <div>
+          <div class="hi-product">${escHtml(p.product||'Item')}</div>
+          <div class="hi-date">${new Date(p.date).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}</div>
+        </div>
+      </div>
+      <div class="hi-right">
+        <div class="hi-cost">−${p.actionsCost||1} act.</div>
+        <div class="hi-method">${escHtml(p.method||'code')}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function escHtml(s) { return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// ── Navigation ────────────────────────────────────────────────────────────
+function switchPanel(name, el) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  if (name !== 'redeem') stopScanner();
+}
+function switchRedeemTabAndGo(tab) {
+  switchPanel('redeem', document.querySelector('[data-panel="redeem"]'));
+  switchRedeemTab(tab, document.querySelectorAll('.redeem-tab')[tab==='cart'?0:tab==='browse'?1:2]);
+}
+
+// ── Method tabs (code vs QR) ──────────────────────────────────────────────
+function switchMethod(name, el) {
+  currentMethod = name;
+  document.querySelectorAll('.method-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('method-code').style.display = name==='code' ? 'block' : 'none';
+  document.getElementById('method-qr').style.display   = name==='qr'   ? 'block' : 'none';
+  if (name !== 'qr') stopScanner();
+  dismissCode(); dismissScan();
+}
+
+// ── CODE PURCHASE ─────────────────────────────────────────────────────────
+function onCodeInput(input) {
+  // Auto-uppercase and clear error
+  input.value = input.value.toUpperCase();
+  clearMsg('msg-code');
+  document.getElementById('code-preview').classList.remove('visible');
+}
+
+function lookupCode() {
+  const raw  = document.getElementById('product-code-input').value.trim().toUpperCase();
+  if (!raw) return showMsg('msg-code', 'Enter a product code', 'error');
+
+  const product = CATALOGUE[raw];
+  if (!product) {
+    clearPreview();
+    showMsg('msg-code', `Code "${raw}" not found`, 'error');
+    return;
+  }
+
+  const used      = userData.actionsUsed || 0;
+  const remaining = ACTIONS_LIMIT - used;
+
+  document.getElementById('pp-name').textContent     = product.name;
+  document.getElementById('pp-code-badge').textContent = raw;
+  document.getElementById('pp-meta').textContent =
+    `${product.actions} action${product.actions!==1?'s':''} · ${remaining} remaining`;
+
+  const confirmBtn = document.getElementById('btn-code-confirm');
+  if (remaining < product.actions) {
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = 'Not enough actions';
+  } else {
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = `Use ${product.actions} action${product.actions!==1?'s':''} →`;
+  }
+
+  clearMsg('msg-code');
+  document.getElementById('code-preview').classList.add('visible');
+
+  // Store pending
+  pendingPurchase = { product: product.name, actions: product.actions, method: 'code', code: raw };
+}
+
+function clearPreview() {
+  document.getElementById('code-preview').classList.remove('visible');
+  pendingPurchase = null;
+}
+
+function dismissCode() {
+  clearPreview();
+  clearMsg('msg-code');
+}
+
+function confirmCodePurchase() {
+  if (!pendingPurchase) return;
+  openConfirmModal(pendingPurchase);
+}
+
+// ── QR SCANNER ────────────────────────────────────────────────────────────
+async function startScanner() {
+  if (scannerInstance) return;
+  document.getElementById('btn-start-scan').style.display = 'none';
+  document.getElementById('btn-stop-scan').style.display  = 'block';
+  try {
+    scannerInstance = new Html5Qrcode('qr-reader');
+    await scannerInstance.start(
+      { facingMode: 'environment' },
+      { fps: 10, qrbox: { width: 220, height: 220 } },
+      onQRScanned, () => {}
+    );
+  } catch(e) {
+    showToast('Camera access denied', 'error');
+    stopScanner();
+  }
+}
+function stopScanner() {
+  if (scannerInstance) { scannerInstance.stop().catch(()=>{}); scannerInstance = null; }
+  document.getElementById('btn-start-scan').style.display = 'block';
+  document.getElementById('btn-stop-scan').style.display  = 'none';
+}
+function onQRScanned(text) {
+  stopScanner();
+  try {
+    const url     = new URL(text);
+    const product = url.searchParams.get('product');
+    const actions = parseInt(url.searchParams.get('actions')) || 1;
+    const sig     = url.searchParams.get('sig');
+    if (!product || !sig) throw new Error('invalid');
+    pendingPurchase = { product, actions, method: 'qr' };
+    showQRResult(pendingPurchase);
+  } catch(e) { showToast('Invalid QR code', 'error'); }
+}
+function showQRResult(data) {
+  const used      = userData.actionsUsed || 0;
+  const remaining = ACTIONS_LIMIT - used;
+  const cost      = data.actions || 1;
+  document.getElementById('sr-name').textContent = data.product;
+  document.getElementById('sr-meta').textContent =
+    `${cost} action${cost!==1?'s':''} · ${remaining} remaining`;
+  const btn = document.getElementById('btn-qr-confirm');
+  if (remaining < cost) {
+    btn.disabled = true;
+    btn.textContent = 'Not enough actions';
+  } else {
+    btn.disabled = false;
+    btn.textContent = `Use ${cost} action${cost!==1?'s':''} →`;
+  }
+  document.getElementById('scan-result').classList.add('visible');
+}
+function dismissScan() {
+  document.getElementById('scan-result').classList.remove('visible');
+  if (currentMethod !== 'qr') return;
+  pendingPurchase = null;
+}
+function confirmQRPurchase() {
+  if (!pendingPurchase) return;
+  openConfirmModal(pendingPurchase);
+}
+
+// ── PURCHASE FLOW ─────────────────────────────────────────────────────────
+function openConfirmModal(purchase) {
+  const used      = userData.actionsUsed || 0;
+  const remaining = ACTIONS_LIMIT - used;
+  const cost      = purchase.actions || 1;
+  if (remaining < cost) { showToast(`Need ${cost} actions, have ${remaining}`, 'error'); return; }
+
+  document.getElementById('modal-title').textContent = purchase.product;
+  document.getElementById('modal-cost').textContent  = `${cost} action${cost!==1?'s':''}`;
+  document.getElementById('modal-body').textContent  =
+    `You'll have ${remaining - cost} action${(remaining-cost)!==1?'s':''} remaining after this purchase.`;
+  document.getElementById('confirm-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('confirm-modal').classList.remove('open');
+  setBtn('btn-confirm-purchase', false, 'Confirm');
+}
+
+async function executePurchase() {
+  if (!pendingPurchase) return;
+  setBtn('btn-confirm-purchase', true, 'Processing...');
+  try {
+    // Re-fetch fresh from Firestore
+    const ref   = db.collection('shop_users').doc(currentUser.uid);
+    const snap  = await ref.get();
+    const fresh = snap.data();
+    await maybeResetMonth(currentUser.uid, ref);
+
+    const cost      = pendingPurchase.actions || 1;
+    const freshUsed = fresh.actionsUsed || 0;
+    const remaining = ACTIONS_LIMIT - freshUsed;
+
+    if (remaining < cost) {
+      closeModal(); showToast('Not enough actions remaining', 'error');
+      userData.actionsUsed = freshUsed; renderDashboard(); return;
+    }
+
+    const purchase = {
+      product:     pendingPurchase.product,
+      date:        new Date().toISOString(),
+      actionsCost: cost,
+      method:      pendingPurchase.method || 'code',
+      code:        pendingPurchase.code || null
+    };
+
+    const updates = {
+      actionsUsed:      freshUsed + cost,
+      totalActionsUsed: (fresh.totalActionsUsed||0) + cost,
+      purchases:        [...(fresh.purchases||[]), purchase]
+    };
+    await ref.update(updates);
+    Object.assign(userData, updates);
+
+    closeModal();
+    dismissCode();
+    dismissScan();
+    document.getElementById('product-code-input').value = '';
+    renderDashboard();
+    showToast(`${purchase.product} — done`, 'success');
+
+    // Go home after purchase
+    const homeBtn = document.querySelector('[data-panel="home"]');
+    if (homeBtn) setTimeout(() => switchPanel('home', homeBtn), 800);
+
+  } catch(e) {
+    console.error(e);
+    showToast('Purchase failed — try again', 'error');
+  } finally {
+    setBtn('btn-confirm-purchase', false, 'Confirm');
+  }
+}
+
+// ── Utilities ─────────────────────────────────────────────────────────────
+function showMsg(id, text, type) { const el=document.getElementById(id); if(!el)return; el.textContent=text; el.className=`msg ${type}`; }
+function clearMsg(id) { const el=document.getElementById(id); if(!el)return; el.className='msg'; el.textContent=''; }
+let _tt;
+function showToast(msg, type='') {
+  const t=document.getElementById('toast'); t.textContent=msg; t.className=`show${type?' '+type:''}`;
+  clearTimeout(_tt); _tt=setTimeout(()=>t.className='', 2800);
+}
+function setBtn(id, loading, text) {
+  const btn=document.getElementById(id); if(!btn)return;
+  btn.disabled=loading;
+  btn.innerHTML=loading?`<span class="spinner"></span>${text}`:text;
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  ['pin-setup-row1','pin-setup-row2','pin-verify-row','change-pin-row'].forEach(setupPinInputs);
+
+  // Enter key on code input
+  document.getElementById('product-code-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') lookupCode();
+  });
+
+  // Close modal on backdrop
+  document.getElementById('confirm-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // Enter on auth
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    const active = document.querySelector('.screen.active');
+    if (!active) return;
+    if (active.id === 'screen-auth') {
+      document.getElementById('tab-login').classList.contains('active') ? doLogin() : doSignup();
+    }
+  });
+});
+</script>
+</body>
+</html>
