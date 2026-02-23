@@ -124,7 +124,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9997;b
 .card-body{font-size:.85rem;color:var(--t2);line-height:1.6}
 
 /* ── NAV ── */
-nav{position:fixed;top:40px;left:0;right:0;z-index:200;background:rgba(0,0,0,.92);backdrop-filter:blur(18px);border-bottom:1px solid var(--b);transition:top .3s ease}
+nav{position:fixed;top:36px;left:0;right:0;z-index:200;background:rgba(0,0,0,.92);backdrop-filter:blur(18px);border-bottom:1px solid var(--b);transition:top .3s ease}
 .nav-inner{max-width:1200px;margin:0 auto;padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between}
 .logo{font-size:1.2rem;font-weight:700;letter-spacing:-.02em;cursor:pointer;transition:opacity .15s}
 .logo:hover{opacity:.8}
@@ -610,16 +610,121 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
   .modal-content{padding:0 20px 24px}
 }
 
-/* ── PROMO BANNER ── */
-#promo-banner{position:fixed;top:0;left:0;right:0;z-index:201;background:linear-gradient(90deg,#1a0000 0%,#0d0d0d 40%,#1a0000 100%);border-bottom:1px solid rgba(255,45,45,.35);padding:10px 32px;display:flex;align-items:center;justify-content:center;gap:16px;text-align:center;flex-wrap:wrap;transition:transform .3s ease}
-#promo-banner.hidden{transform:translateY(-100%)}
-.promo-tag{font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:var(--red);color:#fff;padding:2px 8px;border-radius:3px;flex-shrink:0}
-.promo-text{font-size:.8rem;color:rgba(255,255,255,.85);letter-spacing:.01em}
-.promo-text strong{color:#fff}
-.promo-link{font-size:.78rem;font-weight:700;color:var(--red);text-decoration:underline;cursor:pointer;flex-shrink:0}
-.promo-close{position:absolute;right:16px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--t3);font-size:14px;cursor:pointer;padding:4px;transition:color .15s}
-.promo-close:hover{color:var(--t)}
-.promo-countdown{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--red);font-weight:700;letter-spacing:.05em;background:rgba(255,45,45,.1);border:1px solid rgba(255,45,45,.25);padding:2px 10px;border-radius:4px}
+/* ── TESTIMONIALS GRID RESPONSIVE ── */
+@media(max-width:860px){.testimonials-grid{grid-template-columns:1fr!important}}
+/* ── CONTACT SPLIT RESPONSIVE ── */
+@media(max-width:860px){.contact-split{grid-template-columns:1fr!important;gap:40px!important}}
+
+/* ── ANNOUNCEMENT BAR ── */
+#announce-bar{position:fixed;top:0;left:0;right:0;z-index:201;background:#0a0a0a;border-bottom:1px solid rgba(255,45,45,.25);padding:9px 32px;display:flex;align-items:center;justify-content:center;gap:12px}
+#announce-bar.gone{display:none}
+.ann-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:pdot 2s ease-out infinite;flex-shrink:0}
+.ann-text{font-size:.75rem;color:rgba(255,255,255,.75);letter-spacing:.02em}
+.ann-text strong{color:#fff}
+.ann-link{font-size:.75rem;font-weight:700;color:var(--red);cursor:pointer;transition:opacity .15s}
+.ann-link:hover{opacity:.75}
+.ann-close{position:absolute;right:16px;background:none;border:none;color:var(--t3);font-size:13px;cursor:pointer;transition:color .15s;padding:4px}
+.ann-close:hover{color:var(--t)}
+
+/* ── HERO MARQUEE ── */
+.hero-marquee{position:absolute;bottom:0;left:0;right:0;z-index:11;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.5);backdrop-filter:blur(4px);padding:10px 0;overflow:hidden;pointer-events:none}
+.hero-marquee-inner{display:inline-block;white-space:nowrap;animation:tick 30s linear infinite}
+.hero-marquee-inner span{display:inline-block;margin-right:56px;font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.hero-marquee-inner span.accent{color:var(--red);opacity:.7}
+
+/* ── HOW IT WORKS ── */
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--b);border:1px solid var(--b);border-radius:12px;overflow:hidden;margin-top:52px}
+.how-cell{background:var(--bg);padding:40px 32px;position:relative;transition:background .2s}
+.how-cell:hover{background:var(--bg2)}
+.how-num{font-family:'JetBrains Mono',monospace;font-size:4rem;font-weight:700;color:rgba(255,255,255,.04);line-height:1;position:absolute;top:20px;right:24px;letter-spacing:-.06em;pointer-events:none}
+.how-icon{width:40px;height:40px;border-radius:10px;background:var(--bg3);border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:20px}
+.how-title{font-size:1rem;font-weight:700;letter-spacing:-.02em;margin-bottom:10px}
+.how-body{font-size:.82rem;color:var(--t2);line-height:1.7}
+.how-tag{margin-top:16px;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.how-tag.red{color:var(--red)}
+
+/* ── FEATURE MODES ── */
+#modes{background:var(--bg);border-top:1px solid var(--b)}
+.modes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--b);border:1px solid var(--b);border-radius:14px;overflow:hidden;margin-top:52px}
+.mode-card{background:var(--bg2);padding:48px 40px;position:relative;overflow:hidden;cursor:default;transition:background .25s}
+.mode-card:hover{background:var(--bg3)}
+.mode-card.full{grid-column:1/-1}
+.mode-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .4s ease}
+.mode-card:hover::before{transform:scaleX(1)}
+.mode-glow{position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;pointer-events:none;transition:opacity .3s}
+.mode-card:hover .mode-glow{opacity:1}
+.mode-badge{display:inline-flex;align-items:center;gap:6px;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:3px 10px;border-radius:3px;margin-bottom:20px}
+.mode-badge.soon{background:rgba(255,45,45,.08);border:1px solid rgba(255,45,45,.2);color:var(--red)}
+.mode-badge.live{background:rgba(40,200,64,.08);border:1px solid rgba(40,200,64,.25);color:#28c840}
+.mode-badge.planned{background:rgba(255,255,255,.04);border:1px solid var(--b2);color:var(--t3)}
+.mode-title{font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-bottom:12px}
+.mode-body{font-size:.88rem;color:var(--t2);line-height:1.75;max-width:480px}
+.mode-visual{position:absolute;bottom:24px;right:32px;font-size:3.5rem;opacity:.08;pointer-events:none;transition:opacity .3s}
+.mode-card:hover .mode-visual{opacity:.14}
+
+/* ── SYSTEM STATUS ── */
+#status-section{background:var(--bg2);border-top:1px solid var(--b);border-bottom:1px solid var(--b)}
+.status-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:12px}
+.status-all-ok{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(40,200,64,.06);border:1px solid rgba(40,200,64,.2);border-radius:4px;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#28c840;font-family:'JetBrains Mono',monospace}
+.status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.status-row{background:var(--bg3);border:1px solid var(--b);border-radius:10px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;transition:border-color .2s}
+.status-row:hover{border-color:var(--b2)}
+.status-name{font-size:.82rem;font-weight:600;margin-bottom:3px}
+.status-desc{font-size:.7rem;color:var(--t3)}
+.status-pill{display:inline-flex;align-items:center;gap:5px;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:3px;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.status-pill.ok{background:rgba(40,200,64,.08);border:1px solid rgba(40,200,64,.2);color:#28c840}
+.status-pill.beta{background:rgba(255,45,45,.08);border:1px solid rgba(255,45,45,.2);color:var(--red)}
+.status-pill.soon{background:rgba(255,255,255,.03);border:1px solid var(--b2);color:var(--t3)}
+.status-uptime{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--t3);margin-top:2px}
+
+/* ── ROADMAP / TIMELINE ── */
+#roadmap{background:var(--bg);border-top:1px solid var(--b)}
+.roadmap-line{position:relative;padding-left:32px}
+.roadmap-line::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--red),var(--b) 80%)}
+.roadmap-item{position:relative;margin-bottom:28px;padding:24px 28px;background:var(--bg2);border:1px solid var(--b);border-radius:10px;transition:border-color .2s}
+.roadmap-item:hover{border-color:var(--b2)}
+.roadmap-item.done{border-color:rgba(40,200,64,.18)}
+.roadmap-dot{position:absolute;left:-28px;top:28px;width:15px;height:15px;border-radius:50%;border:2px solid var(--b2);background:var(--bg);display:flex;align-items:center;justify-content:center}
+.roadmap-dot.done{background:var(--red);border-color:var(--red);box-shadow:0 0 8px rgba(255,45,45,.4)}
+.roadmap-dot.done::after{content:'';width:5px;height:5px;border-radius:50%;background:#fff}
+.roadmap-date{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.roadmap-date.now{color:var(--red)}
+.roadmap-title{font-size:.95rem;font-weight:700;margin-bottom:4px}
+.roadmap-body{font-size:.8rem;color:var(--t2);line-height:1.65}
+.roadmap-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.roadmap-tag{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:3px;background:var(--bg3);border:1px solid var(--b2);color:var(--t3)}
+
+/* ── NOTIFY STRIP ── */
+#notify-section{background:linear-gradient(135deg,#0a0000 0%,#000 50%,#00050a 100%);border-top:1px solid rgba(255,45,45,.15);border-bottom:1px solid rgba(255,45,45,.15)}
+.notify-wrap{display:grid;grid-template-columns:1.2fr 1fr;gap:80px;align-items:center}
+.notify-terminal{background:#000;border:1px solid var(--b2);border-radius:10px;padding:20px 24px;font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.9}
+.notify-line{display:block;color:var(--t3)}
+.notify-line .nk{color:var(--red)}
+.notify-line .nv{color:#fff}
+.notify-line .nc{color:#28c840}
+.notify-form{display:flex;gap:8px;margin-top:20px}
+.notify-input{flex:1;background:var(--bg2);border:1px solid var(--b2);border-radius:6px;padding:11px 14px;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#fff;outline:none;transition:border-color .2s}
+.notify-input:focus{border-color:var(--red)}
+.notify-input::placeholder{color:var(--t3)}
+
+/* ── COUNTER SECTION ── */
+#counter-section{background:var(--bg2);border-top:1px solid var(--b);border-bottom:1px solid var(--b)}
+.counter-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--b);border:1px solid var(--b);border-radius:10px;overflow:hidden;margin-top:44px}
+.counter-cell{background:var(--bg2);padding:32px 28px;text-align:center;transition:background .2s}
+.counter-cell:hover{background:var(--bg3)}
+.counter-num{font-size:2.2rem;font-weight:700;letter-spacing:-.05em;line-height:1;margin-bottom:6px;font-variant-numeric:tabular-nums}
+.counter-num .accent{color:var(--red)}
+.counter-label{font-size:.7rem;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;line-height:1.5}
+
+@media(max-width:860px){
+  .how-grid{grid-template-columns:1fr}
+  .modes-grid{grid-template-columns:1fr}
+  .mode-card.full{grid-column:1}
+  .status-grid{grid-template-columns:1fr}
+  .notify-wrap{grid-template-columns:1fr;gap:40px}
+  .roadmap-split{grid-template-columns:1fr!important;gap:40px!important}
+  .counter-grid{grid-template-columns:1fr 1fr}
+}
 
 /* ── 3D MODEL SECTION ── */
 #model-section{background:#000;border-top:1px solid var(--b);border-bottom:1px solid var(--b);padding:96px 0;overflow:hidden;position:relative}
@@ -893,13 +998,13 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
   <div style="margin-top:22px;color:#333;font-size:.6rem;letter-spacing:.12em">INITIALIZING CULTURE STACK...</div>
 </div>
 
-<!-- PROMO BANNER -->
-<div id="promo-banner">
-  <span class="promo-tag">🔥 Launch Deal</span>
-  <span class="promo-text"><strong>Indy+ for $0.25</strong> — unlimited AI, image gen, and advanced models. One-time unlock, not a subscription.</span>
-  <span class="promo-countdown" id="promoTimer">23:47:12</span>
-  <span class="promo-link" onclick="openDealPopup()">Claim now →</span>
-  <button class="promo-close" onclick="document.getElementById('promo-banner').classList.add('hidden')">✕</button>
+
+<!-- ANNOUNCEMENT BAR -->
+<div id="announce-bar">
+  <span class="ann-dot"></span>
+  <span class="ann-text"><strong>Indy 3 is live.</strong> Culture-first AI — free forever, unlock more for $0.25.</span>
+  <span class="ann-link" onclick="window.location.href='indy.html'">Try it →</span>
+  <button class="ann-close" onclick="document.getElementById('announce-bar').classList.add('gone');document.querySelector('nav').style.top='0'">✕</button>
 </div>
 
 <!-- NAV -->
@@ -942,6 +1047,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
       <a href="#services">Services</a>
       <a href="#pricing">Pricing</a>
       <a href="#community">Community</a>
+      <a href="#contact">Contact</a>
       <a href="store.html">Store</a>
       <a href="shop.html">👤</a>
         <button class="cart-trigger" onclick="openCartPanel()">
@@ -985,16 +1091,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
         <span class="c-tag">#Orgullo</span>
       </div></div>
     </div>
-    <div class="c-slide">
-      <video class="c-vid" autoplay muted loop playsinline><source src="video4.mp4" type="video/mp4"></video>
-      <img class="c-img" src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1600" alt="">
-      <div class="c-overlay"><div class="c-content">
-        <div class="c-label">Innovation</div>
-        <h2 class="c-title">Indy 3 Live</h2>
-        <p class="c-desc">AI-generated images in real-time. The future of creativity is here.</p>
-        <span class="c-tag">#Indy3</span>
-      </div></div>
-    </div>
   </div>
   <button class="c-arrow prev" id="cPrev">←</button>
   <button class="c-arrow next" id="cNext">→</button>
@@ -1004,11 +1100,16 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
     <span class="hero-console-line"><span class="hc-key">MODE</span>CULTURE_FIRST</span>
     <span class="hero-console-line"><span class="hc-key">UPTIME</span><span id="heroUptime">00:00:00</span></span>
   </div>
+  <div class="hero-marquee">
+    <div class="hero-marquee-inner">
+      <span class="accent">INDY 3</span><span>AI WITH TASTE</span><span class="accent">BARRIO SESSIONS</span><span>PARA LA GENTE</span><span class="accent">CULTURE FIRST</span><span>BLADE CARD</span><span class="accent">BUILT DIFFERENT</span><span>SPANGLISH READY</span><span class="accent">JVST TV</span><span>MUSIC ANALYSIS</span><span class="accent">VOICE MODE SOON</span><span>ESPAÑOL MODE SOON</span><span class="accent">CREATIVE MODE SOON</span><span>FREE FOREVER</span>
+      <span class="accent">INDY 3</span><span>AI WITH TASTE</span><span class="accent">BARRIO SESSIONS</span><span>PARA LA GENTE</span><span class="accent">CULTURE FIRST</span><span>BLADE CARD</span><span class="accent">BUILT DIFFERENT</span><span>SPANGLISH READY</span>
+    </div>
+  </div>
   <div class="c-dots">
     <button class="c-dot active" data-i="0"></button>
     <button class="c-dot" data-i="1"></button>
     <button class="c-dot" data-i="2"></button>
-    <button class="c-dot" data-i="3"></button>
   </div>
 </section>
 
@@ -1032,7 +1133,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
       <div>
         <div class="catalog-eyebrow">Physical Products</div>
         <h2 class="catalog-title">The <em>Catalog</em></h2>
-        <p class="catalog-sub">Blind bags &amp; limited drops from MINI CRAFTS × JVST — 2026. Pickups at Middle School recess.</p>
+        <p class="catalog-sub">Blind bags &amp; limited drops from MINI CRAFTS × JVST — 2026.</p>
       </div>
 
     </div>
@@ -1220,6 +1321,40 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
 </section>
 
 
+<!-- HOW IT WORKS -->
+<section style="background:var(--bg2);border-top:1px solid var(--b);border-bottom:1px solid var(--b)">
+  <div class="container">
+    <div class="sh center">
+      <div class="sh-label">// how_it_works</div>
+      <h2 class="sh-title">Simple by design. <span class="hl">Powerful by default.</span></h2>
+      <p class="sh-sub" style="margin:12px auto 0">Indy 3 meets you where you are — no setup, no configuration, no learning curve.</p>
+    </div>
+    <div class="how-grid reveal">
+      <div class="how-cell">
+        <div class="how-num">01</div>
+        <div class="how-icon">✦</div>
+        <div class="how-title">Start for free. Instantly.</div>
+        <div class="how-body">No credit card. No 7-day trial that quietly charges you. Create an account in seconds and start talking to Indy — right now, today.</div>
+        <div class="how-tag red">// free_forever</div>
+      </div>
+      <div class="how-cell">
+        <div class="how-num">02</div>
+        <div class="how-icon">💬</div>
+        <div class="how-title">Talk like you actually talk.</div>
+        <div class="how-body">Español. English. Spanglish. Slang. Indy doesn't correct you or switch registers without permission. It adapts to your voice — not the other way around.</div>
+        <div class="how-tag">// language_aware</div>
+      </div>
+      <div class="how-cell">
+        <div class="how-num">03</div>
+        <div class="how-icon">🚀</div>
+        <div class="how-title">Build something real.</div>
+        <div class="how-body">Music hooks. Captions. Business pitches. Translation for your abuela. Indy gives you outputs you can actually use — not drafts that need a full rewrite.</div>
+        <div class="how-tag">// culture_tuned</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- 3D MODEL — INDY CORE VISUALIZER -->
 <section id="model-section">
   <div class="container">
@@ -1253,6 +1388,93 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
 </section>
 
 
+
+
+
+<!-- FEATURE MODES -->
+<section id="modes">
+  <div class="container">
+    <div class="sh">
+      <div class="sh-label">// indy3.modes</div>
+      <h2 class="sh-title">Four ways to use <span class="hl">Indy 3.</span></h2>
+      <p class="sh-sub" style="margin-top:10px">Each mode is a different dimension of what Indy can do. Some live. Some dropping soon.</p>
+    </div>
+    <div class="modes-grid reveal">
+      <div class="mode-card">
+        <div class="mode-glow" style="background:radial-gradient(circle,rgba(255,45,45,.06) 0%,transparent 70%);opacity:.6"></div>
+        <div class="mode-badge live"><span class="pulse-dot" style="width:5px;height:5px;margin-right:4px"></span>Live now</div>
+        <div class="mode-title">Standard Mode</div>
+        <div class="mode-body">Your always-on AI. Ask anything, build anything, translate anything. Indy 3's base layer — fast, private, and actually useful.</div>
+        <div style="margin-top:20px"><a href="indy.html" class="btn btn-red" style="font-size:.8rem">Try it free →</a></div>
+        <div class="mode-visual">💬</div>
+      </div>
+      <div class="mode-card">
+        <div class="mode-glow" style="background:radial-gradient(circle,rgba(245,200,66,.04) 0%,transparent 70%);opacity:.5"></div>
+        <div class="mode-badge soon">Coming soon</div>
+        <div class="mode-title">Español Mode</div>
+        <div class="mode-body">Not a translation layer — a first-class Spanish experience. Full Spanglish support, cultural nuance, and none of that stiff machine tone.</div>
+        <div style="margin-top:20px"><button class="btn btn-ghost" style="font-size:.8rem;border-color:rgba(245,200,66,.2);color:var(--yellow)" onclick="document.getElementById('notify-section').scrollIntoView({behavior:'smooth'})">Notify me →</button></div>
+        <div class="mode-visual">🌎</div>
+      </div>
+      <div class="mode-card">
+        <div class="mode-glow" style="background:radial-gradient(circle,rgba(255,45,45,.06) 0%,transparent 70%);opacity:.5"></div>
+        <div class="mode-badge soon">Coming soon</div>
+        <div class="mode-title">Voice Mode</div>
+        <div class="mode-body">Talk to Indy hands-free. No typing required — just say what you need and get a response before you even finish the sentence.</div>
+        <div style="margin-top:20px"><button class="btn btn-ghost" style="font-size:.8rem" onclick="document.getElementById('notify-section').scrollIntoView({behavior:'smooth'})">Notify me →</button></div>
+        <div class="mode-visual">🎙️</div>
+      </div>
+      <div class="mode-card">
+        <div class="mode-glow" style="background:radial-gradient(circle,rgba(255,45,45,.06) 0%,transparent 70%);opacity:.5"></div>
+        <div class="mode-badge soon">Coming soon</div>
+        <div class="mode-title">Creative Mode</div>
+        <div class="mode-body">Built for artists, producers, and creators. Write song hooks, reel scripts, album concepts, and bios that sound like yours — not a template.</div>
+        <div style="margin-top:20px"><button class="btn btn-ghost" style="font-size:.8rem" onclick="document.getElementById('notify-section').scrollIntoView({behavior:'smooth'})">Notify me →</button></div>
+        <div class="mode-visual">✍️</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SYSTEM STATUS -->
+<section id="status-section">
+  <div class="container">
+    <div class="status-header">
+      <div>
+        <div class="sh-label" style="margin-bottom:10px">// system.status</div>
+        <h2 class="sh-title" style="margin-bottom:8px">All systems. <span class="hl">Right now.</span></h2>
+        <p style="font-size:.85rem;color:var(--t2)">Live operational status of every JVST service.</p>
+      </div>
+      <div class="status-all-ok"><span style="width:6px;height:6px;border-radius:50%;background:#28c840;display:inline-block"></span>All systems operational</div>
+    </div>
+    <div class="status-grid">
+      <div class="status-row">
+        <div><div class="status-name">Indy 3 — AI Core</div><div class="status-desc">Language model inference, response pipeline</div><div class="status-uptime">Uptime: 99.97% (30d)</div></div>
+        <span class="status-pill ok">● Online</span>
+      </div>
+      <div class="status-row">
+        <div><div class="status-name">Authentication</div><div class="status-desc">Login, sessions, account management</div><div class="status-uptime">Uptime: 99.95% (30d)</div></div>
+        <span class="status-pill ok">● Online</span>
+      </div>
+      <div class="status-row">
+        <div><div class="status-name">Barrio Sessions</div><div class="status-desc">Music submissions, community review</div><div class="status-uptime">Uptime: 99.90% (30d)</div></div>
+        <span class="status-pill ok">● Online</span>
+      </div>
+      <div class="status-row">
+        <div><div class="status-name">Blade Card</div><div class="status-desc">Digital identity, shareable profiles</div><div class="status-uptime">Beta — limited rollout</div></div>
+        <span class="status-pill beta">◐ Beta</span>
+      </div>
+      <div class="status-row">
+        <div><div class="status-name">JVST TV</div><div class="status-desc">Video content, culture drops</div><div class="status-uptime">Uptime: 99.95% (30d)</div></div>
+        <span class="status-pill ok">● Online</span>
+      </div>
+      <div class="status-row">
+        <div><div class="status-name">Voice & Creative Modes</div><div class="status-desc">Español, Voice, Creative — in development</div><div class="status-uptime">ETA: Q2 2026</div></div>
+        <span class="status-pill soon">○ Soon</span>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ARTICLES SHELF -->
 <section style="background:var(--bg2);border-top:1px solid var(--b);border-bottom:1px solid var(--b);padding:60px 0">
@@ -1334,59 +1556,30 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
   </div>
 </section>
 
-<!-- CULTURE -->
-<section id="culture" class="culture-wrap">
+<!-- CULTURE STATEMENT -->
+<section id="culture" style="background:var(--bg2);border-top:1px solid var(--b);border-bottom:1px solid var(--b)">
   <div class="container">
-    <div class="sh">
-      <div class="sh-label">Cultural Roots</div>
-      <h2 class="sh-title">Inspired by the world's <span class="hl">biggest artist</span></h2>
-      <p class="sh-sub">Bad Bunny's music and ethos is in JVST's DNA. Not a gimmick — a genuine love for what the culture builds.</p>
+    <div style="max-width:860px;margin:0 auto;display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;align-items:center;gap:0;text-align:center">
+      <div style="padding:40px 32px">
+        <div style="font-size:2rem;font-weight:700;letter-spacing:-.04em;color:var(--red);margin-bottom:6px">18B+</div>
+        <div style="font-size:.72rem;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;line-height:1.5">Streams — most-streamed<br>Spanish-language artist</div>
+      </div>
+      <div style="width:1px;background:var(--b);height:60px;align-self:center"></div>
+      <div style="padding:40px 32px">
+        <div style="font-size:2rem;font-weight:700;letter-spacing:-.04em;margin-bottom:6px">#1</div>
+        <div style="font-size:.72rem;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;line-height:1.5">Spotify globally,<br>multiple years running</div>
+      </div>
+      <div style="width:1px;background:var(--b);height:60px;align-self:center"></div>
+      <div style="padding:40px 32px">
+        <div style="font-size:2rem;font-weight:700;letter-spacing:-.04em;margin-bottom:6px">🇵🇷</div>
+        <div style="font-size:.72rem;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;line-height:1.5">The island that gave<br>the world its pulse</div>
+      </div>
     </div>
-    <div class="bb-split">
-      <div>
-        <p class="bb-quote">"The fact that a song in Spanish can top the global charts isn't a surprise to us. It was always possible — the world just needed to catch up."</p>
-        <div class="bb-attr">— JVST on Latin music's global rise</div>
-        <div class="tags" id="eraTags">
-          <button class="tag on" data-era="all">All Eras</button>
-          <button class="tag" data-era="x100">X100PRE</button>
-          <button class="tag" data-era="yhlq">YHLQMDLG</button>
-          <button class="tag" data-era="uvst">Un Verano Sin Ti</button>
-          <button class="tag" data-era="nadie">Nadie Sabe</button>
-        </div>
-        <div class="culture-nums">
-          <div class="cnum-cell"><div class="cnum">18B+</div><div class="cnum-label">All-time streams — most-streamed Spanish-language artist ever</div></div>
-          <div class="cnum-cell"><div class="cnum" style="color:var(--red)">5×</div><div class="cnum-label">Latin Grammy Awards, plus mainstream Grammy nominations</div></div>
-          <div class="cnum-cell"><div class="cnum">🇵🇷</div><div class="cnum-label">Puerto Rico — the island that gave the world its pulse</div></div>
-          <div class="cnum-cell"><div class="cnum">#1</div><div class="cnum-label">Most streamed Spotify artist globally, multiple years running</div></div>
-        </div>
-      </div>
-      <div>
-        <div class="bb-albums">
-          <div class="bb-album"><img src="https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/cf/3a/db/cf3adbe6-8ea1-f60f-60fd-713eefda3962/193483317984.jpg/600x600bf-60.jpg" alt="X100PRE" onerror="this.style.background='#1c1c1c'"><div class="bb-album-name">X100PRE</div></div>
-          <div class="bb-album"><img src="https://i.scdn.co/image/ab67616d0000b273548f7ec52da7313de0c5e4a0" alt="YHLQMDLG" onerror="this.style.background='#1c1c1c'"><div class="bb-album-name">YHLQMDLG</div></div>
-          <div class="bb-album"><img src="https://media.pitchfork.com/photos/5fc9015ac61c34a7841b1eb3/1:1/w_3000,h_3000,c_limit/EL%20U%CC%81LTIMO%20TOUR%20DEL%20MUNDO_Bad%20Bunny%20.jpg" alt="El Último Tour" onerror="this.style.background='#1c1c1c'"><div class="bb-album-name">El Último Tour</div></div>
-          <div class="bb-album"><img src="https://media.pitchfork.com/photos/627425dbc85171592b8a6e6a/master/pass/Bad-Bunny-Un-Verano-Sin-Ti.jpg" alt="Un Verano Sin Ti" onerror="this.style.background='#1c1c1c'"><div class="bb-album-name">Un Verano</div></div>
-          <div class="bb-album"><img src="https://media.pitchfork.com/photos/65242c9caeb62be7989dbc83/master/pass/Bad-Bunny.jpg" alt="Nadie Sabe" onerror="this.style.background='#1c1c1c'"><div class="bb-album-name">Nadie Sabe</div></div>
-          <div class="bb-album"><img src="https://i.scdn.co/image/ab67616d0000b2734891d9b25d8919448388f3bb" alt="Oasis" onerror="this.style.background='#1c1c1c'"><div class="bb-album-name">Oasis</div></div>
-        </div>
-        <div style="margin-top:16px;">
-          <div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:8px;display:flex;justify-content:space-between;">
-            <span>Preview a track</span><span id="discoStatus">Choose one →</span>
-          </div>
-          <div class="disco-list" id="discoList"></div>
-        </div>
-      </div>
+    <div style="border-top:1px solid var(--b);padding:32px 0 0;text-align:center">
+      <p style="font-size:.88rem;color:var(--t2);line-height:1.75;max-width:560px;margin:0 auto;font-style:italic">"The world just needed to catch up." — Latin music runs the charts, the culture, and now the tech.</p>
     </div>
   </div>
 </section>
-
-<!-- LYRIC TICKER -->
-<div class="lyric-ticker">
-  <div class="lyric-inner">
-    <span>🐰</span><span class="lit">YO PERREO SOLA</span><span>·</span><span class="lit">TITÍ ME PREGUNTÓ</span><span>·</span><span class="lit">EFECTO</span><span>·</span><span class="lit">EL APAGÓN</span><span>·</span><span class="lit">MOSCOW MULE</span><span>·</span><span class="lit">ME PORTO BONITO</span><span>·</span><span class="lit">CALLAÍTA</span><span>·</span><span class="lit">SAFAERA</span><span>·</span>
-    <span>🐰</span><span class="lit">YO PERREO SOLA</span><span>·</span><span class="lit">TITÍ ME PREGUNTÓ</span><span>·</span><span class="lit">EFECTO</span><span>·</span><span class="lit">EL APAGÓN</span><span>·</span><span class="lit">MOSCOW MULE</span><span>·</span><span class="lit">ME PORTO BONITO</span>
-  </div>
-</div>
 
 <!-- COLLABS -->
 <section id="collabs">
@@ -1801,7 +1994,181 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
   </div>
 </section>
 
-<!-- FOOTER -->
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:80px;align-items:start" class="roadmap-split">
+      <div>
+        <div class="sh-label" style="margin-bottom:12px">// product.roadmap</div>
+        <h2 style="font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;letter-spacing:-.04em;line-height:1.1;margin-bottom:16px">Where JVST<br>is <span class="hl">going.</span></h2>
+        <p style="font-size:.9rem;color:var(--t2);line-height:1.75;margin-bottom:24px">We build in public. No vague promises — real milestones, real timelines, and a direct line to what's next.</p>
+        <button class="btn btn-ghost" style="font-size:.8rem" onclick="document.getElementById('notify-section').scrollIntoView({behavior:'smooth'})">Get notified on drops →</button>
+      </div>
+      <div class="roadmap-line reveal">
+        <div class="roadmap-item done">
+          <div class="roadmap-dot done"></div>
+          <div class="roadmap-date now">// Feb 2026 — LIVE</div>
+          <div class="roadmap-title">Indy 3 Launch</div>
+          <div class="roadmap-body">Full public release — Standard Mode, Free tier, Indy+, and One plan. Available now.</div>
+          <div class="roadmap-tags"><span class="roadmap-tag">AI Core</span><span class="roadmap-tag">Free Tier</span><span class="roadmap-tag">Indy+</span></div>
+        </div>
+        <div class="roadmap-item done">
+          <div class="roadmap-dot done"></div>
+          <div class="roadmap-date now">// Feb 2026 — LIVE</div>
+          <div class="roadmap-title">Blade Card Beta</div>
+          <div class="roadmap-body">Digital identity card — shareable link, QR code, mobile-first. Included with One membership.</div>
+          <div class="roadmap-tags"><span class="roadmap-tag">Blade Card</span><span class="roadmap-tag">Beta</span></div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-dot"></div>
+          <div class="roadmap-date">// Q2 2026</div>
+          <div class="roadmap-title">Español Mode + Voice Mode</div>
+          <div class="roadmap-body">Native Spanish/Spanglish support and hands-free voice interface for Indy 3, dropping together.</div>
+          <div class="roadmap-tags"><span class="roadmap-tag">Español</span><span class="roadmap-tag">Voice</span><span class="roadmap-tag">Coming Soon</span></div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-dot"></div>
+          <div class="roadmap-date">// Q3 2026</div>
+          <div class="roadmap-title">Creative Mode + Music Analysis</div>
+          <div class="roadmap-body">Songwriter-grade AI tools — hooks, bios, reel scripts, and a full track analysis pipeline.</div>
+          <div class="roadmap-tags"><span class="roadmap-tag">Creative</span><span class="roadmap-tag">Music AI</span></div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-dot"></div>
+          <div class="roadmap-date">// Q4 2026</div>
+          <div class="roadmap-title">JVST TV + Physical Drops</div>
+          <div class="roadmap-body">Full video platform launch and the first wave of MINI CRAFTS × JVST physical blind bag drops.</div>
+          <div class="roadmap-tags"><span class="roadmap-tag">JVST TV</span><span class="roadmap-tag">Physical</span><span class="roadmap-tag">Mini Crafts</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COUNTER SECTION -->
+<section id="counter-section">
+  <div class="container">
+    <div class="sh center">
+      <div class="sh-label">// live.metrics</div>
+      <h2 class="sh-title">By the <span class="hl">numbers.</span></h2>
+    </div>
+    <div class="counter-grid reveal">
+      <div class="counter-cell">
+        <div class="counter-num"><span class="accent" id="ctr-messages">0</span></div>
+        <div class="counter-label">Messages<br>Processed</div>
+      </div>
+      <div class="counter-cell">
+        <div class="counter-num"><span class="accent">3</span></div>
+        <div class="counter-label">Plans —<br>Starting Free</div>
+      </div>
+      <div class="counter-cell">
+        <div class="counter-num"><span class="accent">&lt;1</span>s</div>
+        <div class="counter-label">Average<br>Response Time</div>
+      </div>
+      <div class="counter-cell">
+        <div class="counter-num"><span class="accent">0</span></div>
+        <div class="counter-label">Data Sold to<br>Third Parties</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOTIFY SECTION -->
+<section id="notify-section">
+  <div class="container">
+    <div class="notify-wrap">
+      <div class="reveal">
+        <div class="sh-label" style="margin-bottom:12px">// feature.drops</div>
+        <h2 style="font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;letter-spacing:-.04em;line-height:1.1;margin-bottom:16px">Be first when<br>new modes <span class="hl">drop.</span></h2>
+        <p style="font-size:.9rem;color:var(--t2);line-height:1.75;margin-bottom:28px">Voice Mode. Español Mode. Creative Mode. Music Analysis. All coming — leave your email and we'll hit you once, right when they launch.</p>
+        <div class="notify-form">
+          <input class="notify-input" type="email" id="notifyEmail" placeholder="your@email.com"/>
+          <button class="btn btn-red" onclick="submitNotify()">Notify me →</button>
+        </div>
+        <p id="notifySuccess" style="display:none;margin-top:10px;font-size:.78rem;color:#28c840;font-family:'JetBrains Mono',monospace">// subscribed. one email, right when it drops.</p>
+        <p style="font-size:.68rem;color:var(--t3);margin-top:10px">One email when it drops. That's it. No spam, ever.</p>
+      </div>
+      <div class="reveal">
+        <div class="notify-terminal">
+          <span class="notify-line"><span class="nk">$</span> <span class="nv">jvst upcoming --modes</span></span>
+          <span class="notify-line" style="color:var(--t3);margin-bottom:4px">&nbsp;</span>
+          <span class="notify-line"><span class="nk">→</span> <span style="color:#28c840">■</span> <span class="nv">Standard Mode</span>&nbsp;&nbsp;&nbsp;<span class="nc">LIVE</span></span>
+          <span class="notify-line"><span class="nk">→</span> <span style="color:var(--red)">◐</span> <span class="nv">Español Mode</span>&nbsp;&nbsp;&nbsp;<span style="color:var(--yellow)">Q2 2026</span></span>
+          <span class="notify-line"><span class="nk">→</span> <span style="color:var(--red)">◐</span> <span class="nv">Voice Mode</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--yellow)">Q2 2026</span></span>
+          <span class="notify-line"><span class="nk">→</span> <span style="color:var(--t3)">○</span> <span class="nv">Creative Mode</span>&nbsp;&nbsp;<span style="color:var(--t3)">Q3 2026</span></span>
+          <span class="notify-line"><span class="nk">→</span> <span style="color:var(--t3)">○</span> <span class="nv">Music Analysis</span>&nbsp;&nbsp;<span style="color:var(--t3)">Q3 2026</span></span>
+          <span class="notify-line" style="margin-top:8px">&nbsp;</span>
+          <span class="notify-line"><span class="nk">$</span> <span class="nv">status</span>&nbsp;<span class="nc">all_systems_nominal</span>&nbsp;<span class="cursor"></span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="border-top:1px solid var(--b)">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:80px;align-items:start" class="contact-split">
+      <div>
+        <div class="sh-label" style="margin-bottom:12px">Get in touch</div>
+        <h2 style="font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;letter-spacing:-.04em;line-height:1.1;margin-bottom:16px">We read<br>every message.</h2>
+        <p style="font-size:.9rem;color:var(--t2);line-height:1.75;margin-bottom:32px">Whether you're an artist, a brand, a collaborator, or just someone with a question — we want to hear from you. Real people, real replies.</p>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:32px;height:32px;border-radius:7px;background:var(--bg3);border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0">💼</div>
+            <div><div style="font-size:.8rem;font-weight:600">Partnerships & Collabs</div><div style="font-size:.75rem;color:var(--t3)">Artists, athletes, brands</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:32px;height:32px;border-radius:7px;background:var(--bg3);border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0">🎤</div>
+            <div><div style="font-size:.8rem;font-weight:600">Barrio Sessions</div><div style="font-size:.75rem;color:var(--t3)">Submit your music</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:32px;height:32px;border-radius:7px;background:var(--bg3);border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0">🛠</div>
+            <div><div style="font-size:.8rem;font-weight:600">Support & Feedback</div><div style="font-size:.75rem;color:var(--t3)">Bug reports, feature ideas</div></div>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--b);border-radius:12px;padding:32px">
+        <div style="font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:20px;font-family:'JetBrains Mono',monospace">// contact_form</div>
+        <div style="display:flex;flex-direction:column;gap:14px" id="contactForm">
+          <div>
+            <label style="font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:6px">Name</label>
+            <input id="cf-name" class="collab-input" type="text" placeholder="Your name or project" style="width:100%"/>
+          </div>
+          <div>
+            <label style="font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:6px">Email</label>
+            <input id="cf-email" class="collab-input" type="email" placeholder="your@email.com" style="width:100%"/>
+          </div>
+          <div>
+            <label style="font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:6px">What's this about?</label>
+            <select id="cf-type" class="collab-input" style="width:100%;background:var(--bg3);color:var(--t);cursor:pointer">
+              <option value="">Select a topic</option>
+              <option value="collab">Collaboration / Partnership</option>
+              <option value="barrio">Barrio Sessions submission</option>
+              <option value="support">Support / Bug report</option>
+              <option value="feedback">Feature feedback</option>
+              <option value="press">Press inquiry</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:6px">Message</label>
+            <textarea id="cf-message" class="collab-input" placeholder="Tell us what's on your mind..." style="width:100%;min-height:110px;resize:vertical;font-family:inherit;line-height:1.6"></textarea>
+          </div>
+          <button class="btn btn-red" style="width:100%;padding:12px" onclick="submitContactForm()">Send Message →</button>
+          <p style="font-size:.68rem;color:var(--t3);text-align:center">We reply within 48 hours. No spam, ever.</p>
+        </div>
+        <div id="contactSuccess" style="display:none;text-align:center;padding:32px 0">
+          <div style="font-size:2rem;margin-bottom:12px">✓</div>
+          <div style="font-size:.95rem;font-weight:600;margin-bottom:8px">Message received.</div>
+          <div style="font-size:.82rem;color:var(--t2)">We'll get back to you within 48 hours.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 <footer>
   <div class="container">
     <!-- Community CTA bar -->
@@ -1819,7 +2186,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
       <div style="height:1px;background:var(--b);opacity:.6"></div>
       <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
         <span style="font-size:.72rem;color:var(--t3);font-weight:600;letter-spacing:.06em;text-transform:uppercase">Reach us</span>
-        <a href="https://forms.gle/NvAPe2yG1pXCqyup6" target="_blank" rel="noopener" style="font-size:.8rem;color:var(--t2);transition:color .15s" onmouseover="this.style.color='var(--t)'" onmouseout="this.style.color='var(--t2)'">Contact us →</a>
+        <a href="#contact" style="font-size:.8rem;color:var(--t2);transition:color .15s" onmouseover="this.style.color='var(--t)'" onmouseout="this.style.color='var(--t2)'">Contact us →</a>
         <span style="margin-left:auto;font-size:.72rem;color:var(--t3);font-style:italic">Hecho con amor 🐰</span>
       </div>
     </div>
@@ -1857,7 +2224,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
         <a href="javascript:void(0)" onclick="openModal('about')">About JVST</a>
         <a href="javascript:void(0)" onclick="openModal('press')">Press</a>
         <a href="javascript:void(0)" onclick="openModal('careers')">Careers</a>
-        <a href="javascript:void(0)" onclick="openModal('contact')">Contact</a>
+        <a href="#contact">Contact</a>
       </div>
       <div class="foot-col">
         <h4>Legal</h4>
@@ -1889,25 +2256,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
   </div>
 </footer>
 
-<!-- FEATURE DROP POPUP (fires after 15s) -->
-<div class="nl-overlay" id="nlOverlay" onclick="if(event.target===this)closeNl()">
-  <div class="nl-box">
-    <button class="nl-close" onclick="closeNl()">✕</button>
-    <div class="nl-tag"><span class="pulse-dot"></span> Dropping soon</div>
-    <h2 class="nl-title">Be first when<br><span class="hl">new features drop.</span></h2>
-    <p class="nl-sub">Voice Mode. Español Mode. Creative Mode. These are launching soon — leave your email to get first access, no spam.</p>
-    <div class="nl-features">
-      <div class="nl-feat-row"><span>🎙️</span><span>Voice Mode — talk to Indy hands-free</span><span class="nl-feat-status">Soon</span></div>
-      <div class="nl-feat-row"><span>🌎</span><span>Español Mode — native Spanish + Spanglish</span><span class="nl-feat-status">Soon</span></div>
-      <div class="nl-feat-row"><span>✍️</span><span>Creative Mode — for artists and creators</span><span class="nl-feat-status">Soon</span></div>
-    </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <input class="collab-input" type="email" placeholder="your@email.com" id="nlEmail" style="flex:1;min-width:200px"/>
-      <button class="btn btn-red" onclick="submitNl()">Notify me →</button>
-    </div>
-    <p style="font-size:.68rem;color:var(--t3);margin-top:10px">One email when it drops. That's it. See our <a href='javascript:void(0)' onclick='openModal("privacy")' style='color:var(--t2);text-decoration:underline'>Privacy Policy</a>.</p>
-  </div>
-</div>
 
 <!-- DEAL POPUP -->
 <div id="deal-popup">
@@ -1936,20 +2284,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
   </div>
 </div>
 
-<!-- EXIT INTENT POPUP -->
-<div id="exit-popup">
-  <div class="exit-box">
-    <button class="exit-box-close" onclick="document.getElementById('exit-popup').classList.remove('open')">✕</button>
-    <div style="font-size:2rem;margin-bottom:12px">👋</div>
-    <div class="sh-label" style="text-align:center;margin-bottom:8px">Wait — before you go</div>
-    <h3 style="font-size:1.3rem;font-weight:700;letter-spacing:-.02em;margin-bottom:10px">Indy's free tier doesn't expire.</h3>
-    <p style="font-size:.85rem;color:var(--t2);line-height:1.65;margin-bottom:24px">No credit card. No trial. No gotcha. Start with the free plan, upgrade when you want — or never. We just want you to try it.</p>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <button class="btn btn-red" style="width:100%" onclick="window.location.href='login.html'">Try Indy for free →</button>
-      <button class="btn btn-ghost" style="width:100%;font-size:.8rem" onclick="document.getElementById('exit-popup').classList.remove('open')">Maybe later</button>
-    </div>
-  </div>
-</div>
 
 <!-- MODAL OVERLAY -->
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
@@ -1960,7 +2294,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
 </div>
 
 <audio id="audioPlayer" preload="metadata"></audio>
-<audio id="discoAudio" preload="none"></audio>
 
 <script>
 // ── BOOT SCREEN ──
@@ -2158,60 +2491,6 @@ audio.addEventListener('ended', () => { playBtn.textContent = '▶'; playing = f
 progressBar.addEventListener('click', e => { if (!audio.duration) return; const r = progressBar.getBoundingClientRect(); audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration; });
 loadMain();
 
-// ── DISCO PLAYER ──
-const discoTracks = [
-  { label:'Mía', album:'X100PRE · 2018', query:'mia bad bunny drake', art:'https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/cf/3a/db/cf3adbe6-8ea1-f60f-60fd-713eefda3962/193483317984.jpg/600x600bf-60.jpg' },
-  { label:'Yo Perreo Sola', album:'YHLQMDLG · 2020', query:'yo perreo sola bad bunny', art:'https://i.scdn.co/image/ab67616d0000b273548f7ec52da7313de0c5e4a0' },
-  { label:'Tití Me Preguntó', album:'Un Verano Sin Ti · 2022', query:'titi me pregunto bad bunny', art:'https://media.pitchfork.com/photos/627425dbc85171592b8a6e6a/master/pass/Bad-Bunny-Un-Verano-Sin-Ti.jpg' },
-  { label:'El Apagón', album:'Un Verano Sin Ti · 2022', query:'el apagon bad bunny', art:'https://media.pitchfork.com/photos/627425dbc85171592b8a6e6a/master/pass/Bad-Bunny-Un-Verano-Sin-Ti.jpg' },
-  { label:'La Canción', album:'Oasis · 2019', query:'la cancion bad bunny j balvin', art:'https://i.scdn.co/image/ab67616d0000b2734891d9b25d8919448388f3bb' },
-];
-const discoAudio = document.getElementById('discoAudio');
-let activeRow = null, activeIdx = null;
-function buildDisco() {
-  const list = document.getElementById('discoList');
-  discoTracks.forEach((t, i) => {
-    const row = document.createElement('div');
-    row.className = 'disco-row';
-    row.innerHTML = `<div class="disco-num">${i+1}</div><img class="disco-thumb" src="${t.art}" alt="" onerror="this.src='https://cdn-images.dzcdn.net/images/cover/d98eaccfbb945bdf68241d6de7fe6a49/1900x1900-000000-80-0-0.jpg'"><div class="disco-info"><div class="disco-track">${t.label}</div><div class="disco-year">${t.album}</div></div><div class="disco-icon">▶</div>`;
-    row.addEventListener('click', () => playDisco(row, i));
-    list.appendChild(row);
-  });
-}
-async function playDisco(row, i) {
-  const statusEl = document.getElementById('discoStatus');
-  const thumb = row.querySelector('.disco-thumb');
-  const icon = row.querySelector('.disco-icon');
-  if (activeIdx === i) { discoAudio.pause(); row.classList.remove('on'); thumb.classList.remove('spin'); icon.innerHTML = '▶'; activeIdx = null; activeRow = null; statusEl.textContent = 'Choose one →'; return; }
-  if (activeRow) { activeRow.classList.remove('on'); activeRow.querySelector('.disco-thumb').classList.remove('spin'); activeRow.querySelector('.disco-icon').innerHTML = '▶'; }
-  icon.innerHTML = '…'; statusEl.textContent = `Loading ${discoTracks[i].label}…`;
-  try {
-    const r = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(discoTracks[i].query)}&media=music&limit=1`);
-    const d = await r.json();
-    if (d.results?.[0]) {
-      discoAudio.src = d.results[0].previewUrl;
-      await discoAudio.play();
-      row.classList.add('on'); thumb.classList.add('spin');
-      icon.innerHTML = '<div class="wave"><span style="height:40%"></span><span style="height:100%"></span><span style="height:60%"></span></div>';
-      activeRow = row; activeIdx = i; statusEl.textContent = `▶ ${d.results[0].trackName}`;
-    } else { icon.innerHTML = '▶'; statusEl.textContent = 'Preview unavailable'; }
-  } catch { icon.innerHTML = '▶'; statusEl.textContent = 'Could not load'; }
-}
-discoAudio.addEventListener('ended', () => {
-  if (activeRow) { activeRow.classList.remove('on'); activeRow.querySelector('.disco-thumb').classList.remove('spin'); activeRow.querySelector('.disco-icon').innerHTML = '▶'; }
-  activeRow = null; activeIdx = null;
-  const s = document.getElementById('discoStatus');
-  if (s) s.textContent = 'Choose one →';
-});
-buildDisco();
-
-// ── ERA TAGS ──
-document.getElementById('eraTags').addEventListener('click', e => {
-  if (e.target.classList.contains('tag')) {
-    document.querySelectorAll('.tag').forEach(t => t.classList.remove('on'));
-    e.target.classList.add('on');
-  }
-});
 
 // ── SHELF SCROLLERS ──
 function makeShelfScroller(shelfId, prevId, nextId) {
@@ -2369,34 +2648,6 @@ function regenCaption() {
   }
 }
 
-// ── NEWSLETTER POPUP ──
-let nlShown = false;
-function showNl() {
-  if (!nlShown && !sessionStorage.getItem('nlDismissed')) {
-    document.getElementById('nlOverlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-    nlShown = true;
-  }
-}
-function closeNl() {
-  document.getElementById('nlOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-  sessionStorage.setItem('nlDismissed', '1');
-}
-function submitNl() {
-  const v = document.getElementById('nlEmail')?.value;
-  if (v && v.includes('@')) {
-    document.getElementById('nlOverlay').innerHTML = `<div class="nl-box" style="text-align:center;padding:52px 40px"><div style="font-size:2rem;margin-bottom:16px">✓</div><h2 class="nl-title">You're on the list.</h2><p class="nl-sub">We'll hit you once — right when the features drop. Promise.</p></div>`;
-    setTimeout(closeNl, 2400);
-  } else {
-    const input = document.getElementById('nlEmail');
-    if (input) { input.style.borderColor = 'var(--red)'; setTimeout(() => input.style.borderColor = '', 1200); }
-  }
-}
-function submitNewsletter() {
-  // footer newsletter removed — kept for safety
-}
-setTimeout(showNl, 15000);
 
 // ── EXTENDED MODAL DATA ──
 const extraModalData = {
@@ -2491,7 +2742,7 @@ function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
   document.body.style.overflow = '';
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeNl(); closeCatPopup(); closeCartPanel(); closeCheckout(); closeThankyou(); document.getElementById('deal-popup').classList.remove('open'); document.getElementById('exit-popup').classList.remove('open'); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeCatPopup(); closeCartPanel(); closeCheckout(); closeThankyou(); const dp = document.getElementById('deal-popup'); if(dp) dp.classList.remove('open'); } });
 
 // ── CATALOG + CART + CHECKOUT ─────────────────────────────────────────────
 
@@ -2908,12 +3159,50 @@ document.getElementById('cat-popup').addEventListener('click', function(e) { if 
 document.getElementById('checkout-overlay').addEventListener('click', function(e) { if (e.target === this) closeCheckout(); });
 document.getElementById('ty-overlay').addEventListener('click', function(e) { if (e.target === this) closeThankyou(); });
 
-// ── PROMO BANNER ──
-document.querySelector('.promo-close').addEventListener('click', function() {
-  const banner = document.getElementById('promo-banner');
-  banner.classList.add('hidden');
-  document.querySelector('nav').style.top = '0';
-});
+// ── CONTACT FORM ──
+function submitContactForm() {
+  const name = document.getElementById('cf-name').value.trim();
+  const email = document.getElementById('cf-email').value.trim();
+  const type = document.getElementById('cf-type').value;
+  const msg = document.getElementById('cf-message').value.trim();
+  if (!name || !email || !msg) { alert('Please fill in your name, email, and message.'); return; }
+  document.getElementById('contactForm').style.display = 'none';
+  document.getElementById('contactSuccess').style.display = 'block';
+}
+
+// ── NOTIFY FORM ──
+function submitNotify() {
+  const v = document.getElementById('notifyEmail')?.value;
+  if (v && v.includes('@')) {
+    document.getElementById('notifySuccess').style.display = 'block';
+    document.getElementById('notifyEmail').value = '';
+  } else {
+    const input = document.getElementById('notifyEmail');
+    if (input) { input.style.borderColor = 'var(--red)'; setTimeout(() => input.style.borderColor = '', 1200); }
+  }
+}
+
+// ── ANIMATED COUNTER ──
+(function() {
+  const el = document.getElementById('ctr-messages');
+  if (!el) return;
+  let count = 0;
+  const target = 48271;
+  const obs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) {
+      obs.disconnect();
+      const step = Math.ceil(target / 60);
+      const interval = setInterval(() => {
+        count = Math.min(count + step, target);
+        el.textContent = count.toLocaleString();
+        if (count >= target) clearInterval(interval);
+      }, 25);
+    }
+  }, {threshold:0.5});
+  obs.observe(el);
+})();
+
+
 function openDealPopup() {
   document.getElementById('deal-popup').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -2921,47 +3210,7 @@ function openDealPopup() {
 document.getElementById('deal-popup').addEventListener('click', function(e) {
   if (e.target === this) { this.classList.remove('open'); document.body.style.overflow = ''; }
 });
-document.getElementById('exit-popup').addEventListener('click', function(e) {
-  if (e.target === this) { this.classList.remove('open'); document.body.style.overflow = ''; }
-});
 
-// ── PROMO COUNTDOWN (24hr from load) ──
-(function() {
-  const endKey = 'jvst_promo_end';
-  let end = parseInt(sessionStorage.getItem(endKey));
-  if (!end || end < Date.now()) {
-    end = Date.now() + 24 * 3600 * 1000;
-    sessionStorage.setItem(endKey, end);
-  }
-  function updatePromo() {
-    const diff = end - Date.now();
-    if (diff <= 0) { document.getElementById('promo-banner').classList.add('hidden'); return; }
-    const h = Math.floor(diff / 3600000);
-    const m = Math.floor((diff % 3600000) / 60000);
-    const s = Math.floor((diff % 60000) / 1000);
-    const pad = n => String(n).padStart(2, '0');
-    const timerEl = document.getElementById('promoTimer');
-    const d1El = document.getElementById('dealTimer1');
-    const str = pad(h) + ':' + pad(m) + ':' + pad(s);
-    if (timerEl) timerEl.textContent = str;
-    if (d1El) d1El.textContent = str;
-  }
-  updatePromo();
-  setInterval(updatePromo, 1000);
-})();
-
-// ── EXIT INTENT ──
-(function() {
-  let shown = false;
-  document.addEventListener('mouseleave', function(e) {
-    if (e.clientY < 10 && !shown) {
-      shown = true;
-      setTimeout(() => {
-        document.getElementById('exit-popup').classList.add('open');
-      }, 200);
-    }
-  });
-})();
 
 // ── 3D MODEL (Three.js wireframe orb) ──
 (function() {
