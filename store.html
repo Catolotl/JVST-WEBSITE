@@ -500,6 +500,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
     <div class="filter-inner">
       <button class="filter-tab on" data-section="all" onclick="filterSection('all', this)">All Products <span class="filter-count">22</span></button>
       <button class="filter-tab" data-section="blind" onclick="filterSection('blind', this)">Blind Bags <span class="filter-count">8</span></button>
+            <button class="filter-tab" data-section="book" onclick="filterSection('book', this)">WB Books<span class="filter-count">4</span></button>
       <button class="filter-tab" data-section="loot" onclick="filterSection('loot', this)">Loot Boxes <span class="filter-count">7</span></button>
       <button class="filter-tab" data-section="bundle" onclick="filterSection('bundle', this)">Bundles & Packs <span class="filter-count">7</span></button>
     </div>
@@ -523,12 +524,28 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
 
 <div class="section-accent"></div>
 
+  <section class="product-section" id="section-book">
+  <div class="container">
+    <div class="ps-head reveal">
+      <div>
+        <div class="ps-eyebrow">Section 02</div>
+        <h2 class="ps-title">Whiteboard <em>Books</em></h2>
+        <p class="ps-sub">Reusable Whiteboard Books, draw, erase, repeat.</p>
+      </div>
+      <div class="ps-count-badge"><span class="pulse-dot"></span> 4 items</div>
+    </div>
+    <div class="product-grid" id="grid-book"></div>
+  </div>
+</section>
+
+<div class="section-accent"></div>
+
 <!-- SECTION 2: LOOT BOXES + BUNDLES -->
 <section class="product-section" id="section-loot">
   <div class="container">
     <div class="ps-head reveal">
       <div>
-        <div class="ps-eyebrow">Section 02</div>
+        <div class="ps-eyebrow">Section 03</div>
         <h2 class="ps-title">Loot Boxes &amp; <em>Bundles</em></h2>
         <p class="ps-sub">Stack your pulls with multi-item drops, curated loot boxes, and limited-edition bundles. Best value per action — maximum rarity.</p>
       </div>
@@ -778,21 +795,21 @@ const products = {
       emoji: '🟥', img: 'breakfastbb.png', tag: 'Blind Bag · Original Series', name: 'Breakfast Blind Bag',
       code: 'BBAG', cost: 1, ribbon: null, featured: false,
       stock: '48 left',
-      desc: 'The very first MINI CRAFTS × JVST blind bag from the 2024 inaugural run. Morning-themed mystery collectible — sealed, random, and fully anonymous until opened. Pull pool includes: toast charm, espresso cup mini, cereal character, orange slice keychain, and two undisclosed rare variants.',
+      desc: 'The very first MINI CRAFTS × JVST blind bag from the 2024 inaugural run. Morning-themed mystery collectible — sealed, random, and fully anonymous until opened. Pull pool includes: Orange vynal, Cerial, an Egg, and two undisclosed rare variants.',
       perks: ['1 random morning-theme collectible', 'MINI CRAFTS × JVST heat-sealed packaging', '2 hidden rare variants in pool', 'Original 2024 production run']
     },
     {
       emoji: '🟦', img: 'lunchbb.png', tag: 'Blind Bag · Original Series', name: 'Lunch Blind Bag',
       code: 'LBAG', cost: 1, ribbon: null, featured: false,
       stock: '41 left',
-      desc: 'Midday mystery from the 2024 original series. Lunch-themed blind bag with six possible pulls: sandwich charm, bento box figure, soda can mini, taco stand character, and two rare lunchroom specials nobody has fully documented publicly.',
+      desc: 'Midday mystery from the 2024 original series. Lunch-themed blind bag with three possible pulls: PB&J, Mac N Cheese, tall burger, and two rare lunchroom specials nobody has fully documented publicly.',
       perks: ['1 random lunch-theme collectible', 'Original 2024 series — authentic seal', 'Undisclosed rare variants', 'Ships blind, no peek guarantee']
     },
     {
       emoji: '🟩', img: 'dinnerbb.png', tag: 'Blind Bag · Original Series', name: 'Dinner Blind Bag',
       code: 'DBAG', cost: 1, ribbon: null, featured: false,
       stock: '29 left',
-      desc: 'The rarest of the original three. Evening-themed collectibles from 2024 — candlelight charm, plated dinner mini, wine glass figure — plus the sought-after "Late Night" insert that only appeared in this bag and has never been replicated in later series.',
+      desc: 'The rarest of the original three. Evening-themed collectibles from 2024 — Breda, soup, and a Pizza, plus the sought-after "Late Night" insert that only appeared in this bag and has never been replicated in later series.',
       perks: ['Contains the exclusive "Late Night" rare', '1 random dinner-theme collectible', 'Rarest original series bag by pull rate', 'MINI CRAFTS × JVST original production']
     },
     {
@@ -831,6 +848,58 @@ const products = {
       perks: ['Rainn edition trophy figurine exclusive', 'Sports-theme pull pool', 'Official athlete partnership packaging', 'Limited to partnership launch window']
     },
   ],
+
+  book: [
+    {
+      emoji: '📖', img: '', tag: 'Whiteboard Book · Original Series', name: 'Original Crimson Whiteboard Book',
+      code: 'CBOOK', cost: 1, ribbon: null, featured: false,
+      stock: '48 left',
+      desc: 'Reusable whiteboard book, draw, erase, repeat. Original Crimson color.',
+      perks: [
+  'Double-sided reusable whiteboard pages',
+  'Wipe clean instantly — no residue',
+  'Premium spiral binding lies flat',
+  'Includes black dry-erase marker'
+]
+    },
+        {
+      emoji: '📖', img: '', tag: 'Whiteboard Book · Original Series', name: 'Original Peach Whiteboard Book',
+      code: 'PBOOK', cost: 1, ribbon: null, featured: false,
+      stock: '58 left',
+      desc: 'Reusable whiteboard book, draw, erase, repeat. Original Peach color.',
+     perks: [
+  'Double-sided reusable whiteboard pages',
+  'Wipe clean instantly — no residue',
+  'Premium spiral binding lies flat',
+  'Includes black dry-erase marker'
+]
+    },
+    {
+      emoji: '📖', img: '', tag: 'Whiteboard Book · Original Series', name: 'Original Mint Whiteboard Book',
+      code: 'MBOOK', cost: 1, ribbon: null, featured: false,
+      stock: '50 left',
+      desc: 'Reusable whiteboard book, draw, erase, repeat. Original Mint color.',
+      perks: [
+  'Double-sided reusable whiteboard pages',
+  'Wipe clean instantly — no residue',
+  'Premium spiral binding lies flat',
+  'Includes black dry-erase marker'
+]
+    },
+    {
+      emoji: '📕', img: '', tag: 'Whiteboard Book · Original Series Bundle', name: 'Original Whiteboard Book Bundle',
+      code: 'BOOKBUN', cost: 1, ribbon: null, featured: false,
+      stock: '48 left',
+      desc: 'All three main whiteboard books in one bundle.',
+      perks: [
+  'Double-sided reusable whiteboard pages',
+  'Wipe clean instantly — no residue',
+  'Premium spiral binding lies flat',
+  'Includes black dry-erase marker'
+]
+    },
+  ],
+  
   loot: [
     {
       emoji: '📦', tag: 'Loot Box · Series 1', name: 'Loot Box #001',
@@ -1072,7 +1141,8 @@ function buildCodeStr(cart) {
 function renderGrids() {
   const cart = loadCart();
   renderSectionGrid('grid-blind', products.blind, cart);
-  renderSectionGrid('grid-loot', products.loot, cart);
+  renderSectionGrid('grid-book',  products.book,  cart);   // ← add this
+  renderSectionGrid('grid-loot',  products.loot,  cart);
   updateCartBadge();
 }
 
@@ -1389,12 +1459,31 @@ function closeThankyou() {
 function filterSection(section, btn) {
   document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('on'));
   btn.classList.add('on');
-  const blindSec = document.getElementById('section-blind');
-  const lootSec  = document.getElementById('section-loot');
-  if (section === 'all')    { blindSec.style.display = ''; lootSec.style.display = ''; }
-  if (section === 'blind')  { blindSec.style.display = ''; lootSec.style.display = 'none'; }
-  if (section === 'loot')   { blindSec.style.display = 'none'; lootSec.style.display = ''; }
-  if (section === 'bundle') { blindSec.style.display = 'none'; lootSec.style.display = ''; }
+
+  const blind = document.getElementById('section-blind');
+  const book  = document.getElementById('section-book');
+  const loot  = document.getElementById('section-loot');
+
+  if (section === 'all') {
+    blind.style.display = '';
+    book.style.display  = '';
+    loot.style.display  = '';
+  }
+  else if (section === 'blind') {
+    blind.style.display = '';
+    book.style.display  = 'none';
+    loot.style.display  = 'none';
+  }
+  else if (section === 'book') {
+    blind.style.display = 'none';
+    book.style.display  = '';
+    loot.style.display  = 'none';
+  }
+  else if (section === 'loot' || section === 'bundle') {
+    blind.style.display = 'none';
+    book.style.display  = 'none';     // or '' if you want books + loot together
+    loot.style.display  = '';
+  }
 }
 
 // ── NAV ──
