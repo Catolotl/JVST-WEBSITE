@@ -1144,6 +1144,24 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
   </div>
 </section>
 
+  <!-- WHITEBOARD BOOKS CATALOG -->
+<section style="padding:88px 0;border-top:1px solid var(--b)">
+  <div class="container">
+    <div class="catalog-top-row reveal">
+      <div>
+        <div class="catalog-eyebrow">Catalog</div>
+        <h2 class="catalog-title">White Board <em>Books</em></h2>
+        <p class="catalog-sub">Erasable, reusable whiteboard books from MINI CRAFTS × JVST — 2026.</p>
+      </div>
+      <div class="shelf-nav">
+        <button class="shelf-btn" id="wbPrev">←</button>
+        <button class="shelf-btn" id="wbNext">→</button>
+      </div>
+    </div>
+    <div class="catalog-grid reveal" id="wbCatalogGrid"></div>
+  </div>
+</section>
+
 <!-- PRODUCT POPUP -->
 <div id="cat-popup">
   <div class="cat-popup-box">
@@ -2770,12 +2788,19 @@ function monthKey(d) { return `${d.getFullYear()}-${d.getMonth()+1}`; }
 const catProducts = [
   { emoji:'🟥', img:'breakfastbb.png', tag:'Blind Bag',  name:'Breakfast Blind Bag', code:'BBAG',    cost:1, desc:'One of the first Blind Bags produced by MINI CRAFTS in 2024. A mystery morning-themed collectible.' },
   { emoji:'🟦', img:'lunchbb.png', tag:'Blind Bag',  name:'Lunch Blind Bag',     code:'LBAG',    cost:1, desc:'One of the first Blind Bags produced by MINI CRAFTS in 2024. Midday mystery collectible, randomly assorted.' },
-  { emoji:'🟩', img:'dinnerbb.png', tag:'Blind Bag',  name:'Dinner Blind Bag',    code:'DBAG',    cost:1,    cost:1, desc:'One of the first Blind Bags produced by MINI CRAFTS in 2024. Evening edition with rare night-drop items.' },
+  { emoji:'🟩', img:'dinnerbb.png', tag:'Blind Bag',  name:'Dinner Blind Bag',    code:'DBAG',    cost:1, desc:'One of the first Blind Bags produced by MINI CRAFTS in 2024. Evening edition with rare night-drop items.' },
   { emoji:'📦', tag:'Loot Box',   name:'Loot Box #001',       code:'LB01',    cost:3, desc:'Random loot box packed with MINI CRAFTS memorabilia and rare JVST collectibles. No two boxes alike.' },
   { emoji:'📦', tag:'Loot Box',   name:'Loot Box #002',       code:'LB02',    cost:3, desc:'Second series random loot box. New items, new chances — same rare JVST energy.' },
   { emoji:'📦', tag:'Loot Box',   name:'Loot Box #003',       code:'LB03',    cost:1, desc:'Entry-level loot box. Great starting point for new collectors, MINI CRAFTS essentials inside.' },
   { emoji:'🎁', tag:'Bundle',     name:'5-Pack Blind Bags',   code:'BAGBUN',  cost:5, desc:'Five random rare blind bags shipped together with a rare collectors outer box. Best value per pull.' },
   { emoji:'🌟', tag:'Limited',    name:'Starter Pack',        code:'STARTER', cost:5, desc:'The full intro: 5 blind bags + 1 Indy Keychain + a handwritten note from JVST. Custom box. Limited to 100 sets.' },
+];
+
+  const wbProducts = [
+  { emoji:'📖', img:'', tag:'Whiteboard Book', name:'Original Crimson Whiteboard Book', code:'WB-NML', cost:2, desc:'Reusable whiteboard book, draw, erase, repeat. Original Crimson color.' },
+  { emoji:'📖', img:'', tag:'Whiteboard Book', name:'Peach Whiteboard Book', code:'WB-PCH', cost:2, desc:'Reusable whiteboard book, draw, erase, repeat. Original Peach color.' },
+  { emoji:'📖', img:'', tag:'Whiteboard Book', name:'Mint Whiteboard Book', code:'WB-MNT', cost:2, desc:'Reusable whiteboard book, draw, erase, repeat. Original Mint color.' },
+  { emoji:'📗', img:'', tag:'Bundle', name:'WB 3-Pack', code:'WB-BUN', cost:5, desc:'All three main whiteboard books in one bundle.' },
 ];
 
 // ── cart persistence ───────────────────────────────────────────────────────
@@ -2830,6 +2855,36 @@ function renderGrid() {
   if (catNext) catNext.onclick = () => grid.scrollBy({left: 270, behavior:'smooth'});
 }
 
+  function renderWBGrid() {
+  const cart = loadCart();
+  const grid = document.getElementById('wbCatalogGrid');
+  if (!grid) return;
+  grid.innerHTML = wbProducts.map((p, i) => {
+    const inCart = !!cart[p.code];
+    return `<div class="cat-card${inCart ? ' in-cart' : ''}" onclick="openWBPopup(${i})">
+      <div class="cat-in-cart-pip">✓</div>
+      <div class="cat-img-wrap">${p.img ? `<img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover">` : `<div class="cat-placeholder">${p.emoji}</div>`}</div>
+      <div class="cat-info">
+        <div class="cat-tag">${p.tag}</div>
+        <div class="cat-name">${p.name}</div>
+        <div class="cat-cost-row">
+          <span class="cat-cost">${p.cost}</span>
+          <span class="cat-cost-label">Action</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('') + `<a href="store.html" class="cat-see-all">
+    <div class="cat-see-all-arrow">→</div>
+    <div class="cat-see-all-label">See All</div>
+    <div class="cat-see-all-sub">Full store →</div>
+  </a>`;
+  // Wire scroll buttons
+  const wbPrev = document.getElementById('wbPrev');
+  const wbNext = document.getElementById('wbNext');
+  if (wbPrev) wbPrev.onclick = () => grid.scrollBy({left: -270, behavior:'smooth'});
+  if (wbNext) wbNext.onclick = () => grid.scrollBy({left: 270, behavior:'smooth'});
+}
+
 function updateCartBadge() {
   const cart  = loadCart();
   const total = Object.values(cart).reduce((a, b) => a + b, 0);
@@ -2874,6 +2929,42 @@ function popupToggleCart() {
   saveCart(cart);
   refreshPopupBtn(!!cart[p.code]);
   renderGrid();
+  renderCartPanel();
+}
+
+  let activeWBPopupIdx = null;
+
+function openWBPopup(i) {
+  const p = wbProducts[i];
+  activeWBPopupIdx = i;
+  const inCart = !!loadCart()[p.code];
+  document.getElementById('catPopupImgArea').innerHTML = p.img ? `<img src="${p.img}" alt="${p.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">` : `<span style="font-size:5.5rem">${p.emoji}</span>`;
+  document.getElementById('catPopupTag').textContent  = p.tag;
+  document.getElementById('catPopupName').textContent = p.name;
+  document.getElementById('catPopupDesc').textContent = p.desc;
+  document.getElementById('catPopupCode').textContent = p.code;
+  document.getElementById('catPopupCost').textContent = p.cost;
+  // Reroute the popup button to WB toggle
+  document.getElementById('catPopupAddBtn').onclick = popupToggleWBCart;
+  refreshWBPopupBtn(inCart);
+  document.getElementById('cat-popup').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function refreshWBPopupBtn(inCart) {
+  const btn = document.getElementById('catPopupAddBtn');
+  if (!btn) return;
+  btn.className = 'cat-popup-add-btn' + (inCart ? ' added' : '');
+  btn.innerHTML = inCart ? '✓ &nbsp;In Cart — Remove' : '＋ &nbsp;Add to Cart';
+}
+function popupToggleWBCart() {
+  if (activeWBPopupIdx === null) return;
+  const p    = wbProducts[activeWBPopupIdx];
+  const cart = loadCart();
+  if (cart[p.code]) delete cart[p.code]; else cart[p.code] = 1;
+  saveCart(cart);
+  refreshWBPopupBtn(!!cart[p.code]);
+  renderGrid();
+  renderWBGrid();
   renderCartPanel();
 }
 
@@ -3143,6 +3234,7 @@ function closeThankyou() {
 // ── INIT ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   renderGrid();
+  renderWBGrid();
   initFirebase();
 });
 document.getElementById('cat-popup').addEventListener('click', function(e) { if (e.target === this) closeCatPopup(); });
