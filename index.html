@@ -2957,9 +2957,9 @@ function monthKey(d) { return `${d.getFullYear()}-${d.getMonth()+1}`; }
 
 // ── product catalogue ──────────────────────────────────────────────────────
 const catProducts = [
-  { emoji:'🟥', tag:'Blind Bag',  name:'Breakfast Blind Bag', code:'BBAG',    cost:1, desc:'One of the first Blind Bags produced by MINI CRAFTS in 2024. A mystery morning-themed collectible.' },
-  { emoji:'🟦', tag:'Blind Bag',  name:'Lunch Blind Bag',     code:'LBAG',    cost:1, desc:'One of the first Blind Bags produced by MINI CRAFTS in 2024. Midday mystery collectible, randomly assorted.' },
-  { emoji:'🟩', tag:'Blind Bag',  name:'Dinner Blind Bag',    code:'DBAG',    cost:1, desc:'One of the first Blind Bags produced by MINI CRAFTS in 2024. Evening edition with rare night-drop items.' },
+  { emoji:'🟥', img:'breakfastbb.png', tag:'Blind Bag',  name:'Breakfast Blind Bag', code:'BBAG',    cost:1, desc:'One of the first Blind Bags produced by MINI CRAFTS in 2024. A mystery morning-themed collectible.' },
+  { emoji:'🟦', img:'Lunchbb.png', tag:'Blind Bag',  name:'Lunch Blind Bag',     code:'LBAG',    cost:1, desc:'One of the first Blind Bags produced by MINI CRAFTS in 2024. Midday mystery collectible, randomly assorted.' },
+  { emoji:'🟩', img:'dinnerbb.png', tag:'Blind Bag',  name:'Dinner Blind Bag',    code:'DBAG',    cost:1,    cost:1, desc:'One of the first Blind Bags produced by MINI CRAFTS in 2024. Evening edition with rare night-drop items.' },
   { emoji:'📦', tag:'Loot Box',   name:'Loot Box #001',       code:'LB01',    cost:3, desc:'Random loot box packed with MINI CRAFTS memorabilia and rare JVST collectibles. No two boxes alike.' },
   { emoji:'📦', tag:'Loot Box',   name:'Loot Box #002',       code:'LB02',    cost:3, desc:'Second series random loot box. New items, new chances — same rare JVST energy.' },
   { emoji:'📦', tag:'Loot Box',   name:'Loot Box #003',       code:'LB03',    cost:1, desc:'Entry-level loot box. Great starting point for new collectors, MINI CRAFTS essentials inside.' },
@@ -2996,7 +2996,7 @@ function renderGrid() {
     const inCart = !!cart[p.code];
     return `<div class="cat-card${inCart ? ' in-cart' : ''}" onclick="openCatPopup(${i})">
       <div class="cat-in-cart-pip">✓</div>
-      <div class="cat-img-wrap"><div class="cat-placeholder">${p.emoji}</div></div>
+      <div class="cat-img-wrap">${p.img ? `<img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover">` : `<div class="cat-placeholder">${p.emoji}</div>`}</div>
       <div class="cat-info">
         <div class="cat-tag">${p.tag}</div>
         <div class="cat-name">${p.name}</div>
@@ -3034,7 +3034,7 @@ function openCatPopup(i) {
   const p = catProducts[i];
   activePopupIdx = i;
   const inCart = !!loadCart()[p.code];
-  document.getElementById('catPopupImgArea').innerHTML = `<span style="font-size:5.5rem">${p.emoji}</span>`;
+  document.getElementById('catPopupImgArea').innerHTML = p.img ? `<img src="${p.img}" alt="${p.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">` : `<span style="font-size:5.5rem">${p.emoji}</span>`;
   document.getElementById('catPopupTag').textContent  = p.tag;
   document.getElementById('catPopupName').textContent = p.name;
   document.getElementById('catPopupDesc').textContent = p.desc;
