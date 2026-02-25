@@ -198,7 +198,8 @@ nav.scrolled{box-shadow:0 4px 32px rgba(0,0,0,.5)}
 .cart-empty-icon{font-size:2.5rem;opacity:.4}
 .cart-item{display:flex;align-items:center;gap:13px;padding:12px 0;border-bottom:1px solid var(--b)}
 .cart-item:last-child{border-bottom:none}
-.cart-item-emoji{width:42px;height:42px;border-radius:8px;background:var(--bg3);border:1px solid var(--b);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.cart-item-emoji{width:42px;height:42px;border-radius:8px;background:var(--bg3);border:1px solid var(--b);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;overflow:hidden}
+.cart-item-emoji img{width:100%;height:100%;object-fit:cover}
 .cart-item-info{flex:1;min-width:0}
 .cart-item-name{font-size:.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
 .cart-item-code{font-size:.65rem;font-family:'JetBrains Mono',monospace;color:var(--red);letter-spacing:.06em}
@@ -505,9 +506,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════
-  SECTION 1: BLIND BAGS
-═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 1: BLIND BAGS -->
 <section class="product-section" id="section-blind">
   <div class="container">
     <div class="ps-head reveal">
@@ -518,18 +517,13 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
       </div>
       <div class="ps-count-badge"><span class="pulse-dot"></span> 8 items</div>
     </div>
-
-    <div class="product-grid" id="grid-blind">
-      <!-- Cards injected by JS -->
-    </div>
+    <div class="product-grid" id="grid-blind"></div>
   </div>
 </section>
 
 <div class="section-accent"></div>
 
-<!-- ═══════════════════════════════════════════════════════════
-  SECTION 2: LOOT BOXES + BUNDLES
-═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 2: LOOT BOXES + BUNDLES -->
 <section class="product-section" id="section-loot">
   <div class="container">
     <div class="ps-head reveal">
@@ -540,10 +534,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
       </div>
       <div class="ps-count-badge" style="border-color:rgba(245,200,66,.35);color:var(--yellow);background:rgba(245,200,66,.07)">⭐ 14 items</div>
     </div>
-
-    <div class="product-grid" id="grid-loot">
-      <!-- Cards injected by JS -->
-    </div>
+    <div class="product-grid" id="grid-loot"></div>
   </div>
 </section>
 
@@ -632,8 +623,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
           </div>
         </div>
       </div>
-
-      <!-- Discount code -->
       <div>
         <div class="co-label">Discount code</div>
         <div class="co-discount-wrap">
@@ -647,13 +636,10 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
           </div>
         </div>
       </div>
-
       <div>
         <div class="co-label">Your cart</div>
         <div class="co-items" id="coItemsList"></div>
       </div>
-
-      <!-- Cost breakdown -->
       <div class="co-total-block">
         <div class="co-total-row">
           <span class="co-total-row-label">Subtotal</span>
@@ -668,7 +654,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
           <span class="co-total-row-val" id="coTotalVal">–</span>
         </div>
       </div>
-
     </div>
     <div class="co-foot">
       <button class="co-btn co-btn-primary" id="coConfirmBtn" onclick="executeCheckout()">Confirm &amp; Place Order</button>
@@ -785,27 +770,26 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
 </footer>
 
 <script>
-// ──────────────────────────────────────────────────────────────────
-// PRODUCTS DATA  — 22 items
-// ──────────────────────────────────────────────────────────────────
+// ── PRODUCTS DATA — 22 items ──
+// CHANGE: added img property to the three original meal blind bags
 const products = {
   blind: [
     {
-      emoji: '🟥', tag: 'Blind Bag · Original Series', name: 'Breakfast Blind Bag',
+      emoji: '🟥', img: 'breakfastbb.png', tag: 'Blind Bag · Original Series', name: 'Breakfast Blind Bag',
       code: 'BBAG', cost: 1, ribbon: null, featured: false,
       stock: '48 left',
       desc: 'The very first MINI CRAFTS × JVST blind bag from the 2024 inaugural run. Morning-themed mystery collectible — sealed, random, and fully anonymous until opened. Pull pool includes: toast charm, espresso cup mini, cereal character, orange slice keychain, and two undisclosed rare variants.',
       perks: ['1 random morning-theme collectible', 'MINI CRAFTS × JVST heat-sealed packaging', '2 hidden rare variants in pool', 'Original 2024 production run']
     },
     {
-      emoji: '🟦', tag: 'Blind Bag · Original Series', name: 'Lunch Blind Bag',
+      emoji: '🟦', img: 'lunchbb.png', tag: 'Blind Bag · Original Series', name: 'Lunch Blind Bag',
       code: 'LBAG', cost: 1, ribbon: null, featured: false,
       stock: '41 left',
       desc: 'Midday mystery from the 2024 original series. Lunch-themed blind bag with six possible pulls: sandwich charm, bento box figure, soda can mini, taco stand character, and two rare lunchroom specials nobody has fully documented publicly.',
       perks: ['1 random lunch-theme collectible', 'Original 2024 series — authentic seal', 'Undisclosed rare variants', 'Ships blind, no peek guarantee']
     },
     {
-      emoji: '🟩', tag: 'Blind Bag · Original Series', name: 'Dinner Blind Bag',
+      emoji: '🟩', img: 'dinnerbb.png', tag: 'Blind Bag · Original Series', name: 'Dinner Blind Bag',
       code: 'DBAG', cost: 1, ribbon: null, featured: false,
       stock: '29 left',
       desc: 'The rarest of the original three. Evening-themed collectibles from 2024 — candlelight charm, plated dinner mini, wine glass figure — plus the sought-after "Late Night" insert that only appeared in this bag and has never been replicated in later series.',
@@ -935,11 +919,7 @@ const products = {
   ]
 };
 
-// ──────────────────────────────────────────────────────────────────
-// DISCOUNT CODE ENGINE
-// Rounding rule: ceil(subtotal * (1 - pct/100))
-// e.g. 11 at 30% off → ceil(11 * 0.7) = ceil(7.7) = 8
-// ──────────────────────────────────────────────────────────────────
+// ── DISCOUNT CODE ENGINE ──
 const DISCOUNT_CODES = {
   'JVST10':    { type: 'percent', value: 10, label: '10% off' },
   'JVST20':    { type: 'percent', value: 20, label: '20% off' },
@@ -1029,9 +1009,7 @@ function refreshCheckoutTotals() {
   confirmBtn.textContent = !isAuth ? 'Sign in to checkout' : !canAfford ? 'Not enough actions' : 'Confirm & Place Order';
 }
 
-// ──────────────────────────────────────────────────────────────────
-// FIREBASE
-// ──────────────────────────────────────────────────────────────────
+// ── FIREBASE ──
 const JVST_FB = {
   apiKey: "AIzaSyC50_wBK3TfERX1gm35puugCD324SxHJR8",
   authDomain: "tunesandindy.firebaseapp.com",
@@ -1068,9 +1046,7 @@ function initFirebase() {
 }
 function monthKey(d) { return `${d.getFullYear()}-${d.getMonth()+1}`; }
 
-// ──────────────────────────────────────────────────────────────────
-// CART
-// ──────────────────────────────────────────────────────────────────
+// ── CART ──
 const CART_KEY = 'jvst_cart_v1';
 let activePopupCode = null;
 
@@ -1091,9 +1067,7 @@ function buildCodeStr(cart) {
     .join(', ');
 }
 
-// ──────────────────────────────────────────────────────────────────
-// RENDER GRIDS
-// ──────────────────────────────────────────────────────────────────
+// ── RENDER GRIDS ──
 function renderGrids() {
   const cart = loadCart();
   renderSectionGrid('grid-blind', products.blind, cart);
@@ -1116,11 +1090,16 @@ function renderSectionGrid(gridId, items, cart) {
     const descShort = p.desc.length > 80 ? p.desc.slice(0, 80) + '…' : p.desc;
     const stockHtml = p.stock ? `<span class="prod-stock${parseInt(p.stock) < 15 ? ' low' : ''}">${p.stock}</span>` : '';
 
+    // CHANGE: use img if present, otherwise fall back to emoji
+    const imgHtml = p.img
+      ? `<img src="${p.img}" alt="${p.name}">`
+      : `<span class="prod-emoji">${p.emoji}</span>`;
+
     return `<div class="${classes}" onclick="openCatPopup('${p.code}')">
       ${ribbonHtml}
       <div class="prod-in-cart-pip">✓</div>
       <div class="prod-img-wrap">
-        <span class="prod-emoji">${p.emoji}</span>
+        ${imgHtml}
       </div>
       <div class="prod-info">
         <div class="prod-tag">${p.tag}</div>
@@ -1158,16 +1137,18 @@ function quickToggleCart(code) {
   if (activePopupCode === code) refreshPopupBtn(!!cart[code]);
 }
 
-// ──────────────────────────────────────────────────────────────────
-// POPUP
-// ──────────────────────────────────────────────────────────────────
+// ── POPUP ──
 function openCatPopup(code) {
   const p = findProduct(code);
   if (!p) return;
   activePopupCode = code;
   const inCart = !!loadCart()[code];
 
-  document.getElementById('catPopupImgArea').innerHTML = `<span style="font-size:6rem">${p.emoji}</span>`;
+  // CHANGE: use img if present, otherwise fall back to emoji
+  document.getElementById('catPopupImgArea').innerHTML = p.img
+    ? `<img src="${p.img}" alt="${p.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">`
+    : `<span style="font-size:6rem">${p.emoji}</span>`;
+
   document.getElementById('catPopupTag').textContent  = p.tag;
   document.getElementById('catPopupName').textContent = p.name;
   document.getElementById('catPopupDesc').textContent = p.desc;
@@ -1199,9 +1180,7 @@ function popupToggleCart() {
   quickToggleCart(activePopupCode);
 }
 
-// ──────────────────────────────────────────────────────────────────
-// CART PANEL
-// ──────────────────────────────────────────────────────────────────
+// ── CART PANEL ──
 function openCartPanel() {
   renderCartPanel();
   document.getElementById('cart-panel').classList.add('open');
@@ -1232,8 +1211,12 @@ function renderCartPanel() {
   list.innerHTML = keys.map(code => {
     const p   = findProduct(code);
     const qty = cart[code];
+    // CHANGE: show img in cart thumbnail if available
+    const thumbHtml = p.img
+      ? `<img src="${p.img}" alt="${p.name}">`
+      : p.emoji;
     return `<div class="cart-item">
-      <div class="cart-item-emoji">${p.emoji}</div>
+      <div class="cart-item-emoji">${thumbHtml}</div>
       <div class="cart-item-info">
         <div class="cart-item-name">${p.name}</div>
         <div class="cart-item-code">${p.code}</div>
@@ -1281,9 +1264,7 @@ function copyCartCodes() {
   }).catch(() => {});
 }
 
-// ──────────────────────────────────────────────────────────────────
-// CHECKOUT
-// ──────────────────────────────────────────────────────────────────
+// ── CHECKOUT ──
 function openCheckout() {
   const cart  = loadCart();
   const keys  = Object.keys(cart).filter(c => findProduct(c));
@@ -1304,11 +1285,9 @@ function openCheckout() {
     authNotice.style.display = 'block';
   }
 
-  // Reset discount UI on each open
   removeDiscount();
   document.getElementById('coSubLine').textContent = isAuth ? `// ${jvstUser.email}` : '// not signed in';
 
-  // Cart items
   document.getElementById('coItemsList').innerHTML = keys.map(code => {
     const p = findProduct(code), qty = cart[code];
     return `<div class="co-item-row">
@@ -1382,9 +1361,7 @@ async function executeCheckout() {
   }
 }
 
-// ──────────────────────────────────────────────────────────────────
-// THANK YOU
-// ──────────────────────────────────────────────────────────────────
+// ── THANK YOU ──
 function showThankyou(codeStr, newBalance, spent, discount) {
   document.getElementById('tyCodes').textContent   = codeStr || '–';
   document.getElementById('tyBalLeft').textContent = `${newBalance} action${newBalance !== 1 ? 's' : ''}`;
@@ -1407,9 +1384,7 @@ function closeThankyou() {
   }, 300);
 }
 
-// ──────────────────────────────────────────────────────────────────
-// FILTER TABS
-// ──────────────────────────────────────────────────────────────────
+// ── FILTER TABS ──
 function filterSection(section, btn) {
   document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('on'));
   btn.classList.add('on');
@@ -1421,9 +1396,7 @@ function filterSection(section, btn) {
   if (section === 'bundle') { blindSec.style.display = 'none'; lootSec.style.display = ''; }
 }
 
-// ──────────────────────────────────────────────────────────────────
-// NAV
-// ──────────────────────────────────────────────────────────────────
+// ── NAV ──
 const mobBtn   = document.getElementById('mobBtn');
 const navLinks = document.getElementById('navLinks');
 mobBtn.addEventListener('click', () => {
@@ -1433,7 +1406,6 @@ mobBtn.addEventListener('click', () => {
 navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { navLinks.classList.remove('open'); mobBtn.textContent = '☰'; }));
 window.addEventListener('scroll', () => { document.querySelector('nav').classList.toggle('scrolled', window.scrollY > 10); }, { passive: true });
 
-// Dropdown hover intent
 (function() {
   const dropdown = document.querySelector('.nav-dropdown');
   if (!dropdown) return;
@@ -1448,17 +1420,13 @@ window.addEventListener('scroll', () => { document.querySelector('nav').classLis
   document.addEventListener('click', e => { if (!dropdown.contains(e.target)) dropdown.classList.remove('open'); });
 })();
 
-// ──────────────────────────────────────────────────────────────────
-// REVEAL ON SCROLL
-// ──────────────────────────────────────────────────────────────────
+// ── REVEAL ON SCROLL ──
 const revealObs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revealObs.unobserve(e.target); } });
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
-// ──────────────────────────────────────────────────────────────────
-// KEYBOARD + BACKDROP
-// ──────────────────────────────────────────────────────────────────
+// ── KEYBOARD + BACKDROP ──
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closeCatPopup(); closeCartPanel(); closeCheckout(); closeThankyou(); }
 });
@@ -1467,9 +1435,7 @@ document.getElementById('checkout-overlay').addEventListener('click', function(e
 document.getElementById('ty-overlay').addEventListener('click', function(e) { if (e.target === this) closeThankyou(); });
 document.getElementById('discountInput').addEventListener('keydown', e => { if (e.key === 'Enter') applyDiscount(); });
 
-// ──────────────────────────────────────────────────────────────────
-// INIT
-// ──────────────────────────────────────────────────────────────────
+// ── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
   renderGrids();
   initFirebase();
