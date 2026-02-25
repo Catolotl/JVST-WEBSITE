@@ -627,7 +627,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
         <div class="co-label">Discount code</div>
         <div class="co-discount-wrap">
           <div class="co-discount-row">
-            <input class="co-discount-input" id="discountInput" type="text" placeholder="Enter code e.g. JVST20" maxlength="20" oninput="this.value=this.value.toUpperCase()"/>
+            <input class="co-discount-input" id="discountInput" type="text" placeholder="Enter Discount code" maxlength="20" oninput="this.value=this.value.toUpperCase()"/>
             <button class="co-discount-apply" onclick="applyDiscount()">Apply</button>
           </div>
           <div class="co-discount-status" id="discountStatus">
@@ -930,6 +930,7 @@ const DISCOUNT_CODES = {
   'MINICRAFTS':{ type: 'percent', value: 10, label: '10% off — MINI CRAFTS' },
   'FREEONE':   { type: 'flat',    value: 1,  label: '1 Action off' },
   'FREETHREE': { type: 'flat',    value: 3,  label: '3 Actions off' },
+  'BLAIS': { type: 'flat', value: 1, label: '1 Action off'},
 };
 let activeDiscount = null;
 
