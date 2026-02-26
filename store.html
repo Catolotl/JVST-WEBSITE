@@ -323,7 +323,7 @@ nav.scrolled{box-shadow:0 4px 32px rgba(0,0,0,.5)}
 .co-discount-status.show{display:flex}
 .co-discount-status.ok{color:#28c840}
 .co-discount-status.err{color:#ff5f5f}
-.co-discount-tag{display:inline-flex;align-items:center;padding:2px 9px;background:rgba(40,200,64,.1);border:1px solid rgba(40,200,64,.25);border-radius:3px;font-size:.65rem;font-weight:700;color:#28c840}
+.co-discount-tag{display:inline-flex;align-items:padding:2px 9px;background:rgba(40,200,64,.1);border:1px solid rgba(40,200,64,.25);border-radius:3px;font-size:.65rem;font-weight:700;color:#28c840}
 .co-discount-remove{background:none;border:none;color:var(--t3);font-size:.72rem;font-family:'JetBrains Mono',monospace;cursor:pointer;margin-left:auto;transition:color .15s;flex-shrink:0}
 .co-discount-remove:hover{color:#ff5f5f}
 
@@ -431,7 +431,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
       <a href="index.html#services">Services</a>
       <a href="index.html#pricing">Pricing</a>
       <a href="index.html#community">Community</a>
-            <a href="store.html">Store</a>
+      <a href="store.html">Store</a>
       <a href="shop.html">👤</a>
       <button class="cart-trigger" onclick="openCartPanel()">
         <span class="cart-trigger-icon">🛒</span>
@@ -500,9 +500,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
     <div class="filter-inner">
       <button class="filter-tab on" data-section="all" onclick="filterSection('all', this)">All Products <span class="filter-count">22</span></button>
       <button class="filter-tab" data-section="blind" onclick="filterSection('blind', this)">Blind Bags <span class="filter-count">8</span></button>
-            <button class="filter-tab" data-section="book" onclick="filterSection('book', this)">WB Books<span class="filter-count">4</span></button>
+      <button class="filter-tab" data-section="book" onclick="filterSection('book', this)">WB Books<span class="filter-count">4</span></button>
       <button class="filter-tab" data-section="loot" onclick="filterSection('loot', this)">Loot Boxes <span class="filter-count">7</span></button>
-      <button class="filter-tab" data-section="bundle" onclick="filterSection('bundle', this)">Bundles & Packs <span class="filter-count">7</span></button>
+      <button class="filter-tab" data-section="bundle" onclick="filterSection('bundle', this)">Bundles &amp; Packs <span class="filter-count">7</span></button>
     </div>
   </div>
 </div>
@@ -524,7 +524,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
 
 <div class="section-accent"></div>
 
-  <section class="product-section" id="section-book">
+<section class="product-section" id="section-book">
   <div class="container">
     <div class="ps-head reveal">
       <div>
@@ -540,7 +540,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
 
 <div class="section-accent"></div>
 
-<!-- SECTION 2: LOOT BOXES + BUNDLES -->
+<!-- SECTION 3: LOOT BOXES + BUNDLES -->
 <section class="product-section" id="section-loot">
   <div class="container">
     <div class="ps-head reveal">
@@ -788,7 +788,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--red);outline-offset
 
 <script>
 // ── PRODUCTS DATA — 22 items ──
-// CHANGE: added img property to the three original meal blind bags
 const products = {
   blind: [
     {
@@ -847,11 +846,11 @@ const products = {
       desc: 'JVST × Rainn Blais official athlete blind bag. Sports-themed collectibles: basketball charm, sneaker mini, court figure — plus the Rainn edition trophy figurine, a small molded piece exclusive to this bag and the full Rainn Blais Box.',
       perks: ['Rainn edition trophy figurine exclusive', 'Sports-theme pull pool', 'Official athlete partnership packaging', 'Limited to partnership launch window']
     },
-        {
+    {
       emoji: '🎸', tag: 'Blind Bag · Artist Collab', name: 'Noah Loke Bag',
       code: 'NAHBAG', cost: 2, ribbon: { label: 'COLLAB', type: 'limited' }, featured: false,
       stock: '16 left',
-      desc: 'JVST × Noah Loke official artist blind bag. Music-themed pull pool: guitar string charm, vinyl record mini, stage light figure — and the Evan Duffy signature pick charm, a molded acrylic guitar pick bearing his signature that only appears in this bag.',
+      desc: 'JVST × Noah Loke official artist blind bag. Music-themed pull pool: guitar string charm, vinyl record mini, stage light figure — and the Noah Loke signature pick charm, a molded acrylic guitar pick bearing his signature that only appears in this bag.',
       perks: ['Noah Loke signature pick charm — bag exclusive', 'Music-theme pull pool (6 variants)', 'Custom artist-branded heat seal', 'Official artist partnership release']
     },
   ],
@@ -863,23 +862,23 @@ const products = {
       stock: '48 left',
       desc: 'Reusable whiteboard book, draw, erase, repeat. Original Crimson color.',
       perks: [
-  'Double-sided reusable whiteboard pages',
-  'Wipe clean instantly — no residue',
-  'Premium spiral binding lies flat',
-  'Includes black dry-erase marker'
-]
+        'Double-sided reusable whiteboard pages',
+        'Wipe clean instantly — no residue',
+        'Premium spiral binding lies flat',
+        'Includes black dry-erase marker'
+      ]
     },
-        {
+    {
       emoji: '📖', img: '', tag: 'Whiteboard Book · Original Series', name: 'Original Peach Whiteboard Book',
       code: 'PBOOK', cost: 1, ribbon: null, featured: false,
       stock: '58 left',
       desc: 'Reusable whiteboard book, draw, erase, repeat. Original Peach color.',
-     perks: [
-  'Double-sided reusable whiteboard pages',
-  'Wipe clean instantly — no residue',
-  'Premium spiral binding lies flat',
-  'Includes black dry-erase marker'
-]
+      perks: [
+        'Double-sided reusable whiteboard pages',
+        'Wipe clean instantly — no residue',
+        'Premium spiral binding lies flat',
+        'Includes black dry-erase marker'
+      ]
     },
     {
       emoji: '📖', img: '', tag: 'Whiteboard Book · Original Series', name: 'Original Mint Whiteboard Book',
@@ -887,11 +886,11 @@ const products = {
       stock: '50 left',
       desc: 'Reusable whiteboard book, draw, erase, repeat. Original Mint color.',
       perks: [
-  'Double-sided reusable whiteboard pages',
-  'Wipe clean instantly — no residue',
-  'Premium spiral binding lies flat',
-  'Includes black dry-erase marker'
-]
+        'Double-sided reusable whiteboard pages',
+        'Wipe clean instantly — no residue',
+        'Premium spiral binding lies flat',
+        'Includes black dry-erase marker'
+      ]
     },
     {
       emoji: '📕', img: '', tag: 'Whiteboard Book · Original Series Bundle', name: 'Original Whiteboard Book Bundle',
@@ -899,14 +898,14 @@ const products = {
       stock: '48 left',
       desc: 'All three main whiteboard books in one bundle.',
       perks: [
-  'Double-sided reusable whiteboard pages',
-  'Wipe clean instantly — no residue',
-  'Premium spiral binding lies flat',
-  'Includes black dry-erase marker'
-]
+        'Double-sided reusable whiteboard pages',
+        'Wipe clean instantly — no residue',
+        'Premium spiral binding lies flat',
+        'Includes black dry-erase marker'
+      ]
     },
   ],
-  
+
   loot: [
     {
       emoji: '📦', tag: 'Loot Box · Series 1', name: 'Loot Box #001',
@@ -1006,7 +1005,7 @@ const DISCOUNT_CODES = {
   'MINICRAFTS':{ type: 'percent', value: 10, label: '10% off — MINI CRAFTS' },
   'FREEONE':   { type: 'flat',    value: 1,  label: '1 Action off' },
   'FREETHREE': { type: 'flat',    value: 3,  label: '3 Actions off' },
-  'BLAIS': { type: 'flat', value: 1, label: '1 Action off'},
+  'BLAIS':     { type: 'flat',    value: 1,  label: '1 Action off' },
 };
 let activeDiscount = null;
 
@@ -1127,7 +1126,11 @@ function monthKey(d) { return `${d.getFullYear()}-${d.getMonth()+1}`; }
 const CART_KEY = 'jvst_cart_v1';
 let activePopupCode = null;
 
-function allProducts() { return [...products.blind, ...products.loot]; }
+// FIX: allProducts now includes books so findProduct, cartActionTotal,
+// and buildCodeStr all work correctly for book items.
+function allProducts() {
+  return [...products.blind, ...products.book, ...products.loot];
+}
 function findProduct(code) { return allProducts().find(p => p.code === code); }
 function loadCart() { try { return JSON.parse(localStorage.getItem(CART_KEY)) || {}; } catch { return {}; } }
 function saveCart(c) { try { localStorage.setItem(CART_KEY, JSON.stringify(c)); } catch {} }
@@ -1148,7 +1151,7 @@ function buildCodeStr(cart) {
 function renderGrids() {
   const cart = loadCart();
   renderSectionGrid('grid-blind', products.blind, cart);
-  renderSectionGrid('grid-book',  products.book,  cart);   // ← add this
+  renderSectionGrid('grid-book',  products.book,  cart);
   renderSectionGrid('grid-loot',  products.loot,  cart);
   updateCartBadge();
 }
@@ -1168,7 +1171,6 @@ function renderSectionGrid(gridId, items, cart) {
     const descShort = p.desc.length > 80 ? p.desc.slice(0, 80) + '…' : p.desc;
     const stockHtml = p.stock ? `<span class="prod-stock${parseInt(p.stock) < 15 ? ' low' : ''}">${p.stock}</span>` : '';
 
-    // CHANGE: use img if present, otherwise fall back to emoji
     const imgHtml = p.img
       ? `<img src="${p.img}" alt="${p.name}">`
       : `<span class="prod-emoji">${p.emoji}</span>`;
@@ -1222,7 +1224,6 @@ function openCatPopup(code) {
   activePopupCode = code;
   const inCart = !!loadCart()[code];
 
-  // CHANGE: use img if present, otherwise fall back to emoji
   document.getElementById('catPopupImgArea').innerHTML = p.img
     ? `<img src="${p.img}" alt="${p.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">`
     : `<span style="font-size:6rem">${p.emoji}</span>`;
@@ -1289,7 +1290,6 @@ function renderCartPanel() {
   list.innerHTML = keys.map(code => {
     const p   = findProduct(code);
     const qty = cart[code];
-    // CHANGE: show img in cart thumbnail if available
     const thumbHtml = p.img
       ? `<img src="${p.img}" alt="${p.name}">`
       : p.emoji;
@@ -1475,20 +1475,17 @@ function filterSection(section, btn) {
     blind.style.display = '';
     book.style.display  = '';
     loot.style.display  = '';
-  }
-  else if (section === 'blind') {
+  } else if (section === 'blind') {
     blind.style.display = '';
     book.style.display  = 'none';
     loot.style.display  = 'none';
-  }
-  else if (section === 'book') {
+  } else if (section === 'book') {
     blind.style.display = 'none';
     book.style.display  = '';
     loot.style.display  = 'none';
-  }
-  else if (section === 'loot' || section === 'bundle') {
+  } else if (section === 'loot' || section === 'bundle') {
     blind.style.display = 'none';
-    book.style.display  = 'none';     // or '' if you want books + loot together
+    book.style.display  = 'none';
     loot.style.display  = '';
   }
 }
