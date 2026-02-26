@@ -1831,6 +1831,395 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+  // ══════════════════════════════════════════════════════════════════════════
+//  ADMIN PANEL  —  only activates for displayName === "jvstadmin"
+// ══════════════════════════════════════════════════════════════════════════
+const ADMIN_NAME = 'jvstadmin';
+
+function isAdmin() {
+  return (userData?.displayName || currentUser?.displayName || '') === ADMIN_NAME;
+}
+
+// Called inside enterDashboard() — injects the button if admin
+function maybeShowAdminButton() {
+  const btn = document.getElementById('admin-trigger');
+  if (!btn) return;
+  btn.style.display = isAdmin() ? 'flex' : 'none';
+}
+
+// Open panel and load data
+async function openAdminPanel() {
+  if (!isAdmin()) return;
+  document.getElementById('admin-overlay').classList.add('open');
+  await adminLoadAll();
+}
+
+function closeAdminPanel() {
+  document.getElementById('admin-overlay').classList.remove('open');
+}
+
+// Switch between Users / All Orders tabs
+function adminSwitchTab(tab) {
+  document.querySelectorAll('.ap-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.getElementById('admin-panel-users').style.display   = tab === 'users'  ? 'block' : 'none';
+  document.getElementById('admin-panel-orders').style.display  = tab === 'orders' ? 'block' : 'none';
+  document.getElementById('admin-panel-tools').style.display   = tab === 'tools'  ? 'block' : 'none';
+}
+
+// Fetch all users from Firestore
+async function adminLoadAll() {
+  const loadingEl = document.getElementById('admin-loading');
+  const usersEl   = document.getElementById('admin-users-list');
+  const ordersEl  = document.getElementById('admin-orders-list');
+  const statsEl   = document.getElementById('admin-stats');
+
+  loadingEl.style.display = 'block';
+  usersEl.innerHTML = '';
+  ordersEl.innerHTML = '';
+
+  try {
+    const snap = await db.collection('shop_users').get();
+    const users = [];
+    snap.forEach(doc => users.push({ uid: doc.id, ...doc.data() }));
+
+    // Filter out the admin account itself
+    const members = users.filter(u => u.displayName !== ADMIN_NAME);
+
+    // ── Global stats
+    const totalUsers    = members.length;
+    const totalOrders   = members.reduce((s, u) => s + (u.purchases||[]).length, 0);
+    const totalActions  = members.reduce((s, u) => s + (u.totalActionsUsed||0), 0);
+    statsEl.innerHTML = `
+      <div class="ap-stat"><div class="ap-stat-val">${totalUsers}</div><div class="ap-stat-label">Members</div></div>
+      <div class="ap-stat"><div class="ap-stat-val">${totalOrders}</div><div class="ap-stat-label">Orders</div></div>
+      <div class="ap-stat"><div class="ap-stat-val">${totalActions}</div><div class="ap-stat-label">Actions used</div></div>
+    `;
+
+    // ── Users tab  (sorted by most actions used this month, desc)
+    const sortedUsers = members.slice().sort((a,b) => (b.actionsUsed||0) - (a.actionsUsed||0));
+    usersEl.innerHTML = sortedUsers.length ? sortedUsers.map(u => adminUserCard(u)).join('') 
+                                           : '<div class="ap-empty">No members yet</div>';
+
+    // ── All orders tab (flatten + sort newest first)
+    const allOrders = [];
+    members.forEach(u => {
+      (u.purchases||[]).forEach(p => allOrders.push({ ...p, _userName: u.displayName||'?', _userEmail: u.email||'' }));
+    });
+    allOrders.sort((a,b) => new Date(b.date) - new Date(a.date));
+    ordersEl.innerHTML = allOrders.length ? allOrders.map(p => adminOrderRow(p)).join('')
+                                          : '<div class="ap-empty">No orders yet</div>';
+
+  } catch(e) {
+    usersEl.innerHTML  = '<div class="ap-empty" style="color:var(--danger)">Failed to load data</div>';
+    ordersEl.innerHTML = '<div class="ap-empty" style="color:var(--danger)">Failed to load data</div>';
+    console.error('Admin load error:', e);
+  } finally {
+    loadingEl.style.display = 'none';
+  }
+}
+
+// Build a collapsible user card
+function adminUserCard(u) {
+  const used      = u.actionsUsed || 0;
+  const remaining = Math.max(0, ACTIONS_LIMIT - used);
+  const purchases = (u.purchases||[]).slice().reverse(); // newest first
+  const warnClass = remaining === 0 ? 'warn' : '';
+
+  const purchaseRows = purchases.length
+    ? purchases.map(p => `
+        <div class="ap-order-row">
+          <div>
+            <div class="ap-order-product">${escHtml(p.product||'Item')}</div>
+            <div class="ap-order-date">${new Date(p.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})}</div>
+          </div>
+          <div class="ap-order-cost">−${p.actionsCost||1} act.</div>
+        </div>`).join('')
+    : '<div class="ap-empty" style="padding:12px 14px;">No orders</div>';
+
+  return `
+    <div class="ap-user-card" id="apu-${escHtml(u.uid)}">
+      <div class="ap-user-head" onclick="adminToggleUser('${escHtml(u.uid)}')">
+        <div class="ap-avatar">${(u.displayName||'?')[0].toUpperCase()}</div>
+        <div class="ap-user-info">
+          <div class="ap-user-name">${escHtml(u.displayName||'Unknown')}</div>
+          <div class="ap-user-email">${escHtml(u.email||'')}</div>
+        </div>
+        <div class="ap-user-right">
+          <div class="ap-actions-remaining ${warnClass}">${remaining}</div>
+          <div class="ap-actions-label">left / ${ACTIONS_LIMIT}</div>
+        </div>
+        <div class="ap-chevron">▾</div>
+      </div>
+      <div class="ap-user-orders" id="apuo-${escHtml(u.uid)}" style="display:none;">
+        <div class="ap-user-orders-meta">
+          ${purchases.length} order${purchases.length!==1?'s':''} · ${u.totalActionsUsed||0} actions all time
+        </div>
+        ${purchaseRows}
+        <div style="padding:10px 14px;display:flex;gap:8px;">
+          <button class="ap-action-btn" onclick="adminGrantActions('${escHtml(u.uid)}','${escHtml(u.displayName||'')}')">＋ Grant actions</button>
+          <button class="ap-action-btn danger" onclick="adminResetUser('${escHtml(u.uid)}','${escHtml(u.displayName||'')}')">↺ Reset month</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+// Single order row for the All Orders tab
+function adminOrderRow(p) {
+  return `
+    <div class="ap-order-row">
+      <div>
+        <div class="ap-order-product">${escHtml(p.product||'Item')}</div>
+        <div class="ap-order-date">
+          ${escHtml(p._userName)} · ${new Date(p.date).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}
+        </div>
+      </div>
+      <div class="ap-order-cost">−${p.actionsCost||1} act.</div>
+    </div>`;
+}
+
+// Toggle expand/collapse a user's order list
+function adminToggleUser(uid) {
+  const card    = document.getElementById('apu-' + uid);
+  const orders  = document.getElementById('apuo-' + uid);
+  if (!card || !orders) return;
+  const open = orders.style.display !== 'none';
+  orders.style.display = open ? 'none' : 'block';
+  card.classList.toggle('expanded', !open);
+}
+
+// Admin tool: grant bonus actions to a specific user
+async function adminGrantActions(uid, name) {
+  const amtStr = prompt(`Grant extra actions to ${name}?\nEnter number of actions to add:`);
+  if (!amtStr) return;
+  const amt = parseInt(amtStr);
+  if (isNaN(amt) || amt <= 0) return showToast('Invalid amount', 'error');
+  try {
+    const ref  = db.collection('shop_users').doc(uid);
+    const snap = await ref.get();
+    const data = snap.data();
+    // We reduce actionsUsed (effectively freeing up slots)
+    const newUsed = Math.max(0, (data.actionsUsed||0) - amt);
+    await ref.update({ actionsUsed: newUsed });
+    showToast(`Granted ${amt} actions to ${name}`,'success');
+    await adminLoadAll();
+  } catch(e) { showToast('Failed to grant actions','error'); }
+}
+
+// Admin tool: reset a user's monthly usage to 0
+async function adminResetUser(uid, name) {
+  if (!confirm(`Reset ${name}'s monthly actions to 0 used?`)) return;
+  try {
+    const now = new Date();
+    await db.collection('shop_users').doc(uid).update({
+      actionsUsed: 0,
+      actionsMonth: `${now.getFullYear()}-${now.getMonth()+1}`
+    });
+    showToast(`${name}'s month reset`,'success');
+    await adminLoadAll();
+  } catch(e) { showToast('Reset failed','error'); }
+}
+
+// Admin tool: export all order data as CSV
+async function adminExportCSV() {
+  try {
+    const snap = await db.collection('shop_users').get();
+    const rows = [['User','Email','Product','Date','Actions Cost','Method','Code']];
+    snap.forEach(doc => {
+      const u = doc.data();
+      if (u.displayName === ADMIN_NAME) return;
+      (u.purchases||[]).forEach(p => {
+        rows.push([
+          u.displayName||'',
+          u.email||'',
+          p.product||'',
+          p.date||'',
+          p.actionsCost||1,
+          p.method||'',
+          p.code||''
+        ]);
+      });
+    });
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = `jvst-orders-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click(); URL.revokeObjectURL(url);
+    showToast('CSV exported','success');
+  } catch(e) { showToast('Export failed','error'); }
+}
+
+// Admin search filter
+function adminSearch(val) {
+  const q = val.toLowerCase();
+  document.querySelectorAll('.ap-user-card').forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = text.includes(q) ? '' : 'none';
+  });
+}
+
+// Hook into enterDashboard — add maybeShowAdminButton call
+const _origEnterDashboard = enterDashboard;
+// (We override by patching renderDashboard instead since enterDashboard is defined above)
+const _origRenderDashboard = renderDashboard;
+// Patch: after renderDashboard, show admin button if applicable
+window.addEventListener('load', () => {
+  // Slight delay to ensure DOM is ready
+  setTimeout(maybeShowAdminButton, 300);
+});
+// Also call it each time auth resolves — safe to call multiple times
+const _adminAuthPatch = setInterval(() => {
+  if (currentUser && userData) { maybeShowAdminButton(); clearInterval(_adminAuthPatch); }
+}, 500);
 </script>
+
+  <!-- ── ADMIN TRIGGER BUTTON ──────────────────────────────────────────── -->
+<button id="admin-trigger" onclick="openAdminPanel()" title="Admin Panel" style="
+  display:none; position:fixed; bottom:68px; right:14px; z-index:400;
+  width:36px; height:36px; border-radius:50%;
+  background:var(--text); color:#fff; border:none; cursor:pointer;
+  align-items:center; justify-content:center;
+  font-size:15px; box-shadow:0 2px 10px rgba(0,0,0,.2);
+  transition:transform .15s, box-shadow .15s;
+  font-family:'DM Mono',monospace; letter-spacing:0;
+">⬡</button>
+
+<!-- ── ADMIN PANEL OVERLAY ───────────────────────────────────────────── -->
+<div id="admin-overlay" onclick="if(event.target===this)closeAdminPanel()" style="
+  position:fixed; inset:0; z-index:3000;
+  background:rgba(0,0,0,.5);
+  display:flex; align-items:flex-end; justify-content:center;
+  opacity:0; pointer-events:none;
+  transition:opacity .22s ease;
+">
+  <div style="
+    background:var(--bg); width:100%; max-width:520px;
+    border-radius:18px 18px 0 0; border:1px solid var(--border); border-bottom:none;
+    max-height:90dvh; display:flex; flex-direction:column;
+    box-shadow:0 -6px 32px rgba(0,0,0,.14);
+    transform:translateY(0); /* overlay opacity handles visibility */
+  ">
+    <!-- Handle + Header -->
+    <div style="padding:14px 18px 0; flex-shrink:0;">
+      <div style="width:34px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 14px;"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:2px;">Admin</div>
+          <div style="font-size:17px;font-weight:600;letter-spacing:-.02em;">JVST Dashboard</div>
+        </div>
+        <button onclick="closeAdminPanel()" style="
+          width:28px;height:28px;border-radius:50%;
+          background:var(--surface2);border:1px solid var(--border);
+          color:var(--muted);font-size:14px;cursor:pointer;
+          display:flex;align-items:center;justify-content:center;
+        ">✕</button>
+      </div>
+
+      <!-- Stats strip -->
+      <div id="admin-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;"></div>
+
+      <!-- Tabs -->
+      <div style="display:flex;border:1px solid var(--border);border-radius:7px;overflow:hidden;margin-bottom:12px;">
+        <button class="ap-tab active" data-tab="users"  onclick="adminSwitchTab('users')"  style="flex:1;padding:9px 4px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-family:'DM Mono',monospace;background:var(--text);color:#fff;border:none;border-right:1px solid var(--border);cursor:pointer;">By User</button>
+        <button class="ap-tab"        data-tab="orders" onclick="adminSwitchTab('orders')" style="flex:1;padding:9px 4px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-family:'DM Mono',monospace;background:var(--bg);color:var(--muted);border:none;border-right:1px solid var(--border);cursor:pointer;">All Orders</button>
+        <button class="ap-tab"        data-tab="tools"  onclick="adminSwitchTab('tools')"  style="flex:1;padding:9px 4px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-family:'DM Mono',monospace;background:var(--bg);color:var(--muted);border:none;cursor:pointer;">Tools</button>
+      </div>
+
+      <!-- Search (users tab only) -->
+      <input id="admin-search" oninput="adminSearch(this.value)" placeholder="Search members…" style="
+        width:100%;background:var(--surface);border:1px solid var(--border);
+        border-radius:7px;padding:9px 12px;font-size:12px;
+        font-family:'DM Mono',monospace;color:var(--text);outline:none;
+        margin-bottom:4px;
+      ">
+    </div>
+
+    <!-- Loading indicator -->
+    <div id="admin-loading" style="display:none;padding:20px;text-align:center;font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);">
+      <span class="spinner" style="border-top-color:var(--text);border-color:var(--border2);"></span> Loading...
+    </div>
+
+    <!-- Scrollable body -->
+    <div style="flex:1;overflow-y:auto;padding:8px 0 28px;">
+
+      <!-- USERS panel -->
+      <div id="admin-panel-users">
+        <div id="admin-users-list"></div>
+      </div>
+
+      <!-- ALL ORDERS panel -->
+      <div id="admin-panel-orders" style="display:none;">
+        <div id="admin-orders-list"></div>
+      </div>
+
+      <!-- TOOLS panel -->
+      <div id="admin-panel-tools" style="display:none;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:10px;">Export</div>
+        <button onclick="adminExportCSV()" style="
+          width:100%;padding:12px;border-radius:var(--radius);
+          background:var(--text);color:#fff;border:none;cursor:pointer;
+          font-size:13px;font-weight:600;font-family:'Inter',sans-serif;
+          letter-spacing:.02em;margin-bottom:10px;
+        ">⬇ Export all orders as CSV</button>
+        <button onclick="adminLoadAll()" style="
+          width:100%;padding:12px;border-radius:var(--radius);
+          background:transparent;color:var(--text2);border:1px solid var(--border);cursor:pointer;
+          font-size:13px;font-weight:600;font-family:'Inter',sans-serif;
+          letter-spacing:.02em;
+        ">↺ Refresh data</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Admin overlay open state */
+  #admin-overlay.open { opacity:1 !important; pointer-events:all !important; }
+
+  /* Tab active state (toggled by JS) */
+  .ap-tab.active { background:var(--text) !important; color:#fff !important; }
+
+  /* Stats */
+  .ap-stat { background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:10px 12px;text-align:center; }
+  .ap-stat-val { font-size:20px;font-weight:600;font-family:'DM Mono',monospace;letter-spacing:-.02em; }
+  .ap-stat-label { font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px; }
+
+  /* User cards */
+  .ap-user-card { margin:6px 14px;border:1px solid var(--border);border-radius:10px;overflow:hidden; }
+  .ap-user-head { display:flex;align-items:center;gap:10px;padding:11px 13px;cursor:pointer;background:var(--surface);transition:background .12s; }
+  .ap-user-head:hover { background:var(--surface2); }
+  .ap-avatar { width:28px;height:28px;border-radius:50%;background:var(--text);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;font-family:'Inter',sans-serif;flex-shrink:0; }
+  .ap-user-info { flex:1;min-width:0; }
+  .ap-user-name { font-size:13px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+  .ap-user-email { font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+  .ap-user-right { flex-shrink:0;text-align:right; }
+  .ap-actions-remaining { font-size:18px;font-weight:600;font-family:'DM Mono',monospace;line-height:1; }
+  .ap-actions-remaining.warn { color:var(--danger); }
+  .ap-actions-label { font-size:9px;color:var(--muted);font-family:'DM Mono',monospace; }
+  .ap-chevron { font-size:11px;color:var(--muted);margin-left:6px;transition:transform .2s; }
+  .ap-user-card.expanded .ap-chevron { transform:rotate(180deg); }
+
+  /* User orders (expanded) */
+  .ap-user-orders { border-top:1px solid var(--border); }
+  .ap-user-orders-meta { padding:8px 13px;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;border-bottom:1px solid var(--border);background:var(--surface2); }
+
+  /* Order rows */
+  .ap-order-row { display:flex;align-items:center;justify-content:space-between;padding:9px 13px;border-bottom:1px solid var(--border);gap:10px; }
+  .ap-order-row:last-of-type { border-bottom:none; }
+  .ap-order-product { font-size:12px;font-weight:500; }
+  .ap-order-date { font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px; }
+  .ap-order-cost { font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);flex-shrink:0; }
+
+  /* Action buttons inside cards */
+  .ap-action-btn { flex:1;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text2);font-size:11px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:all .12s; }
+  .ap-action-btn:hover { border-color:var(--text);color:var(--text); }
+  .ap-action-btn.danger { color:var(--danger);border-color:#f0c0c0; }
+  .ap-action-btn.danger:hover { background:#fff0f0; }
+
+  /* Empty state */
+  .ap-empty { padding:28px;text-align:center;color:var(--muted);font-size:12px;font-family:'DM Mono',monospace; }
+</style>
 </body>
 </html>
