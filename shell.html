@@ -809,9 +809,8 @@
         <li><a href="tunes.html">Music</a></li>
         <li><a href="shop.html">👤</a></li>
     </ul>
-    <button class="search-btn" aria-label="Search">🔍</button>
     <button class="cart-btn" onclick="openCartDrawer()" aria-label="Cart">
-        🛒 Cart <span class="cart-count" id="cartBadge">0</span>
+        🛒<span class="cart-count" id="cartBadge">0</span>
     </button>
     <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
 </div>
@@ -883,11 +882,11 @@
             <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">① <span style="color:#fff">Sign up free at JVST</span> — get 10 Actions/month</span>
             <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">② <span style="color:#fff">Add items to cart</span> — Blind Bags = 1 Action each</span>
             <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">③ <span style="color:#fff">Checkout</span> — get your order codes instantly</span>
-            <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">④ <span style="color:#fff">DM @shopjvst</span> on Instagram with your codes to redeem 🎁</span>
+            <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">④ <span style="color:#fff">Show digital recept to employee to redeem your order</span>
             <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">① <span style="color:#fff">Sign up free at JVST</span> — get 10 Actions/month</span>
             <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">② <span style="color:#fff">Add items to cart</span> — Blind Bags = 1 Action each</span>
             <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">③ <span style="color:#fff">Checkout</span> — get your order codes instantly</span>
-            <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">④ <span style="color:#fff">DM @shopjvst</span> on Instagram with your codes to redeem 🎁</span>
+            <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">④ <span style="color:#fff">Show digital recept to employee to redeem your order</span>
         </div>
     </div>
 </div>
@@ -910,7 +909,7 @@
             <div style="background:#ff2d2d;border-radius:8px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">🎁</div>
             <div>
                 <div style="color:#fff;font-size:0.9rem;font-weight:700;margin-bottom:2px">Everything here is free to order with Actions</div>
-                <div style="color:#aaa;font-size:0.75rem">Sign up for a free JVST account → get 10 Actions/month → shop → DM <strong style="color:#ff2d2d">@shopjvst</strong> to redeem. No cash required.</div>
+                <div style="color:#aaa;font-size:0.75rem">Sign up for a free JVST account → get 10 Actions/month → shop → Show digital recept to employee to redeem your order, 0 cash required</div>
             </div>
         </div>
         <a href="login.html" style="background:#ff2d2d;color:#fff;text-decoration:none;padding:9px 20px;border-radius:7px;font-size:0.8rem;font-weight:700;white-space:nowrap;flex-shrink:0">Get Free Actions →</a>
@@ -1394,25 +1393,25 @@ const BUNDLES = [
     {
         id: 'BND-START', code: 'STARTER', tag: 'Limited', name: 'Starter Pack',
         desc: 'The full intro: 5 blind bags + 1 Indy Keychain + a handwritten note from JVST. Custom box. Limited to 100 sets.',
-        cost: 5, img: null,
+        cost: 5, img: "12.png",
         color: '#f687b3', label: 'Starter\nPack', sub: 'Limited 100'
     },
     {
         id: 'BND-LB01', code: 'LB01', tag: 'Loot Box', name: 'Loot Box #001',
         desc: 'Random loot box packed with MINI CRAFTS memorabilia and rare JVST collectibles. No two boxes alike.',
-        cost: 3, img: null,
+        cost: 3, img: "9.png",
         color: '#a0aec0', label: 'Loot Box\n#001', sub: 'Mystery'
     },
     {
         id: 'BND-LB02', code: 'LB02', tag: 'Loot Box', name: 'Loot Box #002',
         desc: 'Second series random loot box. New items, new chances — same rare JVST energy.',
-        cost: 3, img: null,
+        cost: 3, img: "10.png",
         color: '#718096', label: 'Loot Box\n#002', sub: 'Series 2'
     },
     {
         id: 'BND-LB03', code: 'LB03', tag: 'Loot Box', name: 'Loot Box #003',
         desc: 'Entry-level loot box. Great starting point for new collectors, MINI CRAFTS essentials inside.',
-        cost: 1, img: null,
+        cost: 1, img: "11.png",
         color: '#cbd5e0', label: 'Loot Box\n#003', sub: 'Starter'
     },
 ];
