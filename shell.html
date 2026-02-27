@@ -47,14 +47,13 @@
         }
         .logo span { color: #ff2d2d; }
 
-        .nav-links {
-            display: flex;
-            gap: 0;
-            list-style: none;
-            overflow-x: auto;
-            flex: 1;
-            scrollbar-width: none;
-        }
+.nav-links {
+    display: flex;
+    gap: 0;
+    list-style: none;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
         .nav-links::-webkit-scrollbar { display: none; }
         .nav-links a {
             color: #333;
@@ -800,25 +799,22 @@
 <!-- ═══ NAV ═══ -->
 <nav>
     <div class="nav-container">
-        <a href="#" class="logo">JVST<span> ×</span> Mini Crafts</a>
+<a href="#" class="logo">JVST<span> ×</span> Mini Crafts</a>
 
-        <ul class="nav-links" id="navLinks">
-            <li><a href="#" class="active">Home</a></li>
-            <li><a href="#blind-bags">Shop</a></li>
-            <li><a href="#indy">Indy AI</a></li>
-            <li><a href="#music">Music</a></li>
-            <li><a href="#actions">Actions</a></li>
-            <li><a href="https://instagram.com/shopjvst" target="_blank">@shopjvst</a></li>
-            <li><a href="shop.html">My Account 👤</a></li>
-        </ul>
-
-        <div class="nav-right">
-            <button class="search-btn" aria-label="Search">🔍</button>
-            <button class="cart-btn" onclick="openCartDrawer()" aria-label="Cart">
-                🛒 Cart <span class="cart-count" id="cartBadge">0</span>
-            </button>
-            <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
-        </div>
+<div class="nav-right">
+    <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="store.html">Shop</a></li>
+        <li><a href="indy.html">Indy AI</a></li>
+        <li><a href="tunes.html">Music</a></li>
+        <li><a href="shop.html">👤</a></li>
+    </ul>
+    <button class="search-btn" aria-label="Search">🔍</button>
+    <button class="cart-btn" onclick="openCartDrawer()" aria-label="Cart">
+        🛒 Cart <span class="cart-count" id="cartBadge">0</span>
+    </button>
+    <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+</div>
     </div>
 </nav>
 
@@ -899,6 +895,15 @@
 <!-- ═══ MAIN ═══ -->
 <main>
 
+<!-- ═══ TRENDING ═══ -->
+    <div id="trending" style="margin-bottom: 48px;">
+        <div class="section-header">
+            <h2>Trending Now <span class="sec-icon">🔥</span></h2>
+            <span style="font-size:0.72rem;color:#aaa;font-weight:500">Most popular picks</span>
+        </div>
+        <div class="product-grid" id="trendingGrid"></div>
+    </div>
+    
     <!-- ── ACTIONS CALLOUT BANNER ── -->
     <div style="background:linear-gradient(135deg,#111 0%,#1a1a1a 100%);border-radius:12px;padding:20px 24px;margin-bottom:40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
         <div style="display:flex;align-items:center;gap:16px">
@@ -1498,7 +1503,16 @@ function renderCard(p, visual) {
 
 function renderAllGrids() {
     cart = loadCart();
+
+const TRENDING = [
+        { p: BLIND_BAGS.find(x => x.id === 'BB-BKFST'), fn: blindBagPlaceholder },
+        { p: BOOKS.find(x => x.id === 'WB-PCH'),        fn: bookPlaceholder },
+        { p: BUNDLES.find(x => x.id === 'BND-START'),   fn: bundlePlaceholder },
+        { p: KEYCHAINS.find(x => x.id === 'KC-PMP1'),   fn: keychainPlaceholder },
+    ];
+    document.getElementById('trendingGrid').innerHTML = TRENDING.map(({ p, fn }) => renderCard(p, fn(p))).join('');
     
+    document.getElementById('blindBagGrid').innerHTML = BLIND_BAGS.map(p => renderCard(p, blindBagPlaceholder(p))).join('');
     document.getElementById('blindBagGrid').innerHTML = BLIND_BAGS.map(p => renderCard(p, blindBagPlaceholder(p))).join('');
     document.getElementById('booksGrid').innerHTML = BOOKS.map(p => renderCard(p, bookPlaceholder(p))).join('');
     document.getElementById('keychainGrid').innerHTML = KEYCHAINS.map(p => renderCard(p, keychainPlaceholder(p))).join('');
