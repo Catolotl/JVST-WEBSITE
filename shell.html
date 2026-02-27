@@ -989,7 +989,7 @@
             <span class="cart-total-val" id="cartTotal">0</span>
         </div>
         <button class="cart-checkout-btn" id="cartCheckoutBtn" onclick="openCheckout()">Checkout →</button>
-        <div class="cart-note">DM @shopjvst on Instagram to redeem your order</div>
+        <div class="cart-note">Ask employee to redeem your order</div>
     </div>
 </div>
 
@@ -1010,7 +1010,7 @@
                 </div>
             </div>
             <div id="coAuthNotice" class="co-auth-notice">
-                You're not signed in. <a href="shop.html">Sign in to your JVST account</a> to use your Actions — or copy your codes below and DM <strong>@shopjvst</strong> on Instagram to redeem manually.
+                You're not signed in. <a href="shop.html">Sign in to your JVST account</a> to use your Actions — or copy your codes below or ask an employee to redeem manually.
             </div>
             <div id="coWarn" class="co-warn"></div>
             <div>
@@ -1066,193 +1066,305 @@
     </div>
 </div>
 
-<!-- ═══ INDY 3 ═══ -->
-<div class="section-band alt" id="indy">
-    <div class="container">
-        <div class="indy-split">
-            <div>
-                <div class="indy-badge"><span class="pulse-dot"></span> Live Now — Free to Use</div>
-                <div class="band-eyebrow">indy3</div>
-                <h2 class="band-title">The AI that actually<br><em style="font-style:italic;color:#ff2d2d">gets the culture.</em></h2>
-                <p class="band-sub">Indy 3 is JVST's AI assistant — built for people who switch between English, Spanish, and Spanglish mid-sentence. No corporate tone. No fluff. Just fast, sharp answers that understand how real people actually talk.</p>
-                <div class="indy-feats">
-                    <div class="indy-feat">
-                        <div class="indy-icon">⚡</div>
-                        <div class="indy-feat-text"><strong>Lightning fast</strong><span>Responses under a second. No lag, no waiting.</span></div>
-                    </div>
-                    <div class="indy-feat">
-                        <div class="indy-icon">🌎</div>
-                        <div class="indy-feat-text"><strong>English · Spanish · Spanglish</strong><span>Native multilingual — not a translation layer slapped on top.</span></div>
-                    </div>
-                    <div class="indy-feat">
-                        <div class="indy-icon">🔒</div>
-                        <div class="indy-feat-text"><strong>Private by default</strong><span>We never train on your conversations. Your words stay yours.</span></div>
-                    </div>
-                    <div class="indy-feat">
-                        <div class="indy-icon">🎁</div>
-                        <div class="indy-feat-text"><strong>Earn Actions using Indy</strong><span>Active Indy+ members get bonus Actions to spend in the shop.</span></div>
-                    </div>
-                </div>
-                <div style="display:flex;gap:10px;flex-wrap:wrap">
-                    <a href="indy.html" class="btn btn-red">Try Indy 3 Free →</a>
-                    <a href="login.html" class="btn btn-ghost">Create Account</a>
-                </div>
-            </div>
-            <div>
-                <div class="chat-mock">
-                    <div class="chat-bar">
-                        <div class="cdot" style="background:#ff5f57"></div>
-                        <div class="cdot" style="background:#febc2e"></div>
-                        <div class="cdot" style="background:#28c840"></div>
-                        <div class="chat-name">Indy 3</div>
-                    </div>
-                    <div class="chat-msgs">
-                        <div class="msg user"><div class="bubble">yo translate this for my abuela but keep it warm</div><div class="msg-t">now</div></div>
-                        <div class="msg bot"><div class="bubble">Of course — I'll keep it warm and natural, the way family actually talks 🙂</div><div class="msg-t">Indy 3 · just now</div></div>
-                        <div class="msg user"><div class="bubble">write me a hook, reggaeton vibes, summer nights energy</div><div class="msg-t">now</div></div>
-                        <div class="msg bot"><div class="bubble">Working on it... 🎵</div><div class="msg-t">Indy 3 · typing…</div></div>
-                    </div>
-                </div>
-                <div class="stats-strip">
-                    <div class="stat-cell"><div class="stat-num"><span>&lt;1</span>s</div><div class="stat-label">Avg response</div></div>
-                    <div class="stat-cell"><div class="stat-num"><span>3</span></div><div class="stat-label">Plans — from free</div></div>
-                    <div class="stat-cell"><div class="stat-num"><span>∞</span></div><div class="stat-label">Messages, Indy+</div></div>
-                    <div class="stat-cell"><div class="stat-num"><span>0</span></div><div class="stat-label">Data sold</div></div>
-                </div>
-            </div>
+<!-- ════════════════════════════════════════════════════
+     INDY 3 — dark version
+════════════════════════════════════════════════════ -->
+<section id="indy" style="background:#0c0c0c;border-top:1px solid #242424;border-bottom:1px solid #242424;padding:88px 0;position:relative;overflow:hidden">
+  <div style="position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(255,45,45,.05) 0%,transparent 70%);pointer-events:none"></div>
+  <div style="max-width:1200px;margin:0 auto;padding:0 32px">
+    <div class="dark-indy-split">
+      <!-- LEFT: text -->
+      <div>
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:4px 13px;background:rgba(255,45,45,.10);border:1px solid rgba(255,45,45,.22);border-radius:4px;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#ff2d2d;margin-bottom:18px">
+          <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#ff2d2d;animation:pdot-dark 2s ease-out infinite"></span>
+          Live Now — Free to Use
         </div>
+        <div style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#ff2d2d;margin-bottom:10px;opacity:.75">// indy3</div>
+        <h2 style="font-size:clamp(1.8rem,3.5vw,2.75rem);font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-bottom:14px;color:#fff">The AI that actually<br><em style="font-style:italic;color:#ff2d2d">gets the culture.</em></h2>
+        <p style="font-size:.95rem;color:#999;line-height:1.7;margin-bottom:28px">Indy 3 is JVST's AI assistant — built for people who switch between English, Spanish, and Spanglish mid-sentence. No corporate tone. No fluff. Just fast, sharp answers that understand how real people actually talk.</p>
+        <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:32px">
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:30px;height:30px;border-radius:7px;background:#1c1c1c;border:1px solid #333;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;margin-top:2px">⚡</div>
+            <div><strong style="display:block;font-size:.875rem;font-weight:600;margin-bottom:1px;color:#fff">Lightning fast</strong><span style="font-size:.82rem;color:#555">Responses under a second. No lag, no waiting.</span></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:30px;height:30px;border-radius:7px;background:#1c1c1c;border:1px solid #333;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;margin-top:2px">🌎</div>
+            <div><strong style="display:block;font-size:.875rem;font-weight:600;margin-bottom:1px;color:#fff">English · Spanish · Spanglish</strong><span style="font-size:.82rem;color:#555">Native multilingual — not a translation layer slapped on top.</span></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:30px;height:30px;border-radius:7px;background:#1c1c1c;border:1px solid #333;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;margin-top:2px">🔒</div>
+            <div><strong style="display:block;font-size:.875rem;font-weight:600;margin-bottom:1px;color:#fff">Private by default</strong><span style="font-size:.82rem;color:#555">We never train on your conversations. Your words stay yours.</span></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:30px;height:30px;border-radius:7px;background:#1c1c1c;border:1px solid #333;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;margin-top:2px">🎁</div>
+            <div><strong style="display:block;font-size:.875rem;font-weight:600;margin-bottom:1px;color:#fff">Earn Actions using Indy</strong><span style="font-size:.82rem;color:#555">Active Indy+ members get bonus Actions to spend in the shop.</span></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <a href="indy.html" style="display:inline-block;padding:10px 22px;border-radius:6px;font-size:.875rem;font-weight:600;background:#ff2d2d;color:#fff;text-decoration:none">Try Indy 3 Free →</a>
+          <a href="login.html" style="display:inline-block;padding:10px 22px;border-radius:6px;font-size:.875rem;font-weight:600;background:transparent;color:#fff;border:1px solid #333;text-decoration:none">Create Account</a>
+        </div>
+      </div>
+      <!-- RIGHT: chat mockup + stats -->
+      <div>
+        <div style="background:#141414;border:1px solid #242424;border-radius:10px;overflow:hidden;margin-bottom:20px">
+          <div style="padding:10px 14px;border-bottom:1px solid #242424;display:flex;align-items:center;gap:7px;background:#1c1c1c">
+            <div style="width:9px;height:9px;border-radius:50%;background:#ff5f57"></div>
+            <div style="width:9px;height:9px;border-radius:50%;background:#febc2e"></div>
+            <div style="width:9px;height:9px;border-radius:50%;background:#28c840"></div>
+            <span style="font-size:.78rem;font-weight:600;margin-left:4px;color:#555">Indy 3</span>
+          </div>
+          <div style="padding:18px;display:flex;flex-direction:column;gap:10px">
+            <div style="max-width:88%;align-self:flex-end">
+              <div style="padding:9px 13px;border-radius:10px 10px 2px 10px;font-size:.82rem;line-height:1.5;background:#ff2d2d;color:#fff">yo translate this for my abuela but keep it warm</div>
+              <div style="font-size:.68rem;color:#333;margin-top:3px;text-align:right;font-family:'JetBrains Mono',monospace">now</div>
+            </div>
+            <div style="max-width:88%">
+              <div style="padding:9px 13px;border-radius:10px 10px 10px 2px;font-size:.82rem;line-height:1.5;background:#1c1c1c;border:1px solid #242424;color:#ccc">Of course — I'll keep it warm and natural, the way family actually talks 🙂</div>
+              <div style="font-size:.68rem;color:#333;margin-top:3px;font-family:'JetBrains Mono',monospace">Indy 3 · just now</div>
+            </div>
+            <div style="max-width:88%;align-self:flex-end">
+              <div style="padding:9px 13px;border-radius:10px 10px 2px 10px;font-size:.82rem;line-height:1.5;background:#ff2d2d;color:#fff">write me a hook, reggaeton vibes, summer nights energy</div>
+              <div style="font-size:.68rem;color:#333;margin-top:3px;text-align:right;font-family:'JetBrains Mono',monospace">now</div>
+            </div>
+            <div style="max-width:88%">
+              <div style="display:flex;gap:4px;align-items:center;padding:9px 13px;background:#1c1c1c;border:1px solid #242424;border-radius:10px;width:fit-content">
+                <span style="width:5px;height:5px;background:#444;border-radius:50%;animation:blink-dark 1.4s infinite;display:inline-block"></span>
+                <span style="width:5px;height:5px;background:#444;border-radius:50%;animation:blink-dark 1.4s .2s infinite;display:inline-block"></span>
+                <span style="width:5px;height:5px;background:#444;border-radius:50%;animation:blink-dark 1.4s .4s infinite;display:inline-block"></span>
+              </div>
+              <div style="font-size:.68rem;color:#333;margin-top:3px;font-family:'JetBrains Mono',monospace">Indy 3 · typing…</div>
+            </div>
+          </div>
+        </div>
+        <!-- stats strip dark -->
+        <div style="border:1px solid #242424;border-radius:10px;overflow:hidden;display:grid;grid-template-columns:repeat(4,1fr)">
+          <div style="padding:20px 14px;border-right:1px solid #242424;background:#0c0c0c"><div style="font-size:1.4rem;font-weight:700;letter-spacing:-.03em;margin-bottom:3px;color:#fff"><span style="color:#ff2d2d">&lt;1</span>s</div><div style="font-size:.68rem;color:#444">Avg response</div></div>
+          <div style="padding:20px 14px;border-right:1px solid #242424;background:#0c0c0c"><div style="font-size:1.4rem;font-weight:700;letter-spacing:-.03em;margin-bottom:3px;color:#fff"><span style="color:#ff2d2d">3</span></div><div style="font-size:.68rem;color:#444">Plans — free</div></div>
+          <div style="padding:20px 14px;border-right:1px solid #242424;background:#0c0c0c"><div style="font-size:1.4rem;font-weight:700;letter-spacing:-.03em;margin-bottom:3px;color:#fff"><span style="color:#ff2d2d">∞</span></div><div style="font-size:.68rem;color:#444">Messages, Indy+</div></div>
+          <div style="padding:20px 14px;background:#0c0c0c"><div style="font-size:1.4rem;font-weight:700;letter-spacing:-.03em;margin-bottom:3px;color:#fff"><span style="color:#ff2d2d">0</span></div><div style="font-size:.68rem;color:#444">Data sold</div></div>
+        </div>
+      </div>
     </div>
+  </div>
+</section>
+<style>
+@keyframes pdot-dark{0%{box-shadow:0 0 0 0 rgba(255,45,45,.7)}70%{box-shadow:0 0 0 8px rgba(255,45,45,0)}100%{box-shadow:0 0 0 0 rgba(255,45,45,0)}}
+@keyframes blink-dark{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.dark-indy-split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+@media(max-width:860px){.dark-indy-split{grid-template-columns:1fr;gap:36px}}
+</style>
+
+
+<!-- ════════════════════════════════════════════════════
+     MUSIC / TUNES — dark version
+════════════════════════════════════════════════════ -->
+<section id="music" style="background:#000;border-top:1px solid #242424;border-bottom:1px solid #242424;padding:88px 0">
+  <div style="max-width:1200px;margin:0 auto;padding:0 32px">
+    <div class="dark-tunes-split">
+      <div>
+        <div style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#ff2d2d;margin-bottom:10px;opacity:.75">// music & media</div>
+        <h2 style="font-size:clamp(1.8rem,3.5vw,2.75rem);font-weight:700;letter-spacing:-.04em;line-height:1.08;margin-bottom:24px;color:#fff">JVST is a music<br>company <span style="background:#f5c842;color:#000;font-style:italic;padding:0 6px;border-radius:2px">too.</span></h2>
+        <p style="font-size:.95rem;color:#555;line-height:1.75;margin-bottom:20px">AI is the spine, but music is the soul. From MusicX Sessions to JVST TV, we're building the infrastructure that lets real artists get heard — no label, no gatekeepers, no 1M follower requirement.</p>
+        <p style="font-size:.88rem;color:#444;line-height:1.75;margin-bottom:32px">Every collab, every feature, every submission goes through real ears. No algorithm deciding your fate. Real feedback, real exposure, real community.</p>
+        <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:32px">
+          <div style="display:flex;gap:14px;align-items:center">
+            <div style="width:36px;height:36px;border-radius:8px;background:#141414;border:1px solid #242424;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0">🎤</div>
+            <div><div style="font-size:.875rem;font-weight:600;margin-bottom:2px;color:#fff">MusicX Sessions</div><div style="font-size:.78rem;color:#444">Open platform for unsigned artists. Submit and get heard.</div></div>
+          </div>
+          <div style="display:flex;gap:14px;align-items:center">
+            <div style="width:36px;height:36px;border-radius:8px;background:#141414;border:1px solid #242424;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0">📺</div>
+            <div><div style="font-size:.875rem;font-weight:600;margin-bottom:2px;color:#fff">JVST TV</div><div style="font-size:.78rem;color:#444">Video & culture content — dropping Q4 2026.</div></div>
+          </div>
+          <div style="display:flex;gap:14px;align-items:center">
+            <div style="width:36px;height:36px;border-radius:8px;background:#141414;border:1px solid #242424;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0">🤝</div>
+            <div><div style="font-size:.875rem;font-weight:600;margin-bottom:2px;color:#fff">Artist Collabs</div><div style="font-size:.78rem;color:#444">Noah Loke, Evan Duffy, Rainn Blais — and more.</div></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <button onclick="alert('MusicX Sessions submissions open soon!')" style="display:inline-block;padding:10px 22px;border-radius:6px;font-size:.875rem;font-weight:600;background:#ff2d2d;color:#fff;border:none;cursor:pointer;font-family:inherit">Submit Your Music →</button>
+        </div>
+      </div>
+      <div style="aspect-ratio:4/5;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#141414,#242424)">
+        <img src="tvbb.png" alt="JVST TV" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.parentElement.style.background='linear-gradient(135deg,#141414,#242424)'">
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+.dark-tunes-split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+@media(max-width:860px){.dark-tunes-split{grid-template-columns:1fr;gap:36px}}
+</style>
+
+
+<!-- ════════════════════════════════════════════════════
+     CULTURE STATS BAR
+════════════════════════════════════════════════════ -->
+<div style="background:#0c0c0c;border-bottom:1px solid #242424">
+  <div style="max-width:860px;margin:0 auto;display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;align-items:center;gap:0;text-align:center">
+    <div style="padding:36px 28px">
+      <div style="font-size:2rem;font-weight:700;letter-spacing:-.04em;color:#ff2d2d;margin-bottom:6px">18B+</div>
+      <div style="font-size:.7rem;color:#444;letter-spacing:.08em;text-transform:uppercase;line-height:1.5">Streams — most-streamed<br>Spanish-language artist</div>
+    </div>
+    <div style="width:1px;background:#242424;height:50px;align-self:center"></div>
+    <div style="padding:36px 28px">
+      <div style="font-size:2rem;font-weight:700;letter-spacing:-.04em;margin-bottom:6px;color:#fff">#1</div>
+      <div style="font-size:.7rem;color:#444;letter-spacing:.08em;text-transform:uppercase;line-height:1.5">Spotify globally,<br>multiple years running</div>
+    </div>
+    <div style="width:1px;background:#242424;height:50px;align-self:center"></div>
+    <div style="padding:36px 28px">
+      <div style="font-size:2rem;font-weight:700;letter-spacing:-.04em;margin-bottom:6px;color:#fff">🇵🇷</div>
+      <div style="font-size:.7rem;color:#444;letter-spacing:.08em;text-transform:uppercase;line-height:1.5">The island that gave<br>the world its pulse</div>
+    </div>
+  </div>
+  <div style="border-top:1px solid #242424;padding:24px 32px;text-align:center;max-width:1200px;margin:0 auto">
+    <p style="font-size:.85rem;color:#333;line-height:1.75;max-width:520px;margin:0 auto;font-style:italic">"The world just needed to catch up." — Latin music runs the charts, the culture, and now the tech.</p>
+  </div>
 </div>
 
-<!-- ═══ TUNES ═══ -->
-<div class="section-band" id="music">
-    <div class="container">
-        <div class="tunes-split">
-            <div>
-                <div class="band-eyebrow">music & media</div>
-                <h2 class="band-title">JVST is a music<br>company too.</h2>
-                <p class="band-sub">AI is the spine, but music is the soul. From MusicX Sessions to JVST TV, we're building the infrastructure that lets real artists get heard — no label, no gatekeepers, no 1M follower requirement.</p>
-                <div style="margin:28px 0">
-                    <div class="tunes-feat">
-                        <div class="tunes-feat-icon">🎤</div>
-                        <div><div class="tunes-feat-title">MusicX Sessions</div><div class="tunes-feat-sub">Open submission platform for unsigned artists. Submit your track and get real reach.</div></div>
-                    </div>
-                    <div class="tunes-feat">
-                        <div class="tunes-feat-icon">📺</div>
-                        <div><div class="tunes-feat-title">JVST TV</div><div class="tunes-feat-sub">Short-form culture & music content. Dropping Q4 2026 — follow @shopjvst for the launch.</div></div>
-                    </div>
-                    <div class="tunes-feat">
-                        <div class="tunes-feat-icon">🤝</div>
-                        <div><div class="tunes-feat-title">Artist Collabs</div><div class="tunes-feat-sub">Working with Noah Loke, Evan Duffy, Rainn Blais and more independent artists.</div></div>
-                    </div>
-                </div>
-                <div style="display:flex;gap:10px;flex-wrap:wrap">
-                    <button class="btn btn-red" onclick="alert('MusicX Sessions submissions open soon — follow @shopjvst on Instagram for the announcement! 🎤')">Submit Your Music →</button>
-                    <a href="https://instagram.com/shopjvst" target="_blank" class="btn btn-ghost">Follow @shopjvst</a>
-                </div>
-            </div>
-            <div class="tunes-img">
-                <img src="tvbb.png" alt="JVST TV" onerror="this.parentElement.style.background='linear-gradient(135deg,#222,#444)'">
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- ═══ WHAT ARE ACTIONS? ═══ -->
-<div class="section-band alt actions-section" id="actions">
-    <div class="container">
-        <div style="max-width:620px;margin-bottom:48px">
-            <div class="band-eyebrow">actions — how to order</div>
-            <h2 class="band-title">No cash needed.<br>Just Actions.</h2>
-            <p class="band-sub">Actions are JVST's free monthly currency. Every account gets <strong>10 Actions/month</strong> — no credit card, no catch. Spend them on anything in the Mini Crafts shop, then DM <strong>@shopjvst</strong> on Instagram with your codes to claim your order. It's that simple.</p>
-        </div>
-        <div class="actions-grid">
-            <div class="actions-card">
-                <div class="actions-card-num">01</div>
-                <div class="actions-card-title">Get your free Actions</div>
-                <div class="actions-card-body">Every JVST account starts with 10 free Actions per month. No credit card. No trial. Sign up at <a href="login.html" style="color:#ff2d2d">JVST</a> and your Actions are ready immediately.</div>
-                <div class="actions-tag">Free Forever</div>
-            </div>
-            <div class="actions-card">
-                <div class="actions-card-num">02</div>
-                <div class="actions-card-title">Add items to your cart</div>
-                <div class="actions-card-body">Each product in the Mini Crafts catalog costs 1–5 Actions. Blind bags are 1 Action each. Bundles and Starter Packs cost more but deliver the most value per pull.</div>
-                <div class="actions-tag">1–5 Actions</div>
-            </div>
-            <div class="actions-card">
-                <div class="actions-card-num">03</div>
-                <div class="actions-card-title">Checkout & get your codes</div>
-                <div class="actions-card-body">Check out through the cart. Your order generates product codes. Your Action balance updates in real-time. Copy your codes — you'll need them in the next step.</div>
-                <div class="actions-tag">Instant</div>
-            </div>
-            <div class="actions-card">
-                <div class="actions-card-num">04</div>
-                <div class="actions-card-title">DM to redeem your order</div>
-                <div class="actions-card-body">DM <strong>@shopjvst</strong> on Instagram with your order codes. We'll confirm your order and ship your Mini Crafts items. More than 2 items may receive a special box and thank-you card.</div>
-                <div class="actions-tag">@shopjvst</div>
-            </div>
-        </div>
+<!-- ════════════════════════════════════════════════════
+     ACTIONS EXPLAINER — dark version
+════════════════════════════════════════════════════ -->
+<section id="actions" style="background:#0c0c0c;border-top:1px solid #242424;border-bottom:1px solid #242424;padding:88px 0">
+  <div style="max-width:1200px;margin:0 auto;padding:0 32px">
+    <div style="max-width:620px;margin-bottom:56px">
+      <div style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#ff2d2d;margin-bottom:10px;opacity:.75">// actions — how to order</div>
+      <h2 style="font-size:clamp(1.8rem,3.5vw,2.75rem);font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-bottom:16px;color:#fff">No cash needed.<br>Just <span style="background:#f5c842;color:#000;font-style:italic;padding:0 6px;border-radius:2px">Actions.</span></h2>
+      <p style="font-size:.95rem;color:#555;line-height:1.7">Actions are JVST's free monthly currency. Every account gets <strong style="color:#fff">10 Actions/month</strong> — no credit card, no catch. Spend them on anything in the Mini Crafts shop, then show your order codes to redeem. It's that simple.</p>
     </div>
-</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;background:#1c1c1c;border:1px solid #242424;border-radius:12px;overflow:hidden" class="dark-actions-grid">
+      <div style="background:#000;padding:36px 32px;position:relative;overflow:hidden">
+        <div style="font-size:3rem;font-weight:700;letter-spacing:-.05em;color:rgba(255,255,255,.04);position:absolute;top:14px;right:20px;line-height:1;pointer-events:none">01</div>
+        <div style="font-size:.95rem;font-weight:700;margin-bottom:8px;color:#fff">Get your free Actions</div>
+        <div style="font-size:.82rem;color:#444;line-height:1.65">Every JVST account starts with 10 free Actions per month. No credit card. No trial. Sign up at <a href="login.html" style="color:#ff2d2d">JVST</a> and your Actions are ready immediately.</div>
+        <div style="display:inline-block;margin-top:14px;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#ff2d2d;background:rgba(255,45,45,.07);border:1px solid rgba(255,45,45,.18);padding:2px 8px;border-radius:3px">Free Forever</div>
+      </div>
+      <div style="background:#000;padding:36px 32px;position:relative;overflow:hidden">
+        <div style="font-size:3rem;font-weight:700;letter-spacing:-.05em;color:rgba(255,255,255,.04);position:absolute;top:14px;right:20px;line-height:1;pointer-events:none">02</div>
+        <div style="font-size:.95rem;font-weight:700;margin-bottom:8px;color:#fff">Add items to your cart</div>
+        <div style="font-size:.82rem;color:#444;line-height:1.65">Each product in the Mini Crafts catalog costs 1–5 Actions. Blind bags are 1 Action each. Bundles and Starter Packs cost more but deliver the most value per pull.</div>
+        <div style="display:inline-block;margin-top:14px;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#ff2d2d;background:rgba(255,45,45,.07);border:1px solid rgba(255,45,45,.18);padding:2px 8px;border-radius:3px">1–5 Actions</div>
+      </div>
+      <div style="background:#000;padding:36px 32px;position:relative;overflow:hidden;border-top:2px solid #1c1c1c">
+        <div style="font-size:3rem;font-weight:700;letter-spacing:-.05em;color:rgba(255,255,255,.04);position:absolute;top:14px;right:20px;line-height:1;pointer-events:none">03</div>
+        <div style="font-size:.95rem;font-weight:700;margin-bottom:8px;color:#fff">Checkout & get your codes</div>
+        <div style="font-size:.82rem;color:#444;line-height:1.65">Check out through the cart. Your order generates product codes. Your Action balance updates in real-time. Copy your codes — you'll need them in the next step.</div>
+        <div style="display:inline-block;margin-top:14px;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#ff2d2d;background:rgba(255,45,45,.07);border:1px solid rgba(255,45,45,.18);padding:2px 8px;border-radius:3px">Instant</div>
+      </div>
+      <div style="background:#000;padding:36px 32px;position:relative;overflow:hidden;border-top:2px solid #1c1c1c">
+        <div style="font-size:3rem;font-weight:700;letter-spacing:-.05em;color:rgba(255,255,255,.04);position:absolute;top:14px;right:20px;line-height:1;pointer-events:none">04</div>
+        <div style="font-size:.95rem;font-weight:700;margin-bottom:8px;color:#fff">Show codes to redeem</div>
+        <div style="font-size:.82rem;color:#444;line-height:1.65">Show your digital receipt to a JVST employee. We'll confirm and get your Mini Crafts items ready.</div>
+        <div style="display:inline-block;margin-top:14px;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#ff2d2d;background:rgba(255,45,45,.07);border:1px solid rgba(255,45,45,.18);padding:2px 8px;border-radius:3px">@shopjvst</div>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+@media(max-width:700px){.dark-actions-grid{grid-template-columns:1fr!important}}
+</style>
 
-<!-- ═══ PHILOSOPHY ═══ -->
-<div class="section-band" style="border-bottom:1px solid #e5e5e5">
-    <div class="container" style="text-align:center">
-        <div style="max-width:680px;margin:0 auto">
-            <div class="band-eyebrow" style="display:inline-block;margin-bottom:20px">jvst.manifesto</div>
-            <h2 style="font-size:clamp(1.8rem,4vw,3rem);font-weight:700;letter-spacing:-.04em;line-height:1.08;margin-bottom:24px">We don't adapt culture<br>for technology.<br><span style="color:#ff2d2d">We build technology<br>for culture.</span></h2>
-            <p style="font-size:0.92rem;color:#666;line-height:1.8;max-width:520px;margin:0 auto 36px">The tools that exist weren't built for us. They were built, then localized. Translated, not felt. We're starting from a different place entirely.</p>
-            <div style="display:flex;justify-content:center;gap:48px;flex-wrap:wrap">
-                <div style="text-align:left;padding-left:14px;border-left:2px solid #ff2d2d"><div style="font-size:1.4rem;font-weight:700;letter-spacing:-.03em;margin-bottom:2px">Free.</div><div style="font-size:0.75rem;color:#999">Always &amp; forever.</div></div>
-                <div style="text-align:left;padding-left:14px;border-left:2px solid #ddd"><div style="font-size:1.4rem;font-weight:700;letter-spacing:-.03em;margin-bottom:2px">Private.</div><div style="font-size:0.75rem;color:#999">Zero data sold.</div></div>
-                <div style="text-align:left;padding-left:14px;border-left:2px solid #ddd"><div style="font-size:1.4rem;font-weight:700;letter-spacing:-.03em;margin-bottom:2px">Real.</div><div style="font-size:0.75rem;color:#999">Built with the culture.</div></div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- ═══ FOOTER ═══ -->
-<footer>
-    <div style="max-width:1200px;margin:0 auto;padding:0 32px">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:24px;margin-bottom:24px">
-            <div>
-                <div style="font-size:1.1rem;font-weight:800;letter-spacing:-.02em;margin-bottom:4px">JVST <span style="color:#ff2d2d">×</span> Mini Crafts</div>
-                <div style="font-size:0.72rem;color:#aaa">AI · Music · Culture · Collectibles</div>
-            </div>
-            <div style="display:flex;gap:40px;flex-wrap:wrap;font-size:0.78rem">
-                <div>
-                    <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#bbb;margin-bottom:8px">Shop</div>
-                    <div style="display:flex;flex-direction:column;gap:6px">
-                        <a href="#blind-bags" style="color:#888;text-decoration:none">Blind Bags</a>
-                        <a href="#books" style="color:#888;text-decoration:none">White Board Books</a>
-                        <a href="#keychains" style="color:#888;text-decoration:none">Keychains</a>
-                        <a href="#bundles" style="color:#888;text-decoration:none">Bundles</a>
-                    </div>
-                </div>
-                <div>
-                    <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#bbb;margin-bottom:8px">JVST</div>
-                    <div style="display:flex;flex-direction:column;gap:6px">
-                        <a href="indy.html" style="color:#888;text-decoration:none">Indy 3 AI</a>
-                        <a href="#music" style="color:#888;text-decoration:none">Music & MusicX</a>
-                        <a href="#actions" style="color:#888;text-decoration:none">How Actions Work</a>
-                        <a href="login.html" style="color:#888;text-decoration:none">Sign Up Free</a>
-                    </div>
-                </div>
-                <div>
-                    <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#bbb;margin-bottom:8px">Connect</div>
-                    <div style="display:flex;flex-direction:column;gap:6px">
-                        <a href="https://instagram.com/shopjvst" target="_blank" style="color:#ff2d2d;text-decoration:none;font-weight:600">@shopjvst</a>
-                        <a href="shop.html" style="color:#888;text-decoration:none">My Account</a>
-                    </div>
-                </div>
-            </div>
+<!-- ════════════════════════════════════════════════════
+     PHILOSOPHY STATEMENT — dark version
+════════════════════════════════════════════════════ -->
+<section style="background:#000;border-top:1px solid #242424;border-bottom:1px solid #242424;padding:100px 0">
+  <div style="max-width:1200px;margin:0 auto;padding:0 32px">
+    <div style="max-width:740px;margin:0 auto;text-align:center">
+      <div style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#ff2d2d;display:inline-block;margin-bottom:20px;opacity:.75">// jvst.manifesto</div>
+      <h2 style="font-size:clamp(2rem,4.5vw,3.5rem);font-weight:700;letter-spacing:-.05em;line-height:1.05;margin-bottom:28px;color:#fff">We don't adapt culture<br>for technology.<br><span style="color:#ff2d2d">We build technology<br>for culture.</span></h2>
+      <p style="font-size:1rem;color:#444;line-height:1.8;max-width:520px;margin:0 auto 44px">The tools that exist weren't built for us. They were built, then localized. Translated, not felt. We're starting from a different place entirely.</p>
+      <div style="display:flex;justify-content:center;gap:48px;flex-wrap:wrap">
+        <div style="text-align:left;padding-left:16px;border-left:2px solid #ff2d2d">
+          <div style="font-size:1.6rem;font-weight:700;letter-spacing:-.04em;margin-bottom:3px;color:#fff">Free.</div>
+          <div style="font-size:.78rem;color:#333">Always &amp; forever.</div>
         </div>
-        <div style="border-top:1px solid #e5e5e5;padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px">
-            <p>&copy; 2026 IRELAND co.'s JVST · Mini Crafts™ · All rights reserved.</p>
-            <p style="font-size:0.72rem;color:#bbb">DM <a href="https://instagram.com/shopjvst" target="_blank" style="color:#ff2d2d;text-decoration:none">@shopjvst</a> on Instagram to redeem orders</p>
+        <div style="text-align:left;padding-left:16px;border-left:2px solid #333">
+          <div style="font-size:1.6rem;font-weight:700;letter-spacing:-.04em;margin-bottom:3px;color:#fff">Private.</div>
+          <div style="font-size:.78rem;color:#333">Zero data sold.</div>
         </div>
+        <div style="text-align:left;padding-left:16px;border-left:2px solid #333">
+          <div style="font-size:1.6rem;font-weight:700;letter-spacing:-.04em;margin-bottom:3px;color:#fff">Real.</div>
+          <div style="font-size:.78rem;color:#333">Built with the culture.</div>
+        </div>
+      </div>
     </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════
+     FOOTER — dark version (index style, Mini Crafts content)
+════════════════════════════════════════════════════ -->
+<footer style="background:#0c0c0c;border-top:1px solid #242424;padding:56px 0 28px;position:relative">
+  <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent 0%,#ff2d2d 50%,transparent 100%);opacity:.25"></div>
+  <div style="max-width:1200px;margin:0 auto;padding:0 32px">
+    <!-- CTA bar -->
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:24px;background:linear-gradient(135deg,#141414 0%,#140808 100%);border:1px solid rgba(255,45,45,.18);border-radius:10px;padding:24px 28px;margin-bottom:32px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#ff2d2d;margin-bottom:6px">The movement</div>
+        <div style="font-size:1.05rem;font-weight:700;letter-spacing:-.02em;color:#fff">Culture-first. Built different. <em style="font-weight:400;color:#555">Para la gente.</em></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <a href="indy.html" style="display:inline-block;padding:7px 18px;border-radius:6px;font-size:.8rem;font-weight:600;background:#ff2d2d;color:#fff;text-decoration:none">Try Indy 3 →</a>
+        <a href="login.html" style="display:inline-block;padding:7px 18px;border-radius:6px;font-size:.8rem;font-weight:600;background:transparent;color:#fff;border:1px solid #333;text-decoration:none">Sign In</a>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:36px">
+      <span style="margin-left:auto;font-size:.72rem;color:#242424;font-style:italic">Hecho con amor 🐰</span>
+    </div>
+    <div style="height:1px;background:#1c1c1c;margin-bottom:36px"></div>
+    <!-- Main grid -->
+    <div style="display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:40px;margin-bottom:44px" class="dark-foot-grid">
+      <div>
+        <div style="font-size:1.1rem;font-weight:700;margin-bottom:9px;color:#fff">JVST <span style="color:#ff2d2d">×</span> Mini Crafts</div>
+        <p style="font-size:.78rem;color:#333;line-height:1.7;margin-bottom:16px">Intelligence, refined.<br>Built different, on purpose.<br><em>Hecho con amor 🐰</em></p>
+        <a href="indy.html" style="display:inline-block;margin-right:6px;margin-bottom:4px;padding:4px 12px;background:#1c1c1c;border:1px solid #333;border-radius:4px;font-size:.72rem;color:#555;text-decoration:none">Try Indy 3</a>
+        <a href="login.html" style="display:inline-block;margin-bottom:4px;padding:4px 12px;background:#1c1c1c;border:1px solid #333;border-radius:4px;font-size:.72rem;color:#555;text-decoration:none">Sign In</a>
+      </div>
+      <div>
+        <h4 style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#333;margin-bottom:14px">Shop</h4>
+        <a href="#blind-bags" style="display:block;font-size:.8rem;color:#333;margin-bottom:8px;text-decoration:none">Blind Bags</a>
+        <a href="#books" style="display:block;font-size:.8rem;color:#333;margin-bottom:8px;text-decoration:none">White Board Books</a>
+        <a href="#keychains" style="display:block;font-size:.8rem;color:#333;margin-bottom:8px;text-decoration:none">Keychains</a>
+        <a href="#bundles" style="display:block;font-size:.8rem;color:#333;margin-bottom:8px;text-decoration:none">Bundles</a>
+      </div>
+      <div>
+        <h4 style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#333;margin-bottom:14px">JVST</h4>
+        <a href="indy.html" style="display:block;font-size:.8rem;color:#333;margin-bottom:8px;text-decoration:none">Indy 3 AI</a>
+        <a href="#music" style="display:block;font-size:.8rem;color:#333;margin-bottom:8px;text-decoration:none">Music &amp; MusicX</a>
+        <a href="#actions" style="display:block;font-size:.8rem;color:#333;margin-bottom:8px;text-decoration:none">How Actions Work</a>
+        <a href="login.html" style="display:block;font-size:.8rem;color:#333;margin-bottom:8px;text-decoration:none">Sign Up Free</a>
+      </div>
+      <div>
+        <h4 style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#333;margin-bottom:14px">Connect</h4>
+        <a href="shop.html" style="display:block;font-size:.8rem;color:#333;margin-bottom:8px;text-decoration:none">My Account</a>
+      </div>
+    </div>
+    <div style="height:1px;background:#1c1c1c;margin-bottom:22px"></div>
+    <!-- Legal -->
+    <div style="background:#141414;border:1px solid #1c1c1c;border-radius:8px;padding:16px 20px;margin-bottom:22px">
+      <p style="font-size:.66rem;color:#2a2a2a;line-height:1.75;letter-spacing:.01em">JVST and Indy 3 are operated by JVST Inc. All AI-generated content produced by Indy 3 is the responsibility of the user. JVST does not guarantee accuracy of AI outputs and recommends independent verification for any information used in professional, medical, legal, or financial contexts. MusicX Sessions submissions remain the intellectual property of the submitting artist. Mini Crafts™ is a JVST brand. By using JVST services you agree to our Terms of Service and Privacy Policy. Ask employee to redeem orders.</p>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <span style="font-size:.75rem;color:#2a2a2a">© 2026 IRELAND co.'s JVST · Mini Crafts™ · All rights reserved.</span>
+        <span style="color:#1c1c1c">·</span>
+        <span style="font-size:.75rem;color:#2a2a2a">Registered in the United States.</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <span style="font-size:.75rem;color:#2a2a2a">Culture-first. Always.</span>
+        <span style="color:#1c1c1c">·</span>
+        <span style="font-size:.75rem;color:#2a2a2a;font-style:italic">para la gente 🌎</span>
+      </div>
+    </div>
+  </div>
 </footer>
+<style>
+@media(max-width:860px){.dark-foot-grid{grid-template-columns:1fr 1fr!important;gap:28px!important}}
+@media(max-width:500px){.dark-foot-grid{grid-template-columns:1fr!important}}
+</style>
 
 <script>
 'use strict';
