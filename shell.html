@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JVST — Mini Crafts, Indy AI & Culture</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f8f9fa;
+            line-height: 1.6;
+            color: #111;
+        }
+
+        /* ── NAV ── */
+        nav {
+            background-color: rgba(255,255,255,0.92);
+            backdrop-filter: blur(12px);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            height: 60px;
+            border-bottom: 1px solid rgba(0,0,0,0.07);
+        }
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        .logo {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #111;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .logo span { color: #ff2d2d; }
+
+        .nav-links {
+            display: flex;
+            gap: 0;
+            list-style: none;
+            overflow-x: auto;
+            flex: 1;
+            scrollbar-width: none;
+        }
+        .nav-links::-webkit-scrollbar { display: none; }
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.82rem;
+            transition: color 0.2s;
+            white-space: nowrap;
+            padding: 0 12px;
+        }
+        .nav-links a:hover { color: #999; }
+        .nav-links a.active { color: #111; font-weight: 700; }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .search-btn {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: #555;
+            padding: 4px;
+        }
+        .cart-btn {
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+        .cart-btn:hover { background: #333; }
+        .cart-count {
+            background: #e53e3e;
+            color: #fff;
+            border-radius: 50%;
+            width: 16px; height: 16px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #111;
+        }
+
+        /* ── MAIN ── */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 32px 80px;
+        }
+
+        /* ── HERO CAROUSEL (full-width) ── */
+        .hero-section {
+            position: relative;
+            height: 70vh;
+            min-height: 420px;
+            overflow: hidden;
+            margin-top: 60px;
+        }
+        .carousel-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1s ease;
+            pointer-events: none;
+        }
+        .carousel-slide.active { opacity: 1; pointer-events: all; }
+        .carousel-slide img.c-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+        .slide-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.52);
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .slide-content {
+            max-width: 640px;
+            padding: 0 32px;
+            color: #fff;
+            animation: fadeUp 0.7s ease both;
+        }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+        .slide-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #ff2d2d;
+            margin-bottom: 12px;
+        }
+        .slide-title {
+            font-size: clamp(1.8rem, 4.5vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 12px;
+        }
+        .slide-desc {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.75);
+            line-height: 1.65;
+            margin-bottom: 20px;
+        }
+        .slide-tag {
+            display: inline-block;
+            padding: 5px 14px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.85);
+        }
+        .c-arrow {
+            position: absolute;
+            top: 50%; transform: translateY(-50%);
+            z-index: 10;
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.42);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff; font-size: 16px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .c-arrow:hover { background: rgba(0,0,0,0.75); }
+        .c-arrow.prev { left: 20px; }
+        .c-arrow.next { right: 20px; }
+        .carousel-dots {
+            position: absolute;
+            bottom: 24px; left: 50%;
+            transform: translateX(-50%);
+            display: flex; gap: 8px;
+            z-index: 10;
+        }
+        .carousel-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.35);
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: all 0.2s;
+        }
+        .carousel-dot.active { background: #ff2d2d; width: 20px; border-radius: 3px; }
+        /* ticker */
+        .ticker-bar {
+            background: #fff;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 11px 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+        .ticker-label {
+            flex-shrink: 0;
+            padding: 0 16px 0 20px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #ff2d2d;
+            border-right: 1px solid #ddd;
+            margin-right: 16px;
+        }
+        .ticker-track { flex: 1; overflow: hidden; }
+        .ticker-inner {
+            display: inline-block;
+            white-space: nowrap;
+            animation: tick 38s linear infinite;
+        }
+        .ticker-inner span {
+            display: inline-block;
+            margin-right: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #999;
+        }
+        .ticker-inner span.hot { color: #ff2d2d; }
+        @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* ── SECTION HEADER ── */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 18px;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 10px;
+        }
+        .section-header h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .section-header .sec-icon { margin-left: 4px; }
+        .see-all-link {
+            font-size: 0.75rem;
+            color: #555;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .see-all-link:hover { color: #111; }
+
+        /* ── PRODUCT GRID ── */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 48px;
+        }
+
+        /* ── PRODUCT CARD ── */
+        .product-card {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .product-card:hover { transform: translateY(-2px); }
+        .product-card:hover .product-name { text-decoration: underline; }
+
+        .product-img-wrap {
+            width: 100%;
+            aspect-ratio: 3/4;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 8px;
+            position: relative;
+            background: #f0f0f0;
+        }
+        .product-img-wrap img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .product-img-placeholder {
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 12px;
+            background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%);
+        }
+        .product-img-placeholder .bag-label {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #000;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+        .product-img-placeholder .bag-sub {
+            font-size: 0.62rem;
+            color: rgba(0,0,0,0.6);
+            font-style: italic;
+        }
+
+        /* In-cart indicator */
+        .in-cart-pip {
+            position: absolute;
+            top: 6px; right: 6px;
+            width: 20px; height: 20px;
+            background: #111;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.58rem;
+            color: #fff;
+            font-weight: 700;
+            opacity: 0;
+            transform: scale(0.6);
+            transition: opacity 0.18s, transform 0.18s;
+            z-index: 2;
+        }
+        .product-card.in-cart .in-cart-pip { opacity: 1; transform: scale(1); }
+
+        .product-name {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #111;
+            text-align: center;
+        }
+
+        /* ── PRODUCT POPUP ── */
+        #product-popup {
+            position: fixed; inset: 0; z-index: 2000;
+            background: rgba(0,0,0,0.55);
+            display: none;
+            align-items: center; justify-content: center;
+            padding: 20px;
+        }
+        #product-popup.open { display: flex; }
+        .popup-box {
+            background: #fff;
+            border-radius: 14px;
+            width: 100%; max-width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: popIn 0.22s cubic-bezier(.22,1,.36,1);
+        }
+        @keyframes popIn { from { opacity:0; transform: scale(0.94) translateY(8px); } to { opacity:1; transform: none; } }
+        .popup-close {
+            position: absolute; top: 12px; right: 12px;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: #555;
+            z-index: 2;
+        }
+        .popup-close:hover { background: #e0e0e0; }
+        .popup-img {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background: #f0f0f0;
+            border-radius: 14px 14px 0 0;
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .popup-img img { width: 100%; height: 100%; object-fit: cover; }
+        .popup-img .popup-placeholder {
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column;
+        }
+        .popup-body { padding: 20px 22px 24px; }
+        .popup-tag { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #999; margin-bottom: 5px; }
+        .popup-name { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+        .popup-desc { font-size: 0.8rem; color: #555; line-height: 1.65; margin-bottom: 16px; }
+        .popup-code-row {
+            display: flex; align-items: center; gap: 8px;
+            background: #f5f5f5; padding: 8px 12px; border-radius: 6px; margin-bottom: 16px;
+        }
+        .popup-code-label { font-size: 0.62rem; color: #888; }
+        .popup-code { font-size: 0.85rem; font-weight: 700; font-family: monospace; }
+        .popup-price-row {
+            display: flex; align-items: baseline; justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .popup-price { font-size: 1.3rem; font-weight: 700; }
+        .popup-price small { font-size: 0.7rem; color: #888; font-weight: 400; }
+        .popup-add-btn {
+            width: 100%; padding: 11px;
+            border-radius: 8px;
+            background: #111; color: #fff;
+            border: none; font-family: inherit;
+            font-size: 0.88rem; font-weight: 700;
+            cursor: pointer; transition: background 0.15s;
+        }
+        .popup-add-btn:hover { background: #333; }
+        .popup-add-btn.added { background: #f0f0f0; color: #555; border: 1px solid #ddd; }
+        .popup-add-btn.added:hover { background: #e5e5e5; }
+
+        /* ── CART DRAWER ── */
+        #cart-backdrop {
+            position: fixed; inset: 0; z-index: 1500;
+            background: rgba(0,0,0,0.4);
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.25s;
+        }
+        #cart-backdrop.open { opacity: 1; pointer-events: all; }
+        #cart-drawer {
+            position: fixed; top: 0; right: -100%; bottom: 0;
+            z-index: 1600;
+            width: min(360px, 92vw);
+            background: #fff;
+            border-left: 1px solid #e5e5e5;
+            display: flex; flex-direction: column;
+            transition: right 0.3s cubic-bezier(.22,1,.36,1);
+        }
+        #cart-drawer.open { right: 0; }
+        .cart-drawer-head {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .cart-drawer-title { font-size: 0.95rem; font-weight: 700; }
+        .cart-drawer-close {
+            background: #f0f0f0; border: none;
+            width: 28px; height: 28px; border-radius: 50%;
+            font-size: 12px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: #555;
+        }
+        .cart-drawer-close:hover { background: #e0e0e0; }
+        .cart-drawer-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+        .cart-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 40px 0; color: #aaa; font-size: 0.8rem; text-align: center; }
+        .cart-empty-icon { font-size: 2rem; }
+        .cart-item-row {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 0; border-bottom: 1px solid #f0f0f0;
+        }
+        .cart-item-row:last-child { border-bottom: none; }
+        .cart-item-thumb {
+            width: 44px; height: 56px; border-radius: 5px;
+            overflow: hidden; flex-shrink: 0;
+            background: #f0f0f0;
+        }
+        .cart-item-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .cart-item-thumb .mini-placeholder {
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #ddd, #bbb);
+            font-size: 0.7rem; font-weight: 700; text-align: center;
+        }
+        .cart-item-info { flex: 1; min-width: 0; }
+        .cart-item-name { font-size: 0.8rem; font-weight: 600; margin-bottom: 2px; }
+        .cart-item-sub { font-size: 0.65rem; color: #aaa; }
+        .cart-item-qty-row { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+        .qty-btn {
+            width: 22px; height: 22px; border-radius: 4px;
+            background: #f5f5f5; border: 1px solid #e5e5e5;
+            font-size: 0.9rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: #111; transition: background 0.15s;
+        }
+        .qty-btn:hover { background: #eaeaea; }
+        .qty-val { font-size: 0.78rem; font-weight: 600; min-width: 18px; text-align: center; }
+        .cart-item-price { font-size: 0.82rem; font-weight: 700; flex-shrink: 0; }
+
+        .cart-drawer-foot { padding: 14px 20px 24px; border-top: 1px solid #f0f0f0; }
+        .cart-total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .cart-total-label { font-size: 0.78rem; color: #555; font-weight: 600; }
+        .cart-total-val { font-size: 1rem; font-weight: 700; }
+        .cart-checkout-btn {
+            width: 100%; padding: 12px;
+            background: #111; color: #fff;
+            border: none; border-radius: 8px;
+            font-family: inherit; font-size: 0.88rem;
+            font-weight: 700; cursor: pointer; transition: background 0.15s;
+        }
+        .cart-checkout-btn:disabled {
+            background: #ccc; cursor: not-allowed;
+        }
+        .cart-note { font-size: 0.62rem; color: #aaa; text-align: center; margin-top: 8px; }
+
+        /* ── CHECKOUT OVERLAY ── */
+        #checkout-overlay {
+            position: fixed; inset: 0; z-index: 1700;
+            background: rgba(0,0,0,0.88);
+            backdrop-filter: blur(12px);
+            display: flex; align-items: flex-end; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.22s ease;
+        }
+        #checkout-overlay.open { opacity: 1; pointer-events: all; }
+        .co-sheet {
+            background: #fff;
+            border-radius: 22px 22px 0 0;
+            width: 100%; max-width: 500px;
+            max-height: 92dvh;
+            display: flex; flex-direction: column;
+            transform: translateY(40px);
+            transition: transform 0.32s cubic-bezier(.22,1,.36,1);
+        }
+        #checkout-overlay.open .co-sheet { transform: none; }
+        .co-handle {
+            width: 38px; height: 4px;
+            background: #ddd;
+            border-radius: 2px;
+            margin: 14px auto 0;
+            flex-shrink: 0;
+        }
+        .co-head { padding: 20px 24px 4px; flex-shrink: 0; }
+        .co-title { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 3px; }
+        .co-sub { font-size: 0.7rem; color: #888; font-family: monospace; }
+        .co-body { padding: 16px 24px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+        .co-label { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #888; font-family: monospace; margin-bottom: 6px; }
+        .co-user-strip {
+            display: flex; align-items: center; gap: 12px;
+            background: #f5f5f5; border: 1px solid #eee;
+            border-radius: 10px; padding: 12px 14px;
+        }
+        .co-avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #111; color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+        }
+        .co-user-name { font-size: 0.85rem; font-weight: 600; }
+        .co-user-email { font-size: 0.65rem; color: #888; font-family: monospace; }
+        .co-auth-notice {
+            background: #f5f5f5; border: 1px solid #eee;
+            border-radius: 10px; padding: 13px 15px;
+            font-size: 0.78rem; color: #555;
+            font-family: monospace; line-height: 1.65;
+        }
+        .co-auth-notice a { color: #e53e3e; text-decoration: underline; cursor: pointer; }
+        .co-balance-row {
+            display: grid; grid-template-columns: 1fr auto 1fr;
+            align-items: center; gap: 8px;
+        }
+        .co-bal-box {
+            background: #f5f5f5; border: 1px solid #eee;
+            border-radius: 10px; padding: 14px 16px;
+        }
+        .co-bal-box.accent { background: #eaeaea; border-color: #ddd; }
+        .co-bal-num { font-size: 2rem; font-weight: 300; font-family: monospace; line-height: 1; margin-bottom: 3px; }
+        .co-bal-num.warn { color: #e53e3e; }
+        .co-bal-unit { font-size: 0.62rem; color: #888; font-family: monospace; }
+        .co-bal-arrow { font-size: 1rem; color: #aaa; text-align: center; }
+        .co-warn {
+            background: #fef2f2; border: 1px solid #fecaca;
+            border-radius: 10px; padding: 11px 14px;
+            font-size: 0.75rem; color: #b91c1c;
+            font-family: monospace; line-height: 1.6;
+            display: none;
+        }
+        .co-warn.show { display: block; }
+        .co-items { background: #f5f5f5; border: 1px solid #eee; border-radius: 10px; overflow: hidden; }
+        .co-item-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 11px 14px; border-bottom: 1px solid #eee; gap: 10px;
+        }
+        .co-item-row:last-child { border-bottom: none; }
+        .co-item-left { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+        .co-item-emoji { font-size: 1.15rem; flex-shrink: 0; }
+        .co-item-name { font-size: 0.82rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .co-item-code { font-size: 0.62rem; color: #888; font-family: monospace; }
+        .co-item-right { flex-shrink: 0; text-align: right; }
+        .co-item-cost { font-size: 0.85rem; font-weight: 700; font-family: monospace; }
+        .co-item-qty { font-size: 0.62rem; color: #888; font-family: monospace; margin-top: 1px; }
+        .co-total-strip {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #eaeaea; border: 1px solid #ddd;
+            border-radius: 10px; padding: 13px 16px;
+        }
+        .co-total-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #555; font-family: monospace; }
+        .co-total-val { font-size: 1.15rem; font-weight: 700; font-family: monospace; }
+        .co-foot { padding: 14px 24px 32px; flex-shrink: 0; display: flex; flex-direction: column; gap: 9px; }
+        .co-btn {
+            width: 100%; padding: 13px 20px; border-radius: 10px;
+            font-family: monospace; font-size: 0.85rem; font-weight: 700;
+            cursor: pointer; border: none; transition: opacity 0.15s;
+        }
+        .co-btn-primary { background: #111; color: #fff; }
+        .co-btn-primary:disabled { background: #ccc; color: #888; cursor: not-allowed; }
+        .co-btn-ghost { background: transparent; border: 1px solid #ddd; color: #555; }
+        .co-btn-ghost:hover { border-color: #999; color: #111; }
+        .co-spinner {
+            width: 14px; height: 14px;
+            border: 2px solid rgba(0,0,0,0.1); border-top-color: #111;
+            border-radius: 50%; animation: cospin 0.55s linear infinite;
+            display: inline-block;
+        }
+        @keyframes cospin { to { transform: rotate(360deg); } }
+
+        /* ── THANK-YOU POPUP ── */
+        #ty-overlay {
+            position: fixed; inset: 0; z-index: 1800;
+            background: rgba(0,0,0,0.92); backdrop-filter: blur(20px);
+            display: flex; align-items: center; justify-content: center;
+            padding: 24px; opacity: 0; pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        #ty-overlay.open { opacity: 1; pointer-events: all; }
+        .ty-box {
+            background: #fff; border-radius: 20px;
+            max-width: 380px; width: 100%; padding: 36px 28px 30px;
+            text-align: center; position: relative; overflow: hidden;
+            transform: scale(0.9); transition: transform 0.32s cubic-bezier(.22,1,.36,1);
+        }
+        #ty-overlay.open .ty-box { transform: scale(1); }
+        .ty-check-ring {
+            width: 66px; height: 66px; border-radius: 50%;
+            border: 2px solid #ddd; display: flex;
+            align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .ty-check-ring.go { border-color: #10b981; animation: tyRing 0.38s ease forwards; }
+        @keyframes tyRing {
+            0% { transform: scale(0.7); border-color: #ddd; }
+            55% { transform: scale(1.1); border-color: #10b981; }
+            100% { transform: scale(1); border-color: #10b981; }
+        }
+        .ty-check-svg { width: 30px; height: 30px; }
+        .ty-check-path {
+            fill: none; stroke: #10b981; stroke-width: 2.5;
+            stroke-linecap: round; stroke-linejoin: round;
+            stroke-dasharray: 36; stroke-dashoffset: 36;
+        }
+        .ty-check-path.draw { animation: tyDraw 0.38s 0.22s ease forwards; }
+        @keyframes tyDraw { to { stroke-dashoffset: 0; } }
+        .ty-title { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 8px; }
+        .ty-msg { font-size: 0.8rem; color: #555; font-family: monospace; line-height: 1.7; margin-bottom: 20px; }
+        .ty-order-box {
+            background: #f5f5f5; border: 1px solid #eee;
+            border-radius: 12px; padding: 16px 18px; text-align: left; margin-bottom: 18px;
+        }
+        .ty-order-label { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #888; font-family: monospace; margin-bottom: 8px; }
+        .ty-codes { font-size: 0.88rem; font-weight: 700; font-family: monospace; color: #111; word-break: break-all; }
+        .ty-divider { border: none; border-top: 1px solid #ddd; margin: 12px 0; }
+        .ty-balance-row { display: flex; justify-content: space-between; align-items: center; }
+        .ty-bal-label { font-size: 0.65rem; color: #888; font-family: monospace; }
+        .ty-bal-val { font-size: 0.9rem; font-weight: 700; font-family: monospace; }
+        .ty-close {
+            width: 100%; padding: 12px; border-radius: 9px;
+            background: #f5f5f5; border: 1px solid #ddd;
+            color: #555; font-family: monospace; font-size: 0.8rem;
+            font-weight: 600; cursor: pointer; transition: border-color 0.15s, color 0.15s;
+        }
+        .ty-close:hover { border-color: #999; color: #111; }
+
+        /* ── EXTRA SECTIONS ── */
+        .section-band { padding: 72px 0; border-top: 1px solid #e5e5e5; }
+        .section-band.alt { background: #fff; }
+        .section-band .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+        .band-eyebrow { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #ff2d2d; margin-bottom: 8px; }
+        .band-eyebrow::before { content: "// "; opacity: 0.5; }
+        .band-title { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.12; margin-bottom: 14px; }
+        .band-sub { font-size: 0.9rem; color: #555; line-height: 1.7; max-width: 480px; }
+        /* indy3 split */
+        .indy-split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+        .indy-badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 12px; background: rgba(255,45,45,.08); border: 1px solid rgba(255,45,45,.2); border-radius: 4px; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ff2d2d; margin-bottom: 16px; }
+        .pulse-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #ff2d2d; animation: pdot 2s ease-out infinite; }
+        @keyframes pdot { 0%{box-shadow:0 0 0 0 rgba(255,45,45,.7)} 70%{box-shadow:0 0 0 7px rgba(255,45,45,0)} 100%{box-shadow:0 0 0 0 rgba(255,45,45,0)} }
+        .indy-feats { display: flex; flex-direction: column; gap: 14px; margin: 24px 0 28px; }
+        .indy-feat { display: flex; gap: 12px; align-items: flex-start; }
+        .indy-icon { width: 32px; height: 32px; border-radius: 8px; background: #f3f4f6; border: 1px solid #e5e5e5; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; margin-top: 2px; }
+        .indy-feat-text strong { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 1px; }
+        .indy-feat-text span { font-size: 0.8rem; color: #666; }
+        /* chat mock */
+        .chat-mock { background: #f8f9fa; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden; }
+        .chat-bar { padding: 10px 14px; border-bottom: 1px solid #e5e5e5; display: flex; align-items: center; gap: 7px; background: #fff; }
+        .cdot { width: 9px; height: 9px; border-radius: 50%; }
+        .chat-name { font-size: 0.75rem; font-weight: 600; margin-left: 4px; color: #666; }
+        .chat-msgs { padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+        .msg { max-width: 88%; }
+        .msg.user { align-self: flex-end; }
+        .bubble { padding: 9px 13px; border-radius: 10px; font-size: 0.82rem; line-height: 1.5; }
+        .msg.user .bubble { background: #ff2d2d; color: #fff; border-radius: 10px 10px 2px 10px; }
+        .msg.bot .bubble { background: #fff; border: 1px solid #e5e5e5; border-radius: 10px 10px 10px 2px; }
+        .msg-t { font-size: 0.65rem; color: #aaa; margin-top: 3px; }
+        .msg.user .msg-t { text-align: right; }
+        /* stats strip */
+        .stats-strip { border: 1px solid #e5e5e5; border-radius: 10px; overflow: hidden; display: grid; grid-template-columns: repeat(4,1fr); margin-top: 20px; }
+        .stat-cell { padding: 24px 20px; border-right: 1px solid #e5e5e5; background: #fff; }
+        .stat-cell:last-child { border-right: none; }
+        .stat-num { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 3px; }
+        .stat-num span { color: #ff2d2d; }
+        .stat-label { font-size: 0.75rem; color: #888; }
+        /* tunes split */
+        .tunes-split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+        .tunes-feat { display: flex; gap: 14px; align-items: center; margin-bottom: 18px; }
+        .tunes-feat-icon { width: 36px; height: 36px; border-radius: 8px; background: #f3f4f6; border: 1px solid #e5e5e5; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+        .tunes-feat-title { font-size: 0.875rem; font-weight: 600; margin-bottom: 2px; }
+        .tunes-feat-sub { font-size: 0.78rem; color: #888; }
+        .tunes-img { aspect-ratio: 4/5; border-radius: 12px; overflow: hidden; background: #e5e5e5; }
+        .tunes-img img { width: 100%; height: 100%; object-fit: cover; }
+        /* actions section */
+        .actions-section { background: #fff; }
+        .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: #e5e5e5; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden; margin-top: 40px; }
+        .actions-card { background: #f8f9fa; padding: 36px 32px; position: relative; overflow: hidden; }
+        .actions-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #ff2d2d; transform: scaleX(0); transform-origin: left; transition: transform 0.35s ease; }
+        .actions-card:hover::before { transform: scaleX(1); }
+        .actions-card-num { font-size: 3rem; font-weight: 700; letter-spacing: -0.05em; color: rgba(0,0,0,0.06); position: absolute; top: 14px; right: 20px; line-height: 1; }
+        .actions-card-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+        .actions-card-body { font-size: 0.82rem; color: #666; line-height: 1.65; }
+        .actions-tag { display: inline-block; margin-top: 14px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ff2d2d; background: rgba(255,45,45,.07); border: 1px solid rgba(255,45,45,.18); padding: 2px 8px; border-radius: 3px; }
+        /* btn */
+        .btn { display: inline-block; padding: 10px 22px; border-radius: 6px; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+        .btn-red { background: #ff2d2d; color: #fff; }
+        .btn-red:hover { opacity: 0.88; }
+        .btn-ghost { background: transparent; color: #111; border: 1px solid #d0d0d0; }
+        .btn-ghost:hover { border-color: #111; }
+        @media(max-width:860px) {
+            .indy-split, .tunes-split { grid-template-columns: 1fr; gap: 36px; }
+            .actions-grid { grid-template-columns: 1fr; }
+            .stats-strip { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            background: #f1f1f1;
+            border-top: 1px solid #e5e5e5;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* ── MOBILE ── */
+        @media (max-width: 860px) {
+            main { padding-left: 16px; padding-right: 16px; }
+            .hero-area { grid-template-columns: 1fr; }
+            .hero-carousel { width: 100%; }
+            .menu-toggle { display: block; }
+            .nav-links {
+                display: none;
+                position: fixed;
+                top: 60px; left: 0; right: 0;
+                background: #fff;
+                flex-direction: column;
+                padding: 16px 24px;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+                z-index: 999;
+                gap: 0;
+            }
+            .nav-links.active { display: flex; }
+            .nav-links a { padding: 12px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.95rem; }
+            .product-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        }
+        @media (max-width: 500px) {
+            .product-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+    <div class="nav-container">
+        <a href="#" class="logo">JVST<span> ×</span> Mini Crafts</a>
+
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#" class="active">Home</a></li>
+            <li><a href="#blind-bags">Shop</a></li>
+            <li><a href="#indy">Indy AI</a></li>
+            <li><a href="#music">Music</a></li>
+            <li><a href="#actions">Actions</a></li>
+            <li><a href="https://instagram.com/shopjvst" target="_blank">@shopjvst</a></li>
+            <li><a href="shop.html">My Account 👤</a></li>
+        </ul>
+
+        <div class="nav-right">
+            <button class="search-btn" aria-label="Search">🔍</button>
+            <button class="cart-btn" onclick="openCartDrawer()" aria-label="Cart">
+                🛒 Cart <span class="cart-count" id="cartBadge">0</span>
+            </button>
+            <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+        </div>
+    </div>
+</nav>
+
+<!-- ═══ HERO CAROUSEL ═══ -->
+<div class="hero-section" id="heroSection">
+    <div class="carousel-slide active">
+        <img class="c-bg" src="breakfastbb.png" alt="" onerror="this.style.display='none'">
+        <div class="slide-overlay">
+            <div class="slide-content">
+                <div class="slide-label">Mini Crafts × JVST — 2026</div>
+                <h1 class="slide-title">Blind Bags,<br>Books & More</h1>
+                <p class="slide-desc">Handmade mystery bags and collectibles from MINI CRAFTS. Each item costs 1–5 Actions. More than two orders may receive a custom box.</p>
+                <span class="slide-tag">#MiniCrafts2026</span>
+            </div>
+        </div>
+    </div>
+    <div class="carousel-slide">
+        <img class="c-bg" src="lunchbb.png" alt="" onerror="this.style.display='none'">
+        <div class="slide-overlay" style="background:rgba(0,0,0,0.6)">
+            <div class="slide-content">
+                <div class="slide-label">New Drop</div>
+                <h1 class="slide-title">White Board<br>Books</h1>
+                <p class="slide-desc">Reusable, erasable whiteboard books — draw, erase, repeat. Available in Crimson, Peach, Mint and more.</p>
+                <span class="slide-tag">#WhiteBoard</span>
+            </div>
+        </div>
+    </div>
+    <div class="carousel-slide">
+        <img class="c-bg" src="dinnerbb.png" alt="" onerror="this.style.display='none'">
+        <div class="slide-overlay" style="background:rgba(0,0,0,0.5)">
+            <div class="slide-content">
+                <div class="slide-label">Seasonal</div>
+                <h1 class="slide-title">Spooky &amp;<br>Fall Editions</h1>
+                <p class="slide-desc">Limited seasonal blind bags — Spooky Bag and Pre-Order Fall Bag available now before they sell out.</p>
+                <span class="slide-tag">#LimitedDrop</span>
+            </div>
+        </div>
+    </div>
+    <div class="carousel-slide">
+        <div style="position:absolute;inset:0;background:linear-gradient(135deg,#111 0%,#2d2d2d 100%)"></div>
+        <div class="slide-overlay" style="background:rgba(0,0,0,0.3)">
+            <div class="slide-content">
+                <div class="slide-label">Bundles</div>
+                <h1 class="slide-title">Starter Pack<br>&amp; Loot Boxes</h1>
+                <p class="slide-desc">5-Pack blind bags, Loot Boxes, and the full Starter Pack — the best value per pull in the catalog.</p>
+                <span class="slide-tag">#BestValue</span>
+            </div>
+        </div>
+    </div>
+    <button class="c-arrow prev" id="cPrev">←</button>
+    <button class="c-arrow next" id="cNext">→</button>
+    <div class="carousel-dots">
+        <button class="carousel-dot active" data-i="0"></button>
+        <button class="carousel-dot" data-i="1"></button>
+        <button class="carousel-dot" data-i="2"></button>
+        <button class="carousel-dot" data-i="3"></button>
+    </div>
+</div>
+
+
+<!-- ═══ ACTIONS EXPLAINER TICKER ═══ -->
+<div style="background:#111;padding:12px 0;overflow:hidden;display:flex;align-items:center;gap:0">
+    <div style="flex-shrink:0;padding:0 20px;font-size:0.6rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#ff2d2d;border-right:1px solid #333;margin-right:20px;white-space:nowrap">How it works</div>
+    <div style="overflow:hidden;flex:1">
+        <div style="display:inline-flex;gap:40px;white-space:nowrap;animation:tick 28s linear infinite">
+            <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">① <span style="color:#fff">Sign up free at JVST</span> — get 10 Actions/month</span>
+            <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">② <span style="color:#fff">Add items to cart</span> — Blind Bags = 1 Action each</span>
+            <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">③ <span style="color:#fff">Checkout</span> — get your order codes instantly</span>
+            <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">④ <span style="color:#fff">DM @shopjvst</span> on Instagram with your codes to redeem 🎁</span>
+            <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">① <span style="color:#fff">Sign up free at JVST</span> — get 10 Actions/month</span>
+            <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">② <span style="color:#fff">Add items to cart</span> — Blind Bags = 1 Action each</span>
+            <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">③ <span style="color:#fff">Checkout</span> — get your order codes instantly</span>
+            <span style="font-size:0.7rem;font-weight:600;color:#aaa;letter-spacing:0.06em;text-transform:uppercase">④ <span style="color:#fff">DM @shopjvst</span> on Instagram with your codes to redeem 🎁</span>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<main>
+
+    <!-- ── ACTIONS CALLOUT BANNER ── -->
+    <div style="background:linear-gradient(135deg,#111 0%,#1a1a1a 100%);border-radius:12px;padding:20px 24px;margin-bottom:40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+        <div style="display:flex;align-items:center;gap:16px">
+            <div style="background:#ff2d2d;border-radius:8px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">🎁</div>
+            <div>
+                <div style="color:#fff;font-size:0.9rem;font-weight:700;margin-bottom:2px">Everything here is free to order with Actions</div>
+                <div style="color:#aaa;font-size:0.75rem">Sign up for a free JVST account → get 10 Actions/month → shop → DM <strong style="color:#ff2d2d">@shopjvst</strong> to redeem. No cash required.</div>
+            </div>
+        </div>
+        <a href="login.html" style="background:#ff2d2d;color:#fff;text-decoration:none;padding:9px 20px;border-radius:7px;font-size:0.8rem;font-weight:700;white-space:nowrap;flex-shrink:0">Get Free Actions →</a>
+    </div>
+
+    <!-- ═══ BLIND BAGS ═══ -->
+    <div id="blind-bags">
+        <div class="section-header">
+            <h2>Blind Bag Catalog <span class="sec-icon">🎁</span></h2>
+            <span style="font-size:0.72rem;color:#aaa;font-weight:500">1 Action each</span>
+        </div>
+        <div class="product-grid" id="blindBagGrid"></div>
+    </div>
+
+    <!-- ═══ SPECIAL BOOKS ═══ -->
+    <div id="books">
+        <div class="section-header">
+            <h2>White Board Books <span class="sec-icon">📕</span></h2>
+            <span style="font-size:0.72rem;color:#aaa;font-weight:500">2 Actions each</span>
+        </div>
+        <div class="product-grid" id="booksGrid"></div>
+    </div>
+
+    <!-- ═══ KEYCHAINS ═══ -->
+    <div id="keychains">
+        <div class="section-header">
+            <h2>Key Chain Catalog <span class="sec-icon">🔑</span></h2>
+            <span style="font-size:0.72rem;color:#aaa;font-weight:500">1 Action each</span>
+        </div>
+        <div class="product-grid" id="keychainGrid"></div>
+    </div>
+
+    <!-- ═══ BUNDLES ═══ -->
+    <div id="bundles">
+        <div class="section-header">
+            <h2>Bundles & Loot Boxes <span class="sec-icon">📦</span></h2>
+            <span style="font-size:0.72rem;color:#aaa;font-weight:500">3–5 Actions</span>
+        </div>
+        <div class="product-grid" id="bundleGrid"></div>
+    </div>
+
+</main>
+
+<!-- ═══ PRODUCT POPUP ═══ -->
+<div id="product-popup" onclick="handlePopupBackdrop(event)">
+    <div class="popup-box">
+        <button class="popup-close" onclick="closePopup()">✕</button>
+        <div class="popup-img" id="popupImg"></div>
+        <div class="popup-body">
+            <div class="popup-tag" id="popupTag"></div>
+            <div class="popup-name" id="popupName"></div>
+            <div class="popup-desc" id="popupDesc"></div>
+            <div class="popup-code-row">
+                <span class="popup-code-label">CODE</span>
+                <span class="popup-code" id="popupCode"></span>
+            </div>
+            <div class="popup-price-row">
+                <div class="popup-price" id="popupPrice"></div>
+                <div style="font-size:0.7rem;color:#888">Action</div>
+            </div>
+            <button class="popup-add-btn" id="popupAddBtn" onclick="toggleCartFromPopup()">＋ Add to Cart</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ CART DRAWER ═══ -->
+<div id="cart-backdrop" onclick="closeCartDrawer()"></div>
+<div id="cart-drawer">
+    <div class="cart-drawer-head">
+        <span class="cart-drawer-title">🛒 Cart</span>
+        <button class="cart-drawer-close" onclick="closeCartDrawer()">✕</button>
+    </div>
+    <div class="cart-drawer-body" id="cartDrawerBody"></div>
+    <div class="cart-drawer-foot">
+        <div class="cart-total-row">
+            <span class="cart-total-label">Total Actions</span>
+            <span class="cart-total-val" id="cartTotal">0</span>
+        </div>
+        <button class="cart-checkout-btn" id="cartCheckoutBtn" onclick="openCheckout()">Checkout →</button>
+        <div class="cart-note">DM @shopjvst on Instagram to redeem your order</div>
+    </div>
+</div>
+
+<!-- ═══ CHECKOUT OVERLAY ═══ -->
+<div id="checkout-overlay">
+    <div class="co-sheet">
+        <div class="co-handle"></div>
+        <div class="co-head">
+            <div class="co-title">Review Order</div>
+            <div class="co-sub" id="coSubLine">// minicrafts_checkout</div>
+        </div>
+        <div class="co-body">
+            <div id="coUserStrip" class="co-user-strip" style="display:none">
+                <div class="co-avatar" id="coAvatar">?</div>
+                <div>
+                    <div class="co-user-name" id="coUserName">–</div>
+                    <div class="co-user-email" id="coUserEmail">–</div>
+                </div>
+            </div>
+            <div id="coAuthNotice" class="co-auth-notice">
+                You're not signed in. <a href="shop.html">Sign in to your JVST account</a> to use your Actions — or copy your codes below and DM <strong>@shopjvst</strong> on Instagram to redeem manually.
+            </div>
+            <div id="coWarn" class="co-warn"></div>
+            <div>
+                <div class="co-label">Actions balance</div>
+                <div class="co-balance-row">
+                    <div class="co-bal-box">
+                        <div class="co-bal-num" id="coBalNow">–</div>
+                        <div class="co-bal-unit">current</div>
+                    </div>
+                    <div class="co-bal-arrow">→</div>
+                    <div class="co-bal-box accent">
+                        <div class="co-bal-num" id="coBalAfter">–</div>
+                        <div class="co-bal-unit">after order</div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="co-label">Your cart</div>
+                <div class="co-items" id="coItemsList"></div>
+            </div>
+            <div class="co-total-strip">
+                <span class="co-total-label">Total cost</span>
+                <span class="co-total-val" id="coTotalVal">–</span>
+            </div>
+        </div>
+        <div class="co-foot">
+            <button class="co-btn co-btn-primary" id="coConfirmBtn" onclick="executeCheckout()">Confirm & Place Order</button>
+            <button class="co-btn co-btn-ghost" onclick="closeCheckout()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ THANK-YOU POPUP ═══ -->
+<div id="ty-overlay">
+    <div class="ty-box">
+        <div class="ty-check-ring" id="tyRing">
+            <svg class="ty-check-svg" viewBox="0 0 30 30">
+                <path class="ty-check-path" id="tyCheckPath" d="M5 15 L12 22 L25 8"/>
+            </svg>
+        </div>
+        <div class="ty-title">Order placed!</div>
+        <div class="ty-msg" id="tyMsg">Your actions have been spent.<br>See you at the next drop.</div>
+        <div class="ty-order-box">
+            <div class="ty-order-label">Order codes</div>
+            <div class="ty-codes" id="tyCodes">–</div>
+            <hr class="ty-divider">
+            <div class="ty-balance-row">
+                <span class="ty-bal-label">Remaining actions</span>
+                <span class="ty-bal-val" id="tyBalLeft">–</span>
+            </div>
+        </div>
+        <button class="ty-close" onclick="closeThankyou()">Close</button>
+    </div>
+</div>
+
+<!-- ═══ INDY 3 ═══ -->
+<div class="section-band alt" id="indy">
+    <div class="container">
+        <div class="indy-split">
+            <div>
+                <div class="indy-badge"><span class="pulse-dot"></span> Live Now — Free to Use</div>
+                <div class="band-eyebrow">indy3</div>
+                <h2 class="band-title">The AI that actually<br><em style="font-style:italic;color:#ff2d2d">gets the culture.</em></h2>
+                <p class="band-sub">Indy 3 is JVST's AI assistant — built for people who switch between English, Spanish, and Spanglish mid-sentence. No corporate tone. No fluff. Just fast, sharp answers that understand how real people actually talk.</p>
+                <div class="indy-feats">
+                    <div class="indy-feat">
+                        <div class="indy-icon">⚡</div>
+                        <div class="indy-feat-text"><strong>Lightning fast</strong><span>Responses under a second. No lag, no waiting.</span></div>
+                    </div>
+                    <div class="indy-feat">
+                        <div class="indy-icon">🌎</div>
+                        <div class="indy-feat-text"><strong>English · Spanish · Spanglish</strong><span>Native multilingual — not a translation layer slapped on top.</span></div>
+                    </div>
+                    <div class="indy-feat">
+                        <div class="indy-icon">🔒</div>
+                        <div class="indy-feat-text"><strong>Private by default</strong><span>We never train on your conversations. Your words stay yours.</span></div>
+                    </div>
+                    <div class="indy-feat">
+                        <div class="indy-icon">🎁</div>
+                        <div class="indy-feat-text"><strong>Earn Actions using Indy</strong><span>Active Indy+ members get bonus Actions to spend in the shop.</span></div>
+                    </div>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                    <a href="indy.html" class="btn btn-red">Try Indy 3 Free →</a>
+                    <a href="login.html" class="btn btn-ghost">Create Account</a>
+                </div>
+            </div>
+            <div>
+                <div class="chat-mock">
+                    <div class="chat-bar">
+                        <div class="cdot" style="background:#ff5f57"></div>
+                        <div class="cdot" style="background:#febc2e"></div>
+                        <div class="cdot" style="background:#28c840"></div>
+                        <div class="chat-name">Indy 3</div>
+                    </div>
+                    <div class="chat-msgs">
+                        <div class="msg user"><div class="bubble">yo translate this for my abuela but keep it warm</div><div class="msg-t">now</div></div>
+                        <div class="msg bot"><div class="bubble">Of course — I'll keep it warm and natural, the way family actually talks 🙂</div><div class="msg-t">Indy 3 · just now</div></div>
+                        <div class="msg user"><div class="bubble">write me a hook, reggaeton vibes, summer nights energy</div><div class="msg-t">now</div></div>
+                        <div class="msg bot"><div class="bubble">Working on it... 🎵</div><div class="msg-t">Indy 3 · typing…</div></div>
+                    </div>
+                </div>
+                <div class="stats-strip">
+                    <div class="stat-cell"><div class="stat-num"><span>&lt;1</span>s</div><div class="stat-label">Avg response</div></div>
+                    <div class="stat-cell"><div class="stat-num"><span>3</span></div><div class="stat-label">Plans — from free</div></div>
+                    <div class="stat-cell"><div class="stat-num"><span>∞</span></div><div class="stat-label">Messages, Indy+</div></div>
+                    <div class="stat-cell"><div class="stat-num"><span>0</span></div><div class="stat-label">Data sold</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ TUNES ═══ -->
+<div class="section-band" id="music">
+    <div class="container">
+        <div class="tunes-split">
+            <div>
+                <div class="band-eyebrow">music & media</div>
+                <h2 class="band-title">JVST is a music<br>company too.</h2>
+                <p class="band-sub">AI is the spine, but music is the soul. From MusicX Sessions to JVST TV, we're building the infrastructure that lets real artists get heard — no label, no gatekeepers, no 1M follower requirement.</p>
+                <div style="margin:28px 0">
+                    <div class="tunes-feat">
+                        <div class="tunes-feat-icon">🎤</div>
+                        <div><div class="tunes-feat-title">MusicX Sessions</div><div class="tunes-feat-sub">Open submission platform for unsigned artists. Submit your track and get real reach.</div></div>
+                    </div>
+                    <div class="tunes-feat">
+                        <div class="tunes-feat-icon">📺</div>
+                        <div><div class="tunes-feat-title">JVST TV</div><div class="tunes-feat-sub">Short-form culture & music content. Dropping Q4 2026 — follow @shopjvst for the launch.</div></div>
+                    </div>
+                    <div class="tunes-feat">
+                        <div class="tunes-feat-icon">🤝</div>
+                        <div><div class="tunes-feat-title">Artist Collabs</div><div class="tunes-feat-sub">Working with Noah Loke, Evan Duffy, Rainn Blais and more independent artists.</div></div>
+                    </div>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                    <button class="btn btn-red" onclick="alert('MusicX Sessions submissions open soon — follow @shopjvst on Instagram for the announcement! 🎤')">Submit Your Music →</button>
+                    <a href="https://instagram.com/shopjvst" target="_blank" class="btn btn-ghost">Follow @shopjvst</a>
+                </div>
+            </div>
+            <div class="tunes-img">
+                <img src="tvbb.png" alt="JVST TV" onerror="this.parentElement.style.background='linear-gradient(135deg,#222,#444)'">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ WHAT ARE ACTIONS? ═══ -->
+<div class="section-band alt actions-section" id="actions">
+    <div class="container">
+        <div style="max-width:620px;margin-bottom:48px">
+            <div class="band-eyebrow">actions — how to order</div>
+            <h2 class="band-title">No cash needed.<br>Just Actions.</h2>
+            <p class="band-sub">Actions are JVST's free monthly currency. Every account gets <strong>10 Actions/month</strong> — no credit card, no catch. Spend them on anything in the Mini Crafts shop, then DM <strong>@shopjvst</strong> on Instagram with your codes to claim your order. It's that simple.</p>
+        </div>
+        <div class="actions-grid">
+            <div class="actions-card">
+                <div class="actions-card-num">01</div>
+                <div class="actions-card-title">Get your free Actions</div>
+                <div class="actions-card-body">Every JVST account starts with 10 free Actions per month. No credit card. No trial. Sign up at <a href="login.html" style="color:#ff2d2d">JVST</a> and your Actions are ready immediately.</div>
+                <div class="actions-tag">Free Forever</div>
+            </div>
+            <div class="actions-card">
+                <div class="actions-card-num">02</div>
+                <div class="actions-card-title">Add items to your cart</div>
+                <div class="actions-card-body">Each product in the Mini Crafts catalog costs 1–5 Actions. Blind bags are 1 Action each. Bundles and Starter Packs cost more but deliver the most value per pull.</div>
+                <div class="actions-tag">1–5 Actions</div>
+            </div>
+            <div class="actions-card">
+                <div class="actions-card-num">03</div>
+                <div class="actions-card-title">Checkout & get your codes</div>
+                <div class="actions-card-body">Check out through the cart. Your order generates product codes. Your Action balance updates in real-time. Copy your codes — you'll need them in the next step.</div>
+                <div class="actions-tag">Instant</div>
+            </div>
+            <div class="actions-card">
+                <div class="actions-card-num">04</div>
+                <div class="actions-card-title">DM to redeem your order</div>
+                <div class="actions-card-body">DM <strong>@shopjvst</strong> on Instagram with your order codes. We'll confirm your order and ship your Mini Crafts items. More than 2 items may receive a special box and thank-you card.</div>
+                <div class="actions-tag">@shopjvst</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ PHILOSOPHY ═══ -->
+<div class="section-band" style="border-bottom:1px solid #e5e5e5">
+    <div class="container" style="text-align:center">
+        <div style="max-width:680px;margin:0 auto">
+            <div class="band-eyebrow" style="display:inline-block;margin-bottom:20px">jvst.manifesto</div>
+            <h2 style="font-size:clamp(1.8rem,4vw,3rem);font-weight:700;letter-spacing:-.04em;line-height:1.08;margin-bottom:24px">We don't adapt culture<br>for technology.<br><span style="color:#ff2d2d">We build technology<br>for culture.</span></h2>
+            <p style="font-size:0.92rem;color:#666;line-height:1.8;max-width:520px;margin:0 auto 36px">The tools that exist weren't built for us. They were built, then localized. Translated, not felt. We're starting from a different place entirely.</p>
+            <div style="display:flex;justify-content:center;gap:48px;flex-wrap:wrap">
+                <div style="text-align:left;padding-left:14px;border-left:2px solid #ff2d2d"><div style="font-size:1.4rem;font-weight:700;letter-spacing:-.03em;margin-bottom:2px">Free.</div><div style="font-size:0.75rem;color:#999">Always &amp; forever.</div></div>
+                <div style="text-align:left;padding-left:14px;border-left:2px solid #ddd"><div style="font-size:1.4rem;font-weight:700;letter-spacing:-.03em;margin-bottom:2px">Private.</div><div style="font-size:0.75rem;color:#999">Zero data sold.</div></div>
+                <div style="text-align:left;padding-left:14px;border-left:2px solid #ddd"><div style="font-size:1.4rem;font-weight:700;letter-spacing:-.03em;margin-bottom:2px">Real.</div><div style="font-size:0.75rem;color:#999">Built with the culture.</div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+    <div style="max-width:1200px;margin:0 auto;padding:0 32px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:24px;margin-bottom:24px">
+            <div>
+                <div style="font-size:1.1rem;font-weight:800;letter-spacing:-.02em;margin-bottom:4px">JVST <span style="color:#ff2d2d">×</span> Mini Crafts</div>
+                <div style="font-size:0.72rem;color:#aaa">AI · Music · Culture · Collectibles</div>
+            </div>
+            <div style="display:flex;gap:40px;flex-wrap:wrap;font-size:0.78rem">
+                <div>
+                    <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#bbb;margin-bottom:8px">Shop</div>
+                    <div style="display:flex;flex-direction:column;gap:6px">
+                        <a href="#blind-bags" style="color:#888;text-decoration:none">Blind Bags</a>
+                        <a href="#books" style="color:#888;text-decoration:none">White Board Books</a>
+                        <a href="#keychains" style="color:#888;text-decoration:none">Keychains</a>
+                        <a href="#bundles" style="color:#888;text-decoration:none">Bundles</a>
+                    </div>
+                </div>
+                <div>
+                    <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#bbb;margin-bottom:8px">JVST</div>
+                    <div style="display:flex;flex-direction:column;gap:6px">
+                        <a href="indy.html" style="color:#888;text-decoration:none">Indy 3 AI</a>
+                        <a href="#music" style="color:#888;text-decoration:none">Music & MusicX</a>
+                        <a href="#actions" style="color:#888;text-decoration:none">How Actions Work</a>
+                        <a href="login.html" style="color:#888;text-decoration:none">Sign Up Free</a>
+                    </div>
+                </div>
+                <div>
+                    <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#bbb;margin-bottom:8px">Connect</div>
+                    <div style="display:flex;flex-direction:column;gap:6px">
+                        <a href="https://instagram.com/shopjvst" target="_blank" style="color:#ff2d2d;text-decoration:none;font-weight:600">@shopjvst</a>
+                        <a href="shop.html" style="color:#888;text-decoration:none">My Account</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="border-top:1px solid #e5e5e5;padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px">
+            <p>&copy; 2026 IRELAND co.'s JVST · Mini Crafts™ · All rights reserved.</p>
+            <p style="font-size:0.72rem;color:#bbb">DM <a href="https://instagram.com/shopjvst" target="_blank" style="color:#ff2d2d;text-decoration:none">@shopjvst</a> on Instagram to redeem orders</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+'use strict';
+
+// ── Firebase Config (same as home.html) ──────────────────────────────────────
+const JVST_FB = {
+    apiKey: "AIzaSyC50_wBK3TfERX1gm35puugCD324SxHJR8",
+    authDomain: "tunesandindy.firebaseapp.com",
+    projectId: "tunesandindy",
+    storageBucket: "tunesandindy.firebasestorage.app",
+    messagingSenderId: "335192973371",
+    appId: "1:335192973371:web:ce69d4b67c765d6aaf7c1e"
+};
+
+const JVST_LIMIT = 10;
+let jvstAuth = null, jvstDb = null;
+let jvstUser = null, jvstUserData = null;
+
+// ── PRODUCT DATA ──────────────────────────────────────────────────────────────
+const BLIND_BAGS = [
+    {
+        id: 'BB-BKFST', code: 'BBAG-BK', tag: 'Blind Bag', name: 'Breakfast Bag',
+        desc: 'Start your day with a mystery! One of the original Mini Crafts blind bags — "What Will You Find?"',
+        cost: 1, img: 'breakfastbb.png',
+        color: '#e53e3e', labelColor: '#fff',
+        label: 'Breakfast\nBlind Bag', sub: '"What Will You Find?"'
+    },
+    {
+        id: 'BB-BRNCH', code: 'BBAG-BR', tag: 'Blind Bag', name: 'Brunch Bag',
+        desc: 'Mid-morning mystery. Random items themed around the best meal of the day.',
+        cost: 1, img: null,
+        color: '#ed8936', labelColor: '#fff',
+        label: 'Brunch Bag', sub: '"What Will You Find?"'
+    },
+    {
+        id: 'BB-LNCH', code: 'BBAG-LN', tag: 'Blind Bag', name: 'Lunch Bag',
+        desc: 'Midday mystery collectible, randomly assorted. "What Will You Find?"',
+        cost: 1, img: 'lunchbb.png',
+        color: '#3182ce', labelColor: '#fff',
+        label: 'Lunch Blind Bag', sub: '"What Will You Find?"'
+    },
+    {
+        id: 'BB-DNR', code: 'BBAG-DN', tag: 'Blind Bag', name: 'Dinner Bag',
+        desc: 'Evening edition with rare night-drop items. The original dinner bag.',
+        cost: 1, img: 'dinnerbb.png',
+        color: '#38a169', labelColor: '#fff',
+        label: 'Dinner Blind Bag', sub: '"What Will You Find?"'
+    },
+    {
+        id: 'BB-SPKY', code: 'BBAG-SP', tag: 'Blind Bag · Seasonal', name: 'Spooky Bag',
+        desc: 'Halloween edition with spooky surprises inside. Limited seasonal run.',
+        cost: 1, img: null,
+        color: '#744210', labelColor: '#f6ad55',
+        label: 'Spooky Bag', sub: '🎃 "What Will You Find?"'
+    },
+    {
+        id: 'BB-FALL', code: 'BBAG-FL', tag: 'Blind Bag · Pre-Order', name: 'Fall Bag',
+        desc: 'Pre-order the limited Fall edition before it sells out. Ships in season.',
+        cost: 1, img: null,
+        color: '#c05621', labelColor: '#fff',
+        label: 'Fall Bag', sub: '🍂 Pre-Order'
+    },
+];
+
+const BOOKS = [
+    {
+        id: 'WB-WHTB', code: 'WB-WHT', tag: 'White Board Book', name: 'White Board Book',
+        desc: 'Reusable whiteboard notebook — draw, erase, repeat. Classic white cover.',
+        cost: 2, img: null,
+        spineColor: '#c0392b', coverColor: '#e8b4b0',
+    },
+    {
+        id: 'WB-VIN', code: 'WB-VIN', tag: 'White Board Book', name: 'Vintage White Board Book',
+        desc: 'Warm vintage-toned whiteboard book with a retro feel.',
+        cost: 2, img: '3.png',
+        spineColor: '#c0834a', coverColor: '#e8c4a0',
+    },
+    {
+        id: 'WB-MINT', code: 'WB-MNT', tag: 'White Board Book', name: 'Mint White Board Book',
+        desc: 'Fresh mint-colored reusable whiteboard book.',
+        cost: 2, img: '4.png',
+        spineColor: '#2d9e7e', coverColor: '#a8e6cf',
+    },
+    {
+        id: 'WB-AME', code: 'WB-AME', tag: 'White Board Book', name: 'Amethyst White Board Book',
+        desc: 'Deep amethyst purple — reusable whiteboard with a bold look.',
+        cost: 2, img: null,
+        spineColor: '#6b46c1', coverColor: '#c4b5fd',
+    },
+    {
+        id: 'WB-PNK', code: 'WB-PNK', tag: 'White Board Book', name: 'Pink White Board Book',
+        desc: 'Soft pink reusable whiteboard book — cute and functional.',
+        cost: 2, img: null,
+        spineColor: '#d53f8c', coverColor: '#fbcfe8',
+    },
+    {
+        id: 'WB-PCH', code: 'WB-PCH', tag: 'White Board Book', name: 'Peach White Board Book',
+        desc: 'Warm peach-toned whiteboard notebook. The fan favorite.',
+        cost: 2, img: '2.png',
+        spineColor: '#c07850', coverColor: '#fddbb4',
+    },
+];
+
+const KEYCHAINS = [
+    {
+        id: 'KC-PMP1', code: 'KC-PM1', tag: 'Keychain · Seasonal', name: 'Pumpkin Keychain',
+        desc: 'Handmade crocheted pumpkin keychain — cute fall accent for your keys or bag.',
+        cost: 1, img: null,
+        emoji: '🎃', color: '#ed8936',
+    },
+    {
+        id: 'KC-PMP2', code: 'KC-PM2', tag: 'Keychain · Seasonal', name: 'Crochet Pumpkin Ring',
+        desc: 'Crocheted pumpkin keyring in classic harvest orange.',
+        cost: 1, img: null,
+        emoji: '🧶', color: '#c05621',
+    },
+    {
+        id: 'KC-AUT', code: 'KC-AUT', tag: 'Keychain · Seasonal', name: 'Autumn Keychain',
+        desc: 'Autumn-themed key chain with fall colors and seasonal charm.',
+        cost: 1, img: null,
+        emoji: '🍂', color: '#744210',
+    },
+    {
+        id: 'KC-HND', code: 'KC-PM3', tag: 'Keychain · Seasonal', name: 'Handmade Pumpkin Ring',
+        desc: 'Handcrafted pumpkin keyring — each one is slightly unique.',
+        cost: 1, img: null,
+        emoji: '🎃', color: '#e53e3e',
+    },
+];
+
+const BUNDLES = [
+    {
+        id: 'BND-5PK', code: 'BAGBUN', tag: 'Bundle', name: '5-Pack Blind Bags',
+        desc: 'Five random rare blind bags shipped together with a rare collectors outer box. Best value per pull.',
+        cost: 5, img: null,
+        color: '#9f7aea', label: '5-Pack\nBlind Bags', sub: 'Best Value'
+    },
+    {
+        id: 'BND-START', code: 'STARTER', tag: 'Limited', name: 'Starter Pack',
+        desc: 'The full intro: 5 blind bags + 1 Indy Keychain + a handwritten note from JVST. Custom box. Limited to 100 sets.',
+        cost: 5, img: null,
+        color: '#f687b3', label: 'Starter\nPack', sub: 'Limited 100'
+    },
+    {
+        id: 'BND-LB01', code: 'LB01', tag: 'Loot Box', name: 'Loot Box #001',
+        desc: 'Random loot box packed with MINI CRAFTS memorabilia and rare JVST collectibles. No two boxes alike.',
+        cost: 3, img: null,
+        color: '#a0aec0', label: 'Loot Box\n#001', sub: 'Mystery'
+    },
+    {
+        id: 'BND-LB02', code: 'LB02', tag: 'Loot Box', name: 'Loot Box #002',
+        desc: 'Second series random loot box. New items, new chances — same rare JVST energy.',
+        cost: 3, img: null,
+        color: '#718096', label: 'Loot Box\n#002', sub: 'Series 2'
+    },
+    {
+        id: 'BND-LB03', code: 'LB03', tag: 'Loot Box', name: 'Loot Box #003',
+        desc: 'Entry-level loot box. Great starting point for new collectors, MINI CRAFTS essentials inside.',
+        cost: 1, img: null,
+        color: '#cbd5e0', label: 'Loot Box\n#003', sub: 'Starter'
+    },
+];
+
+const ALL_PRODUCTS = [...BLIND_BAGS, ...BOOKS, ...KEYCHAINS, ...BUNDLES];
+
+// ── CART ──────────────────────────────────────────────────────────────────────
+const CART_KEY = 'minicrafts_cart_v1';
+let cart = {};
+let activeProduct = null;
+
+function loadCart() { try { return JSON.parse(localStorage.getItem(CART_KEY)) || {}; } catch { return {}; } }
+function saveCart(c) { try { localStorage.setItem(CART_KEY, JSON.stringify(c)); } catch {} }
+
+function cartTotalActions() {
+    return Object.keys(cart).reduce((sum, id) => {
+        const p = ALL_PRODUCTS.find(x => x.id === id);
+        return sum + (p ? p.cost * cart[id] : 0);
+    }, 0);
+}
+
+function buildCodeStr(cart) {
+    return Object.keys(cart)
+        .filter(id => ALL_PRODUCTS.find(x => x.id === id))
+        .map(id => {
+            const p = ALL_PRODUCTS.find(x => x.id === id);
+            return cart[id] > 1 ? `${p.code}×${cart[id]}` : p.code;
+        })
+        .join(', ');
+}
+
+function updateBadge() {
+    const qty = Object.values(cart).reduce((a, b) => a + b, 0);
+    document.getElementById('cartBadge').textContent = qty;
+}
+
+// ── RENDER GRIDS ──────────────────────────────────────────────────────────────
+function blindBagPlaceholder(p) {
+    if (p.img) {
+        return `<img src="${p.img}" alt="${p.name}">`;
+    }
+    return `<div class="product-img-placeholder" style="background:${p.color}">
+        <div class="bag-label" style="color:${p.labelColor}">${p.label.replace('\n','<br>')}</div>
+        <div class="bag-sub" style="color:${p.labelColor};opacity:0.7">${p.sub}</div>
+    </div>`;
+}
+
+function bookPlaceholder(p) {
+    if (p.img) {
+        return `<img src="${p.img}" alt="${p.name}">`;
+    }
+    return `<div class="product-img-placeholder" style="background:${p.coverColor};position:relative">
+        <div style="position:absolute;left:0;top:0;bottom:0;width:12px;background:${p.spineColor}"></div>
+        <span style="font-size:0.7rem;font-weight:700;color:#111">${p.name}</span>
+    </div>`;
+}
+
+function keychainPlaceholder(p) {
+    if (p.img) {
+        return `<img src="${p.img}" alt="${p.name}">`;
+    }
+    return `<div class="product-img-placeholder" style="background:${p.color}">
+        <div style="font-size:2rem">${p.emoji}</div>
+        <div class="bag-sub" style="margin-top:4px;color:rgba(255,255,255,0.85)">Seasonal</div>
+    </div>`;
+}
+
+function bundlePlaceholder(p) {
+    if (p.img) {
+        return `<img src="${p.img}" alt="${p.name}">`;
+    }
+    return `<div class="product-img-placeholder" style="background:${p.color}">
+        <div class="bag-label" style="color:#fff">${p.label.replace('\n','<br>')}</div>
+        <div class="bag-sub" style="color:rgba(255,255,255,0.8)">${p.sub}</div>
+    </div>`;
+}
+
+function renderCard(p, visual) {
+    const inCart = !!cart[p.id];
+    return `<div class="product-card${inCart ? ' in-cart' : ''}" onclick="openPopup('${p.id}')">
+        <div class="product-img-wrap">
+            ${visual}
+            <div class="in-cart-pip">✓</div>
+        </div>
+        <div class="product-name">${p.name}</div>
+    </div>`;
+}
+
+function renderAllGrids() {
+    cart = loadCart();
+    
+    document.getElementById('blindBagGrid').innerHTML = BLIND_BAGS.map(p => renderCard(p, blindBagPlaceholder(p))).join('');
+    document.getElementById('booksGrid').innerHTML = BOOKS.map(p => renderCard(p, bookPlaceholder(p))).join('');
+    document.getElementById('keychainGrid').innerHTML = KEYCHAINS.map(p => renderCard(p, keychainPlaceholder(p))).join('');
+    document.getElementById('bundleGrid').innerHTML = BUNDLES.map(p => renderCard(p, bundlePlaceholder(p))).join('');
+    
+    updateBadge();
+    renderCartDrawer();
+}
+
+// ── POPUP ─────────────────────────────────────────────────────────────────────
+function openPopup(productId) {
+    const p = ALL_PRODUCTS.find(x => x.id === productId);
+    if (!p) return;
+    
+    activeProduct = p;
+    const inCart = !!cart[p.id];
+
+    let visual = '';
+    if (BLIND_BAGS.find(x => x.id === productId)) visual = blindBagPlaceholder(p);
+    else if (BOOKS.find(x => x.id === productId)) visual = bookPlaceholder(p);
+    else if (KEYCHAINS.find(x => x.id === productId)) visual = keychainPlaceholder(p);
+    else visual = bundlePlaceholder(p);
+
+    document.getElementById('popupImg').innerHTML = `<div style="width:100%;height:100%">${visual}</div>`;
+    document.getElementById('popupTag').textContent = p.tag;
+    document.getElementById('popupName').textContent = p.name;
+    document.getElementById('popupDesc').textContent = p.desc;
+    document.getElementById('popupCode').textContent = p.code;
+    document.getElementById('popupPrice').innerHTML = `${p.cost} <small>Action${p.cost !== 1 ? 's' : ''}</small>`;
+    
+    const btn = document.getElementById('popupAddBtn');
+    btn.textContent = inCart ? '✓  In Cart — Remove' : '＋ Add to Cart';
+    btn.classList.toggle('added', inCart);
+
+    document.getElementById('product-popup').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closePopup() {
+    document.getElementById('product-popup').classList.remove('open');
+    document.body.style.overflow = '';
+    activeProduct = null;
+}
+
+function handlePopupBackdrop(e) {
+    if (e.target === document.getElementById('product-popup')) closePopup();
+}
+
+function toggleCartFromPopup() {
+    if (!activeProduct) return;
+    cart = loadCart();
+    if (cart[activeProduct.id]) { delete cart[activeProduct.id]; }
+    else { cart[activeProduct.id] = 1; }
+    saveCart(cart);
+    renderAllGrids();
+    closePopup();
+}
+
+// ── CART DRAWER ───────────────────────────────────────────────────────────────
+function openCartDrawer() {
+    renderCartDrawer();
+    document.getElementById('cart-drawer').classList.add('open');
+    document.getElementById('cart-backdrop').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCartDrawer() {
+    document.getElementById('cart-drawer').classList.remove('open');
+    document.getElementById('cart-backdrop').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function renderCartDrawer() {
+    cart = loadCart();
+    const keys = Object.keys(cart);
+    const body = document.getElementById('cartDrawerBody');
+
+    if (!keys.length) {
+        body.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">🛒</div><div>Your cart is empty</div></div>`;
+        document.getElementById('cartTotal').textContent = '0';
+        return;
+    }
+
+    body.innerHTML = keys.map(id => {
+        const p = ALL_PRODUCTS.find(x => x.id === id);
+        if (!p) return '';
+        const qty = cart[id];
+        let thumb = '';
+        if (BLIND_BAGS.find(x => x.id === id)) {
+            if (p.img) {
+                thumb = `<img src="${p.img}" alt="${p.name}">`;
+            } else {
+                thumb = `<div class="mini-placeholder" style="background:${p.color}">${p.label.replace('\n',' ')}</div>`;
+            }
+        } else if (BOOKS.find(x => x.id === id)) {
+            if (p.img) {
+                thumb = `<img src="${p.img}" alt="${p.name}">`;
+            } else {
+                thumb = `<div class="mini-placeholder" style="background:${p.coverColor};border-left:4px solid ${p.spineColor}"></div>`;
+            }
+        } else {
+            if (p.img) {
+                thumb = `<img src="${p.img}" alt="${p.name}">`;
+            } else {
+                thumb = `<div class="mini-placeholder" style="background:${p.color}">${p.emoji || '🎁'}</div>`;
+            }
+        }
+        return `<div class="cart-item-row">
+            <div class="cart-item-thumb">${thumb}</div>
+            <div class="cart-item-info">
+                <div class="cart-item-name">${p.name}</div>
+                <div class="cart-item-sub">${p.cost} action${p.cost !== 1 ? 's' : ''} each</div>
+                <div class="cart-item-qty-row">
+                    <button class="qty-btn" onclick="adjustQty('${id}',-1)">−</button>
+                    <span class="qty-val">${qty}</span>
+                    <button class="qty-btn" onclick="adjustQty('${id}',1)">+</button>
+                </div>
+            </div>
+            <div class="cart-item-price">${p.cost * qty}</div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('cartTotal').textContent = cartTotalActions();
+}
+
+function adjustQty(id, delta) {
+    cart = loadCart();
+    cart[id] = Math.max(0, (cart[id] || 1) + delta);
+    if (cart[id] === 0) delete cart[id];
+    saveCart(cart);
+    renderCartDrawer();
+    renderAllGrids();
+}
+
+// ── FIREBASE ──────────────────────────────────────────────────────────────────
+function initFirebase() {
+    try {
+        const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(JVST_FB);
+        jvstAuth = firebase.auth(app);
+        jvstDb = firebase.firestore(app);
+        jvstAuth.onAuthStateChanged(async u => {
+            jvstUser = u || null;
+            jvstUserData = null;
+            if (!u) return;
+            try {
+                const snap = await jvstDb.collection('shop_users').doc(u.uid).get();
+                if (!snap.exists) return;
+                jvstUserData = snap.data();
+                const mk = monthKey(new Date());
+                if (jvstUserData.actionsMonth !== mk) {
+                    jvstUserData.actionsUsed = 0;
+                    jvstUserData.actionsMonth = mk;
+                    jvstDb.collection('shop_users').doc(u.uid).update({ actionsUsed: 0, actionsMonth: mk });
+                }
+            } catch(e) { console.warn('jvst user load:', e); }
+        });
+    } catch(e) { console.warn('Firebase init:', e); }
+}
+
+function monthKey(d) { return `${d.getFullYear()}-${d.getMonth()+1}`; }
+
+// ── CHECKOUT ──────────────────────────────────────────────────────────────────
+function openCheckout() {
+    cart = loadCart();
+    const keys = Object.keys(cart);
+    if (!keys.length) return;
+
+    const orderTotal = cartTotalActions();
+    const isAuth = !!(jvstUser && jvstUserData);
+    const usedNow = isAuth ? (jvstUserData.actionsUsed || 0) : 0;
+    const balNow = JVST_LIMIT - usedNow;
+    const balAfter = balNow - orderTotal;
+    const canAfford = isAuth && balAfter >= 0;
+
+    const userStrip = document.getElementById('coUserStrip');
+    const authNotice = document.getElementById('coAuthNotice');
+    if (isAuth) {
+        const name = jvstUserData.displayName || jvstUser.displayName || jvstUser.email || 'Member';
+        document.getElementById('coAvatar').textContent = name[0].toUpperCase();
+        document.getElementById('coUserName').textContent = name;
+        document.getElementById('coUserEmail').textContent = jvstUser.email || '';
+        userStrip.style.display = 'flex';
+        authNotice.style.display = 'none';
+    } else {
+        userStrip.style.display = 'none';
+        authNotice.style.display = 'block';
+    }
+
+    document.getElementById('coBalNow').textContent = isAuth ? balNow : '–';
+    document.getElementById('coBalAfter').textContent = isAuth ? balAfter : '–';
+    if (isAuth) document.getElementById('coBalAfter').style.color = balAfter < 0 ? '#e53e3e' : 'inherit';
+
+    const warnEl = document.getElementById('coWarn');
+    warnEl.textContent = '';
+    warnEl.classList.remove('show');
+    if (isAuth && !canAfford) {
+        warnEl.textContent = `⚠ You need ${orderTotal} action${orderTotal !== 1 ? 's' : ''} but only have ${balNow}. Remove some items.`;
+        warnEl.classList.add('show');
+    }
+
+    const confirmBtn = document.getElementById('coConfirmBtn');
+    confirmBtn.disabled = !isAuth || !canAfford;
+    confirmBtn.textContent = !isAuth ? 'Sign in to checkout' : !canAfford ? 'Not enough actions' : 'Confirm & Place Order';
+
+    document.getElementById('coItemsList').innerHTML = keys.map(id => {
+        const p = ALL_PRODUCTS.find(x => x.id === id);
+        const qty = cart[id];
+        return `<div class="co-item-row">
+            <div class="co-item-left">
+                <span class="co-item-emoji">${p.emoji || '🎁'}</span>
+                <div>
+                    <div class="co-item-name">${p.name}</div>
+                    <div class="co-item-code">${p.code}</div>
+                </div>
+            </div>
+            <div class="co-item-right">
+                <div class="co-item-cost">${p.cost * qty} act.</div>
+                ${qty > 1 ? `<div class="co-item-qty">×${qty}</div>` : ''}
+            </div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('coTotalVal').textContent = `${orderTotal} action${orderTotal !== 1 ? 's' : ''}`;
+    document.getElementById('coSubLine').textContent = isAuth ? `// ${jvstUser.email}` : '// not signed in';
+
+    document.getElementById('checkout-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCheckout() {
+    document.getElementById('checkout-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+async function executeCheckout() {
+    if (!jvstUser || !jvstUserData) return;
+
+    cart = loadCart();
+    const keys = Object.keys(cart);
+    if (!keys.length) return;
+
+    const orderTotal = cartTotalActions();
+
+    const btn = document.getElementById('coConfirmBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="co-spinner"></span> Processing…';
+
+    try {
+        const ref = jvstDb.collection('shop_users').doc(jvstUser.uid);
+        const snap = await ref.get();
+        const fresh = snap.data();
+
+        const mk = monthKey(new Date());
+        let freshUsed = fresh.actionsUsed || 0;
+        if (fresh.actionsMonth !== mk) { freshUsed = 0; }
+
+        const freshBalance = JVST_LIMIT - freshUsed;
+        if (freshBalance < orderTotal) {
+            closeCheckout();
+            btn.disabled = false;
+            btn.textContent = 'Confirm & Place Order';
+            alert('Your balance changed — not enough actions. Please refresh and try again.');
+            return;
+        }
+
+        const now = new Date().toISOString();
+        const newPurchases = keys.flatMap(id => {
+            const p = ALL_PRODUCTS.find(x => x.id === id);
+            const qty = cart[id];
+            return Array.from({ length: qty }, () => ({
+                product: p.name,
+                date: now,
+                actionsCost: p.cost,
+                method: 'minicrafts_cart',
+                code: p.code
+            }));
+        });
+
+        await ref.update({
+            actionsUsed: freshUsed + orderTotal,
+            actionsMonth: mk,
+            totalActionsUsed: (fresh.totalActionsUsed || 0) + orderTotal,
+            purchases: [...(fresh.purchases || []), ...newPurchases]
+        });
+
+        jvstUserData.actionsUsed = freshUsed + orderTotal;
+        jvstUserData.totalActionsUsed = (fresh.totalActionsUsed || 0) + orderTotal;
+
+        const newBalance = JVST_LIMIT - (freshUsed + orderTotal);
+        const codeStr = buildCodeStr(cart);
+
+        closeCheckout();
+        saveCart({});
+        renderAllGrids();
+        closeCartDrawer();
+
+        showThankyou(codeStr, newBalance, orderTotal);
+
+    } catch(e) {
+        console.error('Checkout failed:', e);
+        btn.disabled = false;
+        btn.textContent = 'Confirm & Place Order';
+        alert('Something went wrong. Please try again.');
+    }
+}
+
+// ── THANK-YOU POPUP ───────────────────────────────────────────────────────────
+function showThankyou(codeStr, newBalance, spent) {
+    document.getElementById('tyCodes').textContent = codeStr || '–';
+    document.getElementById('tyBalLeft').textContent = `${newBalance} action${newBalance !== 1 ? 's' : ''}`;
+    document.getElementById('tyMsg').innerHTML = `${spent} action${spent !== 1 ? 's' : ''} spent.<br>See you at the next drop.`;
+
+    const overlay = document.getElementById('ty-overlay');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    setTimeout(() => {
+        document.getElementById('tyRing').classList.add('go');
+        document.getElementById('tyCheckPath').classList.add('draw');
+    }, 60);
+}
+
+function closeThankyou() {
+    const overlay = document.getElementById('ty-overlay');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    setTimeout(() => {
+        document.getElementById('tyRing').classList.remove('go');
+        document.getElementById('tyCheckPath').classList.remove('draw');
+    }, 300);
+}
+
+// ── NAV MOBILE ────────────────────────────────────────────────────────────────
+document.getElementById('menuToggle').addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('active');
+});
+
+// ── CAROUSEL ─────────────────────────────────────────────────────────────────
+(function() {
+    const slides = document.querySelectorAll('.hero-section .carousel-slide');
+    const dots = document.querySelectorAll('.hero-section .carousel-dot');
+    let cur = 0, timer;
+    function go(n) {
+        slides[cur].classList.remove('active');
+        dots[cur].classList.remove('active');
+        cur = (n + slides.length) % slides.length;
+        slides[cur].classList.add('active');
+        dots[cur].classList.add('active');
+    }
+    function start() { timer = setInterval(() => go(cur + 1), 6000); }
+    function stop() { clearInterval(timer); }
+    dots.forEach((d, i) => d.addEventListener('click', () => { stop(); go(i); start(); }));
+    document.getElementById('cPrev').addEventListener('click', () => { stop(); go(cur - 1); start(); });
+    document.getElementById('cNext').addEventListener('click', () => { stop(); go(cur + 1); start(); });
+    start();
+})();
+
+// ── EVENT LISTENERS ───────────────────────────────────────────────────────────
+document.getElementById('checkout-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeCheckout();
+});
+document.getElementById('ty-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeThankyou();
+});
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        closePopup();
+        closeCartDrawer();
+        closeCheckout();
+        closeThankyou();
+    }
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    cart = loadCart();
+    renderAllGrids();
+    initFirebase();
+});
+</script>
+</body>
+</html>
