@@ -878,9 +878,15 @@
     <!-- HOME -->
     <div class="tab-panel active" id="panel-home">
 
-      <div class="home-top">
-        <div class="home-greeting-sub">Good to see you</div>
-        <div class="home-greeting-name" id="dash-greeting">—</div>
+      <!-- Greeting row -->
+      <div class="home-greeting-row">
+        <div>
+          <div class="home-greeting-sub" id="home-time-greeting">Good to see you</div>
+          <div class="home-greeting-name" id="dash-greeting">—</div>
+        </div>
+        <div id="home-verified-badge" style="display:none;">
+          <div class="home-badge-chip">✦ Verified</div>
+        </div>
       </div>
 
       <div class="no-actions-banner" id="no-actions-banner">
@@ -938,7 +944,25 @@
         </div>
       </div>
 
-      <!-- Stats grid -->
+      <!-- ── INSIGHT STRIP ── -->
+      <div class="insight-strip">
+        <div class="insight-cell" id="insight-streak">
+          <div class="insight-val" id="insight-streak-val">–</div>
+          <div class="insight-label">month streak</div>
+        </div>
+        <div class="insight-divider"></div>
+        <div class="insight-cell" id="insight-avg">
+          <div class="insight-val" id="insight-avg-val">–</div>
+          <div class="insight-label">avg / month</div>
+        </div>
+        <div class="insight-divider"></div>
+        <div class="insight-cell">
+          <div class="insight-val" id="insight-best-val">–</div>
+          <div class="insight-label">best month</div>
+        </div>
+      </div>
+
+      <!-- ── STATS ROW (4-up) ── -->
       <div class="stats-grid">
         <div class="stat-box accent">
           <div class="stat-box-label">Total purchases</div>
@@ -962,7 +986,7 @@
         </div>
       </div>
 
-      <!-- Spend chart -->
+      <!-- ── SPEND CHART ── -->
       <div class="spend-chart-wrap">
         <div class="spend-chart-header">
           <span class="spend-chart-title">Monthly spend</span>
@@ -971,7 +995,27 @@
         <div class="spend-bars" id="spend-bars"></div>
       </div>
 
-      <!-- Favourite / most bought -->
+      <!-- ── USAGE HEALTH CARD ── -->
+      <div class="section-label">Actions health</div>
+      <div class="health-card panel-card" style="margin-bottom:20px;">
+        <div style="padding:18px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div>
+              <div id="health-title" style="font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:3px;">–</div>
+              <div id="health-sub" style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;">–</div>
+            </div>
+            <div id="health-icon" style="font-size:28px;line-height:1;">–</div>
+          </div>
+          <!-- Segmented usage bar -->
+          <div style="display:flex;gap:3px;margin-bottom:10px;" id="health-seg-bar"></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);">
+            <span id="health-bar-left">0 used</span>
+            <span id="health-bar-right">10 remaining</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── MOST PURCHASED ── -->
       <div class="section-label">Most purchased</div>
       <div class="fav-card" id="fav-card" style="display:none;">
         <div class="fav-icon" id="fav-icon">◈</div>
@@ -984,11 +1028,57 @@
       </div>
       <div id="fav-empty" class="empty-state" style="padding:20px 0 0;">No purchases yet</div>
 
-      <!-- Recent purchases -->
-      <div class="section-label" style="margin-top:20px;">Recent</div>
-      <div class="panel-card">
+      <!-- ── RESET COUNTDOWN ── -->
+      <div class="section-label" style="margin-top:20px;" id="reset-countdown-label">Monthly reset</div>
+      <div class="panel-card" style="margin-bottom:20px;" id="reset-countdown-card">
+        <div style="padding:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:600;letter-spacing:-.01em;margin-bottom:3px;" id="reset-countdown-title">–</div>
+            <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;" id="reset-countdown-sub">–</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <div style="font-size:28px;font-weight:300;font-family:'DM Mono',monospace;letter-spacing:-.03em;line-height:1;" id="reset-countdown-days">–</div>
+            <div style="font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px;" id="reset-countdown-unit">days</div>
+          </div>
+        </div>
+        <div style="height:3px;background:var(--border);margin:0 18px 18px;border-radius:2px;overflow:hidden;">
+          <div id="reset-month-bar" style="height:100%;background:var(--text);border-radius:2px;transition:width .8s cubic-bezier(.4,0,.2,1);width:0%;"></div>
+        </div>
+      </div>
+
+      <!-- ── TOP CATEGORIES ── -->
+      <div class="section-label" id="top-cats-label" style="display:none;">Spending breakdown</div>
+      <div class="panel-card" style="margin-bottom:20px;" id="top-cats-card" style="display:none;">
+        <div style="padding:16px 18px;" id="top-cats-list"></div>
+      </div>
+
+      <!-- ── GIFTING SUMMARY ── -->
+      <div class="section-label" id="gift-summary-section-label">Gifting</div>
+      <div class="panel-card" style="margin-bottom:20px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);">
+          <div style="padding:16px 18px;border-right:1px solid var(--border);">
+            <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:6px;">Gifts sent</div>
+            <div style="font-size:24px;font-weight:600;font-family:'DM Mono',monospace;letter-spacing:-.02em;" id="stat-gifts-sent">0</div>
+            <div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px;">all time</div>
+          </div>
+          <div style="padding:16px 18px;">
+            <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:6px;">Actions gifted</div>
+            <div style="font-size:24px;font-weight:600;font-family:'DM Mono',monospace;letter-spacing:-.02em;" id="stat-actions-gifted">0</div>
+            <div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px;">all time</div>
+          </div>
+        </div>
+        <div style="padding:14px 18px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">Your share code</div>
+          <div style="font-size:13px;font-weight:600;font-family:'DM Mono',monospace;letter-spacing:.1em;cursor:pointer;" onclick="copyShareCode()" id="home-share-code">–</div>
+        </div>
+      </div>
+
+      <!-- ── RECENT ACTIVITY ── -->
+      <div class="section-label" style="margin-top:4px;">Recent activity</div>
+      <div class="panel-card" style="margin-bottom:4px;">
         <div id="recent-list"></div>
       </div>
+      <button class="home-see-all-btn" onclick="switchPanel('history', document.querySelector('[data-panel=history]'))">See all activity →</button>
 
     </div>
 
@@ -1494,7 +1584,8 @@ function switchAuthTab(tab) {
   document.getElementById('tab-signup').classList.toggle('active', tab==='signup');
   document.getElementById('form-login').style.display  = tab==='login'  ? 'block' : 'none';
   document.getElementById('form-signup').style.display = tab==='signup' ? 'block' : 'none';
-  document.getElementById('auth-title').textContent  = tab==='login' ? 'Welcome back.' : 'Create account.';
+  const titleEl = document.getElementById('auth-title');
+  if (titleEl) titleEl.textContent = tab==='login' ? 'Welcome back.' : 'Create account.';
   document.getElementById('auth-sub').textContent    = tab==='login' ? 'Sign in to your account' : 'Join the shop';
   clearMsg('msg-auth');
 }
@@ -1631,12 +1722,13 @@ function renderDashboard() {
   if (!currentUser || !userData) return;
   const name      = userData.displayName || currentUser.displayName || 'Member';
   const infinite  = userData.infiniteActions || false;
-  const used      = userData.actionsUsed || 0;
-  const limit     = infinite ? '∞' : ACTIONS_LIMIT;
-  const remaining = infinite ? '∞' : Math.max(0, ACTIONS_LIMIT - used);
-  const remainingNum = infinite ? 9999 : Math.max(0, ACTIONS_LIMIT - used);
-  // For the progress bar: if actionsUsed is negative (bonus granted), show full bar without warn
-  const pct       = infinite ? 100 : (used <= 0 ? 100 : Math.min(100, (used / ACTIONS_LIMIT) * 100));
+  const used         = userData.actionsUsed || 0;  // can be negative when bonus granted
+  const overCap      = !infinite && used < 0;       // has bonus actions beyond normal limit
+  const limit        = infinite ? '∞' : (overCap ? (ACTIONS_LIMIT - used) : ACTIONS_LIMIT);
+  const remaining    = infinite ? '∞' : (ACTIONS_LIMIT - used);  // no floor — can exceed 10
+  const remainingNum = infinite ? 9999 : (ACTIONS_LIMIT - used);
+  // Bar: full green when at/over cap with bonus, proportional otherwise
+  const pct = infinite || overCap ? 100 : Math.min(100, Math.max(0, (used / ACTIONS_LIMIT) * 100));
   const resetDate = getNextResetDate();
   const firstName = name.split(' ')[0];
   const purchases = userData.purchases || [];
@@ -1645,6 +1737,16 @@ function renderDashboard() {
   // Header
   document.getElementById('user-avatar-letter').textContent = name[0].toUpperCase();
   document.getElementById('header-email').textContent = userData.email || currentUser.email || '–';
+
+  // Time-based greeting
+  const hour = new Date().getHours();
+  const timeGreet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const timeGreetEl = document.getElementById('home-time-greeting');
+  if (timeGreetEl) timeGreetEl.textContent = timeGreet;
+
+  // Verified badge on greeting row
+  const verifiedBadge = document.getElementById('home-verified-badge');
+  if (verifiedBadge) verifiedBadge.style.display = verified ? 'block' : 'none';
 
   // Home hero
   document.getElementById('dash-greeting').textContent     = firstName;
@@ -1658,7 +1760,7 @@ function renderDashboard() {
   document.getElementById('reset-hint-date').textContent   = infinite ? 'never (∞)' : resetDate;
   document.getElementById('banner-reset').textContent      = resetDate;
   document.getElementById('no-actions-banner').classList.toggle('visible', !infinite && remaining === 0);
-  document.getElementById('actions-limit-denom').textContent = limit;
+  document.getElementById('actions-limit-denom').textContent = infinite ? '∞' : (overCap ? (ACTIONS_LIMIT - used) : ACTIONS_LIMIT);
 
   // Stats
   const totalActionsAllTime = userData.totalActionsUsed || 0;
@@ -1673,7 +1775,7 @@ function renderDashboard() {
   document.getElementById('prof-since').textContent   = userData.memberSince
     ? new Date(userData.memberSince).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})
     : '–';
-  document.getElementById('prof-actions').textContent = infinite ? `∞ / ∞` : `${used} / ${ACTIONS_LIMIT}`;
+  document.getElementById('prof-actions').textContent = infinite ? `∞ / ∞` : `${used} / ${remainingNum + used}`;
   document.getElementById('prof-reset').textContent   = infinite ? 'Never (Infinite)' : resetDate;
 
   // Share code
@@ -1690,6 +1792,21 @@ function renderDashboard() {
 
   // Favourite item
   renderFavItem(purchases);
+
+  // Insight strip
+  renderInsightStrip(purchases, remainingNum, infinite);
+
+  // Health card
+  renderHealthCard(used, remainingNum, infinite);
+
+  // Reset countdown
+  renderResetCountdown(infinite);
+
+  // Top categories
+  renderTopCategories(purchases);
+
+  // Gifting summary
+  renderGiftingSummary();
 
   // Check pending gifts
   checkAndShowPendingGifts();
@@ -1763,6 +1880,193 @@ function renderFavItem(purchases) {
   document.getElementById('fav-icon').textContent  = '◈';
   favCard.style.display  = 'flex';
   favEmpty.style.display = 'none';
+}
+
+function renderInsightStrip(purchases, remainingNum, infinite) {
+  // Build monthly totals for last 6 months
+  const now = new Date();
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push({ key: `${d.getFullYear()}-${d.getMonth()+1}`, total: 0, isCurrent: i === 0 });
+  }
+  purchases.forEach(p => {
+    const d = new Date(p.date);
+    const key = `${d.getFullYear()}-${d.getMonth()+1}`;
+    const m = months.find(x => x.key === key);
+    if (m) m.total += p.actionsCost || 1;
+  });
+
+  // Streak: consecutive months (excluding current) with at least 1 action
+  let streak = 0;
+  for (let i = months.length - 2; i >= 0; i--) {
+    if (months[i].total > 0) streak++; else break;
+  }
+
+  const pastMonths = months.slice(0, 5).filter(m => m.total > 0);
+  const avg = pastMonths.length ? Math.round(pastMonths.reduce((s,m)=>s+m.total,0) / Math.max(1,pastMonths.length)) : 0;
+  const best = Math.max(...months.map(m=>m.total), 0);
+
+  const streakEl = document.getElementById('insight-streak-val');
+  const avgEl    = document.getElementById('insight-avg-val');
+  const bestEl   = document.getElementById('insight-best-val');
+  if (streakEl) streakEl.textContent = streak;
+  if (avgEl)    avgEl.textContent    = infinite ? '∞' : avg;
+  if (bestEl)   bestEl.textContent   = infinite ? '∞' : best;
+}
+
+function renderHealthCard(used, remainingNum, infinite) {
+  const titleEl   = document.getElementById('health-title');
+  const subEl     = document.getElementById('health-sub');
+  const iconEl    = document.getElementById('health-icon');
+  const segBarEl  = document.getElementById('health-seg-bar');
+  const barLeftEl = document.getElementById('health-bar-left');
+  const barRightEl= document.getElementById('health-bar-right');
+  if (!titleEl) return;
+
+  const actualLimit  = infinite ? 10 : Math.max(ACTIONS_LIMIT, ACTIONS_LIMIT - used);
+  const usedClamped  = infinite ? 0 : Math.max(0, used);
+  const pctUsed      = infinite ? 0 : (usedClamped / actualLimit);
+
+  let title, sub, icon;
+  if (infinite) {
+    title = 'Unlimited actions'; sub = 'You have infinite actions this month'; icon = '◉';
+  } else if (pctUsed === 0) {
+    title = 'Fully stocked'; sub = 'All your actions are available'; icon = '◈';
+  } else if (pctUsed < 0.4) {
+    title = 'Looking great'; sub = 'Plenty of actions left this month'; icon = '○';
+  } else if (pctUsed < 0.7) {
+    title = 'Getting there'; sub = 'About halfway through this month'; icon = '◐';
+  } else if (pctUsed < 1) {
+    title = 'Running low'; sub = 'Consider saving for key items'; icon = '◑';
+  } else {
+    title = 'All used up'; sub = `Resets on ${getNextResetDate()}`; icon = '●';
+  }
+
+  titleEl.textContent = title;
+  subEl.textContent   = sub;
+  iconEl.textContent  = icon;
+  barLeftEl.textContent  = infinite ? '∞ available' : `${usedClamped} used`;
+  barRightEl.textContent = infinite ? '∞ remaining' : `${actualLimit - usedClamped} remaining`;
+
+  // Build segmented bar — number of dots = actualLimit, capped at 20 for display
+  if (segBarEl) {
+    const segments = Math.min(actualLimit, 20);
+    const filledDots = infinite ? segments : Math.round((usedClamped / actualLimit) * segments);
+    segBarEl.innerHTML = '';
+    for (let i = 0; i < segments; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'health-seg-dot';
+      if (infinite) {
+        dot.classList.add('used');
+      } else if (i < filledDots) {
+        dot.classList.add(pctUsed >= 1 ? 'warn' : 'used');
+      } else {
+        dot.classList.add('free');
+      }
+      segBarEl.appendChild(dot);
+    }
+  }
+}
+
+function renderResetCountdown(infinite) {
+  const titleEl = document.getElementById('reset-countdown-title');
+  const subEl   = document.getElementById('reset-countdown-sub');
+  const daysEl  = document.getElementById('reset-countdown-days');
+  const unitEl  = document.getElementById('reset-countdown-unit');
+  const barEl   = document.getElementById('reset-month-bar');
+  const card    = document.getElementById('reset-countdown-card');
+  const label   = document.getElementById('reset-countdown-label');
+  if (!titleEl) return;
+
+  if (infinite) {
+    label.style.display = 'none';
+    card.style.display  = 'none';
+    return;
+  }
+  label.style.display = '';
+  card.style.display  = '';
+
+  const now       = new Date();
+  const resetDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  const msLeft    = resetDate - now;
+  const daysLeft  = Math.ceil(msLeft / (1000 * 60 * 60 * 24));
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthLen   = (resetDate - monthStart) / (1000 * 60 * 60 * 24);
+  const daysPassed = monthLen - daysLeft;
+  const pct        = Math.min(100, Math.round((daysPassed / monthLen) * 100));
+
+  if (daysLeft === 1) {
+    titleEl.textContent = 'Resets tomorrow';
+    subEl.textContent   = 'Actions refresh at midnight';
+    unitEl.textContent  = 'day';
+  } else if (daysLeft <= 5) {
+    titleEl.textContent = 'Reset coming soon';
+    subEl.textContent   = `Refreshes on ${resetDate.toLocaleDateString('en-US',{month:'short',day:'numeric'})}`;
+    unitEl.textContent  = 'days';
+  } else {
+    titleEl.textContent = 'Monthly reset';
+    subEl.textContent   = `Refreshes on ${resetDate.toLocaleDateString('en-US',{month:'short',day:'numeric'})}`;
+    unitEl.textContent  = 'days';
+  }
+  daysEl.textContent = daysLeft;
+  if (barEl) setTimeout(() => barEl.style.width = pct + '%', 100);
+}
+
+function renderTopCategories(purchases) {
+  const labelEl = document.getElementById('top-cats-label');
+  const cardEl  = document.getElementById('top-cats-card');
+  const listEl  = document.getElementById('top-cats-list');
+  if (!labelEl || !listEl) return;
+
+  if (!purchases.length) {
+    labelEl.style.display = 'none';
+    cardEl.style.display  = 'none';
+    return;
+  }
+
+  // Group by product, count actions spent
+  const map = {};
+  purchases.forEach(p => {
+    const key = p.product || 'Unknown';
+    if (!map[key]) map[key] = { count: 0, actions: 0 };
+    map[key].count++;
+    map[key].actions += p.actionsCost || 1;
+  });
+
+  const sorted = Object.entries(map).sort((a,b) => b[1].actions - a[1].actions).slice(0, 4);
+  const maxActions = sorted[0][1].actions;
+  const totalActions = purchases.reduce((s,p) => s + (p.actionsCost||1), 0);
+
+  labelEl.style.display = '';
+  cardEl.style.display  = '';
+
+  listEl.innerHTML = sorted.map(([name, data], i) => {
+    const barPct = Math.round((data.actions / maxActions) * 100);
+    const sharePct = Math.round((data.actions / totalActions) * 100);
+    return `
+      <div style="margin-bottom:${i < sorted.length-1 ? '14' : '0'}px;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">
+          <div style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%;">${escHtml(name)}</div>
+          <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;flex-shrink:0;">${data.actions} act. · ${sharePct}%</div>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;">
+          <div style="height:100%;width:${barPct}%;background:var(--text);border-radius:2px;transition:width .6s cubic-bezier(.4,0,.2,1);"></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderGiftingSummary() {
+  const sentEl   = document.getElementById('stat-gifts-sent');
+  const actEl    = document.getElementById('stat-actions-gifted');
+  const codeEl   = document.getElementById('home-share-code');
+  if (!sentEl) return;
+
+  const history = userData.giftHistory || [];
+  sentEl.textContent = history.length;
+  actEl.textContent  = history.reduce((s, g) => s + (g.amount||0), 0);
+  if (codeEl) codeEl.textContent = userData.shareCode || '–';
 }
 
 function renderHistory(id, list) {
@@ -2140,10 +2444,10 @@ async function adminLoadAll() {
 function adminUserCard(u) {
   const used      = u.actionsUsed || 0;
   const infinite  = u.infiniteActions || false;
-  const remaining = infinite ? '∞' : Math.max(0, ACTIONS_LIMIT - used);
-  const purchases = (u.purchases||[]).slice().reverse(); // newest first
-  const warnClass = (!infinite && remaining === 0) ? 'warn' : '';
+  const remaining = infinite ? '∞' : (ACTIONS_LIMIT - used);
+  const warnClass = (!infinite && remaining <= 0) ? 'warn' : '';
   const verified  = u.verified || false;
+  const purchases = (u.purchases||[]).slice().reverse();
 
   const purchaseRows = purchases.length
     ? purchases.map(p => `
@@ -2169,7 +2473,7 @@ function adminUserCard(u) {
         </div>
         <div class="ap-user-right">
           <div class="ap-actions-remaining ${warnClass}">${remaining}</div>
-          <div class="ap-actions-label">left / ${infinite ? '∞' : ACTIONS_LIMIT}</div>
+          <div class="ap-actions-label">left / ${infinite ? '∞' : (used < 0 ? (ACTIONS_LIMIT - used) : ACTIONS_LIMIT)}</div>
         </div>
         <div class="ap-chevron">▾</div>
       </div>
@@ -2229,6 +2533,11 @@ async function adminGrantActions(uid, name) {
     await ref.update({ actionsUsed: newUsed });
     const newRemaining = ACTIONS_LIMIT - newUsed;
     showToast(`Granted ${amt} actions to ${name} (now ${newRemaining} remaining)`,'success');
+    // If we just granted to the currently logged-in user, refresh their local state
+    if (currentUser && uid === currentUser.uid) {
+      userData.actionsUsed = newUsed;
+      renderDashboard();
+    }
     await adminLoadAll();
   } catch(e) { showToast('Failed to grant actions','error'); }
 }
@@ -2487,7 +2796,11 @@ async function sendGift() {
     };
 
     // Atomic-ish: deduct from sender, queue on recipient
-    const senderUpdates = { actionsUsed: freshUsed + giftState.amount };
+    const giftHistoryEntry = { amount: giftState.amount, to: giftState.recipientName, date: new Date().toISOString() };
+    const senderUpdates = {
+      actionsUsed: freshUsed + giftState.amount,
+      giftHistory: [...(senderData.giftHistory || []), giftHistoryEntry]
+    };
     await senderRef.update(senderUpdates);
     await recipientRef.update({ pendingGifts: [...pendingGifts, giftRecord] });
 
@@ -2574,7 +2887,7 @@ async function closeGiftNotif() {
       // Add gift actions by reducing actionsUsed
       const infinite = data.infiniteActions || false;
       if (!infinite) {
-        const newUsed = Math.max(0, (data.actionsUsed || 0) - gift.amount);
+        const newUsed = (data.actionsUsed || 0) - gift.amount;
         await ref.update({ actionsUsed: newUsed, pendingGifts: newGifts });
         userData.actionsUsed = newUsed;
       } else {
@@ -2716,7 +3029,47 @@ window.addEventListener('load', () => {
   /* Admin overlay open state */
   #admin-overlay.open { opacity:1 !important; pointer-events:all !important; }
 
-  /* ── GIFT TAB ── */
+  /* ── HOME GREETING ROW ── */
+  .home-greeting-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .home-badge-chip {
+    font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    font-family:'DM Mono',monospace; color:#1a6fc4;
+    background:#e8f0fb; border:1px solid #c0d4f0;
+    border-radius:100px; padding:4px 10px;
+  }
+
+  /* ── INSIGHT STRIP ── */
+  .insight-strip {
+    display:flex; align-items:center;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius-lg); padding:14px 0;
+    margin-bottom:20px; overflow:hidden;
+  }
+  .insight-cell { flex:1; text-align:center; padding:0 8px; }
+  .insight-val { font-size:22px; font-weight:600; font-family:'DM Mono',monospace; letter-spacing:-.02em; line-height:1; margin-bottom:4px; }
+  .insight-label { font-size:9px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; }
+  .insight-divider { width:1px; height:36px; background:var(--border); flex-shrink:0; }
+
+  /* ── HEALTH CARD ── */
+  .health-seg-dot {
+    flex:1; height:6px; border-radius:3px; background:var(--border);
+    transition:background .3s ease;
+  }
+  .health-seg-dot.used   { background:var(--text); }
+  .health-seg-dot.warn   { background:#ff8888; }
+  .health-seg-dot.free   { background:var(--border2); }
+
+  /* ── SEE ALL BUTTON ── */
+  .home-see-all-btn {
+    width:100%; padding:11px; border-radius:var(--radius);
+    background:transparent; color:var(--muted);
+    border:1px solid var(--border);
+    font-size:12px; font-weight:600; font-family:'DM Mono',monospace;
+    cursor:pointer; letter-spacing:.04em;
+    transition:all .15s; margin-bottom:20px; display:block;
+    margin-top:4px;
+  }
+  .home-see-all-btn:hover { border-color:var(--text); color:var(--text); }
   .gift-step-dot {
     width:28px;height:28px;border-radius:50%;
     background:var(--surface2);border:1px solid var(--border);
