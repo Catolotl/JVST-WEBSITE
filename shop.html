@@ -928,6 +928,10 @@
           <span class="qt-icon">◇</span>
           <span class="qt-label">Account</span>
         </div>
+        <div class="quick-tile" onclick="switchPanel('share', document.querySelector('[data-panel=share]'))">
+          <span class="qt-icon">◎</span>
+          <span class="qt-label">Send</span>
+        </div>
         <div class="quick-tile" onclick="switchRedeemTabAndGo('browse')">
           <span class="qt-icon">⊞</span>
           <span class="qt-label">Browse</span>
@@ -1067,6 +1071,8 @@
         <div class="profile-row"><span class="pr-key">Actions this month</span><span class="pr-val" id="prof-actions">–</span></div>
         <hr class="divider">
         <div class="profile-row"><span class="pr-key">Next reset</span><span class="pr-val" id="prof-reset">–</span></div>
+        <hr class="divider">
+        <div class="profile-row"><span class="pr-key">Share code</span><span class="pr-val" id="prof-share-code" style="font-family:'DM Mono',monospace;letter-spacing:.1em;cursor:pointer;" onclick="copyShareCode()" title="Click to copy">–</span></div>
       </div>
 
       <div class="section-label">Security</div>
@@ -1098,9 +1104,129 @@
       </div>
     </div>
 
-  </div>
+    <!-- SHARE / GIFT -->
+    <div class="tab-panel" id="panel-share">
+      <div style="padding-top:20px;margin-bottom:20px;">
+        <h2 style="font-size:20px;font-weight:600;letter-spacing:-0.02em;margin-bottom:4px;">Share Actions</h2>
+        <p style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">Send up to 5 actions to a friend</p>
+      </div>
 
-  <!-- BOTTOM NAV -->
+      <!-- Your share code -->
+      <div class="section-label">Your share code</div>
+      <div class="panel-card" style="margin-bottom:20px;">
+        <div style="padding:20px 18px;text-align:center;">
+          <div style="font-family:'DM Mono',monospace;font-size:32px;font-weight:600;letter-spacing:0.18em;color:var(--text);margin-bottom:8px;" id="share-code-display">–</div>
+          <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:16px;">Share this code so others can send you actions</div>
+          <button class="btn btn-secondary" style="margin-top:0;width:auto;padding:9px 20px;" onclick="copyShareCode()">Copy code</button>
+        </div>
+      </div>
+
+      <!-- Send gift -->
+      <div class="section-label">Send a gift</div>
+      <div class="panel-card" style="margin-bottom:20px;">
+        <div style="padding:18px;">
+          <!-- Step indicator -->
+          <div id="gift-steps-indicator" style="display:flex;gap:0;margin-bottom:20px;">
+            <div class="gift-step-dot active" data-step="1">1</div>
+            <div class="gift-step-line"></div>
+            <div class="gift-step-dot" data-step="2">2</div>
+            <div class="gift-step-line"></div>
+            <div class="gift-step-dot" data-step="3">3</div>
+          </div>
+
+          <div id="msg-gift" class="msg"></div>
+
+          <!-- Step 1: Recipient + Amount -->
+          <div id="gift-step-1">
+            <div class="field">
+              <label>Recipient's share code</label>
+              <input type="text" id="gift-recipient-code" placeholder="ABC123" maxlength="6" autocomplete="off" spellcheck="false" style="text-transform:uppercase;font-family:'DM Mono',monospace;font-size:16px;letter-spacing:0.1em;" oninput="this.value=this.value.toUpperCase()">
+            </div>
+            <div class="field">
+              <label>Actions to send (max 5)</label>
+              <div style="display:flex;gap:8px;margin-top:4px;">
+                <button class="gift-amt-btn" onclick="setGiftAmt(1)">1</button>
+                <button class="gift-amt-btn" onclick="setGiftAmt(2)">2</button>
+                <button class="gift-amt-btn" onclick="setGiftAmt(3)">3</button>
+                <button class="gift-amt-btn" onclick="setGiftAmt(4)">4</button>
+                <button class="gift-amt-btn" onclick="setGiftAmt(5)">5</button>
+              </div>
+              <input type="hidden" id="gift-amount" value="0">
+            </div>
+            <button class="btn btn-primary" style="margin-top:12px;" onclick="giftStep1Next()">Continue →</button>
+          </div>
+
+          <!-- Step 2: Options (anonymous toggle) -->
+          <div id="gift-step-2" style="display:none;">
+            <div style="margin-bottom:16px;">
+              <div style="font-size:13px;font-weight:600;margin-bottom:4px;" id="gift-summary-line">Sending — actions to —</div>
+              <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;" id="gift-recipient-name-line">Loading recipient...</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div>
+                  <div style="font-size:13px;font-weight:600;margin-bottom:2px;">Send anonymously</div>
+                  <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;">Your name won't be shown</div>
+                </div>
+                <div class="gift-toggle" id="gift-anon-toggle" onclick="toggleGiftAnon()">
+                  <div class="gift-toggle-knob"></div>
+                </div>
+              </div>
+              <div id="gift-verified-note" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;">
+                ✦ Since you're verified, your name will appear with a blue checkmark if not anonymous.
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-secondary" style="margin-top:0;" onclick="giftStepBack(1)">← Back</button>
+              <button class="btn btn-primary" style="margin-top:0;" onclick="giftStep2Next()">Review →</button>
+            </div>
+          </div>
+
+          <!-- Step 3: PIN confirm + Send -->
+          <div id="gift-step-3" style="display:none;">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px;">
+              <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:10px;">Gift summary</div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                <span style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">To</span>
+                <span style="font-size:13px;font-weight:600;" id="gift-confirm-to">–</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                <span style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">Amount</span>
+                <span style="font-size:13px;font-weight:600;" id="gift-confirm-amount">–</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">From</span>
+                <span style="font-size:13px;font-weight:600;" id="gift-confirm-from">–</span>
+              </div>
+            </div>
+            <p style="font-size:12px;color:var(--muted);margin-bottom:10px;font-family:'DM Mono',monospace;">Enter your PIN to confirm</p>
+            <div class="pin-row" id="gift-pin-row">
+              <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+              <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+              <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+              <input class="pin-digit" maxlength="1" type="password" inputmode="numeric">
+            </div>
+            <div style="display:flex;gap:8px;margin-top:12px;">
+              <button class="btn btn-secondary" style="margin-top:0;" onclick="giftStepBack(2)">← Back</button>
+              <button class="btn btn-primary" style="margin-top:0;" id="btn-send-gift" onclick="sendGift()">Send gift ◎</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How it works -->
+      <div class="section-label">How it works</div>
+      <div class="panel-card" style="margin-bottom:20px;">
+        <div style="padding:16px 18px;">
+          <div class="gift-how-item"><span class="gift-how-num">1</span><span>Get a friend's 6-character share code</span></div>
+          <div class="gift-how-item"><span class="gift-how-num">2</span><span>Choose how many actions to send (up to 5)</span></div>
+          <div class="gift-how-item"><span class="gift-how-num">3</span><span>Confirm with your PIN — actions transfer instantly</span></div>
+          <div class="gift-how-item" style="border:none;padding-bottom:0;"><span class="gift-how-num">4</span><span>They'll see a gift card when they next log in</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
   <div class="bottom-nav">
     <button class="nav-item active" data-panel="home" onclick="switchPanel('home',this)">
       <span class="nav-icon">○</span><span>Home</span><div class="nav-active-dot"></div>
@@ -1114,6 +1240,57 @@
     <button class="nav-item" data-panel="profile" onclick="switchPanel('profile',this)">
       <span class="nav-icon">◇</span><span>Account</span><div class="nav-active-dot"></div>
     </button>
+    <button class="nav-item" data-panel="share" onclick="switchPanel('share',this)">
+      <span class="nav-icon">◎</span><span>Share</span><div class="nav-active-dot"></div>
+    </button>
+  </div>
+</div>
+
+<!-- ── GIFT NOTIFICATION OVERLAY ──────────────────────────────────────── -->
+<div id="gift-notif-overlay" style="
+  position:fixed;inset:0;z-index:8000;
+  background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .4s ease;
+  padding:20px;
+">
+  <div id="gift-notif-card" style="
+    background:#fff;border-radius:20px;
+    width:100%;max-width:340px;
+    box-shadow:0 24px 80px rgba(0,0,0,.25);
+    transform:translateY(40px) scale(0.94);
+    transition:transform .5s cubic-bezier(.34,1.56,.64,1);
+    overflow:hidden;
+  ">
+    <!-- Decorative top band -->
+    <div style="height:6px;background:linear-gradient(90deg,#0a0a0a,#444);"></div>
+    <div style="padding:32px 28px 28px;">
+      <!-- Envelope icon animation -->
+      <div id="gift-envelope-wrap" style="display:flex;justify-content:center;margin-bottom:24px;">
+        <div id="gift-envelope" style="
+          width:72px;height:72px;border-radius:50%;
+          background:var(--text);color:#fff;
+          display:flex;align-items:center;justify-content:center;
+          font-size:30px;
+          transform:scale(0);
+          transition:transform .5s .2s cubic-bezier(.34,1.56,.64,1);
+        ">◎</div>
+      </div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;text-align:center;margin-bottom:8px;">You received a gift</div>
+      <div id="gift-notif-amount" style="font-size:52px;font-weight:300;font-family:'DM Mono',monospace;letter-spacing:-.04em;text-align:center;line-height:1;margin-bottom:6px;">–</div>
+      <div style="font-size:14px;color:var(--muted);text-align:center;font-family:'DM Mono',monospace;margin-bottom:20px;">actions</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:24px;">
+        <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:4px;">From</div>
+        <div id="gift-notif-from" style="font-size:15px;font-weight:600;letter-spacing:-.01em;">–</div>
+      </div>
+      <button onclick="closeGiftNotif()" style="
+        width:100%;padding:14px;border-radius:10px;
+        background:var(--text);color:#fff;border:none;
+        font-size:14px;font-weight:600;font-family:'Inter',sans-serif;
+        cursor:pointer;letter-spacing:.02em;
+      ">Awesome, thanks! ✦</button>
+    </div>
   </div>
 </div>
 
@@ -1223,9 +1400,15 @@ async function loadUserData(uid) {
   const snap = await ref.get();
   if (snap.exists) {
     userData = snap.data();
+    // Backfill shareCode for existing users
+    if (!userData.shareCode) {
+      userData.shareCode = generateShareCode();
+      await ref.update({ shareCode: userData.shareCode });
+    }
     await maybeResetMonth(uid, ref);
   } else {
     const now = new Date();
+    const shareCode = generateShareCode();
     userData = {
       displayName: currentUser.displayName || 'Member',
       email: currentUser.email,
@@ -1234,10 +1417,21 @@ async function loadUserData(uid) {
       totalActionsUsed: 0,
       purchases: [],
       pin: null,
-      memberSince: now.toISOString()
+      memberSince: now.toISOString(),
+      shareCode: shareCode,
+      verified: false,
+      infiniteActions: false,
+      pendingGifts: []
     };
     await ref.set(userData);
   }
+}
+
+function generateShareCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
 }
 
 function monthKey(d) { return `${d.getFullYear()}-${d.getMonth()+1}`; }
@@ -1245,9 +1439,17 @@ function monthKey(d) { return `${d.getFullYear()}-${d.getMonth()+1}`; }
 async function maybeResetMonth(uid, ref) {
   const now = new Date();
   if (userData.actionsMonth !== monthKey(now)) {
-    userData.actionsUsed  = 0;
+    // Only grant monthly refill if user is at/below the normal limit
+    const currentUsed = userData.actionsUsed || 0;
+    const currentRemaining = (userData.infiniteActions ? Infinity : ACTIONS_LIMIT) - currentUsed;
+    const updates = { actionsMonth: monthKey(now) };
+    // Only reset actionsUsed if they don't have infinite AND aren't over the normal cap
+    if (!userData.infiniteActions) {
+      updates.actionsUsed = 0;
+    }
     userData.actionsMonth = monthKey(now);
-    await ref.update({ actionsUsed: 0, actionsMonth: monthKey(now) });
+    if (!userData.infiniteActions) userData.actionsUsed = 0;
+    await ref.update(updates);
   }
 }
 
@@ -1428,12 +1630,17 @@ function toggleChangePinForm() { document.getElementById('change-pin-form').clas
 function renderDashboard() {
   if (!currentUser || !userData) return;
   const name      = userData.displayName || currentUser.displayName || 'Member';
+  const infinite  = userData.infiniteActions || false;
   const used      = userData.actionsUsed || 0;
-  const remaining = Math.max(0, ACTIONS_LIMIT - used);
-  const pct       = Math.min(100, (used / ACTIONS_LIMIT) * 100);
+  const limit     = infinite ? '∞' : ACTIONS_LIMIT;
+  const remaining = infinite ? '∞' : Math.max(0, ACTIONS_LIMIT - used);
+  const remainingNum = infinite ? 9999 : Math.max(0, ACTIONS_LIMIT - used);
+  // For the progress bar: if actionsUsed is negative (bonus granted), show full bar without warn
+  const pct       = infinite ? 100 : (used <= 0 ? 100 : Math.min(100, (used / ACTIONS_LIMIT) * 100));
   const resetDate = getNextResetDate();
   const firstName = name.split(' ')[0];
   const purchases = userData.purchases || [];
+  const verified  = userData.verified || false;
 
   // Header
   document.getElementById('user-avatar-letter').textContent = name[0].toUpperCase();
@@ -1441,34 +1648,37 @@ function renderDashboard() {
 
   // Home hero
   document.getElementById('dash-greeting').textContent     = firstName;
-  document.getElementById('actions-name').textContent      = name;
-  document.getElementById('actions-remaining-big').textContent = remaining;
-  document.getElementById('actions-remaining-big').classList.toggle('warn', remaining === 0);
-  document.getElementById('bar-used-label').textContent    = `${used} used`;
-  document.getElementById('bar-remaining-label').textContent = `${remaining} left`;
-  document.getElementById('actions-bar').style.width       = pct + '%';
-  document.getElementById('actions-bar').classList.toggle('warn', remaining === 0);
-  document.getElementById('actions-bar').classList.toggle('warn', remaining === 0);
-  document.getElementById('reset-hint-date').textContent   = resetDate;
+  document.getElementById('actions-name').textContent      = name + (verified ? ' ✦' : '');
+  document.getElementById('actions-remaining-big').textContent = infinite ? '∞' : remaining;
+  document.getElementById('actions-remaining-big').classList.toggle('warn', !infinite && remaining === 0);
+  document.getElementById('bar-used-label').textContent    = infinite ? '∞ available' : `${used} used`;
+  document.getElementById('bar-remaining-label').textContent = infinite ? '∞ left' : `${remaining} left`;
+  document.getElementById('actions-bar').style.width       = infinite ? '100%' : pct + '%';
+  document.getElementById('actions-bar').classList.toggle('warn', !infinite && remaining === 0);
+  document.getElementById('reset-hint-date').textContent   = infinite ? 'never (∞)' : resetDate;
   document.getElementById('banner-reset').textContent      = resetDate;
-  document.getElementById('no-actions-banner').classList.toggle('visible', remaining === 0);
-  document.getElementById('actions-limit-denom').textContent = ACTIONS_LIMIT;
+  document.getElementById('no-actions-banner').classList.toggle('visible', !infinite && remaining === 0);
+  document.getElementById('actions-limit-denom').textContent = limit;
 
   // Stats
   const totalActionsAllTime = userData.totalActionsUsed || 0;
   document.getElementById('stat-purchases').textContent    = purchases.length;
   document.getElementById('stat-actions-used').textContent = totalActionsAllTime;
-  document.getElementById('stat-this-month').textContent   = used;
-  document.getElementById('stat-remaining').textContent    = remaining;
+  document.getElementById('stat-this-month').textContent   = infinite ? '∞' : used;
+  document.getElementById('stat-remaining').textContent    = infinite ? '∞' : remaining;
 
   // Profile
-  document.getElementById('prof-name').textContent    = name;
+  document.getElementById('prof-name').textContent    = name + (verified ? ' ✦' : '');
   document.getElementById('prof-email').textContent   = userData.email || currentUser.email || '–';
   document.getElementById('prof-since').textContent   = userData.memberSince
     ? new Date(userData.memberSince).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})
     : '–';
-  document.getElementById('prof-actions').textContent = `${used} / ${ACTIONS_LIMIT}`;
-  document.getElementById('prof-reset').textContent   = resetDate;
+  document.getElementById('prof-actions').textContent = infinite ? `∞ / ∞` : `${used} / ${ACTIONS_LIMIT}`;
+  document.getElementById('prof-reset').textContent   = infinite ? 'Never (Infinite)' : resetDate;
+
+  // Share code
+  const shareCodeEl = document.getElementById('prof-share-code');
+  if (shareCodeEl) shareCodeEl.textContent = userData.shareCode || '–';
 
   // History
   const sorted = purchases.slice().reverse();
@@ -1480,6 +1690,12 @@ function renderDashboard() {
 
   // Favourite item
   renderFavItem(purchases);
+
+  // Check pending gifts
+  checkAndShowPendingGifts();
+
+  // Show admin button if applicable
+  maybeShowAdminButton();
 }
 
 function getNextResetDate() {
@@ -1577,14 +1793,8 @@ function renderHistory(id, list) {
 
 function escHtml(s) { return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-// ── Navigation ────────────────────────────────────────────────────────────
-function switchPanel(name, el) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-'+name).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if (el) el.classList.add('active');
-  if (name !== 'redeem') stopScanner();
-}
+// ── Navigation ─────────────────────────────────────────────────────────────
+// switchPanel defined below in gift section (with share tab support)
 function switchRedeemTabAndGo(tab) {
   switchPanel('redeem', document.querySelector('[data-panel="redeem"]'));
   switchRedeemTab(tab, document.querySelectorAll('.redeem-tab')[tab==='cart'?0:tab==='browse'?1:2]);
@@ -1621,15 +1831,17 @@ function lookupCode() {
   }
 
   const used      = userData.actionsUsed || 0;
-  const remaining = ACTIONS_LIMIT - used;
+  const infinite  = userData.infiniteActions || false;
+  const remaining = infinite ? 9999 : (ACTIONS_LIMIT - used);
+  const remainingDisplay = infinite ? '∞' : remaining;
 
   document.getElementById('pp-name').textContent     = product.name;
   document.getElementById('pp-code-badge').textContent = raw;
   document.getElementById('pp-meta').textContent =
-    `${product.actions} action${product.actions!==1?'s':''} · ${remaining} remaining`;
+    `${product.actions} action${product.actions!==1?'s':''} · ${remainingDisplay} remaining`;
 
   const confirmBtn = document.getElementById('btn-code-confirm');
-  if (remaining < product.actions) {
+  if (!infinite && remaining < product.actions) {
     confirmBtn.disabled = true;
     confirmBtn.textContent = 'Not enough actions';
   } else {
@@ -1695,13 +1907,15 @@ function onQRScanned(text) {
 }
 function showQRResult(data) {
   const used      = userData.actionsUsed || 0;
-  const remaining = ACTIONS_LIMIT - used;
+  const infinite  = userData.infiniteActions || false;
+  const remaining = infinite ? 9999 : (ACTIONS_LIMIT - used);
+  const remainingDisplay = infinite ? '∞' : remaining;
   const cost      = data.actions || 1;
   document.getElementById('sr-name').textContent = data.product;
   document.getElementById('sr-meta').textContent =
-    `${cost} action${cost!==1?'s':''} · ${remaining} remaining`;
+    `${cost} action${cost!==1?'s':''} · ${remainingDisplay} remaining`;
   const btn = document.getElementById('btn-qr-confirm');
-  if (remaining < cost) {
+  if (!infinite && remaining < cost) {
     btn.disabled = true;
     btn.textContent = 'Not enough actions';
   } else {
@@ -1723,14 +1937,16 @@ function confirmQRPurchase() {
 // ── PURCHASE FLOW ─────────────────────────────────────────────────────────
 function openConfirmModal(purchase) {
   const used      = userData.actionsUsed || 0;
-  const remaining = ACTIONS_LIMIT - used;
+  const infinite  = userData.infiniteActions || false;
+  const remaining = infinite ? 9999 : (ACTIONS_LIMIT - used);
   const cost      = purchase.actions || 1;
-  if (remaining < cost) { showToast(`Need ${cost} actions, have ${remaining}`, 'error'); return; }
+  if (!infinite && remaining < cost) { showToast(`Need ${cost} actions, have ${remaining}`, 'error'); return; }
 
   document.getElementById('modal-title').textContent = purchase.product;
   document.getElementById('modal-cost').textContent  = `${cost} action${cost!==1?'s':''}`;
-  document.getElementById('modal-body').textContent  =
-    `You'll have ${remaining - cost} action${(remaining-cost)!==1?'s':''} remaining after this purchase.`;
+  document.getElementById('modal-body').textContent  = infinite
+    ? `You have unlimited actions. This will use ${cost} action${cost!==1?'s':''}.`
+    : `You'll have ${remaining - cost} action${(remaining-cost)!==1?'s':''} remaining after this purchase.`;
   document.getElementById('confirm-modal').classList.add('open');
 }
 
@@ -1750,10 +1966,11 @@ async function executePurchase() {
     await maybeResetMonth(currentUser.uid, ref);
 
     const cost      = pendingPurchase.actions || 1;
+    const infinite  = fresh.infiniteActions || false;
     const freshUsed = fresh.actionsUsed || 0;
-    const remaining = ACTIONS_LIMIT - freshUsed;
+    const remaining = infinite ? 9999 : (ACTIONS_LIMIT - freshUsed);
 
-    if (remaining < cost) {
+    if (!infinite && remaining < cost) {
       closeModal(); showToast('Not enough actions remaining', 'error');
       userData.actionsUsed = freshUsed; renderDashboard(); return;
     }
@@ -1809,7 +2026,7 @@ function setBtn(id, loading, text) {
 
 // ── Init ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  ['pin-setup-row1','pin-setup-row2','pin-verify-row','change-pin-row'].forEach(setupPinInputs);
+  ['pin-setup-row1','pin-setup-row2','pin-verify-row','change-pin-row','gift-pin-row'].forEach(setupPinInputs);
 
   // Enter key on code input
   document.getElementById('product-code-input').addEventListener('keydown', e => {
@@ -1922,9 +2139,11 @@ async function adminLoadAll() {
 // Build a collapsible user card
 function adminUserCard(u) {
   const used      = u.actionsUsed || 0;
-  const remaining = Math.max(0, ACTIONS_LIMIT - used);
+  const infinite  = u.infiniteActions || false;
+  const remaining = infinite ? '∞' : Math.max(0, ACTIONS_LIMIT - used);
   const purchases = (u.purchases||[]).slice().reverse(); // newest first
-  const warnClass = remaining === 0 ? 'warn' : '';
+  const warnClass = (!infinite && remaining === 0) ? 'warn' : '';
+  const verified  = u.verified || false;
 
   const purchaseRows = purchases.length
     ? purchases.map(p => `
@@ -1937,28 +2156,35 @@ function adminUserCard(u) {
         </div>`).join('')
     : '<div class="ap-empty" style="padding:12px 14px;">No orders</div>';
 
+  const verifyLabel = verified ? '✦ Unverify' : '✦ Verify';
+  const infiniteLabel = infinite ? '◉ Remove ∞' : '◉ Gift ∞';
+
   return `
     <div class="ap-user-card" id="apu-${escHtml(u.uid)}">
       <div class="ap-user-head" onclick="adminToggleUser('${escHtml(u.uid)}')">
         <div class="ap-avatar">${(u.displayName||'?')[0].toUpperCase()}</div>
         <div class="ap-user-info">
-          <div class="ap-user-name">${escHtml(u.displayName||'Unknown')}</div>
+          <div class="ap-user-name">${escHtml(u.displayName||'Unknown')}${verified ? ' <span style="color:#1a6fc4;font-size:11px;">✦</span>' : ''}</div>
           <div class="ap-user-email">${escHtml(u.email||'')}</div>
         </div>
         <div class="ap-user-right">
           <div class="ap-actions-remaining ${warnClass}">${remaining}</div>
-          <div class="ap-actions-label">left / ${ACTIONS_LIMIT}</div>
+          <div class="ap-actions-label">left / ${infinite ? '∞' : ACTIONS_LIMIT}</div>
         </div>
         <div class="ap-chevron">▾</div>
       </div>
       <div class="ap-user-orders" id="apuo-${escHtml(u.uid)}" style="display:none;">
         <div class="ap-user-orders-meta">
-          ${purchases.length} order${purchases.length!==1?'s':''} · ${u.totalActionsUsed||0} actions all time
+          ${purchases.length} order${purchases.length!==1?'s':''} · ${u.totalActionsUsed||0} actions all time · Share: <b>${u.shareCode||'–'}</b>
         </div>
         ${purchaseRows}
-        <div style="padding:10px 14px;display:flex;gap:8px;">
+        <div style="padding:10px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
           <button class="ap-action-btn" onclick="adminGrantActions('${escHtml(u.uid)}','${escHtml(u.displayName||'')}')">＋ Grant actions</button>
-          <button class="ap-action-btn danger" onclick="adminResetUser('${escHtml(u.uid)}','${escHtml(u.displayName||'')}')">↺ Reset month</button>
+          <button class="ap-action-btn danger" onclick="adminRemoveActions('${escHtml(u.uid)}','${escHtml(u.displayName||'')}')">− Remove actions</button>
+          <button class="ap-action-btn" onclick="adminToggleVerified('${escHtml(u.uid)}','${escHtml(u.displayName||'')}',${verified})">${verifyLabel}</button>
+          <button class="ap-action-btn" onclick="adminToggleInfinite('${escHtml(u.uid)}','${escHtml(u.displayName||'')}',${infinite})">${infiniteLabel}</button>
+          <button class="ap-action-btn" onclick="adminResetUser('${escHtml(u.uid)}','${escHtml(u.displayName||'')}')">↺ Reset month</button>
+          <button class="ap-action-btn danger" onclick="adminDeleteUser('${escHtml(u.uid)}','${escHtml(u.displayName||'')}')">✕ Delete account</button>
         </div>
       </div>
     </div>`;
@@ -1998,10 +2224,11 @@ async function adminGrantActions(uid, name) {
     const ref  = db.collection('shop_users').doc(uid);
     const snap = await ref.get();
     const data = snap.data();
-    // We reduce actionsUsed (effectively freeing up slots)
-    const newUsed = Math.max(0, (data.actionsUsed||0) - amt);
+    // Allow actionsUsed to go negative — this gives actions beyond the normal cap
+    const newUsed = (data.actionsUsed||0) - amt;
     await ref.update({ actionsUsed: newUsed });
-    showToast(`Granted ${amt} actions to ${name}`,'success');
+    const newRemaining = ACTIONS_LIMIT - newUsed;
+    showToast(`Granted ${amt} actions to ${name} (now ${newRemaining} remaining)`,'success');
     await adminLoadAll();
   } catch(e) { showToast('Failed to grant actions','error'); }
 }
@@ -2018,6 +2245,56 @@ async function adminResetUser(uid, name) {
     showToast(`${name}'s month reset`,'success');
     await adminLoadAll();
   } catch(e) { showToast('Reset failed','error'); }
+}
+
+// Admin tool: remove actions from a user
+async function adminRemoveActions(uid, name) {
+  const amtStr = prompt(`Remove actions from ${name}?\nEnter number to remove:`);
+  if (!amtStr) return;
+  const amt = parseInt(amtStr);
+  if (isNaN(amt) || amt <= 0) return showToast('Invalid amount', 'error');
+  try {
+    const ref  = db.collection('shop_users').doc(uid);
+    const snap = await ref.get();
+    const data = snap.data();
+    const newUsed = (data.actionsUsed||0) + amt;
+    await ref.update({ actionsUsed: newUsed });
+    showToast(`Removed ${amt} actions from ${name}`, 'success');
+    await adminLoadAll();
+  } catch(e) { showToast('Failed to remove actions','error'); }
+}
+
+// Admin tool: toggle verified status
+async function adminToggleVerified(uid, name, currentlyVerified) {
+  const action = currentlyVerified ? 'unverify' : 'verify';
+  if (!confirm(`${action.charAt(0).toUpperCase()+action.slice(1)} ${name}?`)) return;
+  try {
+    await db.collection('shop_users').doc(uid).update({ verified: !currentlyVerified });
+    showToast(`${name} ${currentlyVerified ? 'unverified' : 'verified ✦'}`, 'success');
+    await adminLoadAll();
+  } catch(e) { showToast('Failed to update verification','error'); }
+}
+
+// Admin tool: toggle infinite actions
+async function adminToggleInfinite(uid, name, currentlyInfinite) {
+  const action = currentlyInfinite ? 'remove infinite actions from' : 'grant infinite actions to';
+  if (!confirm(`${action.charAt(0).toUpperCase()+action.slice(1)} ${name}?`)) return;
+  try {
+    await db.collection('shop_users').doc(uid).update({ infiniteActions: !currentlyInfinite });
+    showToast(`${name}: infinite actions ${currentlyInfinite ? 'removed' : 'granted ◉'}`, 'success');
+    await adminLoadAll();
+  } catch(e) { showToast('Failed to update infinite actions','error'); }
+}
+
+// Admin tool: delete a user account from Firestore (auth deletion requires backend)
+async function adminDeleteUser(uid, name) {
+  if (!confirm(`DELETE ${name}'s account?\n\nThis will remove all their data from the database. This cannot be undone.`)) return;
+  if (!confirm(`Are you absolutely sure you want to delete ${name}?`)) return;
+  try {
+    await db.collection('shop_users').doc(uid).delete();
+    showToast(`${name}'s account deleted`, 'success');
+    await adminLoadAll();
+  } catch(e) { showToast('Failed to delete account','error'); }
 }
 
 // Admin tool: export all order data as CSV
@@ -2059,19 +2336,280 @@ function adminSearch(val) {
   });
 }
 
-// Hook into enterDashboard — add maybeShowAdminButton call
-const _origEnterDashboard = enterDashboard;
-// (We override by patching renderDashboard instead since enterDashboard is defined above)
-const _origRenderDashboard = renderDashboard;
-// Patch: after renderDashboard, show admin button if applicable
+// ══════════════════════════════════════════════════════════════════════════
+//  GIFT / SHARE SYSTEM
+// ══════════════════════════════════════════════════════════════════════════
+
+let giftState = { recipientUid: null, recipientName: null, amount: 0, anonymous: false };
+
+function copyShareCode() {
+  const code = userData.shareCode;
+  if (!code) return showToast('No share code yet', 'error');
+  navigator.clipboard.writeText(code).then(() => showToast('Share code copied!')).catch(() => showToast(code));
+}
+
+function setGiftAmt(n) {
+  document.querySelectorAll('.gift-amt-btn').forEach((b,i) => b.classList.toggle('selected', i+1===n));
+  document.getElementById('gift-amount').value = n;
+  giftState.amount = n;
+}
+
+function giftUpdateStepIndicator(step) {
+  document.querySelectorAll('.gift-step-dot').forEach(d => {
+    const s = parseInt(d.dataset.step);
+    d.classList.toggle('active', s === step);
+    d.classList.toggle('done', s < step);
+    if (s < step) d.textContent = '✓'; else d.textContent = s;
+  });
+}
+
+async function giftStep1Next() {
+  clearMsg('msg-gift');
+  const code = document.getElementById('gift-recipient-code').value.trim().toUpperCase();
+  const amt  = parseInt(document.getElementById('gift-amount').value) || 0;
+
+  if (!code || code.length !== 6) return showMsg('msg-gift', 'Enter a valid 6-character share code', 'error');
+  if (amt < 1 || amt > 5) return showMsg('msg-gift', 'Select 1–5 actions to send', 'error');
+  if (code === userData.shareCode) return showMsg('msg-gift', 'You can\'t send actions to yourself', 'error');
+
+  // Check sender has enough actions
+  const infinite = userData.infiniteActions || false;
+  const used = userData.actionsUsed || 0;
+  const remaining = infinite ? 9999 : (ACTIONS_LIMIT - used);
+  if (!infinite && remaining < amt) return showMsg('msg-gift', `You only have ${remaining} action${remaining!==1?'s':''} left`, 'error');
+
+  // Look up recipient by shareCode
+  setBtn('btn-send-gift', true, 'Looking up...');
+  const btn1 = document.querySelector('#gift-step-1 .btn-primary');
+  if (btn1) { btn1.disabled = true; btn1.innerHTML = '<span class="spinner"></span>Looking up...'; }
+
+  try {
+    const snap = await db.collection('shop_users').where('shareCode','==',code).limit(1).get();
+    if (snap.empty) {
+      showMsg('msg-gift', 'No account found with that share code', 'error');
+      return;
+    }
+    const doc = snap.docs[0];
+    giftState.recipientUid = doc.id;
+    giftState.recipientName = doc.data().displayName || 'Someone';
+    giftState.amount = amt;
+
+    document.getElementById('gift-summary-line').textContent = `Sending ${amt} action${amt!==1?'s':''} to ${giftState.recipientName}`;
+    document.getElementById('gift-recipient-name-line').textContent = `Share code: ${code}`;
+
+    // Show verified note if sender is verified
+    const verifiedNote = document.getElementById('gift-verified-note');
+    if (verifiedNote) verifiedNote.style.display = (userData.verified) ? 'block' : 'none';
+
+    document.getElementById('gift-step-1').style.display = 'none';
+    document.getElementById('gift-step-2').style.display = 'block';
+    giftUpdateStepIndicator(2);
+  } catch(e) {
+    showMsg('msg-gift', 'Failed to look up recipient', 'error');
+  } finally {
+    if (btn1) { btn1.disabled = false; btn1.innerHTML = 'Continue →'; }
+    setBtn('btn-send-gift', false, 'Send gift ◎');
+  }
+}
+
+let giftAnon = false;
+function toggleGiftAnon() {
+  giftAnon = !giftAnon;
+  giftState.anonymous = giftAnon;
+  const toggle = document.getElementById('gift-anon-toggle');
+  if (toggle) toggle.classList.toggle('on', giftAnon);
+}
+
+function giftStep2Next() {
+  clearMsg('msg-gift');
+  const fromName = giftAnon ? 'Anonymous' : ((userData.displayName || 'Someone') + (userData.verified ? ' ✦' : ''));
+  document.getElementById('gift-confirm-to').textContent = giftState.recipientName;
+  document.getElementById('gift-confirm-amount').textContent = `${giftState.amount} action${giftState.amount!==1?'s':''}`;
+  document.getElementById('gift-confirm-from').textContent = fromName;
+
+  document.getElementById('gift-step-2').style.display = 'none';
+  document.getElementById('gift-step-3').style.display = 'block';
+  giftUpdateStepIndicator(3);
+  clearPinRow('gift-pin-row');
+  setTimeout(() => focusFirst('gift-pin-row'), 80);
+}
+
+function giftStepBack(toStep) {
+  document.getElementById('gift-step-1').style.display = toStep === 1 ? 'block' : 'none';
+  document.getElementById('gift-step-2').style.display = toStep === 2 ? 'block' : 'none';
+  document.getElementById('gift-step-3').style.display = 'none';
+  giftUpdateStepIndicator(toStep);
+  clearMsg('msg-gift');
+}
+
+async function sendGift() {
+  const pin = getPinValue('gift-pin-row');
+  if (pin.length < 4) return showMsg('msg-gift', 'Enter your 4-digit PIN', 'error');
+  if (simpleHash(pin + currentUser.uid) !== userData.pin) {
+    clearPinRow('gift-pin-row');
+    showMsg('msg-gift', 'Incorrect PIN', 'error');
+    setTimeout(() => focusFirst('gift-pin-row'), 50);
+    return;
+  }
+
+  setBtn('btn-send-gift', true, 'Sending...');
+
+  try {
+    const senderRef    = db.collection('shop_users').doc(currentUser.uid);
+    const recipientRef = db.collection('shop_users').doc(giftState.recipientUid);
+
+    const senderSnap   = await senderRef.get();
+    const senderData   = senderSnap.data();
+    const infinite     = senderData.infiniteActions || false;
+    const freshUsed    = senderData.actionsUsed || 0;
+    const remaining    = infinite ? 9999 : (ACTIONS_LIMIT - freshUsed);
+
+    if (!infinite && remaining < giftState.amount) {
+      showMsg('msg-gift', `Not enough actions remaining (have ${remaining})`, 'error');
+      setBtn('btn-send-gift', false, 'Send gift ◎');
+      return;
+    }
+
+    const recipientSnap = await recipientRef.get();
+    const recipientData = recipientSnap.data();
+    const pendingGifts  = recipientData.pendingGifts || [];
+
+    const fromName = giftAnon
+      ? 'Anonymous'
+      : ((userData.displayName || 'Someone') + (userData.verified ? ' ✦' : ''));
+
+    const giftRecord = {
+      amount:    giftState.amount,
+      fromName:  fromName,
+      fromUid:   giftAnon ? null : currentUser.uid,
+      anonymous: giftAnon,
+      date:      new Date().toISOString()
+    };
+
+    // Atomic-ish: deduct from sender, queue on recipient
+    const senderUpdates = { actionsUsed: freshUsed + giftState.amount };
+    await senderRef.update(senderUpdates);
+    await recipientRef.update({ pendingGifts: [...pendingGifts, giftRecord] });
+
+    Object.assign(userData, senderUpdates);
+
+    // Reset the gift UI
+    document.getElementById('gift-step-3').style.display = 'none';
+    document.getElementById('gift-step-1').style.display = 'block';
+    giftUpdateStepIndicator(1);
+    document.getElementById('gift-recipient-code').value = '';
+    document.querySelectorAll('.gift-amt-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('gift-amount').value = '0';
+    giftState = { recipientUid: null, recipientName: null, amount: 0, anonymous: false };
+    giftAnon = false;
+    const t = document.getElementById('gift-anon-toggle');
+    if (t) t.classList.remove('on');
+    clearMsg('msg-gift');
+
+    renderDashboard();
+    showToast(`Gift sent! ◎`, 'success');
+
+    // Go home
+    const homeBtn = document.querySelector('[data-panel="home"]');
+    if (homeBtn) setTimeout(() => switchPanel('home', homeBtn), 1000);
+
+  } catch(e) {
+    console.error(e);
+    showMsg('msg-gift', 'Failed to send gift — try again', 'error');
+  } finally {
+    setBtn('btn-send-gift', false, 'Send gift ◎');
+  }
+}
+
+// Check for pending gifts and show the notification overlay
+async function checkAndShowPendingGifts() {
+  const gifts = userData.pendingGifts;
+  if (!gifts || !gifts.length) return;
+
+  const gift = gifts[0]; // show one at a time
+
+  // Show the overlay with animation
+  const overlay = document.getElementById('gift-notif-overlay');
+  const card    = document.getElementById('gift-notif-card');
+  const env     = document.getElementById('gift-envelope');
+
+  document.getElementById('gift-notif-amount').textContent = gift.amount;
+  document.getElementById('gift-notif-from').textContent   = gift.fromName || 'Anonymous';
+
+  overlay.style.opacity = '0';
+  overlay.style.pointerEvents = 'all';
+  overlay.style.display = 'flex'; // ensure visible before animating
+
+  requestAnimationFrame(() => {
+    overlay.style.opacity = '1';
+    setTimeout(() => {
+      card.style.transform = 'translateY(0) scale(1)';
+      setTimeout(() => {
+        env.style.transform = 'scale(1)';
+      }, 100);
+    }, 50);
+  });
+
+  // Store current gift being shown
+  overlay._currentGift = gift;
+}
+
+async function closeGiftNotif() {
+  const overlay = document.getElementById('gift-notif-overlay');
+  const card    = document.getElementById('gift-notif-card');
+  const env     = document.getElementById('gift-envelope');
+
+  overlay.style.opacity = '0';
+  card.style.transform = 'translateY(40px) scale(0.94)';
+  env.style.transform = 'scale(0)';
+
+  // Claim the gift: add actions to recipient, remove from pendingGifts
+  if (overlay._currentGift) {
+    try {
+      const gift = overlay._currentGift;
+      const ref  = db.collection('shop_users').doc(currentUser.uid);
+      const snap = await ref.get();
+      const data = snap.data();
+      const newGifts = (data.pendingGifts || []).filter(g => g.date !== gift.date);
+      // Add gift actions by reducing actionsUsed
+      const infinite = data.infiniteActions || false;
+      if (!infinite) {
+        const newUsed = Math.max(0, (data.actionsUsed || 0) - gift.amount);
+        await ref.update({ actionsUsed: newUsed, pendingGifts: newGifts });
+        userData.actionsUsed = newUsed;
+      } else {
+        await ref.update({ pendingGifts: newGifts });
+      }
+      userData.pendingGifts = newGifts;
+      renderDashboard();
+    } catch(e) { console.error('Gift claim error:', e); }
+  }
+
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    overlay.style.pointerEvents = 'none';
+  }, 400);
+}
+
+// Ensure share code display is also updated when switching to share panel
+const _origSwitchPanel = switchPanel;
+// Patch to update share code display when switching to share panel
+function switchPanel(name, el) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  if (name !== 'redeem') stopScanner();
+  if (name === 'share') {
+    const scEl = document.getElementById('share-code-display');
+    if (scEl && userData) scEl.textContent = userData.shareCode || '–';
+  }
+}
+
+// Hook into enterDashboard — admin button shown via renderDashboard
 window.addEventListener('load', () => {
-  // Slight delay to ensure DOM is ready
   setTimeout(maybeShowAdminButton, 300);
 });
-// Also call it each time auth resolves — safe to call multiple times
-const _adminAuthPatch = setInterval(() => {
-  if (currentUser && userData) { maybeShowAdminButton(); clearInterval(_adminAuthPatch); }
-}, 500);
 </script>
 
   <!-- ── ADMIN TRIGGER BUTTON ──────────────────────────────────────────── -->
@@ -2177,6 +2715,58 @@ const _adminAuthPatch = setInterval(() => {
 <style>
   /* Admin overlay open state */
   #admin-overlay.open { opacity:1 !important; pointer-events:all !important; }
+
+  /* ── GIFT TAB ── */
+  .gift-step-dot {
+    width:28px;height:28px;border-radius:50%;
+    background:var(--surface2);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:700;font-family:'DM Mono',monospace;
+    color:var(--muted);flex-shrink:0;transition:all .2s;
+  }
+  .gift-step-dot.active { background:var(--text);color:#fff;border-color:var(--text); }
+  .gift-step-dot.done { background:var(--success);color:#fff;border-color:var(--success); }
+  .gift-step-line { flex:1;height:1px;background:var(--border);margin:0 4px;align-self:center; }
+  #gift-steps-indicator { display:flex;align-items:center;gap:0; }
+
+  .gift-amt-btn {
+    flex:1;padding:10px 4px;border-radius:7px;
+    border:1px solid var(--border);background:var(--surface);
+    font-size:15px;font-weight:600;font-family:'DM Mono',monospace;
+    color:var(--muted);cursor:pointer;transition:all .15s;
+  }
+  .gift-amt-btn.selected { background:var(--text);color:#fff;border-color:var(--text); }
+  .gift-amt-btn:hover:not(.selected) { border-color:var(--text);color:var(--text); }
+
+  .gift-toggle {
+    width:44px;height:26px;border-radius:13px;
+    background:var(--border2);position:relative;cursor:pointer;
+    transition:background .2s;flex-shrink:0;
+  }
+  .gift-toggle.on { background:var(--text); }
+  .gift-toggle-knob {
+    width:20px;height:20px;border-radius:50%;background:#fff;
+    position:absolute;top:3px;left:3px;
+    transition:transform .2s cubic-bezier(.4,0,.2,1);
+    box-shadow:0 1px 4px rgba(0,0,0,.15);
+  }
+  .gift-toggle.on .gift-toggle-knob { transform:translateX(18px); }
+
+  .gift-how-item {
+    display:flex;align-items:flex-start;gap:12px;
+    padding:10px 0;border-bottom:1px solid var(--border);
+    font-size:13px;color:var(--text2);line-height:1.4;
+  }
+  .gift-how-num {
+    width:22px;height:22px;border-radius:50%;
+    background:var(--text);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:10px;font-weight:700;font-family:'DM Mono',monospace;
+    flex-shrink:0;margin-top:1px;
+  }
+
+  /* Blue verified checkmark */
+  .verified-check { color:#1a6fc4;font-size:13px; }
 
   /* Tab active state (toggled by JS) */
   .ap-tab.active { background:var(--text) !important; color:#fff !important; }
