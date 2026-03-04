@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>✦ ACTIONS — Indy Actions</title>
+<title>✦ ACTIONS WALLET</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -12,7 +12,7 @@
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>
   :root {
-    --bg: #ffffff;
+    --bg: #ffffffb6;
     --surface: #f9f9f9;
     --surface2: #f0f0f0;
     --border: #e5e5e5;
@@ -1235,11 +1235,7 @@
             <div class="field">
               <label>Actions to send (max 5)</label>
               <div style="display:flex;gap:8px;margin-top:4px;">
-                <button class="gift-amt-btn" onclick="setGiftAmt(1)">1</button>
-                <button class="gift-amt-btn" onclick="setGiftAmt(2)">2</button>
-                <button class="gift-amt-btn" onclick="setGiftAmt(3)">3</button>
-                <button class="gift-amt-btn" onclick="setGiftAmt(4)">4</button>
-                <button class="gift-amt-btn" onclick="setGiftAmt(5)">5</button>
+                <input type="text" class="gift-recipient-code" onclick="setGiftAmt()" value="1">
               </div>
               <input type="hidden" id="gift-amount" value="0">
             </div>
@@ -1407,25 +1403,52 @@
 //  actions = how many monthly actions the item costs (no $ involved)
 // ══════════════════════════════════════════════════════════════════════════
 const CATALOGUE = {
-  // New Products
-  'BBAG':  { name: 'Breakfast blind Bag',             actions: 1 },
-  'BRBB':  { name: 'Brunch Blind blind Bag',          actions: 1 },
-  'LBAG':  { name: 'Lunch blind Bag',                 actions: 1 },
-  'DBAG':  { name: 'Dinner blind Bag',                actions: 1 },
-  'BAGBUN':  { name: '5 pack random Blind Bags',                actions: 5 },
+  // Spring Seasonal
+  'BBAG-SP':   { name: 'Spring Bag',                 actions: 1 },
+  'BBAG-BL':   { name: 'Bloom Bag',                  actions: 1 },
+  'WB-MCH':    { name: 'Matcha Whiteboard Book',     actions: 2 },
+  'KC-PM1':    { name: 'Spring Keychain',            actions: 1 },
+  'KC-PM2':    { name: 'Soccer Ball Keychain',       actions: 1 },
+  'KC-GRN':    { name: 'Garden Capybara Keychain',   actions: 1 },
+  'KC-PM3':    { name: 'Spring Duck Keychain',       actions: 1 },
 
-  'WB01':  { name: 'Normal Reusable White Board Book',    actions: 1 },
-  'WB02':  { name: 'Peach Reusable White Board Book',     actions: 1 },
-  'WB03':  { name: 'Reusable Amethyst White Board Book',  actions: 1 },
-  'WB04':  { name: 'Reusable Mint White Board Book',      actions: 1 },
-  'WB05':  { name: 'Pink Reusable White Board Book',      actions: 1 },
-  'WB06':  { name: 'Reusable Vintage White Board Book',   actions: 1 },
-   
-  'LB01':  { name: 'Loot Box 1',      actions: 2 },
-  'LB02':  { name: 'Loot Box 2',      actions: 2 },
-  'LB03':  { name: 'Loot Box 3',      actions: 2 },
+  // Original Series Blind Bags
+  'BBAG':      { name: 'Breakfast Blind Bag',        actions: 1 },
+  'BRBAG':     { name: 'Brunch Blind Bag',           actions: 1 },
+  'LBAG':      { name: 'Lunch Blind Bag',            actions: 1 },
+  'DBAG':      { name: 'Dinner Blind Bag',           actions: 1 },
 
-  'STARTER':  { name: 'JVST Starter Pack',      actions: 5 },
+  // Season 2 Blind Bags
+  'GHBAG':     { name: 'Golden Hour Bag',            actions: 1 },
+  'MIDBAG':    { name: 'Midnight Bag',               actions: 2 },
+
+  // Artist Collab Blind Bags
+  'EVBAG':     { name: 'Evan Duffy Bag',             actions: 2 },
+  'RAINBAG':   { name: 'Rainn Blais Bag',            actions: 2 },
+  'GBBAG':     { name: 'Greyson Bonnifacio Bag',     actions: 2 },
+
+  // Whiteboard Books (original + new)
+  'CBOOK':     { name: 'Crimson Whiteboard Book',    actions: 2 },
+  'PBOOK':     { name: 'Peach Whiteboard Book',      actions: 2 },
+  'MBOOK':     { name: 'Mint Whiteboard Book',       actions: 2 },
+  'VBOOK':     { name: 'Vintage Whiteboard Book',    actions: 2 },
+  'ABOOK':     { name: 'Amethyst Whiteboard Book',   actions: 2 },
+  'PKBOOK':    { name: 'Pink Whiteboard Book',       actions: 2 },
+
+  // Loot Boxes
+  'LB01':      { name: 'Loot Box #001',              actions: 3 },
+  'LB02':      { name: 'Loot Box #002',              actions: 3 },
+  'LB03':      { name: 'Loot Box #003',              actions: 1 },
+  'VAULT':     { name: 'Vault Box',                  actions: 5 },
+  'RAINBOX':   { name: 'Rainn Blais Box',            actions: 4 },
+  'BSBOX':     { name: 'MiniX Box',                  actions: 4 },
+  'SUM26':     { name: "Summer '26 Box",             actions: 4 },
+
+  // Bundles
+  'BAGBUN':    { name: '5-Pack Blind Bags',          actions: 4 },
+  'KEYCH':     { name: 'JVST Keychain Pack',         actions: 2 },
+  'STICKS':    { name: 'Mega Sticker Sheet Set',     actions: 1 },
+  'STARTER':   { name: 'Starter Pack',               actions: 5 }
 };
 // ══════════════════════════════════════════════════════════════════════════
 
@@ -2923,6 +2946,151 @@ function switchPanel(name, el) {
 window.addEventListener('load', () => {
   setTimeout(maybeShowAdminButton, 300);
 });
+
+// ───────────────────────────────────────────────────────────────
+// OVERRIDE: Gift amount → text input, max 20 (paste at end of script)
+// ───────────────────────────────────────────────────────────────
+
+(function overrideGiftAmountToTextInputMax20() {
+
+  // 1. Replace the HTML content of the amount field
+  const amountField = document.querySelector('#gift-step-1 .field:nth-child(2)');
+  if (amountField) {
+    amountField.innerHTML = `
+      <label>Actions to send (max 20)</label>
+      <input 
+        type="number" 
+        id="gift-amount-input"
+        min="1" max="20" step="1"
+        value="1"
+        style="width:160px; font-size:20px; text-align:center; 
+               font-family:'DM Mono',monospace; letter-spacing:1px;
+               padding:12px; border-radius:var(--radius);"
+      >
+      <p style="font-size:11px; color:var(--muted); margin-top:8px; 
+                font-family:'DM Mono',monospace;">
+        Enter 1–20 • You have <span id="gift-sender-remaining">–</span> available
+      </p>
+      <input type="hidden" id="gift-amount" value="1">
+    `;
+  }
+
+  // 2. Add live validation + sync to hidden field
+  document.addEventListener('input', e => {
+    if (e.target.id !== 'gift-amount-input') return;
+    let val = parseInt(e.target.value, 10) || 1;
+    if (val < 1) val = 1;
+    if (val > 20) val = 20;
+    e.target.value = val;
+    document.getElementById('gift-amount').value = val;
+  });
+
+  // 3. Override giftStep1Next() — replace the whole function
+  window.giftStep1Next = async function() {
+    clearMsg('msg-gift');
+
+    const code = document.getElementById('gift-recipient-code')?.value?.trim().toUpperCase() || '';
+    const amtInput = document.getElementById('gift-amount-input');
+    const amt = parseInt(amtInput?.value || document.getElementById('gift-amount')?.value || '0', 10);
+
+    if (!code || code.length !== 6) {
+      return showMsg('msg-gift', 'Enter a valid 6-character share code', 'error');
+    }
+
+    if (amt < 1 || amt > 20) {
+      amtInput?.focus?.();
+      amtInput?.select?.();
+      return showMsg('msg-gift', 'Please enter a number between 1 and 20', 'error');
+    }
+
+    if (code === userData?.shareCode) {
+      return showMsg('msg-gift', "You can't send actions to yourself", 'error');
+    }
+
+    const infinite = userData?.infiniteActions || false;
+    const used = userData?.actionsUsed || 0;
+    const remaining = infinite ? 9999 : (ACTIONS_LIMIT - used);
+
+    if (!infinite && remaining < amt) {
+      return showMsg('msg-gift',
+        `You only have ${remaining} action${remaining !== 1 ? 's' : ''} available`,
+        'error'
+      );
+    }
+
+    // ── Lookup recipient ───────────────────────────────────────
+    const btn = document.querySelector('#gift-step-1 .btn-primary');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Looking up...';
+    }
+
+    try {
+      const snap = await db.collection('shop_users')
+        .where('shareCode', '==', code)
+        .limit(1)
+        .get();
+
+      if (snap.empty) {
+        showMsg('msg-gift', 'No account found with that share code', 'error');
+        return;
+      }
+
+      const doc = snap.docs[0];
+      giftState.recipientUid   = doc.id;
+      giftState.recipientName = doc.data().displayName || 'Someone';
+      giftState.amount        = amt;
+
+      document.getElementById('gift-summary-line').textContent =
+        `Sending ${amt} action${amt !== 1 ? 's' : ''} to ${giftState.recipientName}`;
+
+      document.getElementById('gift-recipient-name-line').textContent =
+        `Share code: ${code}`;
+
+      const verifiedNote = document.getElementById('gift-verified-note');
+      if (verifiedNote) {
+        verifiedNote.style.display = userData?.verified ? 'block' : 'none';
+      }
+
+      document.getElementById('gift-step-1').style.display = 'none';
+      document.getElementById('gift-step-2').style.display = 'block';
+      giftUpdateStepIndicator(2);
+    } catch (e) {
+      console.error(e);
+      showMsg('msg-gift', 'Failed to look up recipient', 'error');
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = 'Continue →';
+      }
+    }
+  };
+
+  // 4. Show remaining count when dashboard renders / gift tab opens
+  const originalRender = window.renderDashboard || function(){};
+  window.renderDashboard = function() {
+    originalRender();
+    const remEl = document.getElementById('gift-sender-remaining');
+    if (remEl && userData) {
+      const rem = userData.infiniteActions
+        ? '∞'
+        : Math.max(0, ACTIONS_LIMIT - (userData.actionsUsed || 0));
+      remEl.textContent = rem;
+    }
+  };
+
+  // 5. Make sure value stays synced when switching tabs / re-rendering
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-panel="share"]')) {
+      setTimeout(() => {
+        const input = document.getElementById('gift-amount-input');
+        if (input) input.value = document.getElementById('gift-amount').value || '1';
+      }, 300);
+    }
+  });
+
+  console.log("Gift amount overridden → number input, max 20");
+})();
 </script>
 
   <!-- ── ADMIN TRIGGER BUTTON ──────────────────────────────────────────── -->
