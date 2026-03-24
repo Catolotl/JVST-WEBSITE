@@ -222,9 +222,9 @@
 
         /* ── MAIN ── */
         main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 36px 32px 100px;
+            max-width: 100%;
+            margin: 30px;
+            padding: 36px 10px 100px;
         }
 
         /* ── APPLE-STYLE SECTION TITLES ── */
@@ -434,45 +434,47 @@
         }
         .see-all-link:hover { opacity: 0.7; }
 
-        /* ── PRODUCT GRID ── */
+        /* ── PRODUCT GRID — full-width 4-col ── */
         .product-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            gap: 8px;
             margin-bottom: 72px;
         }
 
-        /* ── PRODUCT CARD ── */
+        /* ── PRODUCT CARD — compact vertical ── */
         .product-card {
             display: flex;
             flex-direction: column;
             cursor: pointer;
-            transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            background: var(--gray-50);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: box-shadow 0.25s ease, transform 0.25s ease;
+            position: relative;
         }
-        .product-card:hover { transform: translateY(-6px); }
-        .product-card:hover .product-name { color: var(--black); }
+        .product-card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+            transform: translateY(-2px);
+        }
 
+        /* Image on top */
         .product-img-wrap {
             width: 100%;
             aspect-ratio: 3/4;
-            border-radius: 14px;
-            overflow: hidden;
-            margin-bottom: 12px;
             position: relative;
-            background: var(--gray-50);
-            transition: box-shadow 0.3s;
-            outline: none;
-        }
-        .product-card:hover .product-img-wrap {
-            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+            background: var(--gray-100);
+            overflow: hidden;
+            flex-shrink: 0;
         }
         .product-img-wrap img {
             width: 100%; height: 100%;
             object-fit: cover;
             display: block;
-            transition: transform 0.5s ease;
+            transition: transform 0.4s ease;
         }
         .product-card:hover .product-img-wrap img { transform: scale(1.04); }
+
         .product-img-placeholder {
             width: 100%; height: 100%;
             display: flex;
@@ -480,34 +482,107 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 16px;
-            background: var(--gray-50);
+            padding: 8px;
         }
         .product-img-placeholder .bag-label {
             font-family: var(--font-display);
-            font-size: 0.95rem;
+            font-size: 0.68rem;
             font-weight: 700;
             letter-spacing: -0.02em;
             color: var(--black);
             line-height: 1.2;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
         .product-img-placeholder .bag-sub {
-            font-size: 0.6rem;
+            font-size: 0.5rem;
             font-family: var(--font-mono);
             color: var(--gray-400);
             letter-spacing: 0.04em;
         }
 
+        /* Info below image */
+        .product-card-info {
+            display: flex;
+            flex-direction: column;
+            padding: 5px 7px 7px;
+            gap: 1px;
+            flex: 1;
+        }
+        .product-card-topic {
+            font-family: var(--font-mono);
+            font-size: 0.5rem;
+            font-weight: 600;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: var(--gray-400);
+        }
+        .product-name {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--black);
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+        .product-card-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-top: 6px;
+        }
+        .product-card-cost {
+            font-family: var(--font-mono);
+            font-size: 0.44rem;
+            color: var(--gray-400);
+        }
+
+/* Get button - Updated */
+.product-add-btn {
+    /* Bigger size */
+    height: 34px;                    /* was 28px */
+    padding: 0 18px;                 /* was 0 14px */
+    min-width: 34px;
+
+    border-radius: 980px;
+    background: var(--black);
+    color: #fff;
+    border: none;
+    
+    font-size: 0.82rem;              /* was 0.75rem */
+    font-weight: 600;
+    font-family: var(--font-body);
+    letter-spacing: -0.01em;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    
+    /* This makes it always stay on top */
+    position: relative;
+    z-index: 10;
+    
+    transition: background 0.2s, transform 0.15s;
+    flex-shrink: 0;
+    
+    /* Optional: nice hover effect */
+    &:hover {
+        background: #222;
+        transform: scale(1.05);
+    }
+}
+        .product-add-btn:hover { background: #333; transform: scale(1.06); }
+        .product-add-btn.in-cart-btn { background: #10b981; }
+
         /* In-cart indicator */
         .in-cart-pip {
             position: absolute;
-            top: 8px; right: 8px;
-            width: 22px; height: 22px;
+            top: 5px; right: 5px;
+            width: 14px; height: 14px;
             background: var(--black);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.58rem;
+            font-size: 0.4rem;
             color: #fff;
             font-weight: 700;
             opacity: 0;
@@ -517,69 +592,95 @@
         }
         .product-card.in-cart .in-cart-pip { opacity: 1; transform: scale(1); }
 
-        .product-name {
-            font-size: 0.82rem;
-            font-weight: 500;
-            color: var(--black);
-            text-align: center;
-            transition: color 0.2s;
-            letter-spacing: -0.01em;
-            line-height: 1.3;
+        /* ── AD CARD ── */
+        .product-card.ad-card {
+            background: #000;
+            cursor: default;
         }
+        .product-card.ad-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 32px rgba(0,0,0,0.3);
+        }
+        .ad-card .product-card-topic { color: rgba(255,255,255,0.4); }
+        .ad-card .product-name { color: #fff; }
+        .ad-card .product-img-wrap { background: #111; }
+        .ad-card .product-card-info { background: #000; }
+        .ad-learn-btn {
+            display: inline-flex;
+            align-items: center;
+            height: 22px;
+            padding: 0 10px;
+            background: #fff;
+            color: #000;
+            border: none;
+            border-radius: 980px;
+            font-family: var(--font-body);
+            font-size: 0.58rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+            white-space: nowrap;
+        }
+        .ad-learn-btn:hover { opacity: 0.88; transform: scale(1.06); }
 
-        /* ── PRODUCT POPUP ── */
+        /* ── PRODUCT FULLSCREEN VIEW ── */
         #product-popup {
             position: fixed; inset: 0; z-index: 2000;
-            background: rgba(10,10,10,0.6);
-            backdrop-filter: blur(8px);
+            background: var(--white);
             display: none;
-            align-items: center; justify-content: center;
-            padding: 20px;
+            flex-direction: column;
+            overflow-y: auto;
         }
         #product-popup.open { display: flex; }
-.popup-box {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    width: 100%;
-    max-width: 420px;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.25);
-    animation: fadeIn 0.6s ease-out forwards;
-}
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95) translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
-        .popup-close {
-            position: absolute; top: 14px; right: 14px;
-            width: 30px; height: 30px;
-            border-radius: 50%;
-            background: rgba(0,0,0,0.08);
-            border: none;
-            cursor: pointer;
-            font-size: 11px;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--gray-600);
-            z-index: 2;
-            transition: background 0.2s;
+        .popup-fs-topbar {
+            position: sticky; top: 0; z-index: 10;
+            background: rgba(255,255,255,0.88);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 0.5px solid var(--gray-200);
+            padding: 12px 30px;
+            display: flex; align-items: center;
         }
-        .popup-close:hover { background: rgba(0,0,0,0.16); }
+        .popup-return-btn {
+            background: none; border: none;
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #0071e3;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 5px;
+            padding: 0;
+            letter-spacing: -0.01em;
+            transition: opacity 0.2s;
+        }
+        .popup-return-btn:hover { opacity: 0.7; }
+        .popup-return-btn::before { content: '‹'; font-size: 1.1rem; font-weight: 400; line-height: 1; }
+
+        .popup-fs-body {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 56px 40px 80px;
+            gap: 64px;
+            align-items: start;
+        }
+        @media(max-width: 720px) {
+            .popup-fs-body { grid-template-columns: 1fr; gap: 28px; padding: 28px 22px 60px; }
+        }
+
         .popup-img {
             width: 100%;
-            aspect-ratio: 4/3;
+            aspect-ratio: 1/1;
             background: var(--gray-100);
-            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            border-radius: var(--radius-lg);
             overflow: hidden;
             display: flex; align-items: center; justify-content: center;
+            box-shadow: var(--shadow-md);
         }
         .popup-img img { width: 100%; height: 100%; object-fit: cover; }
         .popup-img .popup-placeholder {
@@ -587,29 +688,32 @@
             display: flex; align-items: center; justify-content: center;
             flex-direction: column;
         }
-        .popup-body { padding: 22px 24px 28px; }
-        .popup-tag { font-family: var(--font-mono); font-size: 0.58rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 6px; }
-        .popup-name { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 8px; line-height: 1.1; }
-        .popup-desc { font-size: 0.82rem; color: var(--gray-600); line-height: 1.7; margin-bottom: 18px; }
+
+        .popup-fs-info { display: flex; flex-direction: column; gap: 0; }
+        .popup-tag { font-family: var(--font-mono); font-size: 0.62rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 10px; }
+        .popup-name { font-family: var(--font-display); font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 14px; line-height: 1.05; color: var(--black); }
+        .popup-desc { font-size: 0.9rem; color: var(--gray-600); line-height: 1.75; margin-bottom: 24px; }
         .popup-code-row {
             display: flex; align-items: center; gap: 8px;
-            background: var(--gray-50); border: 1px solid var(--gray-200); padding: 9px 13px; border-radius: var(--radius-sm); margin-bottom: 18px;
+            background: var(--gray-50); border: 1px solid var(--gray-200); padding: 10px 14px; border-radius: var(--radius-sm); margin-bottom: 22px;
         }
         .popup-code-label { font-family: var(--font-mono); font-size: 0.58rem; color: var(--gray-400); letter-spacing: 0.1em; text-transform: uppercase; }
-        .popup-code { font-family: var(--font-mono); font-size: 0.82rem; font-weight: 500; color: var(--black); }
+        .popup-code { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; color: var(--black); }
         .popup-price-row {
             display: flex; align-items: baseline; justify-content: space-between;
-            margin-bottom: 18px;
+            margin-bottom: 22px;
+            padding-bottom: 22px;
+            border-bottom: 1px solid var(--gray-100);
         }
-        .popup-price { font-family: var(--font-display); font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
-        .popup-price small { font-size: 0.68rem; font-family: var(--font-mono); color: var(--gray-400); font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; }
+        .popup-price { font-family: var(--font-display); font-size: 2.2rem; font-weight: 700; letter-spacing: -0.03em; }
+        .popup-price small { font-size: 0.72rem; font-family: var(--font-mono); color: var(--gray-400); font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; }
         .popup-add-btn {
-            width: 100%; padding: 13px;
+            width: 100%; padding: 15px;
             border-radius: var(--radius-md);
             background: var(--black); color: #fff;
             border: none; font-family: var(--font-body);
-            font-size: 0.85rem; font-weight: 700;
-            letter-spacing: 0.02em;
+            font-size: 0.9rem; font-weight: 700;
+            letter-spacing: 0.01em;
             cursor: pointer; transition: background 0.15s, transform 0.1s;
         }
         .popup-add-btn:hover { background: #222; transform: translateY(-1px); }
@@ -957,9 +1061,8 @@
             letter-spacing: -0.01em;
         }
 
-        /* ── MOBILE ── */
         @media (max-width: 860px) {
-            main { padding-left: 18px; padding-right: 18px; }
+            main { padding-left: 10px; padding-right: 10px; }
             .hero-area { grid-template-columns: 1fr; }
             .hero-carousel { width: 100%; }
             .menu-toggle { display: block; }
@@ -978,11 +1081,11 @@
             }
             .nav-links.active { display: flex; }
             .nav-links a { padding: 13px 0; border-bottom: 0.5px solid var(--gray-100); font-size: 1rem; letter-spacing: -0.01em; }
-            .product-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+            .product-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
             .carousel-dots { left: 50%; transform: translateX(-50%); }
         }
         @media (max-width: 500px) {
-            .product-grid { grid-template-columns: 1fr 1fr; }
+            .product-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
         /* ── BOOK COLOR SWATCHES (on card) ── */
@@ -1672,20 +1775,22 @@
             .tunes-featured-content { padding: 20px 24px 26px; }
         }
         /* ════════════════════════════════════════
-           INDY ARTICLE POPUP
+           INDY ARTICLE POPUP — fullscreen
         ════════════════════════════════════════ */
-        #indy-popup-overlay { position:fixed; inset:0; z-index:3000; background:rgba(0,0,0,.68); backdrop-filter:blur(14px); display:none; align-items:center; justify-content:center; padding:20px; overflow-y:auto; }
+        #indy-popup-overlay { position:fixed; inset:0; z-index:3000; background:var(--white); display:none; flex-direction:column; overflow-y:auto; }
         #indy-popup-overlay.open { display:flex; }
-        .indy-popup-box { background:var(--white); border-radius:24px; width:100%; max-width:800px; max-height:90vh; overflow-y:auto; position:relative; box-shadow:0 40px 120px rgba(0,0,0,.35); animation:indyPopIn .38s cubic-bezier(.22,1,.36,1); scrollbar-width:thin; }
-        .indy-popup-close { position:absolute; top:18px; right:18px; z-index:10; width:34px; height:34px; border-radius:50%; background:rgba(0,0,0,.08); border:none; cursor:pointer; font-size:12px; display:flex; align-items:center; justify-content:center; color:var(--gray-600); transition:background .2s; }
-        .indy-popup-close:hover { background:rgba(0,0,0,.18); }
-        .indy-popup-hero { height:300px; position:relative; overflow:hidden; border-radius:24px 24px 0 0; display:flex; align-items:center; justify-content:center; }
+        .indy-popup-topbar { position:sticky; top:0; z-index:10; background:rgba(255,255,255,0.88); backdrop-filter:saturate(180%) blur(20px); -webkit-backdrop-filter:saturate(180%) blur(20px); border-bottom:0.5px solid var(--gray-200); padding:12px 30px; display:flex; align-items:center; }
+        .indy-popup-return { background:none; border:none; font-family:var(--font-body); font-size:0.8rem; font-weight:500; color:#0071e3; cursor:pointer; display:flex; align-items:center; gap:5px; padding:0; letter-spacing:-0.01em; transition:opacity 0.2s; }
+        .indy-popup-return:hover { opacity:0.7; }
+        .indy-popup-return::before { content:'‹'; font-size:1.1rem; font-weight:400; line-height:1; }
+        .indy-popup-box { width:100%; max-width:800px; margin:0 auto; padding-bottom:80px; }
+        .indy-popup-hero { height:340px; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; }
         .indy-popup-hero-scan { position:absolute; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent); animation:scanLine 5s linear infinite; pointer-events:none; z-index:10; }
         .indy-popup-hero-title { position:absolute; bottom:0; left:0; right:0; padding:36px 42px 30px; background:linear-gradient(to top,rgba(0,0,0,.9) 0%,transparent 100%); }
         .indy-popup-hero-tag { font-family:var(--font-mono); font-size:.6rem; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.45); margin-bottom:10px; display:flex; align-items:center; gap:10px; }
         .indy-popup-hero-tag::before { content:''; display:inline-block; width:22px; height:1px; background:rgba(255,255,255,.3); }
         .indy-popup-hero-h1 { font-family:var(--font-display); font-size:clamp(1.6rem,3.5vw,2.6rem); font-weight:700; letter-spacing:-.035em; color:#fff; line-height:1.06; }
-        .indy-popup-content { padding:38px 42px 52px; }
+        .indy-popup-content { padding:48px 42px 52px; }
         .indy-article-lead { font-size:1.02rem; color:var(--gray-600); line-height:1.82; margin-bottom:32px; border-left:3px solid var(--black); padding-left:20px; }
         .indy-article-section { margin-bottom:30px; }
         .indy-article-h2 { font-family:var(--font-display); font-size:1.12rem; font-weight:700; letter-spacing:-.02em; color:var(--black); margin-bottom:10px; }
@@ -1701,9 +1806,110 @@
         .indy-article-stat { background:var(--white); padding:20px 18px; text-align:center; }
         .indy-article-stat-num { font-family:var(--font-display); font-size:1.65rem; font-weight:700; letter-spacing:-.03em; color:var(--black); margin-bottom:4px; }
         .indy-article-stat-label { font-family:var(--font-mono); font-size:.58rem; color:var(--gray-400); letter-spacing:.06em; text-transform:uppercase; }
-        .indy-article-cta { display:inline-flex; align-items:center; gap:8px; margin-top:10px; padding:12px 26px; background:var(--black); color:#fff; border-radius:980px; font-family:var(--font-body); font-size:.82rem; font-weight:600; text-decoration:none; transition:background .2s,transform .15s; }
-        .indy-article-cta:hover { background:#333; transform:translateY(-1px); }
-        @media(max-width:600px){.indy-popup-content{padding:24px 22px 36px}.indy-popup-hero{height:200px}.indy-popup-hero-title{padding:20px 22px 18px}.indy-article-stat-row{grid-template-columns:repeat(2,1fr)}}
+        .indy-article-cta { display:inline-flex; align-items:center; gap:8px; margin-top:10px; padding:12px 26px; background:var(--black); color:#fff; border-radius:980px; font-family:var(--font-body); font-size:.82rem; font-weight:600; text-decoration:none; transition:background .2s; }
+        .indy-article-cta:hover { background:#333; }
+        @media(max-width:600px){.indy-popup-content{padding:28px 22px 36px}.indy-popup-hero{height:220px}.indy-popup-hero-title{padding:20px 22px 18px}.indy-article-stat-row{grid-template-columns:repeat(2,1fr)}}
+
+        /* ── TUNES GOODBYE POPUP — fullscreen ── */
+        #tunes-goodbye-overlay {
+            position: fixed; inset: 0; z-index: 4000;
+            background: var(--white);
+            display: none; flex-direction: column;
+            overflow-y: auto;
+        }
+        #tunes-goodbye-overlay.open { display: flex; }
+        .tunes-goodbye-topbar {
+            position: sticky; top: 0; z-index: 10;
+            background: rgba(255,255,255,0.88);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 0.5px solid var(--gray-200);
+            padding: 12px 30px;
+            display: flex; align-items: center;
+        }
+        .tunes-goodbye-return {
+            background: none; border: none;
+            font-family: var(--font-body);
+            font-size: 0.8rem; font-weight: 500;
+            color: #0071e3; cursor: pointer;
+            display: flex; align-items: center; gap: 5px;
+            padding: 0; letter-spacing: -0.01em;
+            transition: opacity 0.2s;
+        }
+        .tunes-goodbye-return:hover { opacity: 0.7; }
+        .tunes-goodbye-return::before { content: '‹'; font-size: 1.1rem; font-weight: 400; line-height: 1; }
+        .tunes-goodbye-box {
+            width: 100%; max-width: 640px;
+            margin: 0 auto;
+            padding-bottom: 80px;
+        }
+        .tunes-goodbye-header {
+            background: #0a0a0a;
+            padding: 56px 48px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .tunes-goodbye-header::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,255,255,0.04), transparent 70%);
+            pointer-events: none;
+        }
+        .tunes-goodbye-tag {
+            font-family: var(--font-mono);
+            font-size: 0.58rem; font-weight: 500;
+            letter-spacing: 0.14em; text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 12px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .tunes-goodbye-tag::before {
+            content: ''; display: inline-block;
+            width: 18px; height: 1px; background: rgba(255,255,255,0.2);
+        }
+        .tunes-goodbye-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 700; letter-spacing: -0.03em;
+            color: #fff; line-height: 1.06;
+        }
+        .tunes-goodbye-emojis {
+            margin-top: 18px;
+            font-size: 1.6rem; letter-spacing: 0.1em;
+            opacity: 0.7;
+        }
+        .tunes-goodbye-body { padding: 40px 48px 36px; }
+        .tunes-goodbye-date {
+            font-family: var(--font-mono);
+            font-size: 0.6rem; font-weight: 500;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            color: var(--gray-400); margin-bottom: 22px;
+        }
+        .tunes-goodbye-p {
+            font-size: 0.9rem; color: var(--gray-600);
+            line-height: 1.82; margin-bottom: 14px;
+        }
+        .tunes-goodbye-p strong { color: var(--black); font-weight: 700; }
+        .tunes-goodbye-sig {
+            margin-top: 28px; padding-top: 22px;
+            border-top: 1px solid var(--gray-100);
+            font-size: 0.82rem; color: var(--gray-400);
+            font-style: italic;
+        }
+        .tunes-goodbye-close {
+            width: 100%; margin-top: 28px;
+            padding: 14px;
+            border-radius: var(--radius-md);
+            background: var(--black); color: #fff;
+            border: none; font-family: var(--font-body);
+            font-size: 0.88rem; font-weight: 700;
+            cursor: pointer; transition: background 0.15s;
+        }
+        .tunes-goodbye-close:hover { background: #222; }
+        @media(max-width:600px) {
+            .tunes-goodbye-header { padding: 36px 24px 28px; }
+            .tunes-goodbye-body { padding: 28px 24px 28px; }
+        }
 
 /* ── Full-bleed featured artist banner (Benson Boone) ── */
 .tunes-section {
@@ -1978,19 +2184,8 @@
             <div class="slide-content">
                 <div class="slide-label">Artist Spotlight</div>
                 <h1 class="slide-title">Noah & Evan × JVST</h1>
-                <p class="slide-desc">A new dimension of sound. Music meets AI.</p>
+                <p class="slide-desc">A new dimension of sound. Unapologetically authentic.</p>
                 <span class="slide-tag">#SupportLocalArtists</span>
-            </div>
-        </div>
-    </div>
-    <div class="carousel-slide">
-        <video class="c-bg" src="video3.mp4" muted loop playsinline></video>
-        <div class="slide-overlay" style="background:rgba(0,0,0,0.5)">
-            <div class="slide-content">
-                <div class="slide-label">Cultural Movement</div>
-                <h1 class="slide-title">MusicX Sessions</h1>
-                <p class="slide-desc">Amplifying voices from the streets. A global platform for authentic expression.</p>
-                <span class="slide-tag">#SmallMusicians</span>
             </div>
         </div>
     </div>
@@ -2034,6 +2229,35 @@
     </div>
 </div>
 
+<!-- ═══ APR 20 DROP TEASER BANNER ═══ -->
+<div style="background:#000;padding:20px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;border-bottom:1px solid #111">
+    <div style="display:flex;align-items:center;gap:18px">
+        <div style="font-family:-apple-system,sans-serif;font-size:0.55rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#555;border-right:1px solid #222;padding-right:18px;white-space:nowrap">COMING SOON</div>
+        <div>
+            <div style="font-family:-apple-system,sans-serif;font-size:0.95rem;font-weight:700;color:#fff;letter-spacing:-0.02em;line-height:1.1">Something drops April 20th.</div>
+            <div style="font-family:-apple-system,sans-serif;font-size:0.7rem;color:#555;margin-top:2px">New services, new collabs, and more — stay tuned.</div>
+        </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+        <div id="drop-countdown" style="font-family:ui-monospace,'SF Mono',monospace;font-size:0.65rem;color:#444;letter-spacing:0.08em">–– : –– : ––</div>
+        <a href="shop.html" style="background:#fff;color:#000;text-decoration:none;padding:7px 16px;border-radius:980px;font-size:0.7rem;font-weight:700;white-space:nowrap;font-family:-apple-system,sans-serif;letter-spacing:-0.01em" onmouseover="this.style.opacity='.82'" onmouseout="this.style.opacity='1'">Be First →</a>
+    </div>
+</div>
+<script>
+(function(){
+    const target = new Date('2026-04-20T00:00:00');
+    function tick(){
+        const now = new Date(), diff = target - now;
+        if(diff <= 0){ document.getElementById('drop-countdown').textContent='LIVE NOW'; return; }
+        const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000),
+              m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
+        document.getElementById('drop-countdown').textContent =
+            (d>0?d+'d ':'')+String(h).padStart(2,'0')+'h '+String(m).padStart(2,'0')+'m '+String(s).padStart(2,'0')+'s';
+    }
+    tick(); setInterval(tick,1000);
+})();
+</script>
+
 <!-- ═══ MAIN ═══ -->
 <main>
 
@@ -2047,15 +2271,18 @@
     </div>
 
         <!-- ── ACTIONS CALLOUT BANNER ── -->
-    <div style="background:#000;border-radius:18px;padding:24px 32px;margin-bottom:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;">
-        <div style="display:flex;align-items:center;gap:18px">
-            <div style="background:#1d1d1f;border-radius:12px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;border:1px solid #333">🤨</div>
-            <div>
-                <div style="color:#fff;font-size:1rem;font-weight:600;margin-bottom:4px;letter-spacing:-0.02em;font-family:-apple-system,sans-serif">So... Actions = Money?</div>
-                <div style="color:#86868b;font-size:0.78rem;letter-spacing:-0.01em;font-family:-apple-system,sans-serif;line-height:1.5">Actualy, no! Actions are not a currency, but a gateway to access our products for free!</div>
+    <div style="background:#000;border-radius:16px;padding:24px 28px;margin-bottom:64px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;">
+        <div>
+            <div style="color:#555;font-family:-apple-system,sans-serif;font-size:0.55rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:7px">How Actions Work</div>
+            <div style="color:#fff;font-size:1rem;font-weight:700;margin-bottom:5px;letter-spacing:-0.02em;font-family:-apple-system,sans-serif">Everything in the store is free.</div>
+            <div style="color:#555;font-size:0.75rem;letter-spacing:-0.01em;font-family:-apple-system,sans-serif;line-height:1.65">Actions are <em style="color:#888;font-style:normal">not currency</em> — they're your monthly product limit. You get <strong style="color:#fff;font-weight:600">10 Actions every month</strong>, automatically. No money, no payments.</div>
+            <div style="display:flex;gap:14px;margin-top:12px;flex-wrap:wrap">
+                <div style="font-family:ui-monospace,monospace;font-size:0.55rem;color:#333;letter-spacing:0.06em">BLIND BAG = 1 ACTION</div>
+                <div style="font-family:ui-monospace,monospace;font-size:0.55rem;color:#333;letter-spacing:0.06em">WB BOOK = 2 ACTIONS</div>
+                <div style="font-family:ui-monospace,monospace;font-size:0.55rem;color:#333;letter-spacing:0.06em">BUNDLE = 3–5 ACTIONS</div>
             </div>
         </div>
-        <a href="shop.html" style="background:#fff;color:#000;text-decoration:none;padding:11px 24px;border-radius:980px;font-size:0.82rem;font-weight:600;white-space:nowrap;flex-shrink:0;font-family:-apple-system,sans-serif;letter-spacing:-0.01em;transition:opacity 0.2s">Sign Up</a>
+        <a href="shop.html" style="background:#fff;color:#000;text-decoration:none;padding:10px 20px;border-radius:980px;font-size:0.75rem;font-weight:700;white-space:nowrap;font-family:-apple-system,sans-serif;letter-spacing:-0.01em" onmouseover="this.style.opacity='.82'" onmouseout="this.style.opacity='1'">Get Actions Free →</a>
     </div>
 
     <!-- ═══ BLIND BAGS ═══ -->
@@ -2219,7 +2446,7 @@
   <div class="indy-cloud-header">
     <div class="indy-cloud-eyebrow">ONE LOGIN • EVERYWHERE</div>
     <div class="indy-cloud-title">One Indy Cloud Account.<br>Access to everything.</div>
-    <div class="indy-cloud-sub">Sign in once and instantly unlock Indy AI, Tunes, Indy Actions, and Indy TV — same login, same memory, same seamless experience across every service.</div>
+    <div class="indy-cloud-sub">Sign in once and instantly unlock Indy AI, Indy Actions, and Indy TV — same login, same memory, same seamless experience across every service.</div>
   </div>
 
   <div class="indy-cloud-diagram">
@@ -2246,10 +2473,10 @@
         <div class="service-icon">✦</div>
         <div class="service-name">Indy AI</div>
       </div>
-      <!-- Tunes -->
+      <!-- Secret Drop? -->
       <div class="service-card">
-        <div class="service-icon">Ξ</div>
-        <div class="service-name">Tunes</div>
+        <div class="service-icon">?</div>
+        <div class="service-name">2026 Drop?</div>
       </div>
       <!-- Indy Actions -->
       <div class="service-card">
@@ -2462,153 +2689,12 @@
         </div>
     </div>
 
-
-    <!-- ═══════════════════════════════════════════
-         INDY MUSIC / TUNES
-    ═══════════════════════════════════════════ -->
-
-    <!-- Section header -->
-    <div class="tunes-section">
-
-        <!-- Featured Artist Banner -->
-        <div class="tunes-featured" onclick="window.location='tunes.html'">
-            <img class="tunes-featured-img"
-                 src="https://www.billboard.com/wp-content/uploads/2024/01/Benson-Boone-cr-Dennis-Leupold-press-2024-billboard-1548.jpg?w=942&h=628&crop=1"
-                 alt="Benson Boone"
-                 onerror="this.style.display='none'">
-            <div class="tunes-featured-overlay"></div>
-            <div class="tunes-featured-grain"></div>
-
-            <div class="tunes-featured-content">
-                <div class="tunes-featured-label">Featured Artist</div>
-                <div class="tunes-featured-name">Benson<br>Boone</div>
-                <div class="tunes-featured-meta">
-                    <span class="tunes-featured-genre">Pop · Alternative</span>
-                    <span class="tunes-featured-sep"></span>
-                    <span class="tunes-featured-track">Now playing on Tunes</span>
-                </div>
-                <div class="tunes-featured-actions">
-                    <a href="tunes.html" class="tunes-featured-btn" onclick="event.stopPropagation()">
-                        <span class="tunes-play-dot"></span> Listen on Tunes
-                    </a>
-                    <a href="tunes.html" class="tunes-featured-btn-ghost" onclick="event.stopPropagation()">
-                        View Artist
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ─── Why Tunes — Comparison ─── -->
-    <div class="tunes-vs-section">
-        <div class="tunes-vs-header">
-            <div class="tunes-vs-eyebrow">Head to head</div>
-            <div class="tunes-vs-title">Why Tunes wins.</div>
-            <p class="tunes-vs-sub">We built everything we wished those other apps had.</p>
-        </div>
-
-        <div class="tunes-compare-wrap">
-            <div class="tunes-compare-head">
-                <div class="tunes-compare-head-cell" style="color:rgba(255,255,255,.35)">Feature</div>
-                <div class="tunes-compare-head-cell tunes-col"><span class="tunes-head-dot"></span>Tunes</div>
-                <div class="tunes-compare-head-cell">Spotify</div>
-                <div class="tunes-compare-head-cell">Apple Music</div>
-                <div class="tunes-compare-head-cell">SoundCloud</div>
-            </div>
-            <div class="tunes-compare-body">
-                <div class="tunes-compare-row">
-                    <div class="tunes-compare-cell feature-label">Free tier (full access)</div>
-                    <div class="tunes-compare-cell tunes-col"><span class="tunes-check">✓</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-partial">Ads + limits</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-cross">—</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-partial">Ads + limits</span></div>
-                </div>
-                <div class="tunes-compare-row">
-                    <div class="tunes-compare-cell feature-label">Artist direct upload</div>
-                    <div class="tunes-compare-cell tunes-col"><span class="tunes-check">✓</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-cross">—</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-cross">—</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-check">✓</span></div>
-                </div>
-                <div class="tunes-compare-row">
-                    <div class="tunes-compare-cell feature-label">AI-powered recommendations</div>
-                    <div class="tunes-compare-cell tunes-col"><span class="tunes-check">✓</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-partial">Basic</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-partial">Basic</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-cross">—</span></div>
-                </div>
-                <div class="tunes-compare-row">
-                    <div class="tunes-compare-cell feature-label">Indy AI integration</div>
-                    <div class="tunes-compare-cell tunes-col"><span class="tunes-check">✓</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-cross">—</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-cross">—</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-cross">—</span></div>
-                </div>
-                <div class="tunes-compare-row">
-                    <div class="tunes-compare-cell feature-label">MusicX sessions (exclusive drops)</div>
-                    <div class="tunes-compare-cell tunes-col"><span class="tunes-check">✓</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-cross">—</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-cross">—</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-cross">—</span></div>
-                </div>
-                <div class="tunes-compare-row">
-                    <div class="tunes-compare-cell feature-label">Lossless audio quality</div>
-                    <div class="tunes-compare-cell tunes-col"><span class="tunes-check">✓</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-partial">Premium only</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-check">✓</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-cross">—</span></div>
-                </div>
-                <div class="tunes-compare-row">
-                    <div class="tunes-compare-cell feature-label">Culture-native curation</div>
-                    <div class="tunes-compare-cell tunes-col"><span class="tunes-check">✓</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-cross">—</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-cross">—</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-cross">—</span></div>
-                </div>
-                <div class="tunes-compare-row">
-                    <div class="tunes-compare-cell feature-label">No algorithm manipulation</div>
-                    <div class="tunes-compare-cell tunes-col"><span class="tunes-check">✓</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-cross">—</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-cross">—</span></div>
-                    <div class="tunes-compare-cell"><span class="tunes-cross">—</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ─── Dark band: MusicX Sessions ─── -->
-    <div class="tunes-dark-band">
-        <div class="tunes-dark-left">
-            <div class="tunes-dark-eyebrow">MusicX Sessions</div>
-            <div class="tunes-dark-title">Where unknown artists<br>become the next drop.</div>
-            <div class="tunes-dark-body">MusicX is Tunes' exclusive recording and release program. Artists submit sessions, get editorial support, and drop directly to the Tunes community — no label required. Every session is free to listen.</div>
-            <a href="tunes.html" class="tunes-dark-btn">Explore MusicX Sessions →</a>
-        </div>
-        <div class="tunes-dark-right">
-            <!-- Animated waveform -->
-            <div class="tunes-waveform" id="tunesWaveform"></div>
-            <!-- Now Playing overlay -->
-            <div class="tunes-now-playing">
-                <div class="tunes-np-art">🎵</div>
-                <div class="tunes-np-info">
-                    <div class="tunes-np-title">Beautiful Things</div>
-                    <div class="tunes-np-artist">Benson Boone · MusicX Session</div>
-                </div>
-                <div class="tunes-np-controls">
-                    <span class="tunes-np-ctrl">⏮</span>
-                    <span class="tunes-np-ctrl play">▶</span>
-                    <span class="tunes-np-ctrl">⏭</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</main>
-
 <!-- ═══ INDY ARTICLE POPUP ═══ -->
-<div id="indy-popup-overlay" onclick="handleIndyOverlayClick(event)">
+<div id="indy-popup-overlay">
+    <div class="indy-popup-topbar">
+        <button class="indy-popup-return" onclick="closeIndyPopup()">return to home</button>
+    </div>
     <div class="indy-popup-box" id="indyPopupBox">
-        <button class="indy-popup-close" onclick="closeIndyPopup()">✕</button>
         <div class="indy-popup-hero" id="indyPopupHero">
             <div class="indy-popup-hero-scan"></div>
         </div>
@@ -2616,12 +2702,14 @@
     </div>
 </div>
 
-<!-- ═══ PRODUCT POPUP ═══ -->
-<div id="product-popup" onclick="handlePopupBackdrop(event)">
-    <div class="popup-box">
-        <button class="popup-close" onclick="closePopup()">✕</button>
+<!-- ═══ PRODUCT FULLSCREEN VIEW ═══ -->
+<div id="product-popup">
+    <div class="popup-fs-topbar">
+        <button class="popup-return-btn" onclick="closePopup()">return to home</button>
+    </div>
+    <div class="popup-fs-body">
         <div class="popup-img" id="popupImg"></div>
-        <div class="popup-body">
+        <div class="popup-fs-info">
             <div class="popup-tag" id="popupTag"></div>
             <div class="popup-name" id="popupName"></div>
             <div id="popupColorRow" class="popup-color-row" style="display:none">
@@ -2638,6 +2726,32 @@
                 <div style="font-size:0.7rem;color:#888">Action</div>
             </div>
             <button class="popup-add-btn" id="popupAddBtn" onclick="toggleCartFromPopup()">＋ Add to Cart</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ TUNES GOODBYE POPUP ═══ -->
+<div id="tunes-goodbye-overlay">
+    <div class="tunes-goodbye-topbar">
+        <button class="tunes-goodbye-return" onclick="closeTunesGoodbye()">return to home</button>
+    </div>
+    <div class="tunes-goodbye-box">
+        <div class="tunes-goodbye-header">
+            <div class="tunes-goodbye-tag">A message from IRELAND™ Co's JVST</div>
+            <div class="tunes-goodbye-title">Two years, and a goodbye<br>we didn't want to write.</div>
+            <div class="tunes-goodbye-emojis">🎵 📺</div>
+        </div>
+        <div class="tunes-goodbye-body">
+            <div class="tunes-goodbye-date">March 23, 2026 · JVST Team</div>
+            <p class="tunes-goodbye-p">Two years ago today, we released <strong>TUNES</strong> — a new Mini Crafts (IRELAND) feature that would change the trajectory of our company for good. A music embed straight inside our platform, built with love, free for everyone. It was something we were genuinely proud of.</p>
+            <p class="tunes-goodbye-p">Skip back to today — we now have more amazing features like <strong>INDY AI</strong>, and way more new blind bags and products in our catalog. Best thing? They cost nothing. It makes us so happy to keep doing what we're doing with your support.</p>
+            <p class="tunes-goodbye-p">But we have some pretty bad news.</p>
+            <p class="tunes-goodbye-p">The embed feature from YouTube has been disabled from the admin level. This is outside our control, and we've exhausted every workaround we could find. So as of <strong>3/23/26</strong>, TUNES and TV are being <strong>Permanently Discontinued</strong>.</p>
+            <p class="tunes-goodbye-p">This wasn't a decision we made — it was one made for us. TUNES was the heartbeat of what made this platform feel alive, and TV gave you a window into something bigger. Losing both of them at once genuinely stings, and we won't pretend otherwise.</p>
+            <p class="tunes-goodbye-p">What we can promise is this: <strong>we're not done.</strong> INDY AI is only getting better. The catalog keeps growing. Actions keep refreshing. And speaking of what's next — we have something big on the horizon that we think you're going to love. On <strong>April 20th, we're dropping something brand new</strong> — a mystery event we've been building in secret. We can't say more than that yet, but trust us: it's worth the wait.</p>
+            <p class="tunes-goodbye-p">Thank you for two incredible years of TUNES. Thank you for watching TV with us. And thank you, genuinely, for still being here.</p>
+            <div class="tunes-goodbye-sig">With love — The JVST × IRELAND™ team 🐰</div>
+            <button class="tunes-goodbye-close" onclick="closeTunesGoodbye()">I understand — close</button>
         </div>
     </div>
 </div>
@@ -2817,7 +2931,7 @@
 
   /* footer */
   .cute-footer { background:var(--white);border-top:1.5px solid var(--gray-200);padding:60px 0 30px; }
-  .cute-foot-cta { display:flex;justify-content:space-between;align-items:center;gap:24px;background:var(--pastel-pink);border:1.5px solid #f8c8d0;border-radius:var(--radius-lg);padding:28px 32px;margin-bottom:40px;flex-wrap:wrap; }
+  .cute-foot-cta { display:flex;justify-content:space-between;align-items:center;gap:24px;background:var(--pastel-pink);border:1.5px solid #000000;border-radius:var(--radius-lg);padding:28px 32px;margin-bottom:40px;flex-wrap:wrap; }
   .cute-foot-grid { display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px; }
   @media(max-width:860px){ .cute-foot-grid{grid-template-columns:1fr 1fr!important;gap:28px!important} }
   @media(max-width:500px){ .cute-foot-grid{grid-template-columns:1fr!important} }
@@ -2870,7 +2984,6 @@
       <div>
         <h4 style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#ccc;margin-bottom:14px">JVST</h4>
         <a href="indy.html" class="cute-foot-link">Indy 3 AI</a>
-        <a href="#music" class="cute-foot-link">Music &amp; MusicX</a>
         <a href="#actions" class="cute-foot-link">How Actions Work</a>
         <a href="login.html" class="cute-foot-link">Sign Up Free</a>
       </div>
@@ -2884,7 +2997,7 @@
 
     <!-- Legal -->
     <div class="cute-foot-legal">
-      <p style="font-size:.66rem;color:#ccc;line-height:1.75;letter-spacing:.01em">JVST and Indy 3 are operated by JVST Inc. All AI-generated content produced by Indy 3 is the responsibility of the user. JVST does not guarantee accuracy of AI outputs and recommends independent verification for any information used in professional, medical, legal, or financial contexts. MusicX Sessions submissions remain the intellectual property of the submitting artist. Mini Crafts™ is a JVST brand. By using JVST services you agree to our Terms of Service and Privacy Policy. Ask employee to redeem orders.</p>
+      <p style="font-size:.66rem;color:#ccc;line-height:1.75;letter-spacing:.01em">JVST and Indy 3 are operated by JVST Inc. All AI-generated content produced by Indy 3 is the responsibility of the user. JVST does not guarantee accuracy of AI outputs and recommends independent verification for any information used in professional, medical, legal, or financial contexts. Featured Artist submissions remain the intellectual property of the submitting artist. Mini Crafts™ is a JVST brand. By using JVST services you agree to our Terms of Service and Privacy Policy. Ask employee to redeem orders.</p>
     </div>
 
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
@@ -3088,6 +3201,56 @@ const BUNDLES = [
 
 const ALL_PRODUCTS = [...BLIND_BAGS, ...BOOKS, ...KEYCHAINS, ...BUNDLES];
 
+// ── ADS ───────────────────────────────────────────────────────────────────────
+const ADS = [
+    {
+        ad_id: 'ad1',
+        tag: '4·20 Drop',
+        title: 'Something New Is Coming.',
+        subtitle: 'April 20th · JVST',
+        popupId: 'apr20drop',
+        bg: '#000',
+        adGfx: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:6px;padding:12px">
+            <div style="font-family:-apple-system,sans-serif;font-size:1.3rem;font-weight:700;color:#fff;letter-spacing:-0.04em;line-height:1">4·20</div>
+            <div style="font-family:-apple-system,sans-serif;font-size:0.45rem;color:rgba(255,255,255,0.35);letter-spacing:0.12em;text-transform:uppercase;text-align:center">Apr 20</div>
+        </div>`
+    },
+    {
+        ad_id: 'ad2',
+        tag: 'Actions',
+        title: 'Everything Is Free.',
+        subtitle: '10 Actions/month',
+        popupId: 'freestuff',
+        bg: '#000',
+        adGfx: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:4px;padding:12px">
+            <div style="font-family:-apple-system,sans-serif;font-size:1.5rem;font-weight:700;color:#fff;letter-spacing:-0.04em">FREE</div>
+            <div style="font-family:-apple-system,sans-serif;font-size:0.42rem;color:rgba(255,255,255,0.35);letter-spacing:0.1em;text-transform:uppercase">With Actions</div>
+        </div>`
+    },
+    {
+        ad_id: 'ad3',
+        tag: 'Important Update',
+        title: 'TUNES & TV: A Farewell.',
+        subtitle: 'Read our statement',
+        popupId: null,
+        clickFn: 'openTunesGoodbyePopup()',
+        bg: '#0a0a0a',
+        adGfx: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:6px;padding:10px;text-align:center">
+            <div style="font-size:1.2rem">🎵</div>
+            <div style="font-family:-apple-system,sans-serif;font-size:0.38rem;font-weight:600;color:rgba(255,255,255,0.4);letter-spacing:0.14em;text-transform:uppercase">3 · 23 · 26</div>
+        </div>`
+    },
+];
+
+// ── CATALOG ───────────────────────────────────────────────────────────────────
+const CATALOG = {
+    trending:  ['BB-SPRNG', 'BB-BLOOM', 'BND-START', 'KC-PMP1'],
+    blind_bags: ['BB-BKFST','BB-BRNCH','BB-LNCH','BB-DNR',{ad_id:'ad1'},'BB-SPRNG','BB-BLOOM','BB-GHBAG','BB-MIDBAG'],
+    books:     ['WB-WHTB','WB-MCHA','WB-VIN',{ad_id:'ad2'},'WB-MINT','WB-AME','WB-PNK','WB-PCH'],
+    keychains: ['KC-PMP1','KC-PMP2',{ad_id:'ad3'},'KC-GRNS','KC-HND'],
+    bundles:   ['BND-5PK','BND-START','BND-LB01','BND-LB02','BND-LB03'],
+};
+
 // ── CART ──────────────────────────────────────────────────────────────────────
 const CART_KEY = 'minicrafts_cart_v1';
 let cart = {};
@@ -3166,9 +3329,40 @@ function renderCard(p, visual, extraBelow) {
             ${visual}
             <div class="in-cart-pip">✓</div>
         </div>
-        <div class="product-name">${p.name}</div>
-        ${extraBelow || ''}
+        <div class="product-card-info">
+            <div class="product-card-topic">${p.tag || ''}</div>
+            <div class="product-name">${p.name}</div>
+            ${extraBelow || ''}
+            <div class="product-card-bottom">
+                <button class="product-add-btn${inCart ? ' in-cart-btn' : ''}" title="${inCart ? 'In cart' : 'Add to cart'}"
+                    onclick="event.stopPropagation(); quickAddToCart('${p.id}')">${inCart ? '✓' : 'Get'}</button>
+            </div>
+        </div>
     </div>`;
+}
+
+function renderAdCard(ad) {
+    const clickAction = ad.clickFn ? ad.clickFn : `openIndyPopup('${ad.popupId}')`;
+    const btnAction = ad.clickFn ? ad.clickFn : `event.stopPropagation();openIndyPopup('${ad.popupId}')`;
+    return `<div class="product-card ad-card" onclick="${clickAction}">
+        <div class="product-img-wrap" style="background:${ad.bg||'#111'};display:flex;align-items:center;justify-content:center;">
+            ${ad.adGfx || ''}
+        </div>
+        <div class="product-card-info">
+            <div class="product-card-topic">${ad.tag}</div>
+            <div class="product-name">${ad.title}</div>
+            <div class="product-card-bottom">
+                <button class="ad-learn-btn" onclick="${btnAction}">Read →</button>
+            </div>
+        </div>
+    </div>`;
+}
+
+function quickAddToCart(id) {
+    cart = loadCart();
+    if (cart[id]) { delete cart[id]; } else { cart[id] = 1; }
+    saveCart(cart);
+    renderAllGrids();
 }
 
 // Derive a short color label from a book product name
@@ -3186,27 +3380,33 @@ function renderBookSwatches(activeId, onclick) {
     </div>`;
 }
 
+function renderSection(entries, extraFn) {
+    return entries.map(entry => {
+        if (entry && entry.ad_id) {
+            const ad = ADS.find(a => a.ad_id === entry.ad_id);
+            return ad ? renderAdCard(ad) : '';
+        }
+        const p = ALL_PRODUCTS.find(x => x.id === entry);
+        if (!p) return '';
+        let visual = '';
+        if (BLIND_BAGS.find(x => x.id === p.id))    visual = blindBagPlaceholder(p);
+        else if (BOOKS.find(x => x.id === p.id))     visual = bookPlaceholder(p);
+        else if (KEYCHAINS.find(x => x.id === p.id)) visual = keychainPlaceholder(p);
+        else                                          visual = bundlePlaceholder(p);
+        const extra = extraFn ? extraFn(p) : undefined;
+        return renderCard(p, visual, extra);
+    }).join('');
+}
+
 function renderAllGrids() {
     cart = loadCart();
-
-const TRENDING = [
-        { p: BLIND_BAGS.find(x => x.id === 'BB-SPRNG'), fn: blindBagPlaceholder },
-        { p: BLIND_BAGS.find(x => x.id === 'BB-BLOOM'), fn: blindBagPlaceholder },
-        { p: BUNDLES.find(x => x.id === 'BND-START'),   fn: bundlePlaceholder },
-        { p: KEYCHAINS.find(x => x.id === 'KC-PMP1'),   fn: keychainPlaceholder },
-    ];
-    document.getElementById('trendingGrid').innerHTML = TRENDING.map(({ p, fn }) => renderCard(p, fn(p))).join('');
-    
-    document.getElementById('blindBagGrid').innerHTML = BLIND_BAGS.map(p => renderCard(p, blindBagPlaceholder(p))).join('');
-    document.getElementById('blindBagGrid').innerHTML = BLIND_BAGS.map(p => renderCard(p, blindBagPlaceholder(p))).join('');
-    
-    document.getElementById('booksGrid').innerHTML = BOOKS.map(p =>
-        renderCard(p, bookPlaceholder(p), renderBookSwatches(p.id, 'switchBookCard'))
-    ).join('');
-    
-    document.getElementById('keychainGrid').innerHTML = KEYCHAINS.map(p => renderCard(p, keychainPlaceholder(p))).join('');
-    document.getElementById('bundleGrid').innerHTML = BUNDLES.map(p => renderCard(p, bundlePlaceholder(p))).join('');
-    
+    document.getElementById('trendingGrid').innerHTML  = renderSection(CATALOG.trending);
+    document.getElementById('blindBagGrid').innerHTML  = renderSection(CATALOG.blind_bags);
+    document.getElementById('booksGrid').innerHTML     = renderSection(CATALOG.books, p =>
+        BOOKS.find(x => x.id === p.id) ? renderBookSwatches(p.id, 'switchBookCard') : undefined
+    );
+    document.getElementById('keychainGrid').innerHTML  = renderSection(CATALOG.keychains);
+    document.getElementById('bundleGrid').innerHTML    = renderSection(CATALOG.bundles);
     updateBadge();
     renderCartDrawer();
 }
@@ -3742,6 +3942,44 @@ const INDY_ARTICLES = {
         ],
         stats: [{ num: '47', label: 'Languages' }, { num: '100%', label: 'Free Base Tier' }, { num: '∞', label: 'Culture Fluency' }],
         cta: { text: 'Join the Community →', href: 'indy.html' }
+    },
+    apr20drop: {
+        tag: 'Coming April 20th', title: 'Something New Is Coming.',
+        heroBg: 'linear-gradient(135deg,#0a0a0a 0%,#111 50%,#0a0a0a 100%)',
+        heroGfx: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><div style="font-family:-apple-system,sans-serif;font-size:3.5rem;font-weight:700;color:#fff;letter-spacing:-0.06em;line-height:1">4·20</div><div style="font-family:ui-monospace,monospace;font-size:0.55rem;color:rgba(255,255,255,0.3);letter-spacing:0.18em;text-transform:uppercase">JVST × IRELAND™ Co</div></div>`,
+        lead: 'We\'ve been working on something new — and April 20th is the day it goes live. Here\'s a first look at what\'s on the way.',
+        sections: [
+            { title: 'New Services', body: 'We\'re expanding what JVST offers beyond the store. New digital services are coming that integrate with your existing JVST account — same login, new things you can do. We\'re keeping the details close for now, but if you\'ve been a member for a while, you\'ll appreciate where we\'re going.' },
+            { title: 'Local Celebrity Collabs', body: 'We\'ve been building relationships with local figures and creators in our community — people you know. April 20th marks the first wave of collaborative drops with names you\'ll recognise. Limited availability, exclusive items, and a few surprises mixed in.' },
+            { title: 'More to Come', body: 'There\'s more that isn\'t listed here yet. We\'ll be teasing details leading up to the drop. Sign up for a JVST account now to make sure you have your Actions ready — some of what\'s coming will go fast.' },
+        ],
+        feats: [
+            { icon: '✨', title: 'New Services', desc: 'Expanding the JVST ecosystem with brand new digital offerings.' },
+            { icon: '🤝', title: 'Local Collabs', desc: 'Collaborative drops with recognisable local names and creators.' },
+            { icon: '🎁', title: 'Exclusive Items', desc: 'Limited runs you won\'t find anywhere else.' },
+            { icon: '🆓', title: 'Still Free', desc: 'Everything works on Actions — no hidden costs, no surprises.' },
+        ],
+        stats: [{ num: 'Apr 20', label: 'Drop Date' }, { num: '100%', label: 'Free with Actions' }, { num: '?', label: 'Surprises' }],
+        cta: { text: 'Get Your Account Ready →', href: 'shop.html' }
+    },
+    freestuff: {
+        tag: 'How It Works', title: 'Everything Here Is Free.',
+        heroBg: 'linear-gradient(135deg,#0a0a0a,#1a1a1a)',
+        heroGfx: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px"><div style="font-family:-apple-system,sans-serif;font-size:3rem;font-weight:700;color:#fff;letter-spacing:-0.05em">FREE</div><div style="font-family:ui-monospace,monospace;font-size:0.55rem;color:rgba(255,255,255,0.3);letter-spacing:0.14em;text-transform:uppercase">With Actions · Every Month</div></div>`,
+        lead: 'No prices, no checkout, no credit card. Everything in the Mini Crafts store costs zero dollars — here\'s exactly how that works.',
+        sections: [
+            { title: 'What Are Actions?', body: 'Actions are your monthly product allowance. Every JVST account gets 10 Actions automatically at the start of each month. They\'re not currency — you can\'t buy more of them and you can\'t spend real money here. When the month resets, your Actions refill. Simple.' },
+            { title: 'What Do Things Cost?', body: 'Blind Bags cost 1 Action each. White Board Books cost 2 Actions. Bundles range from 3 to 5 Actions depending on what\'s inside. Add what you want to your cart, check out with your JVST account, and show your digital receipt to an employee to collect your order.' },
+            { title: 'Do I Need an Account?', body: 'Yes — a free JVST account is how your Actions are tracked. Signing up takes about a minute. Once you\'re in, your balance updates in real time and carries across every JVST service. No subscription, no trial period, just a free account.' },
+        ],
+        feats: [
+            { icon: '🆓', title: 'Always Free', desc: 'No prices, no payments, no hidden fees — ever.' },
+            { icon: '🔄', title: 'Monthly Refill', desc: '10 Actions reload automatically every month.' },
+            { icon: '🛒', title: 'Add to Cart', desc: 'Shop like normal, then show your receipt at pickup.' },
+            { icon: '⚡', title: 'Instant Account', desc: 'Sign up free at JVST in about 60 seconds.' },
+        ],
+        stats: [{ num: '10', label: 'Actions / Month' }, { num: '$0', label: 'Cost to You' }, { num: '∞', label: 'Products Available' }],
+        cta: { text: 'Create Your Free Account →', href: 'shop.html' }
     }
 };
 
@@ -3751,22 +3989,19 @@ function openIndyPopup(id) {
     const hero    = document.getElementById('indyPopupHero');
     const content = document.getElementById('indyPopupContent');
     hero.style.background = a.heroBg;
-    // Preserve the scan line div, set rest
     hero.innerHTML = `<div class="indy-popup-hero-scan"></div>${a.heroGfx}<div class="indy-popup-hero-title"><div class="indy-popup-hero-tag">${a.tag}</div><div class="indy-popup-hero-h1">${a.title}</div></div>`;
     const featsHtml = a.feats.map(f => `<div class="indy-article-feat"><div class="indy-article-feat-icon">${f.icon}</div><div class="indy-article-feat-title">${f.title}</div><div class="indy-article-feat-desc">${f.desc}</div></div>`).join('');
     const statsHtml = a.stats.map(s => `<div class="indy-article-stat"><div class="indy-article-stat-num">${s.num}</div><div class="indy-article-stat-label">${s.label}</div></div>`).join('');
     const sectionsHtml = a.sections.map(s => `<div class="indy-article-section"><div class="indy-article-h2">${s.title}</div><p class="indy-article-p">${s.body}</p></div>`).join('');
     content.innerHTML = `<p class="indy-article-lead">${a.lead}</p><div class="indy-article-stat-row">${statsHtml}</div>${sectionsHtml}<div class="indy-article-feat-grid">${featsHtml}</div><a href="${a.cta.href}" class="indy-article-cta">${a.cta.text}</a>`;
-    document.getElementById('indy-popup-overlay').classList.add('open');
-    document.getElementById('indyPopupBox').scrollTop = 0;
+    const overlay = document.getElementById('indy-popup-overlay');
+    overlay.classList.add('open');
+    overlay.scrollTop = 0;
     document.body.style.overflow = 'hidden';
 }
 function closeIndyPopup() {
     document.getElementById('indy-popup-overlay').classList.remove('open');
     document.body.style.overflow = '';
-}
-function handleIndyOverlayClick(e) {
-    if (e.target === document.getElementById('indy-popup-overlay')) closeIndyPopup();
 }
 
 // ── EVENT LISTENERS ───────────────────────────────────────────────────────────
@@ -3783,6 +4018,7 @@ document.addEventListener('keydown', e => {
         closeCheckout();
         closeThankyou();
         closeIndyPopup();
+        closeTunesGoodbye();
     }
 });
 
@@ -3831,11 +4067,32 @@ document.addEventListener('keydown', e => {
     obs.observe(manifesto);
 })();
 
+// ── TUNES GOODBYE POPUP ──────────────────────────────────────────────────────
+const TUNES_GOODBYE_KEY = 'minicrafts_tunes_goodbye_seen_v1';
+
+function openTunesGoodbyePopup() {
+    document.getElementById('tunes-goodbye-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeTunesGoodbye() {
+    document.getElementById('tunes-goodbye-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    try { localStorage.setItem(TUNES_GOODBYE_KEY, '1'); } catch {}
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     cart = loadCart();
     renderAllGrids();
     initFirebase();
+
+    // Auto-show TUNES goodbye popup if not yet seen
+    try {
+        if (!localStorage.getItem(TUNES_GOODBYE_KEY)) {
+            setTimeout(openTunesGoodbyePopup, 1200);
+        }
+    } catch {}
 });
 </script>
 </body>
