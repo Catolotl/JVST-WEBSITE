@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JVST Internal</title>
+<title>INDY Internal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -665,7 +665,7 @@
 
 <!-- LOADING -->
 <div id="loading-screen">
-  <div class="load-logo">✦ JVST Internal</div>
+  <div class="load-logo">✦ INDY Internal [BETA]</div>
   <div class="load-bar"></div>
 </div>
 
@@ -673,7 +673,7 @@
 <div class="screen" id="screen-auth">
   <div class="auth-wrap">
     <div class="auth-lockup">
-      <div class="auth-eyebrow">✦ JVST — Employees Only</div>
+      <div class="auth-eyebrow">✦ INDY — Employees Only</div>
       <h1 class="auth-title">Internal<br><span>Feed.</span></h1>
       <p class="auth-sub">Sign in with your Actions account.<br>Access is restricted to authorized staff.</p>
     </div>
@@ -702,7 +702,7 @@
 <div class="screen" id="screen-denied">
   <div class="denied-icon">⊗</div>
   <div class="denied-title">No access.</div>
-  <div class="denied-sub">This feed is restricted to authorized JVST employees. Your account doesn't have permission.</div>
+  <div class="denied-sub">This feed is restricted to authorized INDY employees. Your account doesn't have permission.</div>
   <button class="btn btn-ghost" style="width:auto;padding:10px 24px;margin-top:8px;" onclick="doSignOut()">
     Sign out
   </button>
@@ -715,8 +715,7 @@
   <div class="app-header">
     <div class="app-logo">
       <div class="app-logo-dot"></div>
-      JVST
-      <span class="app-logo-tag">Internal</span>
+      INDY Updates [BETA]
     </div>
     <div class="header-right">
       <button class="inbox-btn" id="inbox-btn" style="display:none;" onclick="openInbox()" title="Suggestions inbox">📬</button>
@@ -818,7 +817,7 @@
           <option value="INDY+">INDY+</option>
           <option value="Actions App">Actions App</option>
           <option value="Website">Website</option>
-          <option value="Shop (shopjvst.store)">Shop (shopjvst.store)</option>
+          <option value="Shop (shopINDY.store)">Shop (shopINDY.store)</option>
           <option value="Fan">Fan</option>
           <option value="New service/product">New service / product</option>
           <option value="Other">Other</option>
@@ -867,7 +866,7 @@
           <option value="INDY+">INDY+</option>
           <option value="Actions App">Actions App</option>
           <option value="Website">Website</option>
-          <option value="Shop (shopjvst.store)">Shop (shopjvst.store)</option>
+          <option value="Shop (shopINDY.store)">Shop (shopINDY.store)</option>
           <option value="Fan">Fan</option>
           <option value="Other">Other</option>
         </select>
@@ -927,7 +926,7 @@
  * 1. In Firestore, create this document manually:
  *      Collection: config
  *      Document:   invite
- *      Field:      code  (string)  = jvstadmin2026
+ *      Field:      code  (string)  = INDYadmin2026
  *
  * 2. Add this rule to your Firestore rules (inside the database match block):
  *
