@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>INDY Fans [BETA]</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff; color: #111; }
+.page { max-width: 480px; margin: 0 auto; padding: 1rem; }
+
+/* NAV */
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+.header-logo { font-size: 18px; font-weight: 600; color: #111; }
+.header-right { display: flex; align-items: center; gap: 8px; }
+.header-actions { font-size: 13px; color: #555; background: #f5f5f5; padding: 4px 10px; border-radius: 8px; border: 0.5px solid rgba(0,0,0,0.1); }
+.sign-btn { font-size: 12px; font-weight: 500; background: #111; color: #fff; border: none; border-radius: 99px; padding: 5px 13px; cursor: pointer; }
+.sign-btn:hover { opacity: 0.8; }
+
+/* FLASH */
+.flash-banner { background: #f5f5f5; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 10px 14px; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+.flash-left { display: flex; flex-direction: column; gap: 3px; }
+.flash-label { font-size: 11px; color: #854F0B; background: #FAEEDA; padding: 2px 7px; border-radius: 6px; font-weight: 500; width: fit-content; }
+.flash-text { font-size: 13px; color: #111; }
+.flash-timer { font-size: 13px; color: #555; font-weight: 500; font-variant-numeric: tabular-nums; }
+
+/* ATHLETES */
+.athletes-row { display: flex; gap: 12px; justify-content: center; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+.athletes-row::-webkit-scrollbar { display: none; }
+.athlete-circle { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0; }
+.athlete-ring { width: 64px; height: 64px; border-radius: 50%; border: 2px solid rgba(0,0,0,0.12); padding: 2px; transition: border-color 0.2s; }
+.athlete-ring:hover { border-color: #111; }
+.athlete-ring img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #f5f5f5; display: block; }
+.athlete-name-row { display: flex; align-items: center; gap: 3px; font-size: 11px; color: #555; }
+.check { display: inline-flex; align-items: center; justify-content: center; width: 12px; height: 12px; background: #111; border-radius: 50%; flex-shrink: 0; }
+.check svg { width: 7px; height: 7px; }
+.athlete-prog { width: 52px; height: 2px; background: #eee; border-radius: 99px; overflow: hidden; }
+.athlete-prog-fill { height: 100%; background: #111; border-radius: 99px; transition: width 0.4s; }
+
+/* DIVIDER */
+.divider { height: 0.5px; background: rgba(0,0,0,0.08); margin: 0 0 1.5rem; }
+
+/* POSTS */
+.post { margin-bottom: 1.5rem; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 12px; overflow: hidden; background: #fff; }
+.post-header { display: flex; align-items: center; justify-content: space-between; padding: 11px 13px; }
+.post-user { display: flex; align-items: center; gap: 9px; }
+.post-avatar { width: 34px; height: 34px; border-radius: 50%; background: #f0f0f0; object-fit: cover; display: block; }
+.post-username { font-size: 13px; font-weight: 500; color: #111; display: flex; align-items: center; gap: 4px; }
+.post-time { font-size: 11px; color: #aaa; }
+.pinned-tag { font-size: 10px; color: #555; background: #f0f0f0; border: 0.5px solid rgba(0,0,0,0.1); padding: 3px 8px; border-radius: 99px; }
+.post-image { width: 100%; aspect-ratio: 1/1; background: #f5f5f5; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.post-image img { width: 100%; height: 100%; object-fit: cover; }
+.post-image-placeholder { font-size: 12px; color: #bbb; }
+.post-footer { padding: 10px 13px; }
+.post-caption { font-size: 13px; color: #111; margin-bottom: 8px; line-height: 1.55; }
+.post-caption strong { font-weight: 600; }
+.post-likes { display: flex; align-items: center; gap: 6px; }
+.like-btn { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #555; cursor: pointer; padding: 4px 9px; border-radius: 8px; border: 0.5px solid rgba(0,0,0,0.1); background: none; transition: background 0.15s; font-family: inherit; }
+.like-btn:hover { background: #f5f5f5; }
+.like-btn.liked { color: #c0392b; border-color: rgba(192,57,43,0.3); }
+.heart { font-size: 13px; line-height: 1; }
+
+/* ATHLETE MODAL */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: flex-end; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+.overlay.open { opacity: 1; pointer-events: all; }
+.modal { background: #fff; border-radius: 16px 16px 0 0; width: 100%; max-width: 480px; padding: 1.25rem 1.25rem 2rem; border: 0.5px solid rgba(0,0,0,0.1); transform: translateY(20px); transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1); }
+.overlay.open .modal { transform: translateY(0); }
+.modal-handle { width: 36px; height: 4px; border-radius: 99px; background: #e0e0e0; margin: 0 auto 1.25rem; }
+.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+.modal-title { font-size: 15px; font-weight: 600; color: #111; }
+.close-btn { font-size: 18px; color: #999; cursor: pointer; background: none; border: none; line-height: 1; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+.close-btn:hover { background: #f0f0f0; }
+.modal-athlete { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; }
+.modal-avatar { width: 50px; height: 50px; border-radius: 50%; background: #f0f0f0; object-fit: cover; }
+.modal-athlete-name { font-size: 14px; font-weight: 600; color: #111; }
+.modal-athlete-sub { font-size: 12px; color: #888; margin-top: 2px; }
+.progress-section { margin-bottom: 1.25rem; }
+.progress-labels { display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-bottom: 6px; }
+.progress-current { font-weight: 600; color: #111; }
+.progress-bar-bg { height: 8px; background: #f0f0f0; border-radius: 99px; overflow: hidden; }
+.progress-bar-fill { height: 100%; border-radius: 99px; background: #111; transition: width 0.4s ease; }
+.reward-box { background: #f8f8f8; border-radius: 8px; padding: 10px 12px; margin-bottom: 1.25rem; font-size: 13px; color: #666; border: 0.5px solid rgba(0,0,0,0.08); }
+.reward-box strong { color: #111; font-weight: 500; }
+.donate-row { display: flex; gap: 8px; }
+.donate-input { flex: 1; padding: 9px 11px; border: 0.5px solid rgba(0,0,0,0.15); border-radius: 8px; font-size: 13px; background: #fff; color: #111; font-family: inherit; outline: none; transition: border-color 0.15s; }
+.donate-input:focus { border-color: #111; }
+.donate-input::placeholder { color: #bbb; }
+.donate-btn { padding: 9px 18px; border-radius: 8px; background: #111; color: #fff; font-size: 13px; font-weight: 500; border: none; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+.donate-btn:hover { opacity: 0.75; }
+.donate-feedback { font-size: 12px; color: #111; text-align: center; margin-top: 8px; min-height: 16px; }
+
+/* AUTH MODAL */
+.auth-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; padding: 1rem; }
+.auth-overlay.open { opacity: 1; pointer-events: all; }
+.auth-modal { background: #fff; border-radius: 14px; border: 0.5px solid rgba(0,0,0,0.1); padding: 1.5rem; width: 100%; max-width: 340px; position: relative; transform: scale(0.97); transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1); }
+.auth-overlay.open .auth-modal { transform: scale(1); }
+.auth-title { font-size: 15px; font-weight: 600; color: #111; margin-bottom: 4px; }
+.auth-sub { font-size: 13px; color: #888; margin-bottom: 1.25rem; }
+.auth-input { width: 100%; background: #f8f8f8; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 8px; padding: 10px 12px; font-size: 13px; color: #111; font-family: inherit; outline: none; margin-bottom: 9px; transition: border-color 0.15s; }
+.auth-input:focus { border-color: #111; background: #fff; }
+.auth-input::placeholder { color: #bbb; }
+.auth-btn { width: 100%; background: #111; color: #fff; border: none; border-radius: 8px; padding: 11px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; margin-bottom: 10px; transition: opacity 0.15s; }
+.auth-btn:hover { opacity: 0.75; }
+.auth-error { font-size: 12px; color: #c0392b; margin-bottom: 8px; min-height: 16px; }
+.auth-toggle { font-size: 12px; color: #888; text-align: center; cursor: pointer; }
+.auth-toggle span { color: #111; font-weight: 500; text-decoration: underline; }
+.auth-close { position: absolute; top: 12px; right: 12px; width: 26px; height: 26px; border-radius: 50%; background: #f0f0f0; border: none; color: #888; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+/* TOS MODAL */
+.tos-overlay { position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; padding: 1rem; }
+.tos-overlay.open { opacity: 1; pointer-events: all; }
+.tos-modal { background: #fff; border-radius: 14px; border: 0.5px solid rgba(0,0,0,0.1); padding: 1.5rem; width: 100%; max-width: 340px; position: relative; transform: scale(0.97); transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1); }
+.tos-overlay.open .tos-modal { transform: scale(1); }
+.tos-title { font-size: 15px; font-weight: 600; color: #111; margin-bottom: 4px; }
+.tos-sub { font-size: 12px; color: #888; margin-bottom: 1rem; }
+.tos-body { height: 180px; overflow-y: auto; background: #f8f8f8; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 8px; padding: 12px; font-size: 12px; color: #555; line-height: 1.6; margin-bottom: 1rem; scrollbar-width: thin; }
+.tos-body h4 { font-size: 12px; font-weight: 600; color: #111; margin: 10px 0 4px; }
+.tos-body h4:first-child { margin-top: 0; }
+.tos-checkbox-row { display: flex; align-items: flex-start; gap: 9px; margin-bottom: 1rem; cursor: pointer; }
+.tos-checkbox { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid rgba(0,0,0,0.2); background: #fff; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; cursor: pointer; }
+.tos-checkbox.checked { background: #111; border-color: #111; }
+.tos-checkbox-label { font-size: 12px; color: #555; line-height: 1.5; }
+.tos-checkbox-label a { color: #111; }
+.tos-accept-btn { width: 100%; background: #111; color: #fff; border: none; border-radius: 8px; padding: 11px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+.tos-accept-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.tos-accept-btn:not(:disabled):hover { opacity: 0.75; }
+
+/* POST COMPOSER */
+.composer { border: 0.5px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 12px 13px; margin-bottom: 1.5rem; background: #fff; display: none; }
+.composer.visible { display: block; }
+.composer-top { display: flex; align-items: flex-start; gap: 9px; }
+.composer-avatar { width: 34px; height: 34px; border-radius: 50%; background: #111; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+.composer-textarea { flex: 1; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 8px; padding: 9px 11px; font-size: 13px; color: #111; font-family: inherit; outline: none; resize: none; min-height: 68px; background: #f8f8f8; transition: border-color 0.15s, background 0.15s; }
+.composer-textarea:focus { border-color: #111; background: #fff; }
+.composer-textarea::placeholder { color: #bbb; }
+.composer-image-preview { position: relative; margin: 10px 0 0; border-radius: 8px; overflow: hidden; display: none; }
+.composer-image-preview img { width: 100%; max-height: 240px; object-fit: cover; display: block; border-radius: 8px; }
+.composer-image-remove { position: absolute; top: 7px; right: 7px; width: 24px; height: 24px; border-radius: 50%; background: rgba(0,0,0,0.55); color: #fff; border: none; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; line-height: 1; }
+.composer-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+.composer-img-btn { font-size: 12px; color: #555; background: #f5f5f5; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 8px; padding: 5px 11px; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+.composer-img-btn:hover { background: #ececec; }
+.composer-post-btn { font-size: 12px; font-weight: 600; background: #111; color: #fff; border: none; border-radius: 99px; padding: 6px 16px; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+.composer-post-btn:hover { opacity: 0.75; }
+.composer-post-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.composer-status { font-size: 11px; color: #888; margin-top: 7px; min-height: 14px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <span class="header-logo">JVST</span>
+    <div class="header-right">
+      <span class="header-actions" id="actionsDisplay">— actions</span>
+      <button class="sign-btn" id="authBtn" onclick="openAuth()">sign in</button>
+    </div>
+  </div>
+
+  <!-- FLASH SALE -->
+  <div class="flash-banner">
+    <div class="flash-left">
+      <div class="flash-label">flash sale</div>
+      <div class="flash-text">Spring Bundle — 3 actions <span style="color:#bbb;text-decoration:line-through">5</span></div>
+    </div>
+    <div class="flash-timer" id="timerDisplay">--:--:--</div>
+  </div>
+
+  <!-- ATHLETES -->
+  <div class="athletes-row" id="athletesRow"></div>
+
+  <div class="divider"></div>
+
+  <!-- POST COMPOSER (collab emails only) -->
+  <div class="composer" id="postComposer">
+    <div class="composer-top">
+      <div class="composer-avatar" id="composerAvatar">?</div>
+      <textarea class="composer-textarea" id="composerText" placeholder="share something with fans…" rows="3"></textarea>
+    </div>
+    <div class="composer-image-preview" id="composerPreview">
+      <img id="composerPreviewImg" src="" alt="" />
+      <button class="composer-image-remove" onclick="removeComposerImage()">×</button>
+    </div>
+    <div class="composer-actions">
+      <div>
+        <button class="composer-img-btn" onclick="document.getElementById('composerFileInput').click()">📷 photo</button>
+        <input type="file" id="composerFileInput" accept="image/*" style="display:none" onchange="onComposerImagePicked(event)" />
+      </div>
+      <button class="composer-post-btn" id="composerPostBtn" onclick="submitPost()">post</button>
+    </div>
+    <div class="composer-status" id="composerStatus"></div>
+  </div>
+
+  <!-- FEED -->
+  <div id="feed">
+    <div style="text-align:center;padding:2rem;color:#bbb;font-size:13px;">loading posts...</div>
+  </div>
+
+</div>
+
+<!-- ATHLETE MODAL -->
+<div class="overlay" id="athleteOverlay" onclick="overlayBgClick(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">support</span>
+      <button class="close-btn" onclick="closeAthlete()">×</button>
+    </div>
+    <div class="modal-athlete">
+      <img class="modal-avatar" id="modalAvatar" src="" alt="" />
+      <div>
+        <div class="modal-athlete-name" id="modalName"></div>
+        <div class="modal-athlete-sub" id="modalSub"></div>
+      </div>
+    </div>
+    <div class="progress-section">
+      <div class="progress-labels">
+        <span class="progress-current" id="modalCurrent">0 actions pooled</span>
+        <span id="modalGoalLabel">goal: 500</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="modalBar" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="reward-box">reward: <strong id="modalReward"></strong></div>
+    <div class="donate-row">
+      <input class="donate-input" type="number" min="1" placeholder="actions to donate" id="donateInput" />
+      <button class="donate-btn" onclick="donate()">donate</button>
+    </div>
+    <div class="donate-feedback" id="donateFeedback"></div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-modal">
+    <button class="auth-close" id="authCloseBtn" onclick="closeAuth()">×</button>
+    <div class="auth-title" id="authTitle">Sign in</div>
+    <div class="auth-sub" id="authSub">access your actions + shop the catalog</div>
+    <div class="auth-error" id="authError"></div>
+    <input class="auth-input" type="email" id="authEmail" placeholder="email" />
+    <input class="auth-input" type="password" id="authPassword" placeholder="password" />
+    <button class="auth-btn" onclick="handleAuth()" id="authSubmit">Sign in</button>
+    <div class="auth-toggle" id="authToggle" onclick="toggleAuthMode()">no account? <span>sign up free</span></div>
+  </div>
+</div>
+
+<!-- TOS MODAL -->
+<div class="tos-overlay" id="tosOverlay">
+  <div class="tos-modal">
+    <div class="tos-title">Terms of Service</div>
+    <div class="tos-sub">please read and accept before continuing</div>
+    <div class="tos-body" id="tosBody">
+      <h4>1. Acceptance</h4>
+      By creating an account you agree to these Terms of Service and our Privacy Policy. If you do not agree, do not use JVST / INDY Fan.
+
+      <h4>2. Actions — Free Monthly Limit</h4>
+      Actions are <strong>not currency and have no monetary value.</strong> They are a free monthly product limit automatically granted to every account. You receive <strong>10 Actions every month</strong> at no cost — no payment, no credit card required. Actions reset monthly and do not carry over. Unused Actions expire at the end of each monthly cycle.
+
+      <h4>3. What Actions Cost</h4>
+      Items in the JVST catalog are redeemed using Actions: Blind Bags = 1 Action · White Board Books = 2 Actions · Bundles = 3–5 Actions. Orders are fulfilled in-person — show your digital receipt to a JVST employee to redeem.
+
+      <h4>4. Athlete Support</h4>
+      You may donate Actions from your monthly balance to support athletes in the INDY Fan pool. Donated Actions are irreversible. Rewards are fulfilled by JVST at sole discretion once a goal is reached and may be modified or substituted.
+
+      <h4>5. Eligibility</h4>
+      You must be at least 13 years of age to create an account. By registering you confirm you meet this requirement.
+
+      <h4>6. Prohibited Conduct</h4>
+      You agree not to: create fake accounts, manipulate action counts through automated means, harass other users or athletes, or use the platform for any unlawful purpose.
+
+      <h4>7. Content</h4>
+      JVST may display athlete and user-generated content. You grant JVST a non-exclusive license to use any content you post on the platform.
+
+      <h4>8. Modifications</h4>
+      JVST reserves the right to change these terms at any time. Continued use after changes constitutes acceptance of the updated terms.
+
+      <h4>9. Limitation of Liability</h4>
+      JVST is not liable for indirect, incidental, or consequential damages arising from use of the platform. The platform is provided "as is" without warranties of any kind.
+
+      <h4>10. Governing Law</h4>
+      These terms are governed by the laws of the applicable jurisdiction without regard to conflict of law provisions.
+    </div>
+    <div class="tos-checkbox-row" onclick="toggleTosCheck()">
+      <div class="tos-checkbox" id="tosCheckbox"></div>
+      <span class="tos-checkbox-label">I have read and agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
+    </div>
+    <button class="tos-accept-btn" id="tosAcceptBtn" onclick="acceptTos()" disabled>Accept &amp; Continue</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, orderBy, increment, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyC50_wBK3TfERX1gm35puugCD324SxHJR8",
+  authDomain: "tunesandindy.firebaseapp.com",
+  projectId: "tunesandindy",
+  storageBucket: "tunesandindy.firebasestorage.app",
+  messagingSenderId: "335192973371",
+  appId: "1:335192973371:web:ce69d4b67c765d6aaf7c1e"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+const ATHLETES = [
+  { id: "greyson", name: "greysonbonnifacio", sub: "athlete · collab", initials: "GB", goal: 500, reward: "exclusive greyson x jvst blind bag" },
+  { id: "rainn",   name: "rainnblais",        sub: "athlete · collab", initials: "RB", goal: 500, reward: "rainn collab trophy sleeve" },
+  { id: "noah",    name: "noah",               sub: "artist spotlight",  initials: "N",  goal: 300, reward: "noah x jvst limited keychain" },
+  { id: "evan",    name: "evan",               sub: "artist spotlight",  initials: "E",  goal: 300, reward: "evan x jvst limited keychain" }
+];
+
+// ---- COLLAB POSTER EMAILS ----
+// Add any email here to grant post ability
+const COLLAB_EMAILS = [
+  "rainnblais1@gmail.com"
+];
+
+function isCollab(user) {
+  return user && COLLAB_EMAILS.includes((user.email || "").toLowerCase().trim());
+}
+
+function updateComposer(user) {
+  const composer = document.getElementById("postComposer");
+  if (isCollab(user)) {
+    composer.classList.add("visible");
+    const initial = (user.displayName || user.email || "?")[0].toUpperCase();
+    document.getElementById("composerAvatar").textContent = initial;
+  } else {
+    composer.classList.remove("visible");
+  }
+}
+
+// Image picker
+let composerImageFile = null;
+window.onComposerImagePicked = function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  composerImageFile = file;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById("composerPreviewImg").src = ev.target.result;
+    document.getElementById("composerPreview").style.display = "block";
+  };
+  reader.readAsDataURL(file);
+};
+window.removeComposerImage = function() {
+  composerImageFile = null;
+  document.getElementById("composerPreviewImg").src = "";
+  document.getElementById("composerPreview").style.display = "none";
+  document.getElementById("composerFileInput").value = "";
+};
+
+// Submit post
+window.submitPost = async function() {
+  if (!currentUser || !isCollab(currentUser)) return;
+  const caption = document.getElementById("composerText").value.trim();
+  if (!caption && !composerImageFile) return;
+
+  const btn = document.getElementById("composerPostBtn");
+  const status = document.getElementById("composerStatus");
+  btn.disabled = true;
+  status.textContent = composerImageFile ? "uploading image…" : "posting…";
+
+  try {
+    let imageUrl = null;
+
+    if (composerImageFile) {
+      const path = `posts/${currentUser.uid}/${Date.now()}_${composerImageFile.name}`;
+      const fileRef = storageRef(storage, path);
+      const task = uploadBytesResumable(fileRef, composerImageFile);
+      await new Promise((resolve, reject) => {
+        task.on("state_changed",
+          snap => {
+            const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+            status.textContent = `uploading… ${pct}%`;
+          },
+          reject,
+          resolve
+        );
+      });
+      imageUrl = await getDownloadURL(fileRef);
+    }
+
+    const authorName = currentUser.displayName || currentUser.email.split("@")[0];
+    await addDoc(collection(db, "posts"), {
+      author: authorName,
+      authorInitials: authorName[0].toUpperCase(),
+      authorEmail: currentUser.email,
+      caption,
+      imageUrl,
+      likes: 0,
+      pinned: false,
+      createdAt: serverTimestamp()
+    });
+
+    // Reset composer
+    document.getElementById("composerText").value = "";
+    window.removeComposerImage();
+    status.textContent = "posted ✓";
+    setTimeout(() => status.textContent = "", 2000);
+  } catch(e) {
+    console.error(e);
+    status.textContent = "something went wrong, try again";
+  } finally {
+    btn.disabled = false;
+  }
+};
+let userActions = 0;
+let athleteData = {};
+let currentAthlete = null;
+let authMode = "signin";
+
+function avatarUrl(initials) {
+  return `https://via.placeholder.com/64/f0f0f0/555555?text=${initials}`;
+}
+
+function checkSvg() {
+  return `<span class="check"><svg viewBox="0 0 8 8" fill="none"><polyline points="1.5,4 3.2,6 6.5,2" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
+}
+
+// ---- ATHLETES ----
+async function initAthletes() {
+  for (const a of ATHLETES) {
+    const ref = doc(db, "athletes", a.id);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) await setDoc(ref, { current: 0, goal: a.goal, reward: a.reward });
+    onSnapshot(ref, s => {
+      if (s.exists()) {
+        athleteData[a.id] = s.data();
+        renderAthletes();
+        if (currentAthlete && currentAthlete.id === a.id) refreshModal(a.id);
+      }
+    });
+  }
+}
+
+function renderAthletes() {
+  document.getElementById("athletesRow").innerHTML = ATHLETES.map(a => {
+    const d = athleteData[a.id] || { current: 0, goal: a.goal };
+    const pct = Math.min(100, Math.round(d.current / d.goal * 100));
+    return `<div class="athlete-circle" onclick="window.openAthlete('${a.id}')">
+      <div class="athlete-ring"><img src="${avatarUrl(a.initials)}" alt="${a.name}" /></div>
+      <div class="athlete-name-row"><span>${a.initials}</span>${checkSvg()}</div>
+      <div class="athlete-prog"><div class="athlete-prog-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join("");
+}
+
+window.openAthlete = function(id) {
+  const a = ATHLETES.find(x => x.id === id);
+  currentAthlete = a;
+  document.getElementById("modalAvatar").src = avatarUrl(a.initials);
+  document.getElementById("modalName").textContent = a.name;
+  document.getElementById("modalSub").textContent = a.sub;
+  document.getElementById("modalReward").textContent = a.reward;
+  document.getElementById("donateFeedback").textContent = "";
+  refreshModal(id);
+  document.getElementById("athleteOverlay").classList.add("open");
+};
+
+function refreshModal(id) {
+  const a = ATHLETES.find(x => x.id === id);
+  const d = athleteData[id] || { current: 0, goal: a.goal };
+  document.getElementById("modalCurrent").textContent = d.current + " actions pooled";
+  document.getElementById("modalGoalLabel").textContent = "goal: " + d.goal;
+  document.getElementById("modalBar").style.width = Math.min(100, Math.round(d.current / d.goal * 100)) + "%";
+}
+
+window.closeAthlete = function() { document.getElementById("athleteOverlay").classList.remove("open"); };
+window.overlayBgClick = function(e) { if (e.target === document.getElementById("athleteOverlay")) window.closeAthlete(); };
+
+// ---- DONATE ----
+window.donate = async function() {
+  if (!currentUser) { window.closeAthlete(); window.openAuth(); return; }
+  const amt = parseInt(document.getElementById("donateInput").value);
+  const fb = document.getElementById("donateFeedback");
+  if (!amt || amt < 1) return;
+  if (amt > userActions) { fb.style.color = "#c0392b"; fb.textContent = "not enough actions"; return; }
+  try {
+    await updateDoc(doc(db, "athletes", currentAthlete.id), { current: increment(amt) });
+    // Deduct by incrementing actionsUsed in shop_users (matches the shop app schema)
+    await updateDoc(doc(db, "shop_users", currentUser.uid), { actionsUsed: increment(amt) });
+    document.getElementById("donateInput").value = "";
+    fb.style.color = "#111"; fb.textContent = "donated " + amt + " actions!";
+    setTimeout(() => fb.textContent = "", 2500);
+  } catch { fb.style.color = "#c0392b"; fb.textContent = "something went wrong"; }
+};
+
+// ---- FEED ----
+function timeAgo(date) {
+  if (!date) return "";
+  const s = Math.floor((Date.now() - date.getTime()) / 1000);
+  if (s < 60) return "just now";
+  if (s < 3600) return Math.floor(s/60)+"m ago";
+  if (s < 86400) return Math.floor(s/3600)+"h ago";
+  return Math.floor(s/86400)+"d ago";
+}
+
+function postHtml(p) {
+  const pinTag = p.pinned
+    ? `<span class="pinned-tag">pinned</span>`
+    : `<span class="post-time">${timeAgo(p.createdAt?.toDate?.())}</span>`;
+  const imgArea = p.imageUrl
+    ? `<div class="post-image"><img src="${p.imageUrl}" alt="" /></div>`
+    : `<div class="post-image"><span class="post-image-placeholder">image placeholder</span></div>`;
+  return `<div class="post">
+    <div class="post-header">
+      <div class="post-user">
+        <img class="post-avatar" src="${avatarUrl(p.authorInitials||'J')}" alt="" />
+        <span class="post-username">${p.author||'jvst'} ${checkSvg()}</span>
+      </div>
+      ${pinTag}
+    </div>
+    ${imgArea}
+    <div class="post-footer">
+      <div class="post-caption"><strong>${p.author||'jvst'}</strong> ${p.caption||''}</div>
+      <div class="post-likes">
+        <button class="like-btn" onclick="window.toggleLike(this,'${p.id}')">
+          <span class="heart">♡</span> <span class="like-count">${p.likes||0}</span>
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function welcomePost() {
+  return postHtml({ id:"welcome", author:"jvst", authorInitials:"J", caption:"welcome to INDY Fan. support your people, stack your actions, earn exclusive drops. this is just the beginning.", likes:0, pinned:true, imageUrl:null, createdAt:null });
+}
+
+async function loadFeed() {
+  const feed = document.getElementById("feed");
+  try {
+    const q = query(collection(db, "posts"), orderBy("pinned","desc"), orderBy("createdAt","desc"));
+    onSnapshot(q, snap => {
+      feed.innerHTML = snap.empty
+        ? welcomePost()
+        : snap.docs.map(d => postHtml({ id: d.id, ...d.data() })).join("") || welcomePost();
+    });
+  } catch { feed.innerHTML = welcomePost(); }
+}
+
+// ---- LIKES ----
+const liked = new Set(JSON.parse(localStorage.getItem("jvst_likes")||"[]"));
+window.toggleLike = async function(btn, postId) {
+  const countEl = btn.querySelector(".like-count");
+  const heart = btn.querySelector(".heart");
+  const isLiked = liked.has(postId);
+  let n = parseInt(countEl.textContent.replace(/[^\d]/g,""))||0;
+  if (isLiked) {
+    liked.delete(postId); btn.classList.remove("liked"); heart.textContent = "♡"; n = Math.max(0,n-1);
+  } else {
+    liked.add(postId); btn.classList.add("liked"); heart.textContent = "♥"; n++;
+    if (postId !== "welcome") { try { await updateDoc(doc(db,"posts",postId),{likes:increment(1)}); } catch {} }
+  }
+  countEl.textContent = n >= 1000 ? (n/1000).toFixed(1)+"k" : n;
+  localStorage.setItem("jvst_likes", JSON.stringify([...liked]));
+};
+
+// ---- AUTH ----
+window.openAuth = function() {
+  document.getElementById("authOverlay").classList.add("open");
+  // Hide close button when auto-opened (no user yet) — re-add it on sign-in page
+  document.getElementById("authCloseBtn").style.display = currentUser ? "flex" : "none";
+};
+window.closeAuth = function() { document.getElementById("authOverlay").classList.remove("open"); document.getElementById("authError").textContent=""; };
+window.toggleAuthMode = function() {
+  authMode = authMode === "signin" ? "signup" : "signin";
+  const isIn = authMode === "signin";
+  document.getElementById("authTitle").textContent = isIn ? "Sign in" : "Sign up";
+  document.getElementById("authSub").textContent = isIn ? "access your actions + shop the catalog" : "join jvst free — 10 actions/month, no money needed";
+  document.getElementById("authSubmit").textContent = isIn ? "Sign in" : "Create account";
+  document.getElementById("authToggle").innerHTML = isIn ? `no account? <span>sign up free</span>` : `already have one? <span>sign in</span>`;
+  document.getElementById("authError").textContent = "";
+  // Show close btn when switching to sign-in (user can dismiss)
+  document.getElementById("authCloseBtn").style.display = isIn ? "flex" : "none";
+};
+
+let pendingNewUser = null; // holds firebase credential after signup, before TOS
+
+window.handleAuth = async function() {
+  const email = document.getElementById("authEmail").value.trim();
+  const pass = document.getElementById("authPassword").value;
+  const err = document.getElementById("authError");
+  err.textContent = "";
+  if (!email || !pass) { err.textContent = "fill in all fields"; return; }
+  try {
+    if (authMode === "signin") {
+      await signInWithEmailAndPassword(auth, email, pass);
+      window.closeAuth();
+    } else {
+      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      pendingNewUser = cred.user;
+      window.closeAuth();
+      openTos();
+    }
+  } catch(e) {
+    const map = {"auth/user-not-found":"no account with that email","auth/wrong-password":"incorrect password","auth/email-already-in-use":"email already taken","auth/weak-password":"password too weak (6+ chars)","auth/invalid-email":"invalid email","auth/invalid-credential":"incorrect email or password"};
+    err.textContent = map[e.code] || "something went wrong";
+  }
+};
+
+// ---- TOS ----
+let tosChecked = false;
+function openTos() {
+  tosChecked = false;
+  document.getElementById("tosCheckbox").classList.remove("checked");
+  document.getElementById("tosAcceptBtn").disabled = true;
+  document.getElementById("tosBody").scrollTop = 0;
+  document.getElementById("tosOverlay").classList.add("open");
+}
+window.toggleTosCheck = function() {
+  tosChecked = !tosChecked;
+  document.getElementById("tosCheckbox").classList.toggle("checked", tosChecked);
+  document.getElementById("tosAcceptBtn").disabled = !tosChecked;
+};
+window.acceptTos = async function() {
+  if (!tosChecked) return;
+  document.getElementById("tosOverlay").classList.remove("open");
+  const uid = pendingNewUser ? pendingNewUser.uid : (currentUser ? currentUser.uid : null);
+  const email = pendingNewUser ? pendingNewUser.email : (currentUser ? currentUser.email : "");
+  if (uid) {
+    const shopRef = doc(db, "shop_users", uid);
+    const snap = await getDoc(shopRef);
+    if (snap.exists()) {
+      // Existing user — only stamp TOS, never touch their actions balance
+      await updateDoc(shopRef, { tosAccepted: true, tosAcceptedAt: new Date() });
+      // Re-read and display their real remaining actions
+      userActions = calcRemaining(snap.data());
+      updateActionsDisplay();
+    } else {
+      // Brand new user — create shop_users doc matching the shop app schema exactly
+      const now = new Date();
+      const monthKey = `${now.getFullYear()}-${now.getMonth()+1}`;
+      await setDoc(shopRef, {
+        email,
+        actionsUsed: 0,
+        actionsMonth: monthKey,
+        totalActionsUsed: 0,
+        purchases: [],
+        pin: null,
+        memberSince: now.toISOString(),
+        verified: false,
+        infiniteActions: false,
+        pendingGifts: [],
+        tosAccepted: true,
+        tosAcceptedAt: now
+      });
+      userActions = 10;
+      updateActionsDisplay();
+    }
+  }
+  pendingNewUser = null;
+};
+
+const ACTIONS_LIMIT = 10;
+
+// Mirrors the shop app's formula exactly:
+// remaining = 10 - actionsUsed  (or ∞ if infiniteActions flag is set)
+function calcRemaining(data) {
+  if (!data) return 0;
+  if (data.infiniteActions) return Infinity;
+  return ACTIONS_LIMIT - (data.actionsUsed || 0);
+}
+
+onAuthStateChanged(auth, async user => {
+  currentUser = user;
+  const btn = document.getElementById("authBtn");
+  if (user) {
+    btn.textContent = "sign out"; btn.onclick = () => signOut(auth);
+    updateComposer(user);
+
+    // ── Actions: read from shop_users (source of truth) ──
+    const shopSnap = await getDoc(doc(db, "shop_users", user.uid));
+    userActions = shopSnap.exists() ? calcRemaining(shopSnap.data()) : 0;
+    updateActionsDisplay();
+
+    // ── TOS: check shop_users for acceptance flag ──
+    if (!shopSnap.exists() || !shopSnap.data().tosAccepted) {
+      pendingNewUser = null;
+      openTos();
+    }
+
+    // Live-sync actions balance from shop_users
+    onSnapshot(doc(db, "shop_users", user.uid), s => {
+      if (s.exists()) { userActions = calcRemaining(s.data()); updateActionsDisplay(); }
+    });
+  } else {
+    btn.textContent = "sign in"; btn.onclick = window.openAuth; userActions = 0; updateActionsDisplay();
+    updateComposer(null);
+    setTimeout(() => { if (!currentUser) window.openAuth(); }, 800);
+  }
+});
+
+function updateActionsDisplay() {
+  const el = document.getElementById("actionsDisplay");
+  if (!currentUser) { el.textContent = "sign in"; return; }
+  el.textContent = userActions === Infinity ? "∞ actions" : userActions + " actions";
+}
+
+// ---- FLASH TIMER ----
+let secs = 10053;
+(function tick() {
+  secs = Math.max(0,secs-1);
+  const h=String(Math.floor(secs/3600)).padStart(2,"0");
+  const m=String(Math.floor((secs%3600)/60)).padStart(2,"0");
+  const s=String(secs%60).padStart(2,"0");
+  document.getElementById("timerDisplay").textContent=`${h}:${m}:${s}`;
+  setTimeout(tick,1000);
+})();
+
+// ---- INIT ----
+initAthletes();
+loadFeed();
+</script>
+</body>
+</html>
