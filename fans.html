@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>INDY Fans [BETA]</title>
+<title>INDY Fan — JVST</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff; color: #111; }
@@ -28,9 +28,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .athletes-row { display: flex; gap: 12px; justify-content: center; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
 .athletes-row::-webkit-scrollbar { display: none; }
 .athlete-circle { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0; }
-.athlete-ring { width: 64px; height: 64px; border-radius: 50%; border: 2px solid rgba(0,0,0,0.12); padding: 2px; transition: border-color 0.2s; }
+.athlete-ring { width: 64px; height: 64px; border-radius: 50%; border: 2px solid rgba(0,0,0,0.12); padding: 2px; transition: border-color 0.2s; display: flex; align-items: center; justify-content: center; }
 .athlete-ring:hover { border-color: #111; }
-.athlete-ring img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #f5f5f5; display: block; }
+.athlete-pfp { width: 60px; height: 60px; border-radius: 50%; background: #f5f5f5; display: flex; align-items: center; justify-content: center; font-size: 26px; }
 .athlete-name-row { display: flex; align-items: center; gap: 3px; font-size: 11px; color: #555; }
 .check { display: inline-flex; align-items: center; justify-content: center; width: 12px; height: 12px; background: #111; border-radius: 50%; flex-shrink: 0; }
 .check svg { width: 7px; height: 7px; }
@@ -44,8 +44,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .post { margin-bottom: 1.5rem; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 12px; overflow: hidden; background: #fff; }
 .post-header { display: flex; align-items: center; justify-content: space-between; padding: 11px 13px; }
 .post-user { display: flex; align-items: center; gap: 9px; }
-.post-avatar { width: 34px; height: 34px; border-radius: 50%; background: #f0f0f0; object-fit: cover; display: block; }
+.post-avatar { width: 34px; height: 34px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; border: 0.5px solid rgba(0,0,0,0.07); }
 .post-username { font-size: 13px; font-weight: 500; color: #111; display: flex; align-items: center; gap: 4px; }
+.post-name-stack { display: flex; flex-direction: column; gap: 1px; }
+.post-nickname { font-size: 13px; font-weight: 600; color: #111; line-height: 1.2; }
+.post-handle { font-size: 11px; color: #aaa; line-height: 1.2; }
 .post-time { font-size: 11px; color: #aaa; }
 .pinned-tag { font-size: 10px; color: #555; background: #f0f0f0; border: 0.5px solid rgba(0,0,0,0.1); padding: 3px 8px; border-radius: 99px; }
 .post-image { width: 100%; aspect-ratio: 1/1; background: #f5f5f5; display: flex; align-items: center; justify-content: center; overflow: hidden; }
@@ -58,6 +61,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .like-btn { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #555; cursor: pointer; padding: 4px 9px; border-radius: 8px; border: 0.5px solid rgba(0,0,0,0.1); background: none; transition: background 0.15s; font-family: inherit; }
 .like-btn:hover { background: #f5f5f5; }
 .like-btn.liked { color: #c0392b; border-color: rgba(192,57,43,0.3); }
+.like-btn.delete-btn { color: #bbb; }
+.like-btn.delete-btn:hover { color: #c0392b; background: #fff0ee; border-color: rgba(192,57,43,0.2); }
 .heart { font-size: 13px; line-height: 1; }
 
 /* ATHLETE MODAL */
@@ -71,7 +76,23 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .close-btn { font-size: 18px; color: #999; cursor: pointer; background: none; border: none; line-height: 1; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
 .close-btn:hover { background: #f0f0f0; }
 .modal-athlete { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; }
-.modal-avatar { width: 50px; height: 50px; border-radius: 50%; background: #f0f0f0; object-fit: cover; }
+.modal-avatar { width: 50px; height: 50px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+
+/* PROFILE MODAL */
+.profile-section { margin-bottom: 1.25rem; }
+.profile-section-label { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.pfp-picker { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.pfp-option { width: 40px; height: 40px; border-radius: 50%; background: #f5f5f5; border: 2px solid transparent; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.pfp-option:hover { background: #ebebeb; }
+.pfp-option.selected { border-color: #111; background: #f0f0f0; }
+.pfp-preview { width: 54px; height: 54px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 28px; border: 2px solid rgba(0,0,0,0.1); margin: 0 auto 1rem; }
+.profile-input { width: 100%; background: #f8f8f8; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 8px; padding: 10px 12px; font-size: 13px; color: #111; font-family: inherit; outline: none; margin-bottom: 6px; transition: border-color 0.15s; }
+.profile-input:focus { border-color: #111; background: #fff; }
+.profile-input::placeholder { color: #bbb; }
+.profile-hint { font-size: 11px; color: #bbb; margin-bottom: 1rem; }
+.profile-save-btn { width: 100%; background: #111; color: #fff; border: none; border-radius: 8px; padding: 11px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+.profile-save-btn:hover { opacity: 0.75; }
+.profile-feedback { font-size: 12px; text-align: center; margin-top: 8px; min-height: 16px; color: #111; }
 .modal-athlete-name { font-size: 14px; font-weight: 600; color: #111; }
 .modal-athlete-sub { font-size: 12px; color: #888; margin-top: 2px; }
 .progress-section { margin-bottom: 1.25rem; }
@@ -125,20 +146,39 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .tos-accept-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .tos-accept-btn:not(:disabled):hover { opacity: 0.75; }
 
-/* POST COMPOSER */
+/* NEW PRODUCTS */
+.section-label-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 0.75rem; }
+.section-label { font-size: 13px; font-weight: 600; color: #111; }
+.section-label-sub { font-size: 11px; color: #888; }
+.products-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+.products-row::-webkit-scrollbar { display: none; }
+.product-card { flex-shrink: 0; width: 130px; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden; background: #fff; cursor: pointer; transition: box-shadow 0.15s; }
+.product-card:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+.product-img { width: 100%; height: 90px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+.product-info { padding: 8px 9px; }
+.product-name { font-size: 11px; font-weight: 600; color: #111; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.product-athlete { font-size: 10px; color: #888; margin-bottom: 5px; }
+.product-cost { display: flex; align-items: center; justify-content: space-between; }
+.product-actions { font-size: 10px; font-weight: 600; color: #111; background: #f0f0f0; border-radius: 5px; padding: 2px 6px; }
+.product-new-tag { font-size: 9px; color: #fff; background: #111; border-radius: 4px; padding: 2px 5px; font-weight: 600; }
+/* Product detail modal */
+.product-modal-img { width: 100%; height: 140px; background: #f5f5f5; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 48px; margin-bottom: 1rem; }
+.product-modal-name { font-size: 15px; font-weight: 600; color: #111; margin-bottom: 3px; }
+.product-modal-athlete { font-size: 12px; color: #888; margin-bottom: 0.75rem; }
+.product-modal-desc { font-size: 13px; color: #555; line-height: 1.55; margin-bottom: 1rem; }
+.product-redeem-btn { width: 100%; padding: 11px; background: #111; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+.product-redeem-btn:hover { opacity: 0.75; }
+.product-redeem-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.product-redeem-feedback { font-size: 12px; text-align: center; margin-top: 8px; min-height: 16px; }
+
+/* COMPOSER */
 .composer { border: 0.5px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 12px 13px; margin-bottom: 1.5rem; background: #fff; display: none; }
 .composer.visible { display: block; }
 .composer-top { display: flex; align-items: flex-start; gap: 9px; }
-.composer-avatar { width: 34px; height: 34px; border-radius: 50%; background: #111; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+.composer-avatar { width: 34px; height: 34px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; border: 0.5px solid rgba(0,0,0,0.1); }
 .composer-textarea { flex: 1; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 8px; padding: 9px 11px; font-size: 13px; color: #111; font-family: inherit; outline: none; resize: none; min-height: 68px; background: #f8f8f8; transition: border-color 0.15s, background 0.15s; }
 .composer-textarea:focus { border-color: #111; background: #fff; }
 .composer-textarea::placeholder { color: #bbb; }
-.composer-image-preview { position: relative; margin: 10px 0 0; border-radius: 8px; overflow: hidden; display: none; }
-.composer-image-preview img { width: 100%; max-height: 240px; object-fit: cover; display: block; border-radius: 8px; }
-.composer-image-remove { position: absolute; top: 7px; right: 7px; width: 24px; height: 24px; border-radius: 50%; background: rgba(0,0,0,0.55); color: #fff; border: none; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; line-height: 1; }
-.composer-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
-.composer-img-btn { font-size: 12px; color: #555; background: #f5f5f5; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 8px; padding: 5px 11px; cursor: pointer; font-family: inherit; transition: background 0.15s; }
-.composer-img-btn:hover { background: #ececec; }
 .composer-post-btn { font-size: 12px; font-weight: 600; background: #111; color: #fff; border: none; border-radius: 99px; padding: 6px 16px; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
 .composer-post-btn:hover { opacity: 0.75; }
 .composer-post-btn:disabled { opacity: 0.35; cursor: not-allowed; }
@@ -153,6 +193,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <span class="header-logo">JVST</span>
     <div class="header-right">
       <span class="header-actions" id="actionsDisplay">— actions</span>
+      <button class="sign-btn" onclick="openProfile()" style="display:none;background:#f5f5f5;color:#111;border:0.5px solid rgba(0,0,0,0.12)" id="profileBtn">✏️</button>
       <button class="sign-btn" id="authBtn" onclick="openAuth()">sign in</button>
     </div>
   </div>
@@ -177,18 +218,21 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <div class="composer-avatar" id="composerAvatar">?</div>
       <textarea class="composer-textarea" id="composerText" placeholder="share something with fans…" rows="3"></textarea>
     </div>
-    <div class="composer-image-preview" id="composerPreview">
-      <img id="composerPreviewImg" src="" alt="" />
-      <button class="composer-image-remove" onclick="removeComposerImage()">×</button>
-    </div>
     <div class="composer-actions">
-      <div>
-        <button class="composer-img-btn" onclick="document.getElementById('composerFileInput').click()">📷 photo</button>
-        <input type="file" id="composerFileInput" accept="image/*" style="display:none" onchange="onComposerImagePicked(event)" />
-      </div>
+      <div></div>
       <button class="composer-post-btn" id="composerPostBtn" onclick="submitPost()">post</button>
     </div>
     <div class="composer-status" id="composerStatus"></div>
+  </div>
+
+  <!-- NEW PRODUCTS / LOCAL ATHLETE SUPPORT -->
+  <div class="new-products-section" id="newProductsSection" style="display:none">
+    <div class="section-label-row">
+      <span class="section-label">new drops</span>
+      <span class="section-label-sub">support local athletes</span>
+    </div>
+    <div class="products-row" id="productsRow"></div>
+    <div class="divider" style="margin-top:1.5rem"></div>
   </div>
 
   <!-- FEED -->
@@ -207,7 +251,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <button class="close-btn" onclick="closeAthlete()">×</button>
     </div>
     <div class="modal-athlete">
-      <img class="modal-avatar" id="modalAvatar" src="" alt="" />
+      <div class="modal-avatar" id="modalAvatar">🏅</div>
       <div>
         <div class="modal-athlete-name" id="modalName"></div>
         <div class="modal-athlete-sub" id="modalSub"></div>
@@ -231,6 +275,47 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   </div>
 </div>
 
+<!-- PRODUCT MODAL -->
+<div class="overlay" id="productOverlay" onclick="productOverlayBgClick(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">new drop</span>
+      <button class="close-btn" onclick="closeProduct()">×</button>
+    </div>
+    <div class="product-modal-img" id="productModalImg">🏅</div>
+    <div class="product-modal-name" id="productModalName"></div>
+    <div class="product-modal-athlete" id="productModalAthlete"></div>
+    <div class="product-modal-desc" id="productModalDesc"></div>
+    <div class="reward-box" id="productModalCost"></div>
+    <button class="product-redeem-btn" id="productRedeemBtn" onclick="redeemProduct()">redeem with actions</button>
+    <div class="product-redeem-feedback" id="productRedeemFeedback"></div>
+  </div>
+</div>
+
+<!-- PROFILE EDIT MODAL -->
+<div class="overlay" id="profileOverlay" onclick="profileOverlayBgClick(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">edit profile</span>
+      <button class="close-btn" onclick="closeProfile()">×</button>
+    </div>
+    <div class="pfp-preview" id="pfpPreview">😊</div>
+    <div class="profile-section">
+      <div class="profile-section-label">profile picture</div>
+      <div class="pfp-picker" id="pfpPicker"></div>
+    </div>
+    <div class="profile-section">
+      <div class="profile-section-label">display name</div>
+      <input class="profile-input" type="text" id="nicknameInput" placeholder="e.g. King Bartholemewl" maxlength="32" />
+      <div class="profile-hint">shown on posts · your login username stays the same</div>
+    </div>
+    <button class="profile-save-btn" onclick="saveProfile()">save</button>
+    <div class="profile-feedback" id="profileFeedback"></div>
+  </div>
+</div>
+
 <!-- AUTH MODAL -->
 <div class="auth-overlay" id="authOverlay">
   <div class="auth-modal">
@@ -238,6 +323,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <div class="auth-title" id="authTitle">Sign in</div>
     <div class="auth-sub" id="authSub">access your actions + shop the catalog</div>
     <div class="auth-error" id="authError"></div>
+    <input class="auth-input" type="text" id="authDisplayName" placeholder="your name (e.g. Bob)" style="display:none" />
     <input class="auth-input" type="email" id="authEmail" placeholder="email" />
     <input class="auth-input" type="password" id="authPassword" placeholder="password" />
     <button class="auth-btn" onclick="handleAuth()" id="authSubmit">Sign in</button>
@@ -291,9 +377,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, orderBy, increment, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, orderBy, increment, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const app = initializeApp({
   apiKey: "AIzaSyC50_wBK3TfERX1gm35puugCD324SxHJR8",
@@ -305,7 +390,6 @@ const app = initializeApp({
 });
 const auth = getAuth(app);
 const db = getFirestore(app);
-const storage = getStorage(app);
 
 const ATHLETES = [
   { id: "greyson", name: "greysonbonnifacio", sub: "athlete · collab", initials: "GB", goal: 500, reward: "exclusive greyson x jvst blind bag" },
@@ -314,93 +398,74 @@ const ATHLETES = [
   { id: "evan",    name: "evan",               sub: "artist spotlight",  initials: "E",  goal: 300, reward: "evan x jvst limited keychain" }
 ];
 
-// ---- COLLAB POSTER EMAILS ----
-// Add any email here to grant post ability
+// ---- ALLOWED DISPLAY NAMES (school setting — whitelist) ----
+const ALLOWED_DISPLAY_NAMES = ["Ryan", "Lila Ireland", "Rainn Likes fart"];
+
+let currentUserCanPost = false;
+
+function isAllowedUser(user) {
+  if (!user) return false;
+  // Primary: was confirmed via shop_users read at sign-in
+  if (currentUserCanPost) return true;
+  // Fallback: Firebase Auth displayName matches (new accounts created through the signup flow)
+  const name = (user.displayName || "").trim();
+  return ALLOWED_DISPLAY_NAMES.some(n => n.toLowerCase() === name.toLowerCase());
+}
+
+// ---- COLLAB POSTER EMAILS + DISPLAY NAMES ----
+// Add any email here OR match by allowed display name to grant post ability
 const COLLAB_EMAILS = [
-  "rainnblais1@gmail.com"
+  
 ];
 
 function isCollab(user) {
-  return user && COLLAB_EMAILS.includes((user.email || "").toLowerCase().trim());
+  if (!user) return false;
+  const byEmail = COLLAB_EMAILS.includes((user.email || "").toLowerCase().trim());
+  const byName = isAllowedUser(user);
+  return byEmail || byName;
 }
 
 function updateComposer(user) {
   const composer = document.getElementById("postComposer");
+  const btn = document.getElementById("profileBtn");
   if (isCollab(user)) {
     composer.classList.add("visible");
-    const initial = (user.displayName || user.email || "?")[0].toUpperCase();
-    document.getElementById("composerAvatar").textContent = initial;
+    document.getElementById("composerAvatar").textContent = myPfp || "😊";
+    if (btn) btn.style.display = "flex";
   } else {
     composer.classList.remove("visible");
+    if (btn) btn.style.display = user ? "flex" : "none";
   }
 }
-
-// Image picker
-let composerImageFile = null;
-window.onComposerImagePicked = function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  composerImageFile = file;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    document.getElementById("composerPreviewImg").src = ev.target.result;
-    document.getElementById("composerPreview").style.display = "block";
-  };
-  reader.readAsDataURL(file);
-};
-window.removeComposerImage = function() {
-  composerImageFile = null;
-  document.getElementById("composerPreviewImg").src = "";
-  document.getElementById("composerPreview").style.display = "none";
-  document.getElementById("composerFileInput").value = "";
-};
 
 // Submit post
 window.submitPost = async function() {
   if (!currentUser || !isCollab(currentUser)) return;
   const caption = document.getElementById("composerText").value.trim();
-  if (!caption && !composerImageFile) return;
+  if (!caption) return;
 
   const btn = document.getElementById("composerPostBtn");
   const status = document.getElementById("composerStatus");
   btn.disabled = true;
-  status.textContent = composerImageFile ? "uploading image…" : "posting…";
+  status.textContent = "posting…";
 
   try {
-    let imageUrl = null;
-
-    if (composerImageFile) {
-      const path = `posts/${currentUser.uid}/${Date.now()}_${composerImageFile.name}`;
-      const fileRef = storageRef(storage, path);
-      const task = uploadBytesResumable(fileRef, composerImageFile);
-      await new Promise((resolve, reject) => {
-        task.on("state_changed",
-          snap => {
-            const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
-            status.textContent = `uploading… ${pct}%`;
-          },
-          reject,
-          resolve
-        );
-      });
-      imageUrl = await getDownloadURL(fileRef);
-    }
-
     const authorName = currentUser.displayName || currentUser.email.split("@")[0];
     await addDoc(collection(db, "posts"), {
       author: authorName,
       authorInitials: authorName[0].toUpperCase(),
       authorEmail: currentUser.email,
+      authorUid: currentUser.uid,
+      authorPfp: myPfp,
+      authorNickname: myNickname || authorName,
       caption,
-      imageUrl,
+      imageUrl: null,
       likes: 0,
       pinned: false,
       createdAt: serverTimestamp()
     });
 
-    // Reset composer
     document.getElementById("composerText").value = "";
-    window.removeComposerImage();
     status.textContent = "posted ✓";
     setTimeout(() => status.textContent = "", 2000);
   } catch(e) {
@@ -410,13 +475,191 @@ window.submitPost = async function() {
     btn.disabled = false;
   }
 };
+// ---- LOCAL ATHLETE NEW PRODUCTS ----
+const NEW_PRODUCTS = [
+  { id: "gb-blind-bag",    name: "Greyson Blind Bag",       athlete: "greysonbonnifacio", athleteId: "greyson", emoji: "🎁", cost: 1, desc: "Mystery blind bag curated by Greyson — limited run drop for INDY Fanz supporters.", tag: "new" },
+  { id: "rb-trophy-sleeve",name: "Rainn Trophy Sleeve",     athlete: "rainnblais",        athleteId: "rainn",   emoji: "🏆", cost: 2, desc: "Exclusive trophy sleeve collab with Rainn Blais. Show your local athlete love.", tag: "new" },
+  { id: "noah-keychain",   name: "Noah Keychain",           athlete: "noah",              athleteId: "noah",    emoji: "🔑", cost: 1, desc: "Limited noah x jvst keychain — handpicked for the fan community.", tag: "limited" },
+  { id: "evan-keychain",   name: "Evan Keychain",           athlete: "evan",              athleteId: "evan",    emoji: "🗝️", cost: 1, desc: "Limited evan x jvst keychain — supporter exclusive.", tag: "limited" },
+  { id: "spring-bundle",   name: "Spring Bundle",           athlete: "jvst",              athleteId: null,      emoji: "🌸", cost: 3, desc: "Spring bundle drop — includes 3 items supporting local athletes. Flash sale price.", tag: "sale" }
+];
+
+let currentProduct = null;
+
+function renderProducts() {
+  const row = document.getElementById("productsRow");
+  if (!row) return;
+  row.innerHTML = NEW_PRODUCTS.map(p => `
+    <div class="product-card" onclick="openProduct('${p.id}')">
+      <div class="product-img">${p.emoji}</div>
+      <div class="product-info">
+        <div class="product-name">${p.name}</div>
+        <div class="product-athlete">${p.athlete}</div>
+        <div class="product-cost">
+          <span class="product-actions">${p.cost} action${p.cost !== 1 ? "s" : ""}</span>
+          <span class="product-new-tag">${p.tag}</span>
+        </div>
+      </div>
+    </div>`).join("");
+  document.getElementById("newProductsSection").style.display = "block";
+}
+
+window.openProduct = function(id) {
+  const p = NEW_PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  currentProduct = p;
+  document.getElementById("productModalImg").textContent = p.emoji;
+  document.getElementById("productModalName").textContent = p.name;
+  document.getElementById("productModalAthlete").textContent = p.athlete + (p.tag === "new" ? " · new drop" : p.tag === "limited" ? " · limited" : " · flash sale");
+  document.getElementById("productModalDesc").textContent = p.desc;
+  document.getElementById("productModalCost").innerHTML = `cost: <strong>${p.cost} action${p.cost !== 1 ? "s" : ""}</strong> — redeemed in-person with a JVST employee`;
+  document.getElementById("productRedeemFeedback").textContent = "";
+  document.getElementById("productRedeemFeedback").style.color = "#111";
+  document.getElementById("productRedeemBtn").disabled = false;
+  document.getElementById("productOverlay").classList.add("open");
+};
+window.closeProduct = function() { document.getElementById("productOverlay").classList.remove("open"); };
+window.productOverlayBgClick = function(e) { if (e.target === document.getElementById("productOverlay")) window.closeProduct(); };
+
+function monthKey(d) { return `${d.getFullYear()}-${d.getMonth()+1}`; }
+
+window.redeemProduct = async function() {
+  if (!currentUser) { window.closeProduct(); window.openAuth(); return; }
+  const p = currentProduct;
+  const fb = document.getElementById("productRedeemFeedback");
+  const btn = document.getElementById("productRedeemBtn");
+  btn.disabled = true;
+  fb.style.color = "#111";
+  fb.textContent = "processing…";
+
+  try {
+    // Fresh read of shop_users — source of truth, same as home.html executeCheckout
+    const ref = doc(db, "shop_users", currentUser.uid);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) throw new Error("no account");
+    const fresh = snap.data();
+
+    const mk = monthKey(new Date());
+    let freshUsed = fresh.actionsUsed || 0;
+    // Reset actionsUsed if month has rolled over
+    if (fresh.actionsMonth !== mk) { freshUsed = 0; }
+
+    const freshBalance = ACTIONS_LIMIT - freshUsed;
+    if (freshBalance < p.cost) {
+      fb.style.color = "#c0392b";
+      fb.textContent = `not enough actions (have ${freshBalance}, need ${p.cost})`;
+      btn.disabled = false;
+      return;
+    }
+
+    const now = new Date().toISOString();
+    const newPurchase = {
+      product: p.name,
+      date: now,
+      actionsCost: p.cost,
+      method: "indy_fan",
+      code: p.id
+    };
+
+    await updateDoc(ref, {
+      actionsUsed: freshUsed + p.cost,
+      actionsMonth: mk,
+      totalActionsUsed: (fresh.totalActionsUsed || 0) + p.cost,
+      purchases: [...(fresh.purchases || []), newPurchase]
+    });
+
+    const newBalance = ACTIONS_LIMIT - (freshUsed + p.cost);
+    fb.style.color = "#111";
+    fb.textContent = `✓ redeemed! ${newBalance} action${newBalance !== 1 ? "s" : ""} left. Show this to a JVST employee to claim your ${p.name}.`;
+  } catch(e) {
+    console.error(e);
+    fb.style.color = "#c0392b";
+    fb.textContent = "something went wrong — try again";
+    btn.disabled = false;
+  }
+};
+
+
+// Expose on window so global onclick="" handlers can access them outside the module
+window.currentUser = null;
+window.userActions = 0;
+let currentUser = null;
 let userActions = 0;
+let feedLoaded = false;
 let athleteData = {};
 let currentAthlete = null;
 let authMode = "signin";
 
-function avatarUrl(initials) {
-  return `https://via.placeholder.com/64/f0f0f0/555555?text=${initials}`;
+// ---- PFP / NICKNAME SYSTEM ----
+// Stored in indy_fan_profiles/{uid} — isolated from all other apps
+const PFP_OPTIONS = ["😊","🏆","⚡","🔥","🎯","🌟","🦁","🐺","🦊","🐉","🌊","🎭","💫","🚀","🎸","🏅","👑","🤝","💪","🎮"];
+let myPfp = "😊";
+let myNickname = "";
+// cache of uid -> {pfp, nickname} for rendering other users' posts
+const profileCache = {};
+
+async function loadMyProfile(uid) {
+  try {
+    const snap = await getDoc(doc(db, "indy_fan_profiles", uid));
+    if (snap.exists()) {
+      myPfp = snap.data().pfp || "😊";
+      myNickname = snap.data().nickname || "";
+    }
+  } catch {}
+  updateComposer(currentUser);
+}
+
+async function getProfileFor(uid, fallbackInitial) {
+  if (profileCache[uid]) return profileCache[uid];
+  try {
+    const snap = await getDoc(doc(db, "indy_fan_profiles", uid));
+    if (snap.exists()) {
+      profileCache[uid] = { pfp: snap.data().pfp || fallbackInitial, nickname: snap.data().nickname || "" };
+    } else {
+      profileCache[uid] = { pfp: fallbackInitial, nickname: "" };
+    }
+  } catch { profileCache[uid] = { pfp: fallbackInitial, nickname: "" }; }
+  return profileCache[uid];
+}
+
+window.openProfile = function() {
+  if (!currentUser) return;
+  // populate picker
+  const picker = document.getElementById("pfpPicker");
+  picker.innerHTML = PFP_OPTIONS.map(e =>
+    `<div class="pfp-option${e === myPfp ? ' selected' : ''}" onclick="selectPfp('${e}')">${e}</div>`
+  ).join("");
+  document.getElementById("pfpPreview").textContent = myPfp;
+  document.getElementById("nicknameInput").value = myNickname;
+  document.getElementById("profileFeedback").textContent = "";
+  document.getElementById("profileOverlay").classList.add("open");
+};
+window.closeProfile = function() { document.getElementById("profileOverlay").classList.remove("open"); };
+window.profileOverlayBgClick = function(e) { if (e.target === document.getElementById("profileOverlay")) window.closeProfile(); };
+
+window.selectPfp = function(emoji) {
+  myPfp = emoji;
+  document.getElementById("pfpPreview").textContent = emoji;
+  document.querySelectorAll(".pfp-option").forEach(el => el.classList.toggle("selected", el.textContent === emoji));
+};
+
+window.saveProfile = async function() {
+  if (!currentUser) return;
+  const nickname = document.getElementById("nicknameInput").value.trim();
+  const fb = document.getElementById("profileFeedback");
+  try {
+    await setDoc(doc(db, "indy_fan_profiles", currentUser.uid), { pfp: myPfp, nickname }, { merge: true });
+    myNickname = nickname;
+    profileCache[currentUser.uid] = { pfp: myPfp, nickname };
+    fb.textContent = "saved ✓";
+    setTimeout(() => { fb.textContent = ""; window.closeProfile(); }, 1000);
+    updateComposer(currentUser);
+  } catch(e) { fb.textContent = "couldn't save — try again"; }
+};
+
+function getAthleteEmoji(id) {
+  const map = { greyson:"🏋️", rainn:"⚡", noah:"🎵", evan:"🎶" };
+  return map[id] || "🏅";
 }
 
 function checkSvg() {
@@ -444,7 +687,7 @@ function renderAthletes() {
     const d = athleteData[a.id] || { current: 0, goal: a.goal };
     const pct = Math.min(100, Math.round(d.current / d.goal * 100));
     return `<div class="athlete-circle" onclick="window.openAthlete('${a.id}')">
-      <div class="athlete-ring"><img src="${avatarUrl(a.initials)}" alt="${a.name}" /></div>
+      <div class="athlete-ring"><div class="athlete-pfp">${getAthleteEmoji(a.id)}</div></div>
       <div class="athlete-name-row"><span>${a.initials}</span>${checkSvg()}</div>
       <div class="athlete-prog"><div class="athlete-prog-fill" style="width:${pct}%"></div></div>
     </div>`;
@@ -454,7 +697,7 @@ function renderAthletes() {
 window.openAthlete = function(id) {
   const a = ATHLETES.find(x => x.id === id);
   currentAthlete = a;
-  document.getElementById("modalAvatar").src = avatarUrl(a.initials);
+  document.getElementById("modalAvatar").textContent = getAthleteEmoji(a.id);
   document.getElementById("modalName").textContent = a.name;
   document.getElementById("modalSub").textContent = a.sub;
   document.getElementById("modalReward").textContent = a.reward;
@@ -507,39 +750,58 @@ function postHtml(p) {
     : `<span class="post-time">${timeAgo(p.createdAt?.toDate?.())}</span>`;
   const imgArea = p.imageUrl
     ? `<div class="post-image"><img src="${p.imageUrl}" alt="" /></div>`
-    : `<div class="post-image"><span class="post-image-placeholder">image placeholder</span></div>`;
+    : "";
+  const pfp = p.authorPfp || "😊";
+  // ── Stale username remap — add any old name → corrected name pairs here ──
+  const NAME_REMAP = { "cat": "Ryan" };
+  const rawAuthor = (p.author || "jvst");
+  const remappedAuthor = NAME_REMAP[rawAuthor.toLowerCase()] || rawAuthor;
+  const nickname = p.authorNickname || remappedAuthor;
+  // Handle uses the real login username (author field), not the display nickname
+  const handleBase = remappedAuthor !== "jvst" ? remappedAuthor : null;
+  const handle = handleBase ? `@${handleBase.replace(/\s+/g,"").toLowerCase()}` : "";
+  const nameBlock = handle
+    ? `<div class="post-name-stack"><span class="post-nickname">${nickname} ${checkSvg()}</span><span class="post-handle">${handle}</span></div>`
+    : `<div class="post-name-stack"><span class="post-nickname">${nickname} ${checkSvg()}</span></div>`;
   return `<div class="post">
     <div class="post-header">
       <div class="post-user">
-        <img class="post-avatar" src="${avatarUrl(p.authorInitials||'J')}" alt="" />
-        <span class="post-username">${p.author||'jvst'} ${checkSvg()}</span>
+        <div class="post-avatar">${pfp}</div>
+        ${nameBlock}
       </div>
       ${pinTag}
     </div>
     ${imgArea}
     <div class="post-footer">
-      <div class="post-caption"><strong>${p.author||'jvst'}</strong> ${p.caption||''}</div>
+      <div class="post-caption">${p.caption||''}</div>
       <div class="post-likes">
         <button class="like-btn" onclick="window.toggleLike(this,'${p.id}')">
           <span class="heart">♡</span> <span class="like-count">${p.likes||0}</span>
         </button>
+        ${(p.id !== "welcome" && p.authorUid && currentUser && p.authorUid === currentUser.uid)
+          ? `<button class="like-btn delete-btn" onclick="window.deletePost('${p.id}')" title="delete post">🗑</button>`
+          : ""}
       </div>
     </div>
   </div>`;
 }
 
 function welcomePost() {
-  return postHtml({ id:"welcome", author:"jvst", authorInitials:"J", caption:"welcome to INDY Fan. support your people, stack your actions, earn exclusive drops. this is just the beginning.", likes:0, pinned:true, imageUrl:null, createdAt:null });
+  return postHtml({ id:"welcome", author:"jvst", authorInitials:"J", authorPfp:"🏅", authorNickname:"JVST", caption:"welcome to INDY Fan. support your people, stack your actions, earn exclusive drops. this is just the beginning.", likes:0, pinned:true, imageUrl:null, createdAt:null });
 }
 
 async function loadFeed() {
   const feed = document.getElementById("feed");
   try {
-    const q = query(collection(db, "posts"), orderBy("pinned","desc"), orderBy("createdAt","desc"));
+    // Single-field orderBy avoids needing a composite Firestore index.
+    // Pinned posts are sorted to top client-side.
+    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
     onSnapshot(q, snap => {
-      feed.innerHTML = snap.empty
-        ? welcomePost()
-        : snap.docs.map(d => postHtml({ id: d.id, ...d.data() })).join("") || welcomePost();
+      if (snap.empty) { feed.innerHTML = welcomePost(); return; }
+      const sorted = snap.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
+      feed.innerHTML = sorted.map(p => postHtml(p)).join("") || welcomePost();
     });
   } catch { feed.innerHTML = welcomePost(); }
 }
@@ -561,6 +823,18 @@ window.toggleLike = async function(btn, postId) {
   localStorage.setItem("jvst_likes", JSON.stringify([...liked]));
 };
 
+// ---- DELETE POST ----
+window.deletePost = async function(postId) {
+  if (!currentUser) return;
+  if (!confirm("delete this post?")) return;
+  try {
+    await deleteDoc(doc(db, "posts", postId));
+  } catch(e) {
+    console.error(e);
+    alert("couldn't delete — try again");
+  }
+};
+
 // ---- AUTH ----
 window.openAuth = function() {
   document.getElementById("authOverlay").classList.add("open");
@@ -576,6 +850,7 @@ window.toggleAuthMode = function() {
   document.getElementById("authSubmit").textContent = isIn ? "Sign in" : "Create account";
   document.getElementById("authToggle").innerHTML = isIn ? `no account? <span>sign up free</span>` : `already have one? <span>sign in</span>`;
   document.getElementById("authError").textContent = "";
+  document.getElementById("authDisplayName").style.display = isIn ? "none" : "block";
   // Show close btn when switching to sign-in (user can dismiss)
   document.getElementById("authCloseBtn").style.display = isIn ? "flex" : "none";
 };
@@ -593,7 +868,12 @@ window.handleAuth = async function() {
       await signInWithEmailAndPassword(auth, email, pass);
       window.closeAuth();
     } else {
+      const displayName = document.getElementById("authDisplayName").value.trim();
+      if (!displayName) { err.textContent = "enter your name to sign up"; return; }
+      const isNameAllowed = ALLOWED_DISPLAY_NAMES.some(n => n.toLowerCase() === displayName.toLowerCase());
+      if (!isNameAllowed) { err.textContent = "this name isn't on the approved list — ask your admin"; return; }
       const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      await updateProfile(cred.user, { displayName });
       pendingNewUser = cred.user;
       window.closeAuth();
       openTos();
@@ -635,11 +915,11 @@ window.acceptTos = async function() {
     } else {
       // Brand new user — create shop_users doc matching the shop app schema exactly
       const now = new Date();
-      const monthKey = `${now.getFullYear()}-${now.getMonth()+1}`;
+      const mk = monthKey(now);
       await setDoc(shopRef, {
         email,
         actionsUsed: 0,
-        actionsMonth: monthKey,
+        actionsMonth: mk,
         totalActionsUsed: 0,
         purchases: [],
         pin: null,
@@ -669,15 +949,30 @@ function calcRemaining(data) {
 
 onAuthStateChanged(auth, async user => {
   currentUser = user;
+  window.currentUser = user; // keep global in sync for inline onclick handlers
   const btn = document.getElementById("authBtn");
   if (user) {
     btn.textContent = "sign out"; btn.onclick = () => signOut(auth);
-    updateComposer(user);
+    await loadMyProfile(user.uid);
 
     // ── Actions: read from shop_users (source of truth) ──
     const shopSnap = await getDoc(doc(db, "shop_users", user.uid));
     userActions = shopSnap.exists() ? calcRemaining(shopSnap.data()) : 0;
+    window.userActions = userActions;
     updateActionsDisplay();
+
+    // ── Determine posting permission from shop_users ──
+    // Check the displayName stored in shop_users, the Firebase Auth displayName,
+    // and the email — any match against ALLOWED_DISPLAY_NAMES grants posting rights.
+    const shopData = shopSnap.exists() ? shopSnap.data() : {};
+    const shopDisplayName = (shopData.displayName || "").trim().toLowerCase();
+    const authDisplayName = (user.displayName || "").trim().toLowerCase();
+    const nameMatches = ALLOWED_DISPLAY_NAMES.some(n => {
+      const nl = n.toLowerCase();
+      return shopDisplayName === nl || authDisplayName === nl;
+    });
+    currentUserCanPost = nameMatches || COLLAB_EMAILS.includes((user.email || "").toLowerCase().trim());
+    updateComposer(user);
 
     // ── TOS: check shop_users for acceptance flag ──
     if (!shopSnap.exists() || !shopSnap.data().tosAccepted) {
@@ -687,13 +982,20 @@ onAuthStateChanged(auth, async user => {
 
     // Live-sync actions balance from shop_users
     onSnapshot(doc(db, "shop_users", user.uid), s => {
-      if (s.exists()) { userActions = calcRemaining(s.data()); updateActionsDisplay(); }
+      if (s.exists()) {
+        userActions = calcRemaining(s.data());
+        window.userActions = userActions;
+        updateActionsDisplay();
+      }
     });
   } else {
-    btn.textContent = "sign in"; btn.onclick = window.openAuth; userActions = 0; updateActionsDisplay();
+    currentUserCanPost = false;
+    btn.textContent = "sign in"; btn.onclick = window.openAuth; userActions = 0; window.userActions = 0; updateActionsDisplay();
     updateComposer(null);
     setTimeout(() => { if (!currentUser) window.openAuth(); }, 800);
   }
+  // Load feed after auth state is known (avoids permission-denied on initial snapshot)
+  if (!feedLoaded) { feedLoaded = true; loadFeed(); }
 });
 
 function updateActionsDisplay() {
@@ -715,7 +1017,7 @@ let secs = 10053;
 
 // ---- INIT ----
 initAthletes();
-loadFeed();
+renderProducts();
 </script>
 </body>
 </html>
