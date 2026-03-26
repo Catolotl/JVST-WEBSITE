@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JVST Internal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #f5f5f5;
+    --surface2: #ebebeb;
+    --border: #d4d4d4;
+    --border2: #c0c0c0;
+    --text: #111111;
+    --text2: #555555;
+    --muted: #888888;
+    --accent: #111111;
+    --accent-dim: rgba(0,0,0,0.06);
+    --accent-border: rgba(0,0,0,0.2);
+    --danger: #cc0000;
+    --success: #007700;
+    --radius: 8px;
+    --radius-lg: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Roboto', Arial, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── LOADING ── */
+  #loading-screen {
+    position: fixed; inset: 0; background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 20px; z-index: 9999;
+    transition: opacity 0.4s ease;
+  }
+  #loading-screen.hidden { opacity: 0; pointer-events: none; }
+  .load-logo {
+    font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--muted); font-family: 'Roboto Mono', monospace;
+  }
+  .load-bar { width: 48px; height: 1px; background: var(--border2); position: relative; overflow: hidden; }
+  .load-bar::after {
+    content: ''; position: absolute; left: -100%; top: 0;
+    width: 100%; height: 100%; background: var(--accent);
+    animation: barSlide 1s ease infinite; background: #111;
+  }
+  @keyframes barSlide { to { left: 200%; } }
+
+  /* ── SCREENS ── */
+  .screen { display: none; min-height: 100vh; animation: fadeUp 0.35s ease; }
+  .screen.active { display: flex; flex-direction: column; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── AUTH SCREEN ── */
+  #screen-auth {
+    align-items: center; justify-content: center;
+    padding: 32px 20px; min-height: 100vh;
+  }
+  .auth-wrap { width: 100%; max-width: 360px; }
+
+  .auth-lockup {
+    margin-bottom: 36px;
+  }
+  .auth-eyebrow {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 10px;
+  }
+  .auth-title {
+    font-size: 28px; font-weight: 800; letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .auth-title span { color: #111; }
+  .auth-sub {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11px; color: var(--muted); margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  .auth-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 24px;
+  }
+
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block; font-family: 'Roboto Mono', monospace;
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 7px;
+  }
+  .field input {
+    width: 100%; background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius); padding: 11px 13px;
+    color: var(--text); font-size: 14px; font-family: 'Roboto', Arial, sans-serif;
+    outline: none; transition: border-color .15s, box-shadow .15s;
+  }
+  .field input:focus {
+    border-color: #111;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.08);
+  }
+
+  .btn {
+    width: 100%; padding: 12px 16px; border-radius: var(--radius);
+    font-size: 13px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; cursor: pointer; border: none;
+    transition: all .15s; font-family: 'Roboto', Arial, sans-serif;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-primary { background: #111; color: #fff; }
+  .btn-primary:hover { background: #333; }
+  .btn-primary:disabled { background: var(--border2); color: var(--muted); cursor: not-allowed; }
+  .btn-ghost {
+    background: transparent; color: var(--text2);
+    border: 1px solid var(--border2);
+  }
+  .btn-ghost:hover { border-color: var(--text2); color: var(--text); }
+
+  .auth-msg {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11px; padding: 9px 12px; border-radius: 6px;
+    margin-bottom: 14px; display: none; line-height: 1.4;
+  }
+  .auth-msg.error { background: rgba(180,0,0,.08); border: 1px solid rgba(180,0,0,.2); color: var(--danger); display: block; }
+  .auth-msg.success { background: rgba(0,100,0,.08); border: 1px solid rgba(0,100,0,.2); color: var(--success); display: block; }
+
+  .auth-footer {
+    margin-top: 16px; text-align: center;
+    font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--muted);
+  }
+  .auth-footer a { color: #111; cursor: pointer; text-decoration: underline; }
+  .auth-footer a:hover { text-decoration: underline; }
+
+  /* ── ACCESS DENIED ── */
+  #screen-denied {
+    align-items: center; justify-content: center;
+    padding: 32px 20px; min-height: 100vh;
+    flex-direction: column; text-align: center; gap: 16px;
+  }
+  .denied-icon {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: rgba(180,0,0,.08); border: 1px solid rgba(180,0,0,.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .denied-title { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+  .denied-sub { font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--muted); line-height: 1.6; max-width: 260px; }
+
+  /* ── MAIN APP ── */
+  #screen-app {
+    flex-direction: column; max-width: 480px; margin: 0 auto; width: 100%;
+  }
+
+  /* ── HEADER ── */
+  .app-header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 16px; height: 52px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .app-logo {
+    font-size: 13px; font-weight: 800; letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .app-logo-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #111; box-shadow: none;
+  }
+  .app-logo-tag {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: #111; background: var(--accent-dim);
+    border: 1px solid var(--accent-border);
+    border-radius: 100px; padding: 2px 8px; margin-left: 4px;
+  }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .header-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--surface2); border: 1.5px solid #111;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    color: #111;
+  }
+  .signout-btn {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); background: transparent; border: none;
+    cursor: pointer; padding: 4px 0;
+    transition: color .15s;
+  }
+  .signout-btn:hover { color: var(--text); }
+
+  /* ── COMPOSE ── */
+  .compose-bar {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .compose-inner {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 14px;
+  }
+  .compose-top { display: flex; align-items: flex-start; gap: 10px; }
+  .compose-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: #111; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; flex-shrink: 0;
+  }
+  .compose-fields { flex: 1; }
+  .compose-input {
+    width: 100%; background: transparent; border: none;
+    color: var(--text); font-size: 14px; font-family: 'Roboto', Arial, sans-serif;
+    outline: none; resize: none; min-height: 52px;
+    line-height: 1.5;
+  }
+  .compose-input::placeholder { color: var(--muted); }
+  .compose-url-row { margin-top: 8px; display: none; }
+  .compose-url-row.visible { display: flex; align-items: center; gap: 8px; }
+  .compose-url-icon {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px; color: #111; flex-shrink: 0;
+  }
+  .compose-url-input {
+    flex: 1; background: var(--bg); border: 1px solid var(--accent-border);
+    border-radius: 6px; padding: 8px 10px;
+    color: #111; font-size: 12px; font-family: 'Roboto Mono', monospace;
+    outline: none; transition: border-color .15s;
+  }
+  .compose-url-input:focus { border-color: #111; }
+  .compose-url-input::placeholder { color: var(--muted); }
+  .compose-actions {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 12px; padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .compose-tools { display: flex; gap: 6px; }
+  .compose-tool-btn {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); background: var(--bg);
+    border: 1px solid var(--border2); border-radius: 5px;
+    padding: 5px 10px; cursor: pointer; transition: all .15s;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .compose-tool-btn:hover { border-color: #111; color: #111; }
+  .compose-tool-btn.active { border-color: #111; color: #111; background: var(--accent-dim); }
+  .post-btn {
+    background: #111; color: #fff;
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; border: none;
+    border-radius: 100px; padding: 8px 18px; cursor: pointer;
+    transition: all .15s; display: flex; align-items: center; gap: 6px;
+  }
+  .post-btn:hover { background: #333; }
+  .post-btn:disabled { background: var(--border2); color: var(--muted); cursor: not-allowed; }
+
+  /* ── TYPE PILLS ── */
+  .type-pills {
+    display: flex; gap: 6px; padding: 12px 16px 0;
+  }
+  .type-pill {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 100px;
+    border: 1px solid var(--border2); background: transparent;
+    color: var(--muted); cursor: pointer; transition: all .15s;
+  }
+  .type-pill.active {
+    border-color: var(--accent); color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  /* ── FEED ── */
+  .feed {
+    flex: 1; padding: 8px 0 80px;
+  }
+  .feed-empty {
+    padding: 60px 20px; text-align: center;
+    font-family: 'Roboto Mono', monospace; font-size: 12px; color: var(--muted);
+    line-height: 1.6;
+  }
+  .feed-empty-icon { font-size: 32px; margin-bottom: 12px; }
+
+  /* ── POST CARD ── */
+  .post-card {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    animation: fadeUp 0.3s ease;
+    transition: background .15s;
+  }
+  .post-card:hover { background: rgba(0,0,0,0.02); }
+  .post-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .post-author-row { display: flex; align-items: center; gap: 9px; }
+  .post-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; flex-shrink: 0;
+    position: relative;
+  }
+  .post-avatar.ryan {
+    background: #111; color: #fff;
+    box-shadow: none;
+  }
+  .post-avatar.lila {
+    background: #555; color: #fff;
+    box-shadow: none;
+  }
+  .post-avatar-ring {
+    position: absolute; inset: -2px; border-radius: 50%;
+    border: 1.5px solid transparent;
+  }
+  .post-avatar.ryan .post-avatar-ring { border-color: #111; }
+  .post-avatar.lila .post-avatar-ring { border-color: #555; }
+  .post-author-info {}
+  .post-author-name {
+    font-size: 14px; font-weight: 700; letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .post-author-badge {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 2px 6px; border-radius: 100px;
+  }
+  .badge-ryan {
+    background: var(--accent-dim); color: #111;
+    border: 1px solid var(--accent-border);
+  }
+  .badge-lila {
+    background: rgba(0,0,0,0.06); color: #555;
+    border: 1px solid rgba(0,0,0,0.15);
+  }
+  .post-time {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px; color: var(--muted); margin-top: 1px;
+  }
+  .post-type-chip {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 100px;
+    border: 1px solid var(--border2); color: var(--muted);
+  }
+  .post-type-chip.update { border-color: rgba(0,0,0,0.25); color: #333; background: rgba(0,0,0,0.05); }
+  .post-type-chip.beta   { border-color: var(--accent-border); color: #111; background: var(--accent-dim); }
+  .post-type-chip.note   { border-color: var(--border2); color: var(--muted); }
+  .post-type-chip.bug    { border-color: rgba(180,0,0,.3); color: #cc0000; background: rgba(180,0,0,.06); }
+
+  .post-body {
+    font-size: 14px; line-height: 1.6; color: var(--text);
+    margin-bottom: 10px; white-space: pre-wrap; word-break: break-word;
+  }
+
+  /* ── URL CARD ── */
+  .url-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden; margin-top: 10px;
+    text-decoration: none; display: block;
+    transition: border-color .15s, background .15s;
+  }
+  .url-card:hover { border-color: #111; background: var(--surface2); }
+  .url-card-inner { padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
+  .url-icon-box {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--accent-dim); border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .url-text {}
+  .url-label {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #111; margin-bottom: 3px;
+  }
+  .url-href {
+    font-size: 12px; color: var(--text2);
+    font-family: 'Roboto Mono', monospace;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    max-width: 240px;
+  }
+  .url-arrow {
+    margin-left: auto; font-size: 14px; color: var(--muted);
+    flex-shrink: 0; transition: transform .15s;
+  }
+  .url-card:hover .url-arrow { transform: translateX(3px); color: #111; }
+
+  /* ── POST FOOTER ── */
+  .post-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 10px;
+  }
+  .post-react {
+    display: flex; gap: 4px;
+  }
+  .react-btn {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11px; color: var(--muted);
+    background: transparent; border: none; cursor: pointer;
+    padding: 4px 8px; border-radius: 6px;
+    transition: all .15s; display: flex; align-items: center; gap: 4px;
+  }
+  .react-btn:hover { background: var(--surface2); color: var(--text); }
+  .react-btn.reacted { color: #111; font-weight: 700; }
+
+  .delete-btn {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px; color: var(--muted);
+    background: transparent; border: none; cursor: pointer;
+    padding: 4px 6px; border-radius: 5px; transition: all .15s;
+    letter-spacing: 0.05em;
+  }
+  .delete-btn:hover { color: var(--danger); background: rgba(255,68,68,.08); }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    display: flex; gap: 6px; padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-btn {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 100px; white-space: nowrap;
+    border: 1px solid var(--border2); background: transparent;
+    color: var(--muted); cursor: pointer; transition: all .15s; flex-shrink: 0;
+  }
+  .filter-btn.active {
+    border-color: #111; color: #111; background: var(--accent-dim);
+  }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; bottom: 72px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--surface); color: var(--text);
+    border: 1px solid var(--border2);
+    border-radius: 100px; padding: 10px 18px;
+    font-family: 'Roboto Mono', monospace; font-size: 11px; z-index: 9999;
+    transition: all .25s cubic-bezier(.4,0,.2,1);
+    white-space: nowrap; pointer-events: none; opacity: 0;
+    letter-spacing: 0.05em;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  #toast.success { border-color: rgba(0,100,0,.3); color: var(--success); }
+  #toast.error   { border-color: rgba(180,0,0,.3);  color: var(--danger);  }
+
+  /* ── SPINNER ── */
+  .spinner {
+    width: 12px; height: 12px;
+    border: 2px solid rgba(255,255,255,.3);
+    border-top-color: #fff;
+    border-radius: 50%; animation: spin .6s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  /* ── AVATAR POPUP ── */
+  .avatar-popup-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(0,0,0,0.25);
+    display: flex; align-items: center; justify-content: center;
+    animation: fadeUp 0.2s ease;
+  }
+  .avatar-popup {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 24px; width: 300px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  }
+  .avatar-popup-title {
+    font-size: 14px; font-weight: 700; margin-bottom: 4px;
+  }
+  .avatar-popup-sub {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11px; color: var(--muted); margin-bottom: 16px;
+  }
+  .avatar-preview {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: #111; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; margin: 0 auto 16px; border: 2px solid var(--border);
+  }
+  .avatar-input {
+    width: 100%; background: var(--surface); border: 1px solid var(--border2);
+    border-radius: var(--radius); padding: 10px 12px;
+    font-size: 22px; text-align: center; outline: none;
+    transition: border-color .15s; color: var(--text);
+    letter-spacing: 0.1em;
+  }
+  .avatar-input:focus { border-color: #111; }
+  .avatar-hint {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px; color: var(--muted); text-align: center;
+    margin-top: 6px; margin-bottom: 16px;
+  }
+  .avatar-popup-actions {
+    display: flex; gap: 8px;
+  }
+
+
+  /* ── BUG STAR ── */
+  .bug-star { color: #cc0000; font-weight: 700; margin-left: 2px; font-size: 13px; }
+  .bug-meta {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px; color: var(--muted);
+    margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  }
+  .bug-meta-chip {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 100px;
+    border: 1px solid var(--border2); color: var(--muted);
+  }
+  .bug-meta-chip.fatal    { border-color: rgba(180,0,0,.3); color: #cc0000; background: rgba(180,0,0,.06); }
+  .bug-meta-chip.urgent   { border-color: rgba(180,80,0,.3); color: #b85000; background: rgba(180,80,0,.06); }
+  .bug-meta-chip.moderate { border-color: rgba(0,0,0,.15); color: var(--text2); }
+
+  /* ── UPVOTE / DOWNVOTE ── */
+  .vote-btn {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11px; color: var(--muted);
+    background: transparent; border: 1px solid transparent; cursor: pointer;
+    padding: 3px 8px; border-radius: 6px;
+    transition: all .15s; display: flex; align-items: center; gap: 3px;
+  }
+  .vote-btn:hover { background: var(--surface2); color: var(--text); }
+  .vote-btn.up.voted   { color: #007700; border-color: rgba(0,120,0,.25); background: rgba(0,120,0,.06); font-weight: 700; }
+  .vote-btn.down.voted { color: #cc0000; border-color: rgba(180,0,0,.25); background: rgba(180,0,0,.06); font-weight: 700; }
+
+  /* ── FAB CLUSTER ── */
+  .fab-cluster {
+    position: fixed; bottom: 24px; right: 20px;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
+    z-index: 200;
+  }
+  .fab {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: #111; color: #fff; border: none; cursor: pointer;
+    font-size: 20px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.18); transition: all .15s;
+  }
+  .fab:hover { background: #333; transform: scale(1.06); }
+  .fab.fab-bug { background: #fff; color: #111; border: 1.5px solid var(--border); font-size: 18px; }
+  .fab.fab-bug:hover { background: var(--surface2); }
+
+  /* ── SUGGESTION INBOX badge on name ── */
+  .inbox-btn {
+    font-size: 14px; cursor: pointer; opacity: 0.6;
+    background: none; border: none; padding: 0 2px;
+    transition: opacity .15s; vertical-align: middle;
+  }
+  .inbox-btn:hover { opacity: 1; }
+
+  /* ── MODAL SHARED ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 600;
+    background: rgba(0,0,0,0.28);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    animation: fadeUp 0.2s ease;
+  }
+  .modal {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); width: 100%; max-width: 420px;
+    max-height: 86vh; overflow-y: auto;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.14);
+  }
+  .modal-header {
+    padding: 18px 20px 14px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; background: var(--bg); z-index: 1;
+  }
+  .modal-title { font-size: 15px; font-weight: 700; }
+  .modal-sub {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px; color: var(--muted); margin-top: 2px;
+  }
+  .modal-close {
+    background: none; border: none; font-size: 20px; cursor: pointer;
+    color: var(--muted); line-height: 1; padding: 2px 6px; border-radius: 4px;
+  }
+  .modal-close:hover { background: var(--surface2); color: var(--text); }
+  .modal-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+  .modal-actions { padding: 0 20px 18px; display: flex; gap: 8px; }
+
+  /* ── FORM FIELD (modal) ── */
+  .form-field label {
+    display: block; font-family: 'Roboto Mono', monospace;
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .form-field select, .form-field textarea, .form-field input[type=text] {
+    width: 100%; background: var(--surface); border: 1px solid var(--border2);
+    border-radius: var(--radius); padding: 9px 12px;
+    color: var(--text); font-size: 13px; font-family: 'Roboto', Arial, sans-serif;
+    outline: none; transition: border-color .15s;
+  }
+  .form-field select:focus, .form-field textarea:focus, .form-field input[type=text]:focus {
+    border-color: #111;
+  }
+  .form-field textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+  /* ── SUGGESTION INBOX ITEMS ── */
+  .suggestion-item {
+    padding: 12px 14px; border: 1px solid var(--border);
+    border-radius: var(--radius); background: var(--surface);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .suggestion-item-body { font-size: 13px; line-height: 1.5; }
+  .suggestion-item-meta {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px; color: var(--muted);
+  }
+  .suggestion-empty {
+    text-align: center; padding: 32px 0;
+    font-family: 'Roboto Mono', monospace; font-size: 12px; color: var(--muted);
+  }
+
+  /* ── BUG SEVERITY CHIP ── */
+  .severity-chip {
+    display: inline-block;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 100px; border: 1px solid var(--border2);
+    color: var(--muted);
+  }
+  .severity-chip.fatal    { border-color: rgba(180,0,0,.3); color: #cc0000; background: rgba(180,0,0,.06); }
+  .severity-chip.urgent   { border-color: rgba(180,80,0,.3); color: #b85000; background: rgba(180,80,0,.06); }
+  .severity-chip.moderate { border-color: rgba(0,0,0,.2); color: var(--text2); }
+  /* ── DIVIDER LABEL ── */
+  .divider-label {
+    padding: 10px 16px 4px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading-screen">
+  <div class="load-logo">✦ JVST Internal</div>
+  <div class="load-bar"></div>
+</div>
+
+<!-- AUTH SCREEN -->
+<div class="screen" id="screen-auth">
+  <div class="auth-wrap">
+    <div class="auth-lockup">
+      <div class="auth-eyebrow">✦ JVST — Employees Only</div>
+      <h1 class="auth-title">Internal<br><span>Feed.</span></h1>
+      <p class="auth-sub">Sign in with your Actions account.<br>Access is restricted to authorized staff.</p>
+    </div>
+    <div class="auth-card">
+      <div class="auth-msg" id="auth-msg"></div>
+      <div class="field"><label>Email</label>
+        <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="field"><label>Password</label>
+        <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div class="field"><label>Invite Code</label>
+        <input type="password" id="login-invite" placeholder="••••••••••••" autocomplete="off">
+      </div>
+      <button class="btn btn-primary" id="btn-login" onclick="doLogin()">
+        Sign in →
+      </button>
+    </div>
+    <div class="auth-footer">
+      Same login as your <a>Actions Wallet</a> account.
+    </div>
+  </div>
+</div>
+
+<!-- ACCESS DENIED SCREEN -->
+<div class="screen" id="screen-denied">
+  <div class="denied-icon">⊗</div>
+  <div class="denied-title">No access.</div>
+  <div class="denied-sub">This feed is restricted to authorized JVST employees. Your account doesn't have permission.</div>
+  <button class="btn btn-ghost" style="width:auto;padding:10px 24px;margin-top:8px;" onclick="doSignOut()">
+    Sign out
+  </button>
+</div>
+
+<!-- MAIN APP SCREEN -->
+<div class="screen" id="screen-app">
+
+  <!-- Header -->
+  <div class="app-header">
+    <div class="app-logo">
+      <div class="app-logo-dot"></div>
+      JVST
+      <span class="app-logo-tag">Internal</span>
+    </div>
+    <div class="header-right">
+      <button class="inbox-btn" id="inbox-btn" style="display:none;" onclick="openInbox()" title="Suggestions inbox">📬</button>
+      <div class="header-avatar" id="header-avatar" onclick="openAvatarPopup()">?</div>
+      <button class="signout-btn" onclick="doSignOut()">Sign out</button>
+    </div>
+  </div>
+
+  <!-- Compose -->
+  <div class="compose-bar" id="compose-bar" style="display:none;">
+    <div class="compose-inner">
+      <div class="compose-top">
+        <div class="compose-avatar" id="compose-avatar">?</div>
+        <div class="compose-fields">
+          <textarea
+            class="compose-input"
+            id="compose-text"
+            placeholder="What's going on..."
+            rows="2"
+            oninput="onComposeInput()"
+          ></textarea>
+          <div class="compose-url-row" id="compose-url-row">
+            <span class="compose-url-icon">↗</span>
+            <input
+              class="compose-url-input"
+              id="compose-url"
+              type="url"
+              placeholder="https://beta.example.com/..."
+            >
+          </div>
+        </div>
+      </div>
+      <div class="compose-actions">
+        <div class="compose-tools">
+          <button class="compose-tool-btn" id="tool-url" onclick="toggleUrlField()">↗ Link</button>
+          <select id="compose-type" style="
+            background: var(--bg); border: 1px solid var(--border2); border-radius: 5px;
+            color: var(--muted); font-family: 'Roboto Mono', monospace; font-size: 10px;
+            letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 8px;
+            cursor: pointer; outline: none; transition: border-color .15s;
+          ">
+            <option value="note">Note</option>
+            <option value="update">Update</option>
+            <option value="beta">Beta</option>
+          </select>
+        </div>
+        <button class="post-btn" id="btn-post" onclick="submitPost()" disabled>
+          Post
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All</button>
+    <button class="filter-btn" data-filter="beta" onclick="setFilter('beta', this)">Beta</button>
+    <button class="filter-btn" data-filter="update" onclick="setFilter('update', this)">Updates</button>
+    <button class="filter-btn" data-filter="note" onclick="setFilter('note', this)">Notes</button>
+  </div>
+
+  <!-- Feed -->
+  <div class="feed" id="feed">
+    <div class="feed-empty">
+      <div class="feed-empty-icon">◎</div>
+      Loading posts...
+    </div>
+  </div>
+
+</div>
+
+
+<!-- FAB CLUSTER -->
+<div class="fab-cluster" id="fab-cluster" style="display:none;">
+  <div class="fab fab-bug" onclick="openBugModal()" title="Report a bug">🐛</div>
+  <div class="fab" onclick="openSuggestionModal()" title="Submit a suggestion">💡</div>
+</div>
+
+<!-- SUGGESTION MODAL -->
+<div class="modal-overlay" id="suggestion-modal" style="display:none;" onclick="closeModalOverlay(event,'suggestion-modal')">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Submit a suggestion</div>
+        <div class="modal-sub">Ideas go straight to the Admins</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('suggestion-modal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field">
+        <label>Your idea</label>
+        <textarea id="suggestion-body" placeholder="Describe your suggestion..." rows="4"></textarea>
+      </div>
+      <div class="form-field">
+        <label>Related service</label>
+        <select id="suggestion-service">
+          <option value="">— Pick one —</option>
+          <option value="INDY Free">INDY (Free)</option>
+          <option value="INDY+">INDY+</option>
+          <option value="Actions App">Actions App</option>
+          <option value="Website">Website</option>
+          <option value="Shop (shopjvst.store)">Shop (shopjvst.store)</option>
+          <option value="Fan">Fan</option>
+          <option value="New service/product">New service / product</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal('suggestion-modal')">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" id="btn-suggestion" onclick="submitSuggestion()">Send idea</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUGGESTION INBOX MODAL (verified only) -->
+<div class="modal-overlay" id="inbox-modal" style="display:none;" onclick="closeModalOverlay(event,'inbox-modal')">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">📬 Suggestions inbox</div>
+        <div class="modal-sub" id="inbox-count-label">Loading...</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('inbox-modal')">×</button>
+    </div>
+    <div class="modal-body" id="inbox-list">
+      <div class="suggestion-empty">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<!-- BUG REPORT MODAL -->
+<div class="modal-overlay" id="bug-modal" style="display:none;" onclick="closeModalOverlay(event,'bug-modal')">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">🐛 Report a bug</div>
+        <div class="modal-sub">Help us squash it</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('bug-modal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field">
+        <label>Service</label>
+        <select id="bug-service">
+          <option value="">— Pick one —</option>
+          <option value="INDY Free">INDY (Free)</option>
+          <option value="INDY+">INDY+</option>
+          <option value="Actions App">Actions App</option>
+          <option value="Website">Website</option>
+          <option value="Shop (shopjvst.store)">Shop (shopjvst.store)</option>
+          <option value="Fan">Fan</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Bug type</label>
+        <select id="bug-type">
+          <option value="">— Pick one —</option>
+          <option value="Functionality">Functionality</option>
+          <option value="UI">UI</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Severity</label>
+        <select id="bug-severity">
+          <option value="">— Pick one —</option>
+          <option value="fatal">Fatal — completely broken</option>
+          <option value="urgent">Urgent — major impact</option>
+          <option value="moderate">Still functional — minor issue</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Describe the bug</label>
+        <textarea id="bug-body" placeholder="What happened? What did you expect?" rows="4"></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal('bug-modal')">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" id="btn-bug" onclick="submitBug()">Submit report</button>
+    </div>
+  </div>
+</div>
+
+<!-- AVATAR POPUP -->
+<div id="avatar-popup-overlay" class="avatar-popup-overlay" style="display:none;" onclick="closeAvatarPopup(event)">
+  <div class="avatar-popup">
+    <div class="avatar-popup-title">Set your avatar</div>
+    <div class="avatar-popup-sub">Pick an emoji or type 1–2 characters</div>
+    <div class="avatar-preview" id="avatar-preview">?</div>
+    <input class="avatar-input" id="avatar-input" maxlength="2" placeholder="😊" oninput="onAvatarInput(this.value)">
+    <div class="avatar-hint">Emoji or initials — your choice</div>
+    <div class="avatar-popup-actions">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeAvatarPopup()">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" onclick="saveAvatar()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+/*
+ * ── FIRESTORE SETUP ───────────────────────────────────────────────────────
+ *
+ * 1. In Firestore, create this document manually:
+ *      Collection: config
+ *      Document:   invite
+ *      Field:      code  (string)  = jvstadmin2026
+ *
+ * 2. Add this rule to your Firestore rules (inside the database match block):
+ *
+ *    match /config/{docId} {
+ *      // Anyone (even unauthenticated) can read — needed for pre-login check
+ *      allow read: if true;
+ *      // Only you can write (via Firebase console or Admin SDK)
+ *      allow write: if false;
+ *    }
+ *
+ * To change the invite code later, just update the `code` field in Firestore.
+ * ─────────────────────────────────────────────────────────────────────────
+ */
+// ── Firebase ──────────────────────────────────────────────────────────────
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyC50_wBK3TfERX1gm35puugCD324SxHJR8",
+  authDomain: "tunesandindy.firebaseapp.com",
+  projectId: "tunesandindy",
+  storageBucket: "tunesandindy.firebasestorage.app",
+  messagingSenderId: "335192973371",
+  appId: "1:335192973371:web:ce69d4b67c765d6aaf7c1e"
+};
+firebase.initializeApp(FIREBASE_CONFIG);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+// ── Authorized posters (case-insensitive match) ──────────────────────────
+const ALLOWED_USERS = ['Ryan', 'Lila Ireland'];
+function isAllowedPoster(name) {
+  return ALLOWED_USERS.some(u => u.toLowerCase() === (name || '').toLowerCase());
+}
+
+// ── State ─────────────────────────────────────────────────────────────────
+let currentUser = null;
+let currentUserName = '';
+let currentAvatar = '';
+let postsListener = null;
+let allPosts = [];
+let currentFilter = 'all';
+let urlFieldVisible = false;
+
+// ── Auth state ────────────────────────────────────────────────────────────
+auth.onAuthStateChanged(async user => {
+  try {
+    if (user) {
+      currentUser = user;
+      // Look up real username from shop_users (same as rest of app)
+      try {
+        const shopDoc = await db.collection('shop_users').doc(user.uid).get();
+        currentUserName = (shopDoc.exists && shopDoc.data().displayName) ? shopDoc.data().displayName : (user.displayName || '');
+        currentAvatar = (shopDoc.exists && shopDoc.data().avatar) ? shopDoc.data().avatar : '';
+      } catch(e) {
+        currentUserName = user.displayName || '';
+      }
+      enterApp();
+    } else {
+      currentUser = null;
+      currentUserName = '';
+      if (postsListener) { postsListener(); postsListener = null; }
+      showScreen('auth');
+    }
+  } finally {
+    hideLoading();
+  }
+});
+
+// ── Auth ──────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const email  = document.getElementById('login-email').value.trim();
+  const pass   = document.getElementById('login-password').value;
+  const invite = document.getElementById('login-invite').value.trim();
+  if (!email || !pass || !invite) return showAuthMsg('Fill in all fields', 'error');
+
+  setBtn('btn-login', true, 'Signing in...');
+  try {
+    // Validate invite code against Firestore /config/invite
+    const configDoc = await db.collection('config').doc('invite').get();
+    if (!configDoc.exists || configDoc.data().code !== invite) {
+      showAuthMsg('Invalid invite code', 'error');
+      setBtn('btn-login', false, 'Sign in →');
+      return;
+    }
+    // Code valid — proceed with Firebase auth
+    await auth.signInWithEmailAndPassword(email, pass);
+  } catch(e) {
+    showAuthMsg(friendlyError(e), 'error');
+    setBtn('btn-login', false, 'Sign in →');
+  }
+}
+
+function doSignOut() {
+  if (postsListener) { postsListener(); postsListener = null; }
+  auth.signOut();
+}
+
+function friendlyError(e) {
+  const m = e.message || '';
+  if (m.includes('user-not-found') || m.includes('wrong-password') || m.includes('invalid-credential'))
+    return 'Incorrect email or password';
+  if (m.includes('too-many-requests')) return 'Too many attempts — try later';
+  if (m.includes('invalid-email')) return 'Invalid email address';
+  return 'Something went wrong';
+}
+
+// ── Enter app ─────────────────────────────────────────────────────────────
+function enterApp() {
+  showScreen('app');
+
+  const initials = currentUserName.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  const avatarDisplay = currentAvatar || initials || '?';
+
+  document.getElementById('header-avatar').textContent = avatarDisplay;
+
+  // Set compose avatar
+  const composeAv = document.getElementById('compose-avatar');
+  composeAv.textContent = avatarDisplay;
+  composeAv.style.background = isAllowedPoster(currentUserName) ? '#111' : '#555';
+  composeAv.style.color = '#fff';
+
+  // Show compose bar only for Ryan and Lila Ireland
+  if (isAllowedPoster(currentUserName)) {
+    document.getElementById('compose-bar').style.display = 'block';
+  }
+
+  // Show FAB cluster for all logged-in users
+  document.getElementById('fab-cluster').style.display = 'flex';
+  // Show inbox button for verified users
+  if (isAllowedPoster(currentUserName)) {
+    document.getElementById('inbox-btn').style.display = 'flex';
+  }
+
+  // Subscribe to posts
+  subscribeToFeed();
+}
+
+// ── Feed subscription ─────────────────────────────────────────────────────
+function subscribeToFeed() {
+  const feedEl = document.getElementById('feed');
+  feedEl.innerHTML = '<div class="feed-empty"><div class="feed-empty-icon">◎</div>Loading...</div>';
+
+  postsListener = db.collection('internal_posts')
+    .orderBy('createdAt', 'desc')
+    .limit(100)
+    .onSnapshot(snap => {
+      allPosts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      renderFeed();
+    }, err => {
+      console.error(err);
+      feedEl.innerHTML = '<div class="feed-empty">Failed to load posts.</div>';
+    });
+}
+
+// ── Render feed ───────────────────────────────────────────────────────────
+function setFilter(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderFeed();
+}
+
+function renderFeed() {
+  const feedEl = document.getElementById('feed');
+  const filtered = currentFilter === 'all'
+    ? allPosts
+    : allPosts.filter(p => p.type === currentFilter);
+
+  if (!filtered.length) {
+    feedEl.innerHTML = `
+      <div class="feed-empty">
+        <div class="feed-empty-icon">◎</div>
+        ${currentFilter === 'all' ? 'No posts yet. Be the first.' : `No ${currentFilter} posts yet.`}
+      </div>`;
+    return;
+  }
+
+  feedEl.innerHTML = filtered.map(post => renderPost(post)).join('');
+}
+
+function renderPost(post) {
+  const name    = post.authorName || 'Unknown';
+  const isRyan  = name.toLowerCase() === 'ryan';
+  const avatarClass = isRyan ? 'ryan' : 'lila';
+  const initials = post.authorAvatar || name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const badgeClass = isRyan ? 'badge-ryan' : 'badge-lila';
+  const isBug = post.type === 'bug';
+  const typeChip = post.type
+    ? `<div class="post-type-chip ${post.type}">${isBug ? '🐛 Bug' : post.type}</div>`
+    : '';
+  const bugMeta = isBug ? `
+    <div class="bug-meta">
+      <span class="bug-meta-chip ${escHtml(post.bugSeverity||'')}">${escHtml(post.bugSeverity||'')}</span>
+      <span class="bug-meta-chip">${escHtml(post.bugType||'')}</span>
+      <span class="bug-meta-chip">${escHtml(post.bugService||'')}</span>
+    </div>` : '';
+
+  const urlBlock = post.url
+    ? `<a href="${escHtml(post.url)}" target="_blank" class="url-card">
+        <div class="url-card-inner">
+          <div class="url-icon-box">↗</div>
+          <div class="url-text">
+            <div class="url-label">Beta Link</div>
+            <div class="url-href">${escHtml(post.url)}</div>
+          </div>
+          <div class="url-arrow">→</div>
+        </div>
+      </a>` : '';
+
+  const ts = post.createdAt
+    ? formatTime(post.createdAt.toDate ? post.createdAt.toDate() : new Date(post.createdAt))
+    : 'just now';
+
+  const isOwn = post.authorUid === currentUser?.uid;
+  const deleteBtn = isOwn
+    ? `<button class="delete-btn" onclick="deletePost('${post.id}')">Delete</button>`
+    : '';
+
+  const hearts = post.hearts || 0;
+  const hearted = (post.heartedBy || []).includes(currentUser?.uid);
+  const heartClass = hearted ? 'react-btn reacted' : 'react-btn';
+
+  return `
+    <div class="post-card" id="post-${post.id}">
+      <div class="post-header">
+        <div class="post-author-row">
+          <div class="post-avatar ${avatarClass}">
+            <div class="post-avatar-ring"></div>
+            ${initials}
+          </div>
+          <div class="post-author-info">
+            <div class="post-author-name">
+              ${escHtml(name)}
+              ${isBug ? '<span class="bug-star">*</span>' : '<span class="post-author-badge '+badgeClass+'">'+( isRyan ? 'Our Lord and Savior' : 'Lila')+'</span>'}
+            </div>
+            <div class="post-time">${ts}</div>
+          </div>
+        </div>
+        ${typeChip}
+      </div>
+      ${bugMeta}
+      <div class="post-body">${escHtml(post.body || '')}</div>
+      ${urlBlock}
+      <div class="post-footer">
+        <div class="post-react">
+          <button class="${heartClass}" onclick="toggleHeart('${post.id}', ${hearted})">
+            ${hearted ? '♥' : '♡'} ${hearts}
+          </button>
+        </div>
+        ${deleteBtn}
+      </div>
+    </div>`;
+}
+
+function formatTime(date) {
+  const now = new Date();
+  const diff = Math.floor((now - date) / 1000);
+  if (diff < 60)  return 'just now';
+  if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+// ── Submit post ────────────────────────────────────────────────────────────
+function onComposeInput() {
+  const val = document.getElementById('compose-text').value.trim();
+  document.getElementById('btn-post').disabled = !val;
+}
+
+function toggleUrlField() {
+  urlFieldVisible = !urlFieldVisible;
+  const row = document.getElementById('compose-url-row');
+  const btn = document.getElementById('tool-url');
+  row.classList.toggle('visible', urlFieldVisible);
+  btn.classList.toggle('active', urlFieldVisible);
+  if (urlFieldVisible) document.getElementById('compose-url').focus();
+  else document.getElementById('compose-url').value = '';
+}
+
+async function submitPost() {
+  const body = document.getElementById('compose-text').value.trim();
+  const url  = document.getElementById('compose-url').value.trim();
+  const type = document.getElementById('compose-type').value;
+  if (!body) return;
+
+  setPostBtn(true);
+  try {
+    const post = {
+      body,
+      url: url || null,
+      type,
+      authorUid:    currentUser.uid,
+      authorName:   currentUserName,
+      authorAvatar: currentAvatar || null,
+      createdAt:    firebase.firestore.FieldValue.serverTimestamp(),
+      upvotes:    0,
+      downvotes:  0,
+      upvotedBy:  [],
+      downvotedBy:[]
+    };
+    await db.collection('internal_posts').add(post);
+
+    // Reset compose
+    document.getElementById('compose-text').value = '';
+    document.getElementById('compose-url').value  = '';
+    document.getElementById('compose-type').value = 'note';
+    if (urlFieldVisible) toggleUrlField();
+    document.getElementById('btn-post').disabled = true;
+    showToast('Posted ✦', 'success');
+  } catch(e) {
+    console.error(e);
+    showToast('Failed to post', 'error');
+  } finally {
+    setPostBtn(false);
+  }
+}
+
+// ── Vote ───────────────────────────────────────────────────────────────────
+async function toggleVote(postId, dir, currentlyVoted, oppositeVoted) {
+  const ref = db.collection('internal_posts').doc(postId);
+  const upField   = dir === 'up'   ? 'upvotes'   : 'downvotes';
+  const downField = dir === 'up'   ? 'downvotes' : 'upvotes';
+  const upBy      = dir === 'up'   ? 'upvotedBy' : 'downvotedBy';
+  const downBy    = dir === 'up'   ? 'downvotedBy': 'upvotedBy';
+  const inc = firebase.firestore.FieldValue.increment;
+  const add = firebase.firestore.FieldValue.arrayUnion;
+  const rem = firebase.firestore.FieldValue.arrayRemove;
+  try {
+    if (currentlyVoted) {
+      // undo vote
+      await ref.update({ [upField]: inc(-1), [upBy]: rem(currentUser.uid) });
+    } else {
+      const update = { [upField]: inc(1), [upBy]: add(currentUser.uid) };
+      if (oppositeVoted) {
+        // switch vote: remove opposite
+        update[downField] = inc(-1);
+        update[downBy]    = rem(currentUser.uid);
+      }
+      await ref.update(update);
+    }
+  } catch(e) { showToast('Failed', 'error'); }
+}
+
+// ── Delete ─────────────────────────────────────────────────────────────────
+async function deletePost(postId) {
+  if (!confirm('Delete this post?')) return;
+  try {
+    await db.collection('internal_posts').doc(postId).delete();
+    showToast('Deleted', '');
+  } catch(e) { showToast('Delete failed', 'error'); }
+}
+
+// ── Avatar popup ───────────────────────────────────────────────────────────
+function openAvatarPopup() {
+  const overlay = document.getElementById('avatar-popup-overlay');
+  const input   = document.getElementById('avatar-input');
+  const preview = document.getElementById('avatar-preview');
+  input.value   = currentAvatar;
+  preview.textContent = currentAvatar || document.getElementById('header-avatar').textContent;
+  overlay.style.display = 'flex';
+  setTimeout(() => input.focus(), 50);
+}
+function closeAvatarPopup(e) {
+  if (e && e.target !== document.getElementById('avatar-popup-overlay')) return;
+  document.getElementById('avatar-popup-overlay').style.display = 'none';
+}
+function onAvatarInput(val) {
+  document.getElementById('avatar-preview').textContent = val || '?';
+}
+async function saveAvatar() {
+  const val = document.getElementById('avatar-input').value.trim();
+  try {
+    await db.collection('shop_users').doc(currentUser.uid).update({ avatar: val });
+    currentAvatar = val;
+    const display = val || currentUserName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('header-avatar').textContent = display;
+    document.getElementById('compose-avatar').textContent = display;
+    document.getElementById('avatar-popup-overlay').style.display = 'none';
+    showToast('Avatar updated', 'success');
+  } catch(e) {
+    showToast('Failed to save', 'error');
+  }
+}
+
+// ── Modal helpers ─────────────────────────────────────────────────────────
+function openModal(id)  { document.getElementById(id).style.display = 'flex'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function closeModalOverlay(e, id) {
+  if (e.target === document.getElementById(id)) closeModal(id);
+}
+
+// ── Suggestion box ─────────────────────────────────────────────────────────
+function openSuggestionModal() {
+  document.getElementById('suggestion-body').value = '';
+  document.getElementById('suggestion-service').value = '';
+  openModal('suggestion-modal');
+  setTimeout(() => document.getElementById('suggestion-body').focus(), 50);
+}
+async function submitSuggestion() {
+  const body    = document.getElementById('suggestion-body').value.trim();
+  const service = document.getElementById('suggestion-service').value;
+  if (!body)    return showToast('Please describe your idea', 'error');
+  if (!service) return showToast('Please pick a service', 'error');
+  const btn = document.getElementById('btn-suggestion');
+  btn.disabled = true; btn.textContent = 'Sending...';
+  try {
+    await db.collection('suggestions').add({
+      body, service,
+      authorUid:  currentUser.uid,
+      authorName: currentUserName,
+      createdAt:  firebase.firestore.FieldValue.serverTimestamp(),
+      read: false
+    });
+    closeModal('suggestion-modal');
+    showToast('Suggestion sent! 💡', 'success');
+  } catch(e) {
+    showToast('Failed to send', 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Send idea';
+  }
+}
+
+// ── Suggestions inbox (verified only) ─────────────────────────────────────
+async function openInbox() {
+  openModal('inbox-modal');
+  const list  = document.getElementById('inbox-list');
+  const label = document.getElementById('inbox-count-label');
+  list.innerHTML = '<div class="suggestion-empty">Loading...</div>';
+  try {
+    const snap = await db.collection('suggestions').orderBy('createdAt','desc').limit(100).get();
+    if (snap.empty) {
+      label.textContent = 'No suggestions yet';
+      list.innerHTML = '<div class="suggestion-empty">Nothing here yet.</div>';
+      return;
+    }
+    label.textContent = `${snap.size} suggestion${snap.size !== 1 ? 's' : ''}`;
+    list.innerHTML = snap.docs.map(doc => {
+      const d  = doc.data();
+      const ts = d.createdAt ? formatTime(d.createdAt.toDate ? d.createdAt.toDate() : new Date(d.createdAt)) : 'just now';
+      return `<div class="suggestion-item">
+        <div class="suggestion-item-body">${escHtml(d.body)}</div>
+        <div class="suggestion-item-meta">${escHtml(d.service || '')} · from ${escHtml(d.authorName || 'unknown')} · ${ts}</div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    list.innerHTML = '<div class="suggestion-empty">Failed to load.</div>';
+  }
+}
+
+// ── Bug report ─────────────────────────────────────────────────────────────
+function openBugModal() {
+  ['bug-service','bug-type','bug-severity'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('bug-body').value = '';
+  openModal('bug-modal');
+}
+async function submitBug() {
+  const service  = document.getElementById('bug-service').value;
+  const type     = document.getElementById('bug-type').value;
+  const severity = document.getElementById('bug-severity').value;
+  const body     = document.getElementById('bug-body').value.trim();
+  if (!service)  return showToast('Please select a service', 'error');
+  if (!type)     return showToast('Please select a bug type', 'error');
+  if (!severity) return showToast('Please select a severity', 'error');
+  if (!body)     return showToast('Please describe the bug', 'error');
+  const btn = document.getElementById('btn-bug');
+  btn.disabled = true; btn.textContent = 'Submitting...';
+  try {
+    // Bug reports appear in the feed as regular posts with type='bug'
+    await db.collection('internal_posts').add({
+      type:        'bug',
+      body,
+      bugService:  service,
+      bugType:     type,
+      bugSeverity: severity,
+      url:         null,
+      authorUid:   currentUser.uid,
+      authorName:  currentUserName,
+      authorAvatar:currentAvatar || null,
+      createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
+      upvotes: 0, downvotes: 0, upvotedBy: [], downvotedBy: []
+    });
+    closeModal('bug-modal');
+    showToast('Bug reported 🐛', 'success');
+  } catch(e) {
+    showToast('Failed to submit', 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Submit report';
+  }
+}
+
+// ── Utilities ─────────────────────────────────────────────────────────────
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + name);
+  if (el) el.classList.add('active');
+}
+function hideLoading() { document.getElementById('loading-screen').classList.add('hidden'); }
+function showAuthMsg(txt, type) {
+  const el = document.getElementById('auth-msg');
+  el.textContent = txt; el.className = 'auth-msg ' + type;
+}
+function setBtn(id, loading, text) {
+  const btn = document.getElementById(id); if (!btn) return;
+  btn.disabled = loading;
+  btn.innerHTML = loading ? `<span class="spinner"></span>${text}` : text;
+}
+function setPostBtn(loading) {
+  const btn = document.getElementById('btn-post');
+  btn.disabled = loading;
+  btn.innerHTML = loading ? `<span class="spinner"></span>` : 'Post';
+}
+let _tt;
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'show' + (type ? ' '+type : '');
+  clearTimeout(_tt); _tt = setTimeout(() => t.className = '', 2800);
+}
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ── Enter key on auth ─────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const active = document.querySelector('.screen.active');
+  if (active?.id === 'screen-auth') {
+    const focused = document.activeElement;
+    if (focused && ['login-email','login-password','login-invite'].includes(focused.id)) doLogin();
+  }
+});
+</script>
+</body>
+</html>
