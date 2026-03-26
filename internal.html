@@ -954,7 +954,7 @@ const auth = firebase.auth();
 const db   = firebase.firestore();
 
 // ── Authorized posters (case-insensitive match) ──────────────────────────
-const ALLOWED_USERS = ['Ryan', 'Lila Ireland'];
+const ALLOWED_USERS = ['Ryan', 'Lila Ireland', 'jvstadmin'];
 function isAllowedPoster(name) {
   return ALLOWED_USERS.some(u => u.toLowerCase() === (name || '').toLowerCase());
 }
