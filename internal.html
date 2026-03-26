@@ -1143,9 +1143,9 @@ function renderPost(post) {
     ? `<button class="delete-btn" onclick="deletePost('${post.id}')">Delete</button>`
     : '';
 
-  const hearts = post.hearts || 0;
-  const hearted = (post.heartedBy || []).includes(currentUser?.uid);
-  const heartClass = hearted ? 'react-btn reacted' : 'react-btn';
+const hearts = post.hearts || 0;
+const hearted = currentUser && (post.heartedBy || []).includes(currentUser.uid);
+const heartClass = hearted ? 'react-btn reacted' : 'react-btn';
 
   return `
     <div class="post-card" id="post-${post.id}">
@@ -1170,9 +1170,9 @@ function renderPost(post) {
       ${urlBlock}
       <div class="post-footer">
         <div class="post-react">
-          <button class="${heartClass}" onclick="toggleHeart('${post.id}', ${hearted})">
-            ${hearted ? '♥' : '♡'} ${hearts}
-          </button>
+<button class="${heartClass}" onclick="toggleHeart('${post.id}', ${hearted})">
+  ${hearted ? '♥' : '♡'} <span style="font-feature-settings: 'tnum';">${hearts}</span>
+</button>
         </div>
         ${deleteBtn}
       </div>
@@ -1266,6 +1266,39 @@ async function toggleVote(postId, dir, currentlyVoted, oppositeVoted) {
       await ref.update(update);
     }
   } catch(e) { showToast('Failed', 'error'); }
+}
+
+// ── HEART / LIKE BUTTON ─────────────────────────────────────────────────────
+async function toggleHeart(postId, currentlyHearted) {
+  if (!currentUser) {
+    showToast('Please sign in first', 'error');
+    return;
+  }
+
+  const ref = db.collection('internal_posts').doc(postId);
+  const inc = firebase.firestore.FieldValue.increment;
+  const add = firebase.firestore.FieldValue.arrayUnion;
+  const rem = firebase.firestore.FieldValue.arrayRemove;
+
+  try {
+    if (currentlyHearted) {
+      // Unlike
+      await ref.update({
+        hearts: inc(-1),
+        heartedBy: rem(currentUser.uid)
+      });
+    } else {
+      // Like
+      await ref.update({
+        hearts: inc(1),
+        heartedBy: add(currentUser.uid)
+      });
+    }
+    showToast(currentlyHearted ? 'Unliked' : 'Liked ♥', 'success');
+  } catch (e) {
+    console.error("Heart toggle error:", e);
+    showToast('Failed to update heart', 'error');
+  }
 }
 
 // ── Delete ─────────────────────────────────────────────────────────────────
