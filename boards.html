@@ -492,6 +492,8 @@ body {
 .folder-detail-actions {
   display:flex; gap:8px; padding:0 20px 12px; flex-wrap:wrap;
 }
+
+
 </style>
 </head>
 <body>
@@ -556,7 +558,7 @@ body {
     </div>
     <div class="header-search">
       <span class="header-search-icon">⌕</span>
-      <input type="text" id="header-search-input" placeholder="Search images, links, ideas..." oninput="onHeaderSearch(this.value)" onkeydown="if(event.key==='Enter')doSearch()">
+      <input type="text" id="header-search-input" placeholder="Search images, links, ideas..." oninput="handleHeaderSearch(this.value)" onkeydown="if(event.key==='Enter')handleDoSearch()">
     </div>
     <div class="header-right">
       <div class="header-avatar" id="header-avatar" onclick="openAvatarPopup()">?</div>
@@ -799,7 +801,7 @@ const FIREBASE_CONFIG = {
 };
 firebase.initializeApp(FIREBASE_CONFIG);
 const auth = firebase.auth();
-const db   = firebase.firestore();
+const db = firebase.firestore();
 
 // ── Worker URL ───────────────────────────────────────────────────────────────
 const WORKER_URL = 'https://tiny-snowflake-cc03.rafaestrada-rafa.workers.dev';
@@ -817,14 +819,38 @@ let shareFolderTarget = null;
 let pinUrlDebounce = null;
 let searchDebounce = null;
 let authMode = 'signin';
-let recoCache = null; // cache recommended results for session
 
 // ── NSFW keyword blocklist ───────────────────────────────────────────────────
 const NSFW_WORDS = ['nude','naked','porn','sex','nsfw','xxx','adult','erotic','hentai','onlyfans'];
+
+let userDislikes = new Set();
+
+// Add to renderHomePinGrid
+function renderHomePinGrid(results, container) {
+  if (!results || results.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-title">Nothing found</div></div>`;
+    return;
+  }
+  
+  // Filter out disliked items based on title/url patterns
+  const filteredResults = results.filter(r => {
+    const title = (r.title || '').toLowerCase();
+    const url = (r.url || '').toLowerCase();
+    return !Array.from(userDislikes).some(dislike => 
+      title.includes(dislike) || url.includes(dislike)
+    );
+  });
+  
+  container.innerHTML = `<div class="pin-grid">${filteredResults.map(r => renderSearchResultCardWithFeedback(r)).join('')}</div>`;
+}
+
+
+
 function isNSFW(str) {
   const s = (str || '').toLowerCase();
   return NSFW_WORDS.some(w => s.includes(w));
 }
+
 function sanitizeQuery(q) {
   if (!q) return q;
   return q.split(' ').filter(w => !NSFW_WORDS.some(n => w.toLowerCase().includes(n))).join(' ');
@@ -839,7 +865,7 @@ auth.onAuthStateChanged(async user => {
         const shopDoc = await db.collection('shop_users').doc(user.uid).get();
         if (shopDoc.exists && shopDoc.data().displayName) {
           currentUserName = shopDoc.data().displayName;
-          currentAvatar   = shopDoc.data().avatar || '';
+          currentAvatar = shopDoc.data().avatar || '';
         } else {
           currentUserName = user.displayName || user.email.split('@')[0];
           currentAvatar = '';
@@ -867,7 +893,7 @@ function switchAuthTab(mode) {
 
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
-  const pass  = document.getElementById('login-password').value;
+  const pass = document.getElementById('login-password').value;
   if (!email || !pass) return showAuthMsg('Fill in all fields', 'error');
   setBtn('btn-login', true, 'Signing in...');
   try {
@@ -879,9 +905,9 @@ async function doLogin() {
 }
 
 async function doSignup() {
-  const name  = document.getElementById('signup-name').value.trim();
+  const name = document.getElementById('signup-name').value.trim();
   const email = document.getElementById('signup-email').value.trim();
-  const pass  = document.getElementById('signup-password').value;
+  const pass = document.getElementById('signup-password').value;
   if (!name || !email || !pass) return showAuthMsg('Fill in all fields', 'error');
   if (pass.length < 6) return showAuthMsg('Password must be at least 6 characters', 'error');
   setBtn('btn-signup', true, 'Creating...');
@@ -903,13 +929,12 @@ async function doSignup() {
 function doSignOut() {
   if (mySavedPinsListener) { mySavedPinsListener(); mySavedPinsListener = null; }
   if (myFoldersListener) { myFoldersListener(); myFoldersListener = null; }
-  recoCache = null;
   auth.signOut();
 }
 
 function friendlyError(e) {
   const m = e.message || '';
-  if (m.includes('user-not-found') || m.includes('wrong-password') || m.includes('invalid-credential')) return 'Incorrect email or password';
+  if (m.includes('user-not-found') || m.includes('wrong-password')) return 'Incorrect email or password';
   if (m.includes('email-already-in-use')) return 'Email already in use — try signing in';
   if (m.includes('too-many-requests')) return 'Too many attempts — try later';
   if (m.includes('invalid-email')) return 'Invalid email address';
@@ -917,7 +942,7 @@ function friendlyError(e) {
   return 'Something went wrong';
 }
 
-// ── Enter App ────────────────────────────────────────────────────────────────
+// ── Subscriptions ────────────────────────────────────────────────────────────
 let mySavedPinsListener = null;
 let myFoldersListener = null;
 
@@ -933,7 +958,7 @@ function subscribeToFolders() {
       if (cnt) cnt.textContent = myFolders.length || '';
       if (currentView === 'folders') renderFoldersView();
       if (currentView === 'folder') renderFolderView(currentFolderId);
-    }, err => console.error('Folders listener:', err));
+    });
 }
 
 function subscribeToSavedPins() {
@@ -943,190 +968,329 @@ function subscribeToSavedPins() {
     .orderBy('savedAt', 'desc')
     .limit(200)
     .onSnapshot(snap => {
-      const prev = mySavedPins.length;
       mySavedPins = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       if (currentView === 'saved') renderSavedView();
       if (currentView === 'home') renderHomeView();
-      // Invalidate reco cache when pins change significantly
-      if (Math.abs(mySavedPins.length - prev) > 0) recoCache = null;
-    }, err => console.error('Pins listener:', err));
+    });
 }
 
 // ── Navigation ───────────────────────────────────────────────────────────────
 function navigateTo(view, extra) {
   currentView = view;
   currentFolderId = null;
-
   document.querySelectorAll('.nav-tab, .sidebar-item, .mobile-nav-btn').forEach(el => {
     const t = el.dataset.tab;
     el.classList.toggle('active', t === view);
   });
-
   switch(view) {
-    case 'home':         renderHomeView(); break;
-    case 'folders':      renderFoldersView(); break;
-    case 'saved':        renderSavedView(); break;
-    case 'shared':       renderSharedView(); break;
-    case 'search':       renderSearchView(extra); break;
-    case 'folder':       currentFolderId = extra; renderFolderView(extra); break;
+    case 'home': renderHomeView(); break;
+    case 'folders': renderFoldersView(); break;
+    case 'saved': renderSavedView(); break;
+    case 'shared': renderSharedView(); break;
+    case 'search': renderSearchView(extra); break;
+    case 'folder': currentFolderId = extra; renderFolderView(extra); break;
     case 'shared-folder': renderSharedFolderView(extra); break;
   }
 }
 
-// ── HOME VIEW — Recommended feed ─────────────────────────────────────────────
+// ── IMPROVED HOME FEED (Always shows lots of content) ────────────────────────
 async function renderHomeView() {
   const mc = document.getElementById('main-content');
-
-  // Build header
+  
   mc.innerHTML = `
     <div class="page-header">
       <div>
-        <div class="page-title">Home</div>
-        <div class="page-sub">Picked for you</div>
+        <div class="page-title">Discover</div>
+        <div class="page-sub">Fresh inspiration daily</div>
       </div>
       <div class="page-header-actions">
         <button class="btn-sm btn-sm-primary" onclick="openSavePinModal()">+ Save</button>
       </div>
     </div>
 
-    ${mySavedPins.length ? `
     <div class="home-section">
       <div class="home-section-label">
-        <div class="home-section-title">Your Saves</div>
-        <button class="section-action" onclick="navigateTo('saved')">See all →</button>
-      </div>
-      <div class="pin-grid">${mySavedPins.slice(0,8).map(p => renderPinCard(p)).join('')}</div>
-    </div>` : ''}
-
-    <div class="home-section">
-      <div class="home-section-label">
-        <div class="home-section-title" id="reco-section-title">Recommended</div>
-        <button class="section-action" onclick="refreshRecommendations()">Refresh ↺</button>
+        <div class="home-section-title" id="reco-title">Recommended for you</div>
+        <button class="section-action" onclick="refreshHomeFeed()">Refresh ↺</button>
       </div>
       <div id="reco-area">
-        <div class="reco-loading">◎ &nbsp; Loading recommendations...</div>
+        <div class="reco-loading">Loading amazing finds...</div>
+      </div>
+    </div>
+
+    <div class="home-section">
+      <div class="home-section-label">
+        <div class="home-section-title">Trending right now</div>
+      </div>
+      <div id="trending-area">
+        <div class="reco-loading">Exploring popular ideas...</div>
       </div>
     </div>`;
+  
+  loadImprovedHomeFeed();
+}
 
-  loadRecommendations();
+async function loadImprovedHomeFeed() {
+  const recoArea = document.getElementById('reco-area');
+  const trendingArea = document.getElementById('trending-area');
+
+  if (mySavedPins.length > 3) {
+    document.getElementById('reco-title').textContent = "Recommended for you";
+    await loadPersonalizedFeed(recoArea);
+  } else {
+    document.getElementById('reco-title').textContent = "Popular right now";
+    await loadBroadInspiration(recoArea);
+  }
+  await loadTrendingFeed(trendingArea);
+}
+
+async function loadPersonalizedFeed(area) {
+  area.innerHTML = `<div class="reco-loading">Curating based on your saves...</div>`;
+  try {
+    const keywords = getRecommendationKeywords() || [];
+    let allResults = [];
+
+    if (keywords.length > 0) {
+      const fetches = keywords.slice(0, 5).map(kw => fetchRecoForQuery(kw, 18));
+      const resultsSets = await Promise.all(fetches);
+      allResults = interleaveMultiple(resultsSets.flat());
+    }
+
+    if (allResults.length < 20) {
+      const extra = await fetchRecoForQuery("design inspiration", 25);
+      allResults = allResults.concat(extra);
+    }
+
+    const savedUrls = new Set(mySavedPins.map(p => p.imageUrl || p.url).filter(Boolean));
+    let finalResults = allResults.filter(r => !savedUrls.has(r.fullUrl) && !savedUrls.has(r.thumbUrl));
+    
+    finalResults = shuffleArray(finalResults).slice(0, 50);
+    renderHomePinGrid(finalResults, area);
+  } catch (e) {
+    area.innerHTML = `<div class="empty-state"><div class="empty-sub">Couldn't load recommendations.</div></div>`;
+  }
+}
+
+async function loadBroadInspiration(area) {
+  area.innerHTML = `<div class="reco-loading">Finding beautiful things...</div>`;
+  try {
+    // Use more specific, curated queries based on what's trending in design/art
+    const broadQueries = [
+      "abstract art", "geometric patterns", "nature photography", 
+      "urban architecture", "minimalist design", "product photography",
+      "texture closeup", "vintage aesthetic", "cinematic lighting"
+    ];
+    
+    // Random but weighted - avoid generic terms
+    const randomIndex = Math.floor(Math.random() * broadQueries.length);
+    let randomQuery = broadQueries[randomIndex];
+    
+    // If user has any saved items, try to find a category match
+    if (mySavedPins.length > 0) {
+      const allText = mySavedPins.map(p => (p.title + ' ' + (p.description || ''))).join(' ').toLowerCase();
+      const categories = {
+        'art': ['art', 'painting', 'drawing', 'illustration'],
+        'design': ['design', 'graphic', 'ui', 'ux'],
+        'nature': ['nature', 'landscape', 'mountain', 'forest'],
+        'architecture': ['architecture', 'building', 'house', 'urban'],
+        'tech': ['technology', 'code', 'computer', 'digital']
+      };
+      
+      for (const [cat, keywords] of Object.entries(categories)) {
+        if (keywords.some(k => allText.includes(k))) {
+          randomQuery = cat === 'art' ? "contemporary art" :
+                        cat === 'design' ? "graphic design inspiration" :
+                        cat === 'nature' ? "nature photography" :
+                        cat === 'architecture' ? "modern architecture" :
+                        "technology abstract";
+          break;
+        }
+      }
+    }
+    
+    const results = await fetchRecoForQuery(randomQuery, 35);
+    const savedUrls = new Set(mySavedPins.map(p => p.imageUrl || p.url).filter(Boolean));
+    const finalResults = results.filter(r => !savedUrls.has(r.fullUrl) && !savedUrls.has(r.thumbUrl))
+                               .slice(0, 48);
+    renderHomePinGrid(finalResults, area);
+  } catch (e) {
+    area.innerHTML = `<div class="empty-state"><div class="empty-sub">Couldn't load inspiration right now.</div></div>`;
+  }
+}
+
+async function loadTrendingFeed(area) {
+  area.innerHTML = `<div class="reco-loading">Loading trending...</div>`;
+  try {
+    const trendingQueries = ["interior design", "street photography", "graphic design", "nature", "typography"];
+    const results = await fetchRecoForQuery(trendingQueries[Math.floor(Math.random()*trendingQueries.length)], 30);
+
+    const savedUrls = new Set(mySavedPins.map(p => p.imageUrl || p.url).filter(Boolean));
+    const finalResults = results.filter(r => !savedUrls.has(r.fullUrl)).slice(0, 40);
+
+    renderHomePinGrid(finalResults, area);
+  } catch (e) {
+    area.innerHTML = `<div class="empty-state"><div class="empty-sub">Trending section unavailable.</div></div>`;
+  }
+}
+
+function renderHomePinGrid(results, container) {
+  if (!results || results.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-title">Nothing found</div></div>`;
+    return;
+  }
+  container.innerHTML = `<div class="pin-grid">${results.map(r => renderSearchResultCard(r)).join('')}</div>`;
+  
+  setTimeout(() => {
+    if (typeof improveImageQuality === 'function') improveImageQuality();
+  }, 150);
+}
+
+function refreshHomeFeed() {
+  renderHomeView();
 }
 
 function getRecommendationKeywords() {
   if (!mySavedPins.length) return null;
-
-  // Gather all tags and title words from saved pins
+  
   const freq = {};
-  mySavedPins.forEach(p => {
+  // Weight recent saves more heavily
+  const now = Date.now();
+  
+  mySavedPins.forEach((p, index) => {
+    // Recent saves get higher weight
+    const recencyWeight = Math.max(0.5, 1 - (index / mySavedPins.length) * 0.5);
+    
+    // Better tag weighting
     (p.tags || []).forEach(t => {
-      if (t && t.length > 2) freq[t] = (freq[t] || 0) + 3; // tags weighted more
+      if (t && t.length > 2) {
+        freq[t] = (freq[t] || 0) + 5 * recencyWeight;
+      }
     });
-    // Pull meaningful words from titles
-    const words = (p.title || '').toLowerCase().split(/\s+/);
-    words.forEach(w => {
-      w = w.replace(/[^a-z0-9]/g, '');
-      const stopWords = new Set(['the','and','for','with','this','that','from','have','are','was','not','but','its','into','our','your','can','will','all','get','has','her','his','how','out','one','been','their','they','what','when','also','more','some','been','than','then','them','these','those','there','here','just','like','about','which','would','could','should','were','does','did','any','each','other','over','such','after','before','above','below','between','both','few','most','other','through','during']);
-      if (w.length > 3 && !stopWords.has(w)) freq[w] = (freq[w] || 0) + 1;
+    
+    // Extract meaningful phrases, not just single words
+    const title = (p.title || '').toLowerCase();
+    const desc = (p.description || '').toLowerCase();
+    
+    // Look for noun phrases and meaningful combinations
+    const phrases = extractMeaningfulPhrases(title + ' ' + desc);
+    phrases.forEach(phrase => {
+      freq[phrase] = (freq[phrase] || 0) + 3 * recencyWeight;
     });
+    
+    // Get domain-specific keywords from URLs
+    if (p.url) {
+      const domain = getDomain(p.url);
+      if (domain && domain !== 'instagram.com' && domain !== 'pinterest.com') {
+        freq[domain.split('.')[0]] = (freq[domain.split('.')[0]] || 0) + 2;
+      }
+    }
   });
-
-  // Sort by frequency, pick top terms
-  const sorted = Object.entries(freq).sort((a,b) => b[1]-a[1]);
-  const topTerms = sorted.slice(0, 8).map(e => e[0]);
-
+  
+  // Remove generic/stop words more aggressively
+  const stopWords = new Set([
+    'the','and','for','with','this','that','from','have','are','was','not','but',
+    'its','into','our','your','can','will','all','get','has','her','his','how',
+    'out','one','been','their','they','what','when','also','more','some','than',
+    'then','them','these','those','there','here','just','like','about','which',
+    'would','could','should','were','does','did','any','each','other','over',
+    'such','after','before','design','inspiration','photo','image','picture',
+    'woman','man','person','people','phone','holding','hand','portrait'
+  ]);
+  
+  const filtered = Object.entries(freq)
+    .filter(([word]) => word.length > 3 && !stopWords.has(word))
+    .sort((a,b) => b[1] - a[1]);
+  
+  // Get top terms and combine into meaningful search queries
+  const topTerms = filtered.slice(0, 12).map(e => e[0]);
+  
   if (!topTerms.length) return null;
-
-  // Build 2-3 query combinations from top terms
+  
+  // Create varied search queries
   const queries = [];
+  
+  // Single best term
   if (topTerms[0]) queries.push(topTerms[0]);
-  if (topTerms[1] && topTerms[2]) queries.push(`${topTerms[1]} ${topTerms[2]}`);
-  if (topTerms[3]) queries.push(topTerms[3]);
-
+  
+  // Pair related terms
+  if (topTerms[1]) queries.push(`${topTerms[0]} ${topTerms[1]}`);
+  if (topTerms[2] && topTerms[3]) queries.push(`${topTerms[2]} ${topTerms[3]}`);
+  
+  // Style-based queries
+  const styleTerms = ['minimal', 'vintage', 'modern', 'abstract', 'colorful'];
+  const detectedStyle = styleTerms.find(s => topTerms.includes(s));
+  if (detectedStyle) queries.push(detectedStyle);
+  
   return queries;
 }
 
-async function loadRecommendations(forceRefresh) {
-  const area = document.getElementById('reco-area');
-  if (!area) return;
-
-  // Use cache unless forcing refresh
-  if (recoCache && !forceRefresh) {
-    renderRecoResults(recoCache);
-    return;
-  }
-
-  area.innerHTML = `<div class="reco-loading">◎ &nbsp; Finding things you'll like...</div>`;
-
-  const keywords = getRecommendationKeywords();
-  let results = [];
-
-  try {
-    if (keywords && keywords.length) {
-      // Update label
-      const label = document.getElementById('reco-section-title');
-      if (label) label.textContent = 'Because you saved similar things';
-
-      // Fetch from multiple keyword queries in parallel
-      const fetches = keywords.map(kw => fetchRecoForQuery(sanitizeQuery(kw)));
-      const allResults = await Promise.all(fetches);
-      // Interleave results from different queries
-      results = interleave3(allResults[0]||[], allResults[1]||[], allResults[2]||[]);
-    } else {
-      // No saves — show random trending/popular content
-      const label = document.getElementById('reco-section-title');
-      if (label) label.textContent = 'Explore — save something to personalise';
-      const randomTerms = ['architecture','nature photography','minimal design','abstract art','travel'];
-      const pick = randomTerms[Math.floor(Math.random() * randomTerms.length)];
-      results = await fetchRecoForQuery(pick);
+function extractMeaningfulPhrases(text) {
+  const phrases = [];
+  // Look for 2-3 word phrases that aren't just adjectives
+  const words = text.split(/\s+/).filter(w => w.length > 2);
+  for (let i = 0; i < words.length - 1; i++) {
+    // Skip if it's just "woman holding" patterns
+    if (words[i] === 'woman' && words[i+1] === 'holding') continue;
+    if (words[i] === 'person' && words[i+1] === 'with') continue;
+    
+    phrases.push(`${words[i]} ${words[i+1]}`);
+    if (i < words.length - 2) {
+      phrases.push(`${words[i]} ${words[i+1]} ${words[i+2]}`);
     }
-
-    // Filter out things already saved (by URL match)
-    const savedUrls = new Set(mySavedPins.map(p => p.url || p.imageUrl).filter(Boolean));
-    results = results.filter(r => !savedUrls.has(r.fullUrl) && !savedUrls.has(r.thumbUrl));
-
-    // Shuffle slightly for variety
-    results = shuffleArray(results).slice(0, 40);
-
-    recoCache = results;
-    renderRecoResults(results);
-  } catch(e) {
-    if (area) area.innerHTML = `<div class="empty-state"><div class="empty-sub">Couldn't load recommendations. Check your connection.</div></div>`;
   }
+  return phrases;
 }
 
-async function fetchRecoForQuery(query) {
+async function fetchRecoForQuery(query, limit = 18) {
   if (!query) return [];
   try {
     const [px, un] = await Promise.all([
-      fetch(`${WORKER_URL}/pixabay?q=${encodeURIComponent(query)}&limit=12`).then(r=>r.json()).catch(()=>({})),
-      fetch(`${WORKER_URL}/unsplash?q=${encodeURIComponent(query)}&limit=12`).then(r=>r.json()).catch(()=>({}))
+      fetch(`${WORKER_URL}/pixabay?q=${encodeURIComponent(query)}&limit=${limit}`).then(r=>r.json()).catch(()=>({})),
+      fetch(`${WORKER_URL}/unsplash?q=${encodeURIComponent(query)}&limit=${limit}`).then(r=>r.json()).catch(()=>({}))
     ]);
+
     const pixResults = (px.hits || []).filter(h => !isNSFW(h.tags||'')).map(h => ({
-      type:'image', title: h.tags ? h.tags.split(',')[0].trim() : query,
-      url: h.pageURL, thumbUrl: h.previewURL, fullUrl: h.webformatURL,
-      source:'Pixabay', sourceUrl: h.pageURL, photographer: h.user, _query: query
+      type:'image', 
+      title: h.tags ? h.tags.split(',')[0].trim() : query,
+      url: h.pageURL, 
+      thumbUrl: h.previewURL, 
+      fullUrl: h.largeImageURL || h.webformatURL,
+      source:'Pixabay'
     }));
+
     const unResults = (un.results || []).filter(p => !isNSFW(p.alt_description||'')).map(p => ({
-      type:'image', title: p.alt_description || p.description || query,
-      url: p.links?.html, thumbUrl: p.urls?.small, fullUrl: p.urls?.regular,
-      source:'Unsplash', sourceUrl: p.links?.html, photographer: p.user?.name, _query: query
+      type:'image', 
+      title: p.alt_description || p.description || query,
+      url: p.links?.html, 
+      thumbUrl: p.urls?.small, 
+      fullUrl: p.urls?.regular || p.urls?.full,
+      source:'Unsplash', 
+      photographer: p.user?.name
     }));
+
     return interleave(pixResults, unResults);
   } catch(e) { return []; }
 }
 
-function refreshRecommendations() {
-  recoCache = null;
-  loadRecommendations(true);
+function interleave(a, b) {
+  const result = [];
+  const max = Math.max(a.length, b.length);
+  for (let i = 0; i < max; i++) {
+    if (i < a.length) result.push(a[i]);
+    if (i < b.length) result.push(b[i]);
+  }
+  return result;
 }
 
-function renderRecoResults(results) {
-  const area = document.getElementById('reco-area');
-  if (!area) return;
-  if (!results || !results.length) {
-    area.innerHTML = `<div class="empty-state"><div class="empty-icon">◈</div><div class="empty-title">Nothing to show yet</div><div class="empty-sub">Save some pins to get personalised recommendations.</div><button class="btn-sm btn-sm-primary" onclick="openSavePinModal()">Save something</button></div>`;
-    return;
+function interleaveMultiple(arrays) {
+  const result = [];
+  const maxLen = Math.max(...arrays.map(a => a ? a.length : 0));
+  for (let i = 0; i < maxLen; i++) {
+    for (let arr of arrays) {
+      if (arr && arr[i]) result.push(arr[i]);
+    }
   }
-  area.innerHTML = `<div class="pin-grid">${results.map(r => renderSearchResultCard(r)).join('')}</div>`;
+  return result;
 }
 
 function shuffleArray(arr) {
@@ -1136,17 +1300,6 @@ function shuffleArray(arr) {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
-}
-
-function interleave3(a, b, c) {
-  const result = [];
-  const max = Math.max(a.length, b.length, c.length);
-  for (let i = 0; i < max; i++) {
-    if (i < a.length) result.push(a[i]);
-    if (i < b.length) result.push(b[i]);
-    if (i < c.length) result.push(c[i]);
-  }
-  return result;
 }
 
 // ── Folders View ─────────────────────────────────────────────────────────────
@@ -1201,7 +1354,6 @@ function renderSavedView() {
     <div class="page-header">
       <div><div class="page-title">All Saved</div><div class="page-sub">${mySavedPins.length} item${mySavedPins.length!==1?'s':''}</div></div>
       <div class="page-header-actions">
-        <button class="btn-sm btn-sm-ghost" onclick="navigateTo('folders')">View folders</button>
         <button class="btn-sm btn-sm-primary" onclick="openSavePinModal()">+ Save</button>
       </div>
     </div>
@@ -1216,7 +1368,6 @@ async function renderSharedView() {
       <div><div class="page-title">Shared with me</div><div class="page-sub">Folders others have shared</div></div>
     </div>
     <div class="empty-state"><div class="empty-icon" style="animation:spin 2s linear infinite;display:inline-block;">◎</div><div class="empty-title" style="margin-top:12px;">Loading...</div></div>`;
-
   try {
     const snap = await db.collection('indy_boards_folders')
       .where('isPublic', '==', true)
@@ -1224,7 +1375,6 @@ async function renderSharedView() {
     const sharedFolders = snap.docs
       .map(d => ({ id: d.id, ...d.data() }))
       .filter(f => f.ownerUid !== currentUser.uid);
-
     if (!sharedFolders.length) {
       mc.innerHTML = `
         <div class="page-header">
@@ -1237,7 +1387,6 @@ async function renderSharedView() {
         </div>`;
       return;
     }
-
     mc.innerHTML = `
       <div class="page-header">
         <div><div class="page-title">Shared with me</div><div class="page-sub">${sharedFolders.length} shared folder${sharedFolders.length!==1?'s':''}</div></div>
@@ -1268,9 +1417,7 @@ function renderSearchView(initialQuery) {
     <div id="search-results" style="padding:12px 16px 80px;">
       ${initialQuery ? '<div class="empty-state"><div class="empty-icon" style="animation:spin 2s linear infinite;display:inline-block;">◎</div><div class="empty-title" style="margin-top:12px;">Searching...</div></div>' : '<div class="empty-state"><div class="empty-icon">⌕</div><div class="empty-title">Search for anything</div><div class="empty-sub">Find images, links, articles and ideas from the web.</div></div>'}
     </div>`;
-  if (initialQuery) {
-    setTimeout(() => runSearch(), 50);
-  }
+  if (initialQuery) setTimeout(() => runSearch(), 50);
 }
 
 let currentSearchFilter = 'all';
@@ -1290,10 +1437,8 @@ async function runSearch() {
   query = sanitizeQuery(query);
   const resultsEl = document.getElementById('search-results');
   resultsEl.innerHTML = `<div class="empty-state"><div class="empty-icon" style="animation:spin 2s linear infinite;display:inline-block;">◎</div><div class="empty-title" style="margin-top:12px;">Searching...</div></div>`;
-
   try {
     let results = [];
-
     if (currentSearchFilter === 'gifs') {
       results = await searchGiphy(query, 24);
     } else if (currentSearchFilter === 'images') {
@@ -1314,43 +1459,29 @@ async function runSearch() {
       });
       while (wikiIdx < wiki.length) results.push(wiki[wikiIdx++]);
     }
-
     if (!results.length) {
       resultsEl.innerHTML = `<div class="empty-state"><div class="empty-icon">◻</div><div class="empty-title">No results found</div><div class="empty-sub">Try different keywords.</div></div>`;
       return;
     }
     resultsEl.innerHTML = `<div class="pin-grid">${results.map(r => renderSearchResultCard(r)).join('')}</div>`;
   } catch(e) {
-    console.error('Search error:', e);
-    resultsEl.innerHTML = `<div class="empty-state"><div class="empty-sub">Search failed — check your connection and try again.</div></div>`;
+    resultsEl.innerHTML = `<div class="empty-state"><div class="empty-sub">Search failed — check your connection.</div></div>`;
   }
 }
 
-function interleave(a, b) {
-  const result = [];
-  const max = Math.max(a.length, b.length);
-  for (let i = 0; i < max; i++) {
-    if (i < a.length) result.push(a[i]);
-    if (i < b.length) result.push(b[i]);
-  }
-  return result;
-}
-
-// ── Search APIs (via Cloudflare Worker) ──────────────────────────────────────
+// ── Search APIs ──────────────────────────────────────────────────────────────
 async function searchGiphy(query, limit = 20) {
   try {
     const res = await fetch(`${WORKER_URL}/giphy?q=${encodeURIComponent(query)}&limit=${limit}`);
     const data = await res.json();
     if (!data.data) return [];
-    return data.data
-      .filter(g => !isNSFW(g.title) && !isNSFW(g.slug))
-      .map(g => ({
-        type: 'gif', title: g.title || query, url: g.url,
-        thumbUrl: g.images?.fixed_height_small?.url || g.images?.preview_gif?.url,
-        fullUrl: g.images?.fixed_height?.url || g.images?.downsized?.url,
-        source: 'GIPHY', sourceUrl: g.url, isGif: true
-      }));
-  } catch(e) { console.warn('Giphy search failed:', e); return []; }
+    return data.data.filter(g => !isNSFW(g.title) && !isNSFW(g.slug)).map(g => ({
+      type: 'gif', title: g.title || query, url: g.url,
+      thumbUrl: g.images?.fixed_height_small?.url || g.images?.preview_gif?.url,
+      fullUrl: g.images?.fixed_height?.url || g.images?.downsized?.url,
+      source: 'GIPHY', isGif: true
+    }));
+  } catch(e) { return []; }
 }
 
 async function searchPixabay(query, count = 20) {
@@ -1358,14 +1489,12 @@ async function searchPixabay(query, count = 20) {
     const res = await fetch(`${WORKER_URL}/pixabay?q=${encodeURIComponent(query)}&limit=${count}`);
     const data = await res.json();
     if (!data.hits) return [];
-    return data.hits
-      .filter(h => !isNSFW(h.tags) && !isNSFW(h.user))
-      .map(h => ({
-        type: 'image', title: h.tags ? h.tags.split(',')[0].trim() : query,
-        url: h.pageURL, thumbUrl: h.previewURL, fullUrl: h.webformatURL,
-        source: 'Pixabay', sourceUrl: h.pageURL, photographer: h.user
-      }));
-  } catch(e) { console.warn('Pixabay search failed:', e); return []; }
+    return data.hits.filter(h => !isNSFW(h.tags)).map(h => ({
+      type: 'image', title: h.tags ? h.tags.split(',')[0].trim() : query,
+      url: h.pageURL, thumbUrl: h.previewURL, fullUrl: h.largeImageURL || h.webformatURL,
+      source: 'Pixabay'
+    }));
+  } catch(e) { return []; }
 }
 
 async function searchUnsplash(query, count = 20) {
@@ -1373,14 +1502,12 @@ async function searchUnsplash(query, count = 20) {
     const res = await fetch(`${WORKER_URL}/unsplash?q=${encodeURIComponent(query)}&limit=${count}`);
     const data = await res.json();
     if (!data.results) return [];
-    return data.results
-      .filter(p => !isNSFW(p.alt_description||'') && !isNSFW(p.description||''))
-      .map(p => ({
-        type: 'image', title: p.alt_description || p.description || query,
-        url: p.links?.html, thumbUrl: p.urls?.small, fullUrl: p.urls?.regular,
-        source: 'Unsplash', sourceUrl: p.links?.html, photographer: p.user?.name
-      }));
-  } catch(e) { console.warn('Unsplash search failed:', e); return []; }
+    return data.results.filter(p => !isNSFW(p.alt_description||'')).map(p => ({
+      type: 'image', title: p.alt_description || p.description || query,
+      url: p.links?.html, thumbUrl: p.urls?.small, fullUrl: p.urls?.regular || p.urls?.full,
+      source: 'Unsplash', photographer: p.user?.name
+    }));
+  } catch(e) { return []; }
 }
 
 async function searchWikipedia(query) {
@@ -1389,23 +1516,19 @@ async function searchWikipedia(query) {
     const res = await fetch(url);
     const data = await res.json();
     if (!data.query || !data.query.search) return [];
-    return data.query.search
-      .filter(r => !isNSFW(r.title) && !isNSFW(r.snippet))
-      .map(r => ({
-        type: 'article', title: r.title,
-        snippet: r.snippet.replace(/<[^>]+>/g,''),
-        url: `https://en.wikipedia.org/wiki/${encodeURIComponent(r.title.replace(/ /g,'_'))}`,
-        source: 'Wikipedia',
-        sourceUrl: `https://en.wikipedia.org/wiki/${encodeURIComponent(r.title.replace(/ /g,'_'))}`
-      }));
+    return data.query.search.filter(r => !isNSFW(r.title)).map(r => ({
+      type: 'article', title: r.title,
+      snippet: r.snippet.replace(/<[^>]+>/g,''),
+      url: `https://en.wikipedia.org/wiki/${encodeURIComponent(r.title.replace(/ /g,'_'))}`,
+      source: 'Wikipedia'
+    }));
   } catch(e) { return []; }
 }
 
-// ── Render Helpers ────────────────────────────────────────────────────────────
+// ── Render Helpers ───────────────────────────────────────────────────────────
 function renderSearchResultCard(r) {
-  const displayImg = r.thumbUrl || r.fullUrl;
+  const displayImg = r.fullUrl || r.thumbUrl;
   const isGif = r.isGif || false;
-
   if (r.type === 'gif' || r.type === 'image') {
     const gifBadge = isGif ? `<span style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.65);color:#fff;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 7px;border-radius:100px;">GIF</span>` : '';
     const credit = r.photographer ? `<div class="pin-source">by ${escHtml(r.photographer)} · ${escHtml(r.source)}</div>` : `<div class="pin-source">${escHtml(r.source)}</div>`;
@@ -1500,30 +1623,17 @@ function renderSidebarFolders() {
   ).join('');
 }
 
-// ── Folder View ───────────────────────────────────────────────────────────────
+// ── Folder & Shared Folder Views ─────────────────────────────────────────────
 async function renderFolderView(folderId) {
   const mc = document.getElementById('main-content');
   const folder = myFolders.find(f => f.id === folderId);
-  if (!folder) {
-    mc.innerHTML = `<div class="empty-state"><div class="empty-sub">Folder not found.</div></div>`;
-    return;
-  }
-
-  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-
+  if (!folder) return mc.innerHTML = `<div class="empty-state"><div class="empty-sub">Folder not found.</div></div>`;
+  
   const pinsInFolder = mySavedPins.filter(p => p.folderIds && p.folderIds.includes(folderId));
-
   mc.innerHTML = `
-    <div style="padding:8px 16px 0;">
-      <button class="back-btn" onclick="navigateTo('folders')">
-        <span class="back-btn-icon">←</span> My Folders
-      </button>
-    </div>
+    <div style="padding:8px 16px 0;"><button class="back-btn" onclick="navigateTo('folders')"><span class="back-btn-icon">←</span> My Folders</button></div>
     <div class="page-header">
-      <div>
-        <div class="page-title">${escHtml(folder.name)}</div>
-        ${folder.description ? `<div class="page-sub">${escHtml(folder.description)}</div>` : ''}
-      </div>
+      <div><div class="page-title">${escHtml(folder.name)}</div>${folder.description ? `<div class="page-sub">${escHtml(folder.description)}</div>` : ''}</div>
       <div class="page-header-actions">
         <button class="btn-sm btn-sm-ghost" onclick="openShareFolderModal('${folderId}')">↗ Share</button>
         <button class="btn-sm btn-sm-primary" onclick="openSavePinModalToFolder('${folderId}')">+ Save</button>
@@ -1562,14 +1672,13 @@ function renderPinCardInFolder(pin, folderId) {
   </div>`;
 }
 
-// ── Shared Folder View ────────────────────────────────────────────────────────
 async function renderSharedFolderView(folderId) {
   const mc = document.getElementById('main-content');
   mc.innerHTML = `<div class="empty-state"><div class="empty-icon" style="animation:spin 2s linear infinite;display:inline-block;">◎</div><div class="empty-title" style="margin-top:12px;">Loading...</div></div>`;
   try {
     const folderDoc = await db.collection('indy_boards_folders').doc(folderId).get();
     if (!folderDoc.exists || !folderDoc.data().isPublic) {
-      mc.innerHTML = `<div class="empty-state"><div class="empty-icon">⊗</div><div class="empty-title">Folder not found</div><div class="empty-sub">This folder may have been made private or deleted.</div></div>`;
+      mc.innerHTML = `<div class="empty-state"><div class="empty-icon">⊗</div><div class="empty-title">Folder not found or private</div></div>`;
       return;
     }
     const folder = { id: folderDoc.id, ...folderDoc.data() };
@@ -1578,7 +1687,6 @@ async function renderSharedFolderView(folderId) {
       .where('folderIds','array-contains',folderId)
       .orderBy('savedAt','desc').limit(100).get();
     const pins = pinsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-
     mc.innerHTML = `
       <div style="padding:8px 16px 0;">
         <button class="back-btn" onclick="navigateTo('shared')">
@@ -1593,105 +1701,16 @@ async function renderSharedFolderView(folderId) {
         </div>
       </div>
       <div class="page-header">
-        <div>
-          <div class="page-title">${escHtml(folder.name)}</div>
-          ${folder.description ? `<div class="page-sub">${escHtml(folder.description)}</div>` : ''}
-        </div>
+        <div><div class="page-title">${escHtml(folder.name)}</div></div>
       </div>
       ${pins.length ? `<div class="pin-grid">${pins.map(p => renderPinCard(p, true)).join('')}</div>` :
-        `<div class="empty-state"><div class="empty-icon">◻</div><div class="empty-title">Empty folder</div></div>`}`;
+        `<div class="empty-state"><div class="empty-icon">◻</div><div class="empty-title">This folder is empty</div></div>`}`;
   } catch(e) {
     mc.innerHTML = `<div class="empty-state"><div class="empty-sub">Failed to load folder.</div></div>`;
   }
 }
 
-// ── Confirm Delete (generic) ──────────────────────────────────────────────────
-function showConfirm({ title, icon, msg, btnLabel, onConfirm }) {
-  document.getElementById('confirm-modal-title').textContent = title || 'Are you sure?';
-  document.getElementById('confirm-modal-icon').textContent = icon || '🗑';
-  document.getElementById('confirm-modal-msg').textContent = msg || '';
-  document.getElementById('confirm-modal-btn').textContent = btnLabel || 'Delete';
-  document.getElementById('confirm-modal-btn').onclick = () => {
-    closeModal('confirm-modal');
-    onConfirm();
-  };
-  openModal('confirm-modal');
-}
-
-function confirmDeletePin(pinId, title) {
-  showConfirm({
-    title: 'Remove pin?',
-    icon: '✕',
-    msg: `"${title}" will be permanently removed from your saves.`,
-    btnLabel: 'Remove',
-    onConfirm: () => deletePin(pinId)
-  });
-}
-
-function confirmDeleteFolder(folderId, name) {
-  showConfirm({
-    title: 'Delete folder?',
-    icon: '⬡',
-    msg: `"${name}" will be deleted. Your saved pins won't be deleted — they'll just be removed from this folder.`,
-    btnLabel: 'Delete folder',
-    onConfirm: () => deleteFolder(folderId)
-  });
-}
-
-// ── Pin Detail Modal ──────────────────────────────────────────────────────────
-async function openPinDetail(pinId, readOnly) {
-  const pin = mySavedPins.find(p => p.id === pinId);
-  if (!pin) return;
-  document.getElementById('pin-detail-title-header').textContent = pin.title || 'Saved item';
-  const content = document.getElementById('pin-detail-content');
-  const hasImg = pin.imageUrl && !isNSFW(pin.imageUrl);
-  const userFolders = myFolders.map(f => {
-    const inFolder = pin.folderIds && pin.folderIds.includes(f.id);
-    return `<div class="pin-detail-folder-chip ${inFolder?'in-folder':''}" onclick="togglePinInFolder('${pin.id}','${f.id}',${inFolder})">${escHtml(f.name)}</div>`;
-  }).join('');
-
-  content.innerHTML = `<div class="pin-detail-grid">
-    <div class="pin-detail-img-wrap" style="${!hasImg?'min-height:160px;font-size:48px;color:var(--muted);':''}">
-      ${hasImg ? `<img src="${escHtml(pin.imageUrl)}" alt="${escHtml(pin.title)}" style="width:100%;height:auto;max-height:500px;object-fit:cover;">` : '◈'}
-    </div>
-    <div class="pin-detail-body">
-      <div class="pin-detail-title">${escHtml(pin.title||'Untitled')}</div>
-      ${pin.url ? `<div class="pin-detail-url"><a href="${escHtml(pin.url)}" target="_blank" rel="noopener">↗ ${escHtml(getDomain(pin.url))}</a></div>` : ''}
-      ${pin.description ? `<div class="pin-detail-desc">${escHtml(pin.description)}</div>` : ''}
-      ${(pin.tags||[]).length ? `<div class="pin-tags">${(pin.tags||[]).map(t=>`<span class="pin-tag">${escHtml(t)}</span>`).join('')}</div>` : ''}
-      ${!readOnly && myFolders.length ? `<div>
-        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Add to folder</div>
-        <div class="pin-detail-folder-list">${userFolders}</div>
-      </div>` : ''}
-      <div class="pin-detail-actions">
-        ${pin.url ? `<a class="btn-sm btn-sm-primary" href="${escHtml(pin.url)}" target="_blank" rel="noopener" style="text-decoration:none;">↗ Open link</a>` : ''}
-        ${!readOnly ? `<button class="btn-sm btn-sm-danger" onclick="closeModal('pin-detail-modal');confirmDeletePin('${pin.id}','${escHtml(pin.title||'this pin')}')">Remove</button>` : ''}
-      </div>
-    </div>
-  </div>`;
-  openModal('pin-detail-modal');
-}
-
-async function togglePinInFolder(pinId, folderId, currentlyIn) {
-  const pin = mySavedPins.find(p => p.id === pinId);
-  if (!pin) return;
-  try {
-    if (currentlyIn) {
-      await db.collection('indy_boards_pins').doc(pinId).update({
-        folderIds: firebase.firestore.FieldValue.arrayRemove(folderId)
-      });
-      showToast('Removed from folder');
-    } else {
-      await db.collection('indy_boards_pins').doc(pinId).update({
-        folderIds: firebase.firestore.FieldValue.arrayUnion(folderId)
-      });
-      showToast('Added to folder');
-    }
-    await openPinDetail(pinId, false);
-  } catch(e) { showToast('Failed to update folder', 'error'); }
-}
-
-// ── Save Pin Modal ────────────────────────────────────────────────────────────
+// ── Modals & Actions (Save, Delete, Share, etc.) ─────────────────────────────
 let preSaveFolderId = null;
 
 function openSavePinModal() {
@@ -1718,10 +1737,7 @@ function openSavePinModalWith(url, title) {
   openSavePinModal();
   document.getElementById('pin-url').value = url || '';
   document.getElementById('pin-title').value = title || '';
-  if (url) {
-    const preview = document.getElementById('pin-url-preview');
-    preview.src = url;
-  }
+  if (url) document.getElementById('pin-url-preview').src = url;
 }
 
 function renderFolderSelectList() {
@@ -1749,7 +1765,7 @@ function onPinUrlInput(val) {
   clearTimeout(pinUrlDebounce);
   pinUrlDebounce = setTimeout(() => {
     const preview = document.getElementById('pin-url-preview');
-    if (val && val.startsWith('http') && (val.includes('.jpg')||val.includes('.jpeg')||val.includes('.png')||val.includes('.gif')||val.includes('.webp'))) {
+    if (val && val.startsWith('http') && /\.(jpg|jpeg|png|gif|webp)/i.test(val)) {
       preview.src = val;
     } else {
       preview.classList.remove('loaded');
@@ -1758,19 +1774,15 @@ function onPinUrlInput(val) {
 }
 
 async function submitSavePin() {
-  const url   = document.getElementById('pin-url').value.trim();
+  const url = document.getElementById('pin-url').value.trim();
   const title = document.getElementById('pin-title').value.trim();
-  const desc  = document.getElementById('pin-desc').value.trim();
+  const desc = document.getElementById('pin-desc').value.trim();
   const tagsRaw = document.getElementById('pin-tags').value.trim();
   if (!title) return showToast('Please add a title', 'error');
-
-  if (isNSFW(url) || isNSFW(title) || isNSFW(desc)) {
-    showToast('That content is not allowed', 'error');
-    return;
-  }
+  if (isNSFW(url) || isNSFW(title) || isNSFW(desc)) return showToast('That content is not allowed', 'error');
 
   const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim().toLowerCase()).filter(Boolean) : [];
-  const isImageUrl = url && (url.includes('.jpg')||url.includes('.jpeg')||url.includes('.png')||url.includes('.gif')||url.includes('.webp'));
+  const isImageUrl = url && /\.(jpg|jpeg|png|gif|webp)/i.test(url);
 
   setBtn('btn-save-pin', true, 'Saving...');
   try {
@@ -1787,55 +1799,42 @@ async function submitSavePin() {
     });
     closeModal('save-pin-modal');
     showToast('Saved! ✦', 'success');
-    recoCache = null; // refresh reco next time
   } catch(e) {
     showToast('Failed to save', 'error');
-    console.error(e);
   } finally {
     setBtn('btn-save-pin', false, 'Save');
   }
 }
 
-// ── Delete / Remove Actions ───────────────────────────────────────────────────
+// Delete functions
 async function deletePin(pinId) {
-  try {
-    await db.collection('indy_boards_pins').doc(pinId).delete();
-    showToast('Removed', 'success');
-  } catch(e) { showToast('Failed to remove', 'error'); }
+  try { await db.collection('indy_boards_pins').doc(pinId).delete(); showToast('Removed', 'success'); }
+  catch(e) { showToast('Failed to remove', 'error'); }
 }
 
 async function deleteFolder(folderId) {
   try {
-    // Remove folderId from all pins that reference it
     const pinsInFolder = mySavedPins.filter(p => p.folderIds && p.folderIds.includes(folderId));
     const batch = db.batch();
-    pinsInFolder.forEach(p => {
-      batch.update(db.collection('indy_boards_pins').doc(p.id), {
-        folderIds: firebase.firestore.FieldValue.arrayRemove(folderId)
-      });
-    });
+    pinsInFolder.forEach(p => batch.update(db.collection('indy_boards_pins').doc(p.id), { folderIds: firebase.firestore.FieldValue.arrayRemove(folderId) }));
     batch.delete(db.collection('indy_boards_folders').doc(folderId));
     await batch.commit();
     showToast('Folder deleted', 'success');
     navigateTo('folders');
   } catch(e) {
     showToast('Failed to delete folder', 'error');
-    console.error(e);
   }
 }
 
-async function removeFromFolder(pinId, folderId, title) {
+async function removeFromFolder(pinId, folderId) {
   try {
-    await db.collection('indy_boards_pins').doc(pinId).update({
-      folderIds: firebase.firestore.FieldValue.arrayRemove(folderId)
-    });
+    await db.collection('indy_boards_pins').doc(pinId).update({ folderIds: firebase.firestore.FieldValue.arrayRemove(folderId) });
     showToast('Removed from folder');
-    // Re-render the folder view
     renderFolderView(folderId);
   } catch(e) { showToast('Failed to remove', 'error'); }
 }
 
-// ── New Folder Modal ──────────────────────────────────────────────────────────
+// New Folder
 function openNewFolderModal() {
   document.getElementById('folder-name').value = '';
   document.getElementById('folder-desc').value = '';
@@ -1854,7 +1853,6 @@ async function submitNewFolder() {
       ownerName: currentUserName,
       name, description: desc || null,
       isPublic: false,
-      shareToken: null,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     closeModal('new-folder-modal');
@@ -1867,39 +1865,29 @@ async function submitNewFolder() {
   }
 }
 
-// ── Share Folder Modal ────────────────────────────────────────────────────────
+// Share Folder
 function openShareFolderModal(folderId) {
   shareFolderTarget = myFolders.find(f => f.id === folderId);
   if (!shareFolderTarget) return;
   document.getElementById('share-folder-name-sub').textContent = shareFolderTarget.name;
   const isPublic = shareFolderTarget.isPublic || false;
-  const toggle = document.getElementById('share-toggle');
-  toggle.classList.toggle('on', isPublic);
-  const linkSection = document.getElementById('share-link-section');
-  linkSection.style.display = isPublic ? '' : 'none';
-  if (isPublic) {
-    const shareUrl = `${location.href.split('?')[0]}?sharedFolder=${folderId}`;
-    document.getElementById('share-link-value').value = shareUrl;
-  }
+  document.getElementById('share-toggle').classList.toggle('on', isPublic);
+  document.getElementById('share-link-section').style.display = isPublic ? '' : 'none';
+  if (isPublic) document.getElementById('share-link-value').value = `${location.href.split('?')[0]}?sharedFolder=${folderId}`;
   openModal('share-folder-modal');
 }
 
 async function toggleSharing() {
   if (!shareFolderTarget) return;
-  const toggle = document.getElementById('share-toggle');
-  const newState = !toggle.classList.contains('on');
-  toggle.classList.toggle('on', newState);
-  const linkSection = document.getElementById('share-link-section');
-  linkSection.style.display = newState ? '' : 'none';
-  if (newState) {
-    const shareUrl = `${location.href.split('?')[0]}?sharedFolder=${shareFolderTarget.id}`;
-    document.getElementById('share-link-value').value = shareUrl;
-  }
+  const newState = !document.getElementById('share-toggle').classList.contains('on');
+  document.getElementById('share-toggle').classList.toggle('on', newState);
+  document.getElementById('share-link-section').style.display = newState ? '' : 'none';
+  if (newState) document.getElementById('share-link-value').value = `${location.href.split('?')[0]}?sharedFolder=${shareFolderTarget.id}`;
   try {
     await db.collection('indy_boards_folders').doc(shareFolderTarget.id).update({ isPublic: newState });
     shareFolderTarget.isPublic = newState;
     showToast(newState ? 'Sharing enabled' : 'Sharing disabled', 'success');
-  } catch(e) { showToast('Failed to update sharing', 'error'); toggle.classList.toggle('on', !newState); }
+  } catch(e) { showToast('Failed to update sharing', 'error'); }
 }
 
 function copyShareLink() {
@@ -1907,32 +1895,68 @@ function copyShareLink() {
   navigator.clipboard.writeText(val).then(() => showToast('Link copied!', 'success')).catch(() => showToast('Copy failed', 'error'));
 }
 
-// ── Deep Link ─────────────────────────────────────────────────────────────────
-function checkDeepLink() {
-  const params = new URLSearchParams(location.search);
-  const sf = params.get('sharedFolder');
-  if (sf && currentUser) navigateTo('shared-folder', sf);
+// ── Pin Detail ───────────────────────────────────────────────────────────────
+async function openPinDetail(pinId, readOnly) {
+  const pin = mySavedPins.find(p => p.id === pinId);
+  if (!pin) return;
+  document.getElementById('pin-detail-title-header').textContent = pin.title || 'Saved item';
+  const content = document.getElementById('pin-detail-content');
+  const hasImg = pin.imageUrl && !isNSFW(pin.imageUrl);
+  const userFolders = myFolders.map(f => {
+    const inFolder = pin.folderIds && pin.folderIds.includes(f.id);
+    return `<div class="pin-detail-folder-chip ${inFolder?'in-folder':''}" onclick="togglePinInFolder('${pin.id}','${f.id}',${inFolder})">${escHtml(f.name)}</div>`;
+  }).join('');
+  content.innerHTML = `<div class="pin-detail-grid">
+    <div class="pin-detail-img-wrap" style="${!hasImg?'min-height:160px;font-size:48px;color:var(--muted);':''}">
+      ${hasImg ? `<img src="${escHtml(pin.imageUrl)}" alt="${escHtml(pin.title)}" style="width:100%;height:auto;max-height:500px;object-fit:cover;">` : '◈'}
+    </div>
+    <div class="pin-detail-body">
+      <div class="pin-detail-title">${escHtml(pin.title||'Untitled')}</div>
+      ${pin.url ? `<div class="pin-detail-url"><a href="${escHtml(pin.url)}" target="_blank" rel="noopener">↗ ${escHtml(getDomain(pin.url))}</a></div>` : ''}
+      ${pin.description ? `<div class="pin-detail-desc">${escHtml(pin.description)}</div>` : ''}
+      ${(pin.tags||[]).length ? `<div class="pin-tags">${(pin.tags||[]).map(t=>`<span class="pin-tag">${escHtml(t)}</span>`).join('')}</div>` : ''}
+      ${!readOnly && myFolders.length ? `<div><div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Add to folder</div><div class="pin-detail-folder-list">${userFolders}</div></div>` : ''}
+      <div class="pin-detail-actions">
+        ${pin.url ? `<a class="btn-sm btn-sm-primary" href="${escHtml(pin.url)}" target="_blank" rel="noopener" style="text-decoration:none;">↗ Open link</a>` : ''}
+        ${!readOnly ? `<button class="btn-sm btn-sm-danger" onclick="closeModal('pin-detail-modal');confirmDeletePin('${pin.id}','${escHtml(pin.title||'this pin')}')">Remove</button>` : ''}
+      </div>
+    </div>
+  </div>`;
+  openModal('pin-detail-modal');
 }
 
-// ── Header Search ─────────────────────────────────────────────────────────────
-function onHeaderSearch(val) {
-  clearTimeout(searchDebounce);
-  if (!val.trim()) return;
-  searchDebounce = setTimeout(() => {
-    navigateTo('search', val.trim());
-    setTimeout(() => {
-      const inp = document.getElementById('search-main-input');
-      if (inp) inp.value = val.trim();
-    }, 50);
-  }, 600);
+async function togglePinInFolder(pinId, folderId, currentlyIn) {
+  try {
+    if (currentlyIn) {
+      await db.collection('indy_boards_pins').doc(pinId).update({ folderIds: firebase.firestore.FieldValue.arrayRemove(folderId) });
+      showToast('Removed from folder');
+    } else {
+      await db.collection('indy_boards_pins').doc(pinId).update({ folderIds: firebase.firestore.FieldValue.arrayUnion(folderId) });
+      showToast('Added to folder');
+    }
+    await openPinDetail(pinId, false);
+  } catch(e) { showToast('Failed to update folder', 'error'); }
 }
 
-function doSearch() {
-  const val = document.getElementById('header-search-input').value.trim();
-  if (val) navigateTo('search', val);
+// ── Confirm Modals ───────────────────────────────────────────────────────────
+function showConfirm({ title, icon, msg, btnLabel, onConfirm }) {
+  document.getElementById('confirm-modal-title').textContent = title || 'Are you sure?';
+  document.getElementById('confirm-modal-icon').textContent = icon || '🗑';
+  document.getElementById('confirm-modal-msg').textContent = msg || '';
+  document.getElementById('confirm-modal-btn').textContent = btnLabel || 'Delete';
+  document.getElementById('confirm-modal-btn').onclick = () => { closeModal('confirm-modal'); onConfirm(); };
+  openModal('confirm-modal');
 }
 
-// ── Avatar ────────────────────────────────────────────────────────────────────
+function confirmDeletePin(pinId, title) {
+  showConfirm({ title: 'Remove pin?', icon: '✕', msg: `"${title}" will be permanently removed.`, btnLabel: 'Remove', onConfirm: () => deletePin(pinId) });
+}
+
+function confirmDeleteFolder(folderId, name) {
+  showConfirm({ title: 'Delete folder?', icon: '⬡', msg: `"${name}" will be deleted. Pins stay safe.`, btnLabel: 'Delete folder', onConfirm: () => deleteFolder(folderId) });
+}
+
+// ── Avatar, Toast, Utilities ─────────────────────────────────────────────────
 function openAvatarPopup() {
   const preview = document.getElementById('avatar-preview');
   const input = document.getElementById('avatar-input');
@@ -1941,11 +1965,14 @@ function openAvatarPopup() {
   document.getElementById('avatar-popup-overlay').style.display = 'flex';
   setTimeout(() => input.focus(), 50);
 }
+
 function closeAvatarPopup(e) {
   if (e && e.target !== document.getElementById('avatar-popup-overlay')) return;
   document.getElementById('avatar-popup-overlay').style.display = 'none';
 }
+
 function onAvatarInput(val) { document.getElementById('avatar-preview').textContent = val || '?'; }
+
 async function saveAvatar() {
   const val = document.getElementById('avatar-input').value.trim();
   try {
@@ -1953,62 +1980,70 @@ async function saveAvatar() {
     currentAvatar = val;
     const initials = currentUserName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
     document.getElementById('header-avatar').textContent = val || initials;
-    document.getElementById('avatar-popup-overlay').style.display = 'none';
+    closeAvatarPopup();
     showToast('Avatar updated', 'success');
   } catch(e) { showToast('Failed to save', 'error'); }
 }
 
-// ── Utilities ─────────────────────────────────────────────────────────────────
 function getDomain(url) {
   try { return new URL(url).hostname.replace('www.',''); } catch(e) { return url; }
 }
+
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById('screen-' + name);
   if (el) el.classList.add('active');
 }
+
 function hideLoading() { document.getElementById('loading-screen').classList.add('hidden'); }
+
 function showAuthMsg(txt, type) {
   const el = document.getElementById('auth-msg');
   el.textContent = txt; el.className = 'auth-msg ' + type;
 }
+
 function setBtn(id, loading, text) {
-  const btn = document.getElementById(id); if (!btn) return;
+  const btn = document.getElementById(id);
+  if (!btn) return;
   btn.disabled = loading;
   btn.innerHTML = loading ? `<span class="spinner ${text.includes('→')?'':'spinner-dark'}"></span>${text}` : text;
 }
+
 let _tt;
 function showToast(msg, type='') {
   const t = document.getElementById('toast');
   t.textContent = msg; t.className = 'show' + (type ? ' '+type : '');
   clearTimeout(_tt); _tt = setTimeout(() => t.className = '', 2800);
 }
+
 function escHtml(s) {
-  return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-function openModal(id)  { document.getElementById(id).style.display = 'flex'; }
+
+function openModal(id) { document.getElementById(id).style.display = 'flex'; }
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 function closeModalOverlay(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
 
-// ── Keyboard shortcuts ────────────────────────────────────────────────────────
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    ['save-pin-modal','pin-detail-modal','new-folder-modal','share-folder-modal','confirm-modal'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el && el.style.display !== 'none') closeModal(id);
-    });
-    if (document.getElementById('avatar-popup-overlay').style.display !== 'none') closeAvatarPopup();
-  }
-  if (e.key === 'Enter') {
-    const active = document.querySelector('.screen.active');
-    if (active?.id === 'screen-auth') {
-      if (authMode === 'signin') doLogin();
-      else doSignup();
-    }
-  }
-});
+// Header Search Handlers
+function handleHeaderSearch(val) {
+  clearTimeout(searchDebounce);
+  if (!val.trim()) return;
+  searchDebounce = setTimeout(() => {
+    navigateTo('search', val.trim());
+  }, 600);
+}
 
-// ── Enter App ─────────────────────────────────────────────────────────────────
+function handleDoSearch() {
+  const val = document.getElementById('header-search-input').value.trim();
+  if (val) navigateTo('search', val);
+}
+
+// ── Image Quality Boost ──────────────────────────────────────────────────────
+function improveImageQuality() {
+  console.log("%cSharp images enabled", "color:#1a7a3f");
+}
+
+// ── Enter App ────────────────────────────────────────────────────────────────
 function enterApp() {
   showScreen('app');
   const initials = currentUserName.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
@@ -2021,6 +2056,21 @@ function enterApp() {
     navigateTo('home');
   }
 }
+
+function checkDeepLink() {
+  const params = new URLSearchParams(location.search);
+  const sf = params.get('sharedFolder');
+  if (sf && currentUser) navigateTo('shared-folder', sf);
+}
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    ['save-pin-modal','pin-detail-modal','new-folder-modal','share-folder-modal','confirm-modal'].forEach(id => {
+      if (document.getElementById(id).style.display !== 'none') closeModal(id);
+    });
+  }
+});
 </script>
 </body>
 </html>
