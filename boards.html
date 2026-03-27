@@ -1,0 +1,2026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INDY Boards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<style>
+:root {
+  --bg: #ffffff;
+  --surface: #f7f7f8;
+  --surface2: #efefef;
+  --surface3: #e4e4e6;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.14);
+  --text: #111113;
+  --text2: #555560;
+  --muted: #96969f;
+  --accent: #111113;
+  --accent-dim: rgba(0,0,0,0.05);
+  --accent-border: rgba(0,0,0,0.16);
+  --danger: #d93025;
+  --danger-bg: rgba(217,48,37,0.07);
+  --danger-border: rgba(217,48,37,0.22);
+  --success: #1a7a3f;
+  --success-bg: rgba(26,122,63,0.08);
+  --success-border: rgba(26,122,63,0.22);
+  --amber: #b45309;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  min-height: 100vh; overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── LOADING ── */
+#loading-screen {
+  position:fixed; inset:0; background:var(--bg);
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column; gap:20px; z-index:9999;
+  transition:opacity 0.4s ease;
+}
+#loading-screen.hidden { opacity:0; pointer-events:none; }
+.load-logo { font-size:11px; letter-spacing:0.3em; text-transform:uppercase; color:var(--muted); font-family:'DM Mono',monospace; }
+.load-bar { width:48px; height:1px; background:var(--border2); position:relative; overflow:hidden; }
+.load-bar::after { content:''; position:absolute; left:-100%; top:0; width:100%; height:100%; background:var(--accent); animation:barSlide 1s ease infinite; }
+@keyframes barSlide { to { left:200%; } }
+
+/* ── SCREENS ── */
+.screen { display:none; min-height:100vh; animation:fadeUp 0.3s ease; }
+.screen.active { display:flex; flex-direction:column; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── AUTH ── */
+#screen-auth { align-items:center; justify-content:center; padding:32px 20px; min-height:100vh; background:var(--bg); }
+.auth-wrap { width:100%; max-width:360px; }
+.auth-lockup { margin-bottom:32px; }
+.auth-eyebrow {
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.25em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:12px; display:flex; align-items:center; gap:8px;
+}
+.auth-eyebrow::before { content:''; display:inline-block; width:20px; height:1px; background:var(--muted); }
+.auth-title { font-size:36px; font-weight:700; letter-spacing:-0.04em; line-height:1.05; color:var(--text); }
+.auth-title em { font-style:italic; color:var(--text2); }
+.auth-sub { font-size:13px; color:var(--text2); margin-top:10px; line-height:1.6; }
+.auth-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-xl); padding:24px 24px 20px; }
+.field { margin-bottom:14px; }
+.field label { display:block; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:7px; }
+.field input {
+  width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius);
+  padding:12px 14px; color:var(--text); font-size:14px; font-family:'DM Sans',system-ui,sans-serif;
+  outline:none; transition:border-color .15s, box-shadow .15s;
+}
+.field input::placeholder { color:var(--muted); }
+.field input:focus { border-color:var(--border2); box-shadow:0 0 0 3px rgba(0,0,0,0.03); }
+.btn {
+  width:100%; padding:13px 16px; border-radius:var(--radius);
+  font-size:13px; font-weight:600; letter-spacing:0.03em; text-transform:uppercase;
+  cursor:pointer; border:none; transition:all .15s;
+  font-family:'DM Sans',system-ui,sans-serif;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.btn-primary { background:var(--text); color:var(--bg); }
+.btn-primary:hover { background:#333; }
+.btn-primary:disabled { background:var(--surface3); color:var(--muted); cursor:not-allowed; }
+.btn-ghost { background:transparent; color:var(--text2); border:1px solid var(--border2); }
+.btn-ghost:hover { border-color:var(--text2); color:var(--text); }
+.btn-danger { background:transparent; color:var(--danger); border:1px solid var(--danger-border); }
+.btn-danger:hover { background:var(--danger-bg); }
+.auth-msg { font-family:'DM Mono',monospace; font-size:11px; padding:10px 13px; border-radius:8px; margin-bottom:14px; display:none; line-height:1.5; }
+.auth-msg.error { background:var(--danger-bg); border:1px solid var(--danger-border); color:var(--danger); display:block; }
+.auth-msg.success { background:var(--success-bg); border:1px solid var(--success-border); color:var(--success); display:block; }
+.auth-footer { margin-top:18px; text-align:center; font-size:12px; color:var(--muted); }
+.auth-footer a { color:var(--text2); cursor:pointer; text-decoration:underline; }
+.auth-footer a:hover { color:var(--text); }
+.auth-toggle { display:flex; gap:8px; margin-bottom:20px; }
+.auth-tab { flex:1; padding:8px; text-align:center; border-radius:8px; font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; cursor:pointer; border:1px solid var(--border); background:transparent; color:var(--muted); font-family:'DM Mono',monospace; transition:all .15s; }
+.auth-tab.active { background:var(--surface2); color:var(--text); border-color:var(--border2); }
+
+/* ── HEADER ── */
+.app-header {
+  position:sticky; top:0; z-index:100;
+  background:rgba(255,255,255,0.92); backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:0 18px; height:56px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+}
+.app-logo { font-size:14px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--text); display:flex; align-items:center; gap:8px; flex-shrink:0; cursor:pointer; }
+.app-logo-dot { width:8px; height:8px; border-radius:50%; background:var(--text); animation:pulse 2.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { box-shadow:0 0 5px rgba(0,0,0,0.15); } 50% { box-shadow:0 0 11px rgba(0,0,0,0.35); } }
+.app-logo-tag { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text2); background:var(--accent-dim); border:1px solid var(--accent-border); border-radius:100px; padding:2px 8px; }
+.header-search {
+  flex:1; max-width:360px;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:100px; padding:8px 16px;
+  display:flex; align-items:center; gap:8px;
+}
+.header-search input {
+  flex:1; background:transparent; border:none; outline:none;
+  font-size:13px; color:var(--text); font-family:'DM Sans',system-ui,sans-serif;
+}
+.header-search input::placeholder { color:var(--muted); }
+.header-search-icon { color:var(--muted); font-size:14px; flex-shrink:0; }
+.header-right { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.header-avatar { width:32px; height:32px; border-radius:50%; background:var(--surface3); border:1.5px solid var(--border2); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; cursor:pointer; color:var(--text); transition:border-color .15s; }
+.header-avatar:hover { border-color:var(--text2); }
+.signout-btn { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); background:transparent; border:none; cursor:pointer; padding:4px 0; transition:color .15s; }
+.signout-btn:hover { color:var(--text); }
+
+/* ── NAV TABS ── */
+.nav-tabs {
+  display:flex; gap:4px; padding:12px 16px;
+  border-bottom:1px solid var(--border);
+  background:var(--bg); overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.nav-tabs::-webkit-scrollbar { display:none; }
+.nav-tab {
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase;
+  padding:6px 14px; border-radius:100px; white-space:nowrap; border:1px solid var(--border);
+  background:transparent; color:var(--muted); cursor:pointer; transition:all .15s; flex-shrink:0;
+}
+.nav-tab.active { border-color:var(--border2); color:var(--text); background:var(--surface2); }
+.nav-tab:hover:not(.active) { color:var(--text2); border-color:var(--border2); }
+
+/* ── MAIN LAYOUT ── */
+#screen-app { flex-direction:column; }
+.app-body { flex:1; display:flex; }
+.sidebar { width:220px; flex-shrink:0; border-right:1px solid var(--border); padding:16px 0; min-height:calc(100vh - 56px - 53px); display:none; }
+@media (min-width: 768px) { .sidebar { display:block; } }
+.sidebar-section { margin-bottom:24px; }
+.sidebar-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); padding:0 16px 8px; }
+.sidebar-item {
+  display:flex; align-items:center; gap:10px;
+  padding:8px 16px; cursor:pointer; transition:background .15s;
+  font-size:13px; color:var(--text2); border-radius:0;
+}
+.sidebar-item:hover { background:var(--surface); color:var(--text); }
+.sidebar-item.active { background:var(--surface); color:var(--text); font-weight:600; }
+.sidebar-item-icon { font-size:15px; width:20px; text-align:center; }
+.sidebar-folder-count { margin-left:auto; font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); }
+
+/* ── MAIN CONTENT ── */
+.main-content { flex:1; min-width:0; }
+
+/* ── PAGE HEADER ── */
+.page-header { padding:20px 20px 8px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.page-title { font-size:22px; font-weight:700; letter-spacing:-0.025em; }
+.page-sub { font-size:13px; color:var(--text2); margin-top:3px; }
+.page-header-actions { display:flex; gap:8px; align-items:center; }
+.btn-sm {
+  padding:7px 14px; border-radius:var(--radius); font-size:12px; font-weight:600;
+  letter-spacing:0.03em; text-transform:uppercase; cursor:pointer; border:none;
+  transition:all .15s; font-family:'DM Sans',system-ui,sans-serif;
+  display:inline-flex; align-items:center; gap:6px; white-space:nowrap;
+}
+.btn-sm-primary { background:var(--text); color:var(--bg); }
+.btn-sm-primary:hover { background:#333; }
+.btn-sm-ghost { background:transparent; color:var(--text2); border:1px solid var(--border2); }
+.btn-sm-ghost:hover { border-color:var(--text2); color:var(--text); }
+.btn-sm-danger { background:transparent; color:var(--danger); border:1px solid var(--danger-border); }
+.btn-sm-danger:hover { background:var(--danger-bg); }
+
+/* ── MASONRY / PIN GRID ── */
+.pin-grid {
+  padding:12px 16px 80px;
+  columns:2; column-gap:10px;
+}
+@media (min-width: 500px) { .pin-grid { columns:3; } }
+@media (min-width: 900px) { .pin-grid { columns:4; } }
+@media (min-width: 1200px) { .pin-grid { columns:5; } }
+
+.pin-card {
+  break-inside:avoid; margin-bottom:10px;
+  border-radius:var(--radius-lg); overflow:hidden;
+  background:var(--surface); border:1px solid var(--border);
+  cursor:pointer; transition:transform .15s, box-shadow .15s;
+  animation:fadeUp 0.25s ease;
+  position:relative;
+}
+.pin-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.1); }
+.pin-card:hover .pin-overlay { opacity:1; }
+.pin-img { width:100%; display:block; background:var(--surface2); }
+.pin-img-placeholder { width:100%; aspect-ratio:3/4; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:28px; color:var(--muted); }
+.pin-overlay {
+  position:absolute; inset:0; background:rgba(0,0,0,0.35);
+  opacity:0; transition:opacity .2s; display:flex;
+  align-items:flex-end; padding:10px;
+  border-radius:var(--radius-lg);
+}
+.pin-overlay-actions { display:flex; gap:6px; width:100%; }
+.pin-overlay-btn {
+  background:rgba(255,255,255,0.9); color:#111; border:none; border-radius:100px;
+  font-size:11px; font-weight:700; padding:6px 12px; cursor:pointer;
+  font-family:'DM Sans',system-ui,sans-serif; transition:background .15s;
+  letter-spacing:0.03em; text-transform:uppercase;
+}
+.pin-overlay-btn:hover { background:#fff; }
+.pin-overlay-btn.save { margin-left:auto; background:var(--text); color:var(--bg); }
+.pin-overlay-btn.save:hover { background:#333; }
+.pin-overlay-btn.danger { background:rgba(217,48,37,0.85); color:#fff; }
+.pin-overlay-btn.danger:hover { background:rgba(217,48,37,1); }
+.pin-info { padding:10px; }
+.pin-title { font-size:13px; font-weight:600; line-height:1.4; color:var(--text); }
+.pin-source { font-size:11px; color:var(--muted); margin-top:3px; font-family:'DM Mono',monospace; letter-spacing:0.03em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pin-tags { display:flex; flex-wrap:wrap; gap:4px; margin-top:6px; }
+.pin-tag { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.08em; text-transform:uppercase; padding:2px 7px; border-radius:100px; border:1px solid var(--border); color:var(--muted); background:var(--surface2); }
+
+/* ── FOLDER GRID ── */
+.folder-grid { padding:12px 16px 80px; display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); }
+.folder-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+  overflow:hidden; cursor:pointer; transition:transform .15s, box-shadow .15s;
+  animation:fadeUp 0.25s ease; position:relative;
+}
+.folder-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.08); }
+.folder-card:hover .folder-actions { opacity:1; }
+.folder-mosaic { display:grid; grid-template-columns:1fr 1fr; gap:2px; height:130px; background:var(--surface3); }
+.folder-mosaic-img { background:var(--surface2); overflow:hidden; }
+.folder-mosaic-img img { width:100%; height:100%; object-fit:cover; }
+.folder-mosaic-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:22px; }
+.folder-info { padding:12px; }
+.folder-name { font-size:14px; font-weight:700; letter-spacing:-0.01em; }
+.folder-meta { font-size:12px; color:var(--text2); margin-top:2px; display:flex; align-items:center; gap:6px; }
+.folder-shared-badge { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.08em; text-transform:uppercase; padding:2px 7px; border-radius:100px; background:var(--accent-dim); border:1px solid var(--accent-border); color:var(--text2); }
+.folder-actions {
+  position:absolute; top:8px; right:8px;
+  display:flex; gap:4px; opacity:0; transition:opacity .2s;
+}
+.folder-action-btn {
+  width:28px; height:28px; border-radius:50%; border:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; font-size:13px;
+  background:rgba(255,255,255,0.92); color:var(--text2);
+  box-shadow:0 2px 8px rgba(0,0,0,0.12); transition:all .15s;
+}
+.folder-action-btn:hover { background:#fff; color:var(--text); }
+.folder-action-btn.del:hover { background:var(--danger); color:#fff; }
+
+/* ── HOME FEED SECTIONS ── */
+.home-section { margin-bottom:8px; }
+.home-section-label {
+  padding:16px 20px 8px; display:flex; align-items:center; justify-content:space-between;
+}
+.home-section-title {
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em;
+  text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:8px;
+}
+.home-section-title::before { content:''; width:16px; height:1px; background:var(--muted); display:inline-block; }
+.reco-loading {
+  padding:40px 20px; text-align:center;
+  font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:0.1em;
+}
+
+/* ── SEARCH RESULTS ── */
+.search-bar-page { padding:12px 16px; border-bottom:1px solid var(--border); display:flex; gap:8px; }
+.search-input-full {
+  flex:1; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:10px 14px; font-size:14px; color:var(--text); font-family:'DM Sans',system-ui,sans-serif;
+  outline:none; transition:border-color .15s;
+}
+.search-input-full:focus { border-color:var(--border2); }
+.search-input-full::placeholder { color:var(--muted); }
+.search-filter-row { padding:8px 16px 4px; display:flex; gap:6px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.search-filter-row::-webkit-scrollbar { display:none; }
+
+/* ── EMPTY STATE ── */
+.empty-state { padding:60px 20px; text-align:center; }
+.empty-icon { font-size:36px; margin-bottom:14px; opacity:0.35; }
+.empty-title { font-size:16px; font-weight:700; margin-bottom:6px; }
+.empty-sub { font-size:13px; color:var(--text2); line-height:1.6; max-width:280px; margin:0 auto 20px; }
+
+/* ── MODALS ── */
+.modal-overlay {
+  position:fixed; inset:0; z-index:600;
+  background:rgba(0,0,0,0.6);
+  display:flex; align-items:center; justify-content:center;
+  padding:20px; animation:fadeUp 0.2s ease;
+}
+.modal {
+  background:var(--surface); border:1px solid var(--border2);
+  border-radius:var(--radius-xl); width:100%; max-width:480px;
+  max-height:90vh; overflow-y:auto;
+  box-shadow:0 12px 48px rgba(0,0,0,0.14);
+}
+.modal-header {
+  padding:20px 22px 16px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; background:var(--surface); z-index:1;
+}
+.modal-title { font-size:16px; font-weight:700; }
+.modal-sub { font-size:12px; color:var(--text2); margin-top:2px; }
+.modal-close { background:var(--surface2); border:1px solid var(--border); font-size:16px; cursor:pointer; color:var(--muted); line-height:1; padding:4px 8px; border-radius:7px; transition:all .15s; }
+.modal-close:hover { background:var(--surface3); color:var(--text); }
+.modal-body { padding:20px 22px; display:flex; flex-direction:column; gap:14px; }
+.modal-actions { padding:0 22px 20px; display:flex; gap:8px; }
+
+/* ── CONFIRM MODAL ── */
+.confirm-modal-icon { font-size:32px; text-align:center; margin-bottom:8px; }
+.confirm-modal-msg { font-size:14px; color:var(--text2); text-align:center; line-height:1.6; }
+
+/* ── PIN DETAIL MODAL ── */
+.pin-detail { max-width:700px; max-height:92vh; }
+.pin-detail-grid { display:grid; grid-template-columns:1fr; }
+@media (min-width: 520px) { .pin-detail-grid { grid-template-columns:1fr 1fr; } }
+.pin-detail-img-wrap { background:var(--surface2); min-height:200px; display:flex; align-items:center; justify-content:center; border-radius:var(--radius-lg) 0 0 var(--radius-lg); overflow:hidden; }
+.pin-detail-img-wrap img { width:100%; height:100%; object-fit:cover; }
+.pin-detail-body { padding:22px; display:flex; flex-direction:column; gap:14px; overflow-y:auto; }
+.pin-detail-title { font-size:20px; font-weight:700; letter-spacing:-0.02em; line-height:1.3; }
+.pin-detail-url { font-family:'DM Mono',monospace; font-size:11px; color:var(--text2); word-break:break-all; }
+.pin-detail-url a { color:var(--text2); text-decoration:none; }
+.pin-detail-url a:hover { color:var(--text); text-decoration:underline; }
+.pin-detail-desc { font-size:13px; color:var(--text2); line-height:1.7; }
+.pin-detail-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:auto; }
+.pin-detail-folder-list { display:flex; flex-wrap:wrap; gap:6px; }
+.pin-detail-folder-chip {
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+  padding:4px 10px; border-radius:100px; border:1px solid var(--border2);
+  color:var(--text2); cursor:pointer; transition:all .15s; background:var(--surface2);
+}
+.pin-detail-folder-chip:hover { border-color:var(--text2); color:var(--text); background:var(--surface3); }
+.pin-detail-folder-chip.in-folder { background:var(--text); color:var(--bg); border-color:transparent; }
+
+/* ── FORM FIELDS ── */
+.form-field { display:flex; flex-direction:column; gap:7px; }
+.form-field label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
+.form-field input, .form-field textarea, .form-field select {
+  background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius);
+  padding:10px 13px; color:var(--text); font-size:13px; font-family:'DM Sans',system-ui,sans-serif;
+  outline:none; transition:border-color .15s; width:100%;
+}
+.form-field input:focus, .form-field textarea:focus, .form-field select:focus { border-color:var(--border2); }
+.form-field input::placeholder, .form-field textarea::placeholder { color:var(--muted); }
+.form-field textarea { resize:vertical; min-height:72px; line-height:1.55; }
+.form-field select { cursor:pointer; }
+
+/* ── TOAST ── */
+#toast {
+  position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:var(--surface); border:1px solid var(--border2); border-radius:100px;
+  padding:10px 20px; font-size:12px; font-family:'DM Mono',monospace;
+  letter-spacing:0.06em; text-transform:uppercase; color:var(--text2);
+  box-shadow:0 4px 16px rgba(0,0,0,0.1); opacity:0;
+  transition:opacity .2s, transform .2s; pointer-events:none; z-index:9000; white-space:nowrap;
+}
+#toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+#toast.success { border-color:var(--success-border); color:var(--success); }
+#toast.error { border-color:var(--danger-border); color:var(--danger); }
+
+/* ── SPINNER ── */
+.spinner { width:12px; height:12px; border:2px solid rgba(255,255,255,0.35); border-top-color:#fff; border-radius:50%; animation:spin .6s linear infinite; }
+.spinner-dark { border-color:rgba(0,0,0,0.15); border-top-color:var(--text); }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--surface3); border-radius:2px; }
+
+/* ── AVATAR POPUP ── */
+.avatar-popup-overlay { position:fixed; inset:0; z-index:700; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center; animation:fadeUp 0.2s ease; }
+.avatar-popup { background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius-xl); padding:28px; width:300px; box-shadow:0 8px 32px rgba(0,0,0,0.12); }
+.avatar-popup-title { font-size:15px; font-weight:700; margin-bottom:4px; }
+.avatar-popup-sub { font-size:12px; color:var(--text2); margin-bottom:18px; }
+.avatar-preview { width:64px; height:64px; border-radius:50%; background:var(--surface3); color:var(--text); display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 18px; border:1.5px solid var(--border2); }
+.avatar-input { width:100%; background:var(--surface2); border:1px solid var(--border2); border-radius:var(--radius); padding:10px 12px; font-size:22px; text-align:center; outline:none; transition:border-color .15s; color:var(--text); }
+.avatar-input:focus { border-color:var(--border2); }
+.avatar-hint { font-size:11px; color:var(--muted); text-align:center; margin-top:6px; margin-bottom:18px; }
+.avatar-popup-actions { display:flex; gap:8px; }
+
+/* ── FOLDER SELECT IN SAVE ── */
+.folder-select-list { display:flex; flex-direction:column; gap:6px; max-height:220px; overflow-y:auto; }
+.folder-select-item {
+  display:flex; align-items:center; gap:10px; padding:10px 12px;
+  border-radius:var(--radius); border:1px solid var(--border); background:var(--surface2);
+  cursor:pointer; transition:all .15s;
+}
+.folder-select-item:hover { border-color:var(--border2); background:var(--surface3); }
+.folder-select-item.selected { border-color:var(--border2); background:var(--surface3); }
+.folder-select-item-check { width:18px; height:18px; border-radius:50%; border:1.5px solid var(--border2); display:flex; align-items:center; justify-content:center; font-size:10px; flex-shrink:0; transition:all .15s; }
+.folder-select-item.selected .folder-select-item-check { background:var(--text); border-color:transparent; color:var(--bg); }
+.folder-select-item-name { font-size:13px; font-weight:500; }
+.folder-select-item-count { margin-left:auto; font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); }
+
+/* ── FAB ── */
+.fab-primary {
+  position:fixed; bottom:24px; right:20px; z-index:200;
+  width:52px; height:52px; border-radius:50%;
+  background:var(--text); color:var(--bg);
+  border:none; font-size:22px; cursor:pointer;
+  box-shadow:0 4px 16px rgba(0,0,0,0.18);
+  display:flex; align-items:center; justify-content:center;
+  transition:all .15s; display:none;
+}
+.fab-primary:hover { background:#333; transform:scale(1.05); }
+.fab-primary.visible { display:flex; }
+
+/* ── SECTION HEADER ── */
+.section-header { padding:12px 16px 4px; display:flex; align-items:center; justify-content:space-between; }
+.section-title { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); }
+.section-action { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text2); cursor:pointer; background:none; border:none; padding:2px 0; transition:color .15s; }
+.section-action:hover { color:var(--text); }
+
+/* ── SHARE ── */
+.share-link-box { display:flex; gap:8px; align-items:center; }
+.share-link-input { flex:1; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:10px 13px; font-size:12px; font-family:'DM Mono',monospace; color:var(--text2); outline:none; }
+.share-link-copy { padding:10px 14px; background:var(--text); color:var(--bg); border:none; border-radius:var(--radius); font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; transition:background .15s; }
+.share-link-copy:hover { background:#333; }
+.share-toggle-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; }
+.share-toggle-label { font-size:13px; font-weight:500; }
+.share-toggle-sub { font-size:12px; color:var(--text2); margin-top:2px; }
+.toggle {
+  width:40px; height:22px; border-radius:100px; border:none;
+  background:var(--surface3); cursor:pointer; position:relative; transition:background .2s;
+}
+.toggle.on { background:var(--text); }
+.toggle::after { content:''; position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:#fff; transition:transform .2s; box-shadow:0 1px 3px rgba(0,0,0,0.2); }
+.toggle.on::after { transform:translateX(18px); }
+
+/* ── BACK BTN ── */
+.back-btn { display:flex; align-items:center; gap:6px; padding:8px 16px; font-size:13px; color:var(--text2); cursor:pointer; background:none; border:none; font-family:'DM Sans',system-ui,sans-serif; transition:color .15s; }
+.back-btn:hover { color:var(--text); }
+.back-btn-icon { font-size:16px; }
+
+/* ── SHARED FOLDER BANNER ── */
+.shared-banner { margin:12px 16px; padding:12px 16px; background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius-lg); display:flex; align-items:center; gap:12px; }
+.shared-banner-icon { font-size:22px; }
+.shared-banner-text { flex:1; }
+.shared-banner-title { font-size:13px; font-weight:600; }
+.shared-banner-sub { font-size:12px; color:var(--text2); margin-top:2px; }
+
+/* ── IMAGE PREVIEW IN SAVE ── */
+.img-preview { width:100%; max-height:180px; object-fit:cover; border-radius:var(--radius); background:var(--surface2); display:none; }
+.img-preview.loaded { display:block; }
+.img-placeholder { width:100%; height:120px; border-radius:var(--radius); background:var(--surface2); display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:32px; border:1px solid var(--border); }
+
+/* ── MOBILE NAV ── */
+.mobile-bottom-nav {
+  position:fixed; bottom:0; left:0; right:0; z-index:300;
+  background:rgba(255,255,255,0.95); backdrop-filter:blur(16px);
+  border-top:1px solid var(--border);
+  display:flex; padding:8px 0 max(8px, env(safe-area-inset-bottom));
+}
+@media (min-width:768px) { .mobile-bottom-nav { display:none; } }
+.mobile-nav-btn { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 0; background:none; border:none; cursor:pointer; transition:opacity .15s; }
+.mobile-nav-btn-icon { font-size:20px; }
+.mobile-nav-btn-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); }
+.mobile-nav-btn.active .mobile-nav-btn-label { color:var(--text); }
+.mobile-nav-btn.active .mobile-nav-btn-icon { filter:brightness(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width:767px) {
+  .header-search { display:none; }
+  .app-body { flex-direction:column; }
+  .main-content { padding-bottom:80px; }
+}
+
+/* ── CARD LOAD SKELETON ── */
+.skeleton { background:linear-gradient(90deg, var(--surface2) 25%, var(--surface3) 50%, var(--surface2) 75%); background-size:200% 100%; animation:shimmer 1.2s infinite; border-radius:var(--radius-lg); }
+@keyframes shimmer { to { background-position:-200% 0; } }
+
+/* ── FOLDER DETAIL ACTIONS ROW ── */
+.folder-detail-actions {
+  display:flex; gap:8px; padding:0 20px 12px; flex-wrap:wrap;
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading-screen">
+  <div class="load-logo">✦ INDY Boards</div>
+  <div class="load-bar"></div>
+</div>
+
+<!-- AUTH SCREEN -->
+<div class="screen" id="screen-auth">
+  <div class="auth-wrap">
+    <div class="auth-lockup">
+      <div class="auth-eyebrow">✦ INDY — Boards</div>
+      <h1 class="auth-title">Save what<br><em>inspires you.</em></h1>
+      <p class="auth-sub">Collect images, links, and ideas into folders. Share with anyone.</p>
+    </div>
+    <div class="auth-card">
+      <div class="auth-msg" id="auth-msg"></div>
+      <div class="auth-toggle">
+        <button class="auth-tab active" id="tab-signin" onclick="switchAuthTab('signin')">Sign in</button>
+        <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Create account</button>
+      </div>
+      <div id="auth-fields-signin">
+        <div class="field"><label>Email</label>
+          <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="field"><label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="btn btn-primary" id="btn-login" onclick="doLogin()">Sign in →</button>
+      </div>
+      <div id="auth-fields-signup" style="display:none;">
+        <div class="field"><label>Display name</label>
+          <input type="text" id="signup-name" placeholder="Your name">
+        </div>
+        <div class="field"><label>Email</label>
+          <input type="email" id="signup-email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="field"><label>Password</label>
+          <input type="password" id="signup-password" placeholder="Min 6 characters" autocomplete="new-password">
+        </div>
+        <button class="btn btn-primary" id="btn-signup" onclick="doSignup()">Create account →</button>
+      </div>
+    </div>
+    <div class="auth-footer">
+      Already have an Actions account? <a onclick="switchAuthTab('signin')">Sign in</a>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP SCREEN -->
+<div class="screen" id="screen-app">
+
+  <!-- Header -->
+  <div class="app-header">
+    <div class="app-logo" onclick="navigateTo('home')">
+      <div class="app-logo-dot"></div>
+      INDY Boards
+      <span class="app-logo-tag">Beta</span>
+    </div>
+    <div class="header-search">
+      <span class="header-search-icon">⌕</span>
+      <input type="text" id="header-search-input" placeholder="Search images, links, ideas..." oninput="onHeaderSearch(this.value)" onkeydown="if(event.key==='Enter')doSearch()">
+    </div>
+    <div class="header-right">
+      <div class="header-avatar" id="header-avatar" onclick="openAvatarPopup()">?</div>
+      <button class="signout-btn" onclick="doSignOut()">Sign out</button>
+    </div>
+  </div>
+
+  <!-- Nav Tabs -->
+  <div class="nav-tabs" id="nav-tabs">
+    <button class="nav-tab active" data-tab="home" onclick="navigateTo('home')">Home</button>
+    <button class="nav-tab" data-tab="folders" onclick="navigateTo('folders')">My Folders</button>
+    <button class="nav-tab" data-tab="saved" onclick="navigateTo('saved')">Saved</button>
+    <button class="nav-tab" data-tab="shared" onclick="navigateTo('shared')">Shared with me</button>
+    <button class="nav-tab" data-tab="search" onclick="navigateTo('search')">Search</button>
+  </div>
+
+  <!-- App Body -->
+  <div class="app-body">
+    <!-- Sidebar (desktop) -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Discover</div>
+        <div class="sidebar-item active" data-tab="home" onclick="navigateTo('home')">
+          <span class="sidebar-item-icon">◈</span> Home
+        </div>
+        <div class="sidebar-item" data-tab="search" onclick="navigateTo('search')">
+          <span class="sidebar-item-icon">⌕</span> Search
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">My Stuff</div>
+        <div class="sidebar-item" data-tab="saved" onclick="navigateTo('saved')">
+          <span class="sidebar-item-icon">◻</span> All Saved
+        </div>
+        <div class="sidebar-item" data-tab="folders" onclick="navigateTo('folders')">
+          <span class="sidebar-item-icon">⬡</span> Folders
+          <span class="sidebar-folder-count" id="sidebar-folder-count"></span>
+        </div>
+        <div class="sidebar-item" data-tab="shared" onclick="navigateTo('shared')">
+          <span class="sidebar-item-icon">↗</span> Shared with me
+        </div>
+      </div>
+      <div class="sidebar-section" id="sidebar-my-folders">
+        <div class="sidebar-label">Folders</div>
+        <div id="sidebar-folder-list"></div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+      <!-- Views rendered here -->
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Nav -->
+  <div class="mobile-bottom-nav">
+    <button class="mobile-nav-btn active" data-tab="home" onclick="navigateTo('home')">
+      <span class="mobile-nav-btn-icon">◈</span>
+      <span class="mobile-nav-btn-label">Home</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="search" onclick="navigateTo('search')">
+      <span class="mobile-nav-btn-icon">⌕</span>
+      <span class="mobile-nav-btn-label">Search</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="saved" onclick="navigateTo('saved')">
+      <span class="mobile-nav-btn-icon">◻</span>
+      <span class="mobile-nav-btn-label">Saved</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="folders" onclick="navigateTo('folders')">
+      <span class="mobile-nav-btn-icon">⬡</span>
+      <span class="mobile-nav-btn-label">Folders</span>
+    </button>
+  </div>
+
+</div>
+
+<!-- SAVE PIN MODAL -->
+<div class="modal-overlay" id="save-pin-modal" style="display:none;" onclick="closeModalOverlay(event,'save-pin-modal')">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Save to Boards</div>
+        <div class="modal-sub">Add a link, image URL, or idea</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('save-pin-modal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field">
+        <label>Link or Image URL</label>
+        <input type="url" id="pin-url" placeholder="https://..." oninput="onPinUrlInput(this.value)">
+      </div>
+      <img class="img-preview" id="pin-url-preview" src="" alt="" onload="this.classList.add('loaded')" onerror="this.classList.remove('loaded')">
+      <div class="form-field">
+        <label>Title</label>
+        <input type="text" id="pin-title" placeholder="Give it a name...">
+      </div>
+      <div class="form-field">
+        <label>Description (optional)</label>
+        <textarea id="pin-desc" placeholder="What's this about?"></textarea>
+      </div>
+      <div class="form-field">
+        <label>Tags (comma separated)</label>
+        <input type="text" id="pin-tags" placeholder="design, inspiration, color...">
+      </div>
+      <div class="form-field">
+        <label>Save to folder (optional)</label>
+        <div class="folder-select-list" id="save-folder-select"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal('save-pin-modal')">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" id="btn-save-pin" onclick="submitSavePin()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- PIN DETAIL MODAL -->
+<div class="modal-overlay" id="pin-detail-modal" style="display:none;" onclick="closeModalOverlay(event,'pin-detail-modal')">
+  <div class="modal pin-detail">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="pin-detail-title-header">Pin</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('pin-detail-modal')">×</button>
+    </div>
+    <div id="pin-detail-content"></div>
+  </div>
+</div>
+
+<!-- NEW FOLDER MODAL -->
+<div class="modal-overlay" id="new-folder-modal" style="display:none;" onclick="closeModalOverlay(event,'new-folder-modal')">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">New Folder</div>
+        <div class="modal-sub">Organize your saved items</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('new-folder-modal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field">
+        <label>Folder name</label>
+        <input type="text" id="folder-name" placeholder="e.g. Design inspo, Cool links..." maxlength="60">
+      </div>
+      <div class="form-field">
+        <label>Description (optional)</label>
+        <input type="text" id="folder-desc" placeholder="What's this folder for?">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal('new-folder-modal')">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" id="btn-new-folder" onclick="submitNewFolder()">Create Folder</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHARE FOLDER MODAL -->
+<div class="modal-overlay" id="share-folder-modal" style="display:none;" onclick="closeModalOverlay(event,'share-folder-modal')">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Share Folder</div>
+        <div class="modal-sub" id="share-folder-name-sub">Share with anyone</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('share-folder-modal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="share-toggle-row">
+        <div>
+          <div class="share-toggle-label">Public link sharing</div>
+          <div class="share-toggle-sub">Anyone with the link can view this folder</div>
+        </div>
+        <button class="toggle" id="share-toggle" onclick="toggleSharing()"></button>
+      </div>
+      <div id="share-link-section" style="display:none;">
+        <div class="share-link-box">
+          <input class="share-link-input" id="share-link-value" readonly>
+          <button class="share-link-copy" onclick="copyShareLink()">Copy</button>
+        </div>
+      </div>
+      <div class="form-field" style="margin-top:4px;">
+        <label>Share via email (coming soon)</label>
+        <input type="email" placeholder="friend@example.com" disabled style="opacity:0.5;cursor:not-allowed;">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" style="flex:1" onclick="closeModal('share-folder-modal')">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="confirm-modal" style="display:none;" onclick="closeModalOverlay(event,'confirm-modal')">
+  <div class="modal" style="max-width:360px;">
+    <div class="modal-header">
+      <div class="modal-title" id="confirm-modal-title">Are you sure?</div>
+      <button class="modal-close" onclick="closeModal('confirm-modal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="confirm-modal-icon" id="confirm-modal-icon">🗑</div>
+      <div class="confirm-modal-msg" id="confirm-modal-msg"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal('confirm-modal')">Cancel</button>
+      <button class="btn btn-danger" style="flex:1" id="confirm-modal-btn" onclick="">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- AVATAR POPUP -->
+<div id="avatar-popup-overlay" class="avatar-popup-overlay" style="display:none;" onclick="closeAvatarPopup(event)">
+  <div class="avatar-popup">
+    <div class="avatar-popup-title">Set your avatar</div>
+    <div class="avatar-popup-sub">Pick an emoji or type 1–2 characters</div>
+    <div class="avatar-preview" id="avatar-preview">?</div>
+    <input class="avatar-input" id="avatar-input" maxlength="2" placeholder="😊" oninput="onAvatarInput(this.value)">
+    <div class="avatar-hint">Emoji or initials — your choice</div>
+    <div class="avatar-popup-actions">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeAvatarPopup()">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" onclick="saveAvatar()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab-primary" id="fab-save" onclick="openSavePinModal()" title="Save something new">+</button>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ── Firebase Config ──────────────────────────────────────────────────────────
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyC50_wBK3TfERX1gm35puugCD324SxHJR8",
+  authDomain: "tunesandindy.firebaseapp.com",
+  projectId: "tunesandindy",
+  storageBucket: "tunesandindy.firebasestorage.app",
+  messagingSenderId: "335192973371",
+  appId: "1:335192973371:web:ce69d4b67c765d6aaf7c1e"
+};
+firebase.initializeApp(FIREBASE_CONFIG);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+// ── Worker URL ───────────────────────────────────────────────────────────────
+const WORKER_URL = 'https://tiny-snowflake-cc03.rafaestrada-rafa.workers.dev';
+
+// ── State ────────────────────────────────────────────────────────────────────
+let currentUser = null;
+let currentUserName = '';
+let currentAvatar = '';
+let myFolders = [];
+let mySavedPins = [];
+let currentView = 'home';
+let currentFolderId = null;
+let savingToFolders = new Set();
+let shareFolderTarget = null;
+let pinUrlDebounce = null;
+let searchDebounce = null;
+let authMode = 'signin';
+let recoCache = null; // cache recommended results for session
+
+// ── NSFW keyword blocklist ───────────────────────────────────────────────────
+const NSFW_WORDS = ['nude','naked','porn','sex','nsfw','xxx','adult','erotic','hentai','onlyfans'];
+function isNSFW(str) {
+  const s = (str || '').toLowerCase();
+  return NSFW_WORDS.some(w => s.includes(w));
+}
+function sanitizeQuery(q) {
+  if (!q) return q;
+  return q.split(' ').filter(w => !NSFW_WORDS.some(n => w.toLowerCase().includes(n))).join(' ');
+}
+
+// ── Auth State ───────────────────────────────────────────────────────────────
+auth.onAuthStateChanged(async user => {
+  try {
+    if (user) {
+      currentUser = user;
+      try {
+        const shopDoc = await db.collection('shop_users').doc(user.uid).get();
+        if (shopDoc.exists && shopDoc.data().displayName) {
+          currentUserName = shopDoc.data().displayName;
+          currentAvatar   = shopDoc.data().avatar || '';
+        } else {
+          currentUserName = user.displayName || user.email.split('@')[0];
+          currentAvatar = '';
+        }
+      } catch(e) { currentUserName = user.displayName || 'You'; }
+      enterApp();
+    } else {
+      currentUser = null;
+      currentUserName = '';
+      showScreen('auth');
+    }
+  } finally {
+    hideLoading();
+  }
+});
+
+function switchAuthTab(mode) {
+  authMode = mode;
+  document.getElementById('auth-fields-signin').style.display = mode === 'signin' ? '' : 'none';
+  document.getElementById('auth-fields-signup').style.display = mode === 'signup' ? '' : 'none';
+  document.getElementById('tab-signin').classList.toggle('active', mode === 'signin');
+  document.getElementById('tab-signup').classList.toggle('active', mode === 'signup');
+  document.getElementById('auth-msg').className = 'auth-msg';
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-password').value;
+  if (!email || !pass) return showAuthMsg('Fill in all fields', 'error');
+  setBtn('btn-login', true, 'Signing in...');
+  try {
+    await auth.signInWithEmailAndPassword(email, pass);
+  } catch(e) {
+    showAuthMsg(friendlyError(e), 'error');
+    setBtn('btn-login', false, 'Sign in →');
+  }
+}
+
+async function doSignup() {
+  const name  = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const pass  = document.getElementById('signup-password').value;
+  if (!name || !email || !pass) return showAuthMsg('Fill in all fields', 'error');
+  if (pass.length < 6) return showAuthMsg('Password must be at least 6 characters', 'error');
+  setBtn('btn-signup', true, 'Creating...');
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    await cred.user.updateProfile({ displayName: name });
+    await db.collection('shop_users').doc(cred.user.uid).set({
+      displayName: name, email: email, avatar: '', createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    await db.collection('indy_fan_profiles').doc(cred.user.uid).set({
+      displayName: name, email: email, avatar: '', createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  } catch(e) {
+    showAuthMsg(friendlyError(e), 'error');
+    setBtn('btn-signup', false, 'Create account →');
+  }
+}
+
+function doSignOut() {
+  if (mySavedPinsListener) { mySavedPinsListener(); mySavedPinsListener = null; }
+  if (myFoldersListener) { myFoldersListener(); myFoldersListener = null; }
+  recoCache = null;
+  auth.signOut();
+}
+
+function friendlyError(e) {
+  const m = e.message || '';
+  if (m.includes('user-not-found') || m.includes('wrong-password') || m.includes('invalid-credential')) return 'Incorrect email or password';
+  if (m.includes('email-already-in-use')) return 'Email already in use — try signing in';
+  if (m.includes('too-many-requests')) return 'Too many attempts — try later';
+  if (m.includes('invalid-email')) return 'Invalid email address';
+  if (m.includes('weak-password')) return 'Password is too weak';
+  return 'Something went wrong';
+}
+
+// ── Enter App ────────────────────────────────────────────────────────────────
+let mySavedPinsListener = null;
+let myFoldersListener = null;
+
+function subscribeToFolders() {
+  if (myFoldersListener) myFoldersListener();
+  myFoldersListener = db.collection('indy_boards_folders')
+    .where('ownerUid', '==', currentUser.uid)
+    .orderBy('createdAt', 'desc')
+    .onSnapshot(snap => {
+      myFolders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderSidebarFolders();
+      const cnt = document.getElementById('sidebar-folder-count');
+      if (cnt) cnt.textContent = myFolders.length || '';
+      if (currentView === 'folders') renderFoldersView();
+      if (currentView === 'folder') renderFolderView(currentFolderId);
+    }, err => console.error('Folders listener:', err));
+}
+
+function subscribeToSavedPins() {
+  if (mySavedPinsListener) mySavedPinsListener();
+  mySavedPinsListener = db.collection('indy_boards_pins')
+    .where('ownerUid', '==', currentUser.uid)
+    .orderBy('savedAt', 'desc')
+    .limit(200)
+    .onSnapshot(snap => {
+      const prev = mySavedPins.length;
+      mySavedPins = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      if (currentView === 'saved') renderSavedView();
+      if (currentView === 'home') renderHomeView();
+      // Invalidate reco cache when pins change significantly
+      if (Math.abs(mySavedPins.length - prev) > 0) recoCache = null;
+    }, err => console.error('Pins listener:', err));
+}
+
+// ── Navigation ───────────────────────────────────────────────────────────────
+function navigateTo(view, extra) {
+  currentView = view;
+  currentFolderId = null;
+
+  document.querySelectorAll('.nav-tab, .sidebar-item, .mobile-nav-btn').forEach(el => {
+    const t = el.dataset.tab;
+    el.classList.toggle('active', t === view);
+  });
+
+  switch(view) {
+    case 'home':         renderHomeView(); break;
+    case 'folders':      renderFoldersView(); break;
+    case 'saved':        renderSavedView(); break;
+    case 'shared':       renderSharedView(); break;
+    case 'search':       renderSearchView(extra); break;
+    case 'folder':       currentFolderId = extra; renderFolderView(extra); break;
+    case 'shared-folder': renderSharedFolderView(extra); break;
+  }
+}
+
+// ── HOME VIEW — Recommended feed ─────────────────────────────────────────────
+async function renderHomeView() {
+  const mc = document.getElementById('main-content');
+
+  // Build header
+  mc.innerHTML = `
+    <div class="page-header">
+      <div>
+        <div class="page-title">Home</div>
+        <div class="page-sub">Picked for you</div>
+      </div>
+      <div class="page-header-actions">
+        <button class="btn-sm btn-sm-primary" onclick="openSavePinModal()">+ Save</button>
+      </div>
+    </div>
+
+    ${mySavedPins.length ? `
+    <div class="home-section">
+      <div class="home-section-label">
+        <div class="home-section-title">Your Saves</div>
+        <button class="section-action" onclick="navigateTo('saved')">See all →</button>
+      </div>
+      <div class="pin-grid">${mySavedPins.slice(0,8).map(p => renderPinCard(p)).join('')}</div>
+    </div>` : ''}
+
+    <div class="home-section">
+      <div class="home-section-label">
+        <div class="home-section-title" id="reco-section-title">Recommended</div>
+        <button class="section-action" onclick="refreshRecommendations()">Refresh ↺</button>
+      </div>
+      <div id="reco-area">
+        <div class="reco-loading">◎ &nbsp; Loading recommendations...</div>
+      </div>
+    </div>`;
+
+  loadRecommendations();
+}
+
+function getRecommendationKeywords() {
+  if (!mySavedPins.length) return null;
+
+  // Gather all tags and title words from saved pins
+  const freq = {};
+  mySavedPins.forEach(p => {
+    (p.tags || []).forEach(t => {
+      if (t && t.length > 2) freq[t] = (freq[t] || 0) + 3; // tags weighted more
+    });
+    // Pull meaningful words from titles
+    const words = (p.title || '').toLowerCase().split(/\s+/);
+    words.forEach(w => {
+      w = w.replace(/[^a-z0-9]/g, '');
+      const stopWords = new Set(['the','and','for','with','this','that','from','have','are','was','not','but','its','into','our','your','can','will','all','get','has','her','his','how','out','one','been','their','they','what','when','also','more','some','been','than','then','them','these','those','there','here','just','like','about','which','would','could','should','were','does','did','any','each','other','over','such','after','before','above','below','between','both','few','most','other','through','during']);
+      if (w.length > 3 && !stopWords.has(w)) freq[w] = (freq[w] || 0) + 1;
+    });
+  });
+
+  // Sort by frequency, pick top terms
+  const sorted = Object.entries(freq).sort((a,b) => b[1]-a[1]);
+  const topTerms = sorted.slice(0, 8).map(e => e[0]);
+
+  if (!topTerms.length) return null;
+
+  // Build 2-3 query combinations from top terms
+  const queries = [];
+  if (topTerms[0]) queries.push(topTerms[0]);
+  if (topTerms[1] && topTerms[2]) queries.push(`${topTerms[1]} ${topTerms[2]}`);
+  if (topTerms[3]) queries.push(topTerms[3]);
+
+  return queries;
+}
+
+async function loadRecommendations(forceRefresh) {
+  const area = document.getElementById('reco-area');
+  if (!area) return;
+
+  // Use cache unless forcing refresh
+  if (recoCache && !forceRefresh) {
+    renderRecoResults(recoCache);
+    return;
+  }
+
+  area.innerHTML = `<div class="reco-loading">◎ &nbsp; Finding things you'll like...</div>`;
+
+  const keywords = getRecommendationKeywords();
+  let results = [];
+
+  try {
+    if (keywords && keywords.length) {
+      // Update label
+      const label = document.getElementById('reco-section-title');
+      if (label) label.textContent = 'Because you saved similar things';
+
+      // Fetch from multiple keyword queries in parallel
+      const fetches = keywords.map(kw => fetchRecoForQuery(sanitizeQuery(kw)));
+      const allResults = await Promise.all(fetches);
+      // Interleave results from different queries
+      results = interleave3(allResults[0]||[], allResults[1]||[], allResults[2]||[]);
+    } else {
+      // No saves — show random trending/popular content
+      const label = document.getElementById('reco-section-title');
+      if (label) label.textContent = 'Explore — save something to personalise';
+      const randomTerms = ['architecture','nature photography','minimal design','abstract art','travel'];
+      const pick = randomTerms[Math.floor(Math.random() * randomTerms.length)];
+      results = await fetchRecoForQuery(pick);
+    }
+
+    // Filter out things already saved (by URL match)
+    const savedUrls = new Set(mySavedPins.map(p => p.url || p.imageUrl).filter(Boolean));
+    results = results.filter(r => !savedUrls.has(r.fullUrl) && !savedUrls.has(r.thumbUrl));
+
+    // Shuffle slightly for variety
+    results = shuffleArray(results).slice(0, 40);
+
+    recoCache = results;
+    renderRecoResults(results);
+  } catch(e) {
+    if (area) area.innerHTML = `<div class="empty-state"><div class="empty-sub">Couldn't load recommendations. Check your connection.</div></div>`;
+  }
+}
+
+async function fetchRecoForQuery(query) {
+  if (!query) return [];
+  try {
+    const [px, un] = await Promise.all([
+      fetch(`${WORKER_URL}/pixabay?q=${encodeURIComponent(query)}&limit=12`).then(r=>r.json()).catch(()=>({})),
+      fetch(`${WORKER_URL}/unsplash?q=${encodeURIComponent(query)}&limit=12`).then(r=>r.json()).catch(()=>({}))
+    ]);
+    const pixResults = (px.hits || []).filter(h => !isNSFW(h.tags||'')).map(h => ({
+      type:'image', title: h.tags ? h.tags.split(',')[0].trim() : query,
+      url: h.pageURL, thumbUrl: h.previewURL, fullUrl: h.webformatURL,
+      source:'Pixabay', sourceUrl: h.pageURL, photographer: h.user, _query: query
+    }));
+    const unResults = (un.results || []).filter(p => !isNSFW(p.alt_description||'')).map(p => ({
+      type:'image', title: p.alt_description || p.description || query,
+      url: p.links?.html, thumbUrl: p.urls?.small, fullUrl: p.urls?.regular,
+      source:'Unsplash', sourceUrl: p.links?.html, photographer: p.user?.name, _query: query
+    }));
+    return interleave(pixResults, unResults);
+  } catch(e) { return []; }
+}
+
+function refreshRecommendations() {
+  recoCache = null;
+  loadRecommendations(true);
+}
+
+function renderRecoResults(results) {
+  const area = document.getElementById('reco-area');
+  if (!area) return;
+  if (!results || !results.length) {
+    area.innerHTML = `<div class="empty-state"><div class="empty-icon">◈</div><div class="empty-title">Nothing to show yet</div><div class="empty-sub">Save some pins to get personalised recommendations.</div><button class="btn-sm btn-sm-primary" onclick="openSavePinModal()">Save something</button></div>`;
+    return;
+  }
+  area.innerHTML = `<div class="pin-grid">${results.map(r => renderSearchResultCard(r)).join('')}</div>`;
+}
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function interleave3(a, b, c) {
+  const result = [];
+  const max = Math.max(a.length, b.length, c.length);
+  for (let i = 0; i < max; i++) {
+    if (i < a.length) result.push(a[i]);
+    if (i < b.length) result.push(b[i]);
+    if (i < c.length) result.push(c[i]);
+  }
+  return result;
+}
+
+// ── Folders View ─────────────────────────────────────────────────────────────
+function renderFoldersView() {
+  const mc = document.getElementById('main-content');
+  if (!myFolders.length) {
+    mc.innerHTML = `
+      <div class="page-header">
+        <div><div class="page-title">My Folders</div><div class="page-sub">Organize your saves</div></div>
+        <div class="page-header-actions">
+          <button class="btn-sm btn-sm-primary" onclick="openNewFolderModal()">+ New Folder</button>
+        </div>
+      </div>
+      <div class="empty-state">
+        <div class="empty-icon">⬡</div>
+        <div class="empty-title">No folders yet</div>
+        <div class="empty-sub">Create folders to organize your saves by theme, project, or mood.</div>
+        <button class="btn-sm btn-sm-primary" onclick="openNewFolderModal()">Create a Folder</button>
+      </div>`;
+    return;
+  }
+  mc.innerHTML = `
+    <div class="page-header">
+      <div><div class="page-title">My Folders</div><div class="page-sub">${myFolders.length} folder${myFolders.length!==1?'s':''}</div></div>
+      <div class="page-header-actions">
+        <button class="btn-sm btn-sm-primary" onclick="openNewFolderModal()">+ New Folder</button>
+      </div>
+    </div>
+    <div class="folder-grid">${myFolders.map(f => renderFolderCard(f)).join('')}</div>`;
+}
+
+// ── Saved View ───────────────────────────────────────────────────────────────
+function renderSavedView() {
+  const mc = document.getElementById('main-content');
+  if (!mySavedPins.length) {
+    mc.innerHTML = `
+      <div class="page-header">
+        <div><div class="page-title">All Saved</div><div class="page-sub">Everything you've saved</div></div>
+        <div class="page-header-actions">
+          <button class="btn-sm btn-sm-primary" onclick="openSavePinModal()">+ Save something</button>
+        </div>
+      </div>
+      <div class="empty-state">
+        <div class="empty-icon">◻</div>
+        <div class="empty-title">Nothing saved yet</div>
+        <div class="empty-sub">Save images, links, and ideas from anywhere.</div>
+        <button class="btn-sm btn-sm-primary" onclick="openSavePinModal()">Save your first item</button>
+      </div>`;
+    return;
+  }
+  mc.innerHTML = `
+    <div class="page-header">
+      <div><div class="page-title">All Saved</div><div class="page-sub">${mySavedPins.length} item${mySavedPins.length!==1?'s':''}</div></div>
+      <div class="page-header-actions">
+        <button class="btn-sm btn-sm-ghost" onclick="navigateTo('folders')">View folders</button>
+        <button class="btn-sm btn-sm-primary" onclick="openSavePinModal()">+ Save</button>
+      </div>
+    </div>
+    <div class="pin-grid">${mySavedPins.map(p => renderPinCard(p)).join('')}</div>`;
+}
+
+// ── Shared View ───────────────────────────────────────────────────────────────
+async function renderSharedView() {
+  const mc = document.getElementById('main-content');
+  mc.innerHTML = `
+    <div class="page-header">
+      <div><div class="page-title">Shared with me</div><div class="page-sub">Folders others have shared</div></div>
+    </div>
+    <div class="empty-state"><div class="empty-icon" style="animation:spin 2s linear infinite;display:inline-block;">◎</div><div class="empty-title" style="margin-top:12px;">Loading...</div></div>`;
+
+  try {
+    const snap = await db.collection('indy_boards_folders')
+      .where('isPublic', '==', true)
+      .limit(50).get();
+    const sharedFolders = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .filter(f => f.ownerUid !== currentUser.uid);
+
+    if (!sharedFolders.length) {
+      mc.innerHTML = `
+        <div class="page-header">
+          <div><div class="page-title">Shared with me</div><div class="page-sub">Folders others have shared</div></div>
+        </div>
+        <div class="empty-state">
+          <div class="empty-icon">↗</div>
+          <div class="empty-title">No shared folders yet</div>
+          <div class="empty-sub">When someone shares a folder link with you, it will appear here.</div>
+        </div>`;
+      return;
+    }
+
+    mc.innerHTML = `
+      <div class="page-header">
+        <div><div class="page-title">Shared with me</div><div class="page-sub">${sharedFolders.length} shared folder${sharedFolders.length!==1?'s':''}</div></div>
+      </div>
+      <div class="folder-grid">${sharedFolders.map(f => renderFolderCard(f, true)).join('')}</div>`;
+  } catch(e) {
+    mc.innerHTML = `<div class="empty-state"><div class="empty-sub">Failed to load shared folders.</div></div>`;
+  }
+}
+
+// ── Search View ───────────────────────────────────────────────────────────────
+function renderSearchView(initialQuery) {
+  const mc = document.getElementById('main-content');
+  mc.innerHTML = `
+    <div class="page-header">
+      <div><div class="page-title">Search</div><div class="page-sub">Find images, links, and ideas from the web</div></div>
+    </div>
+    <div style="padding:0 16px 12px; display:flex; gap:8px;">
+      <input class="search-input-full" id="search-main-input" placeholder="Search for anything..." value="${escHtml(initialQuery||'')}" onkeydown="if(event.key==='Enter')runSearch()">
+      <button class="btn-sm btn-sm-primary" onclick="runSearch()">Search</button>
+    </div>
+    <div class="search-filter-row" id="search-filter-row">
+      <button class="nav-tab active" onclick="setSearchFilter('all',this)">All</button>
+      <button class="nav-tab" onclick="setSearchFilter('gifs',this)">GIFs</button>
+      <button class="nav-tab" onclick="setSearchFilter('images',this)">Photos</button>
+      <button class="nav-tab" onclick="setSearchFilter('articles',this)">Articles</button>
+    </div>
+    <div id="search-results" style="padding:12px 16px 80px;">
+      ${initialQuery ? '<div class="empty-state"><div class="empty-icon" style="animation:spin 2s linear infinite;display:inline-block;">◎</div><div class="empty-title" style="margin-top:12px;">Searching...</div></div>' : '<div class="empty-state"><div class="empty-icon">⌕</div><div class="empty-title">Search for anything</div><div class="empty-sub">Find images, links, articles and ideas from the web.</div></div>'}
+    </div>`;
+  if (initialQuery) {
+    setTimeout(() => runSearch(), 50);
+  }
+}
+
+let currentSearchFilter = 'all';
+function setSearchFilter(f, el) {
+  currentSearchFilter = f;
+  document.querySelectorAll('#search-filter-row .nav-tab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  runSearch();
+}
+
+async function runSearch() {
+  const input = document.getElementById('search-main-input');
+  if (!input) return;
+  let query = input.value.trim();
+  if (!query) return;
+  if (isNSFW(query)) { showToast('That search is not allowed', 'error'); return; }
+  query = sanitizeQuery(query);
+  const resultsEl = document.getElementById('search-results');
+  resultsEl.innerHTML = `<div class="empty-state"><div class="empty-icon" style="animation:spin 2s linear infinite;display:inline-block;">◎</div><div class="empty-title" style="margin-top:12px;">Searching...</div></div>`;
+
+  try {
+    let results = [];
+
+    if (currentSearchFilter === 'gifs') {
+      results = await searchGiphy(query, 24);
+    } else if (currentSearchFilter === 'images') {
+      const [px, un] = await Promise.all([searchPixabay(query, 16), searchUnsplash(query, 16)]);
+      results = interleave(px, un);
+    } else if (currentSearchFilter === 'articles') {
+      results = await searchWikipedia(query);
+    } else {
+      const [giphy, px, un, wiki] = await Promise.all([
+        searchGiphy(query, 10), searchPixabay(query, 10), searchUnsplash(query, 10), searchWikipedia(query)
+      ]);
+      const mediaResults = interleave(giphy, interleave(px, un));
+      results = [];
+      let wikiIdx = 0;
+      mediaResults.forEach((r, i) => {
+        results.push(r);
+        if ((i + 1) % 6 === 0 && wikiIdx < wiki.length) results.push(wiki[wikiIdx++]);
+      });
+      while (wikiIdx < wiki.length) results.push(wiki[wikiIdx++]);
+    }
+
+    if (!results.length) {
+      resultsEl.innerHTML = `<div class="empty-state"><div class="empty-icon">◻</div><div class="empty-title">No results found</div><div class="empty-sub">Try different keywords.</div></div>`;
+      return;
+    }
+    resultsEl.innerHTML = `<div class="pin-grid">${results.map(r => renderSearchResultCard(r)).join('')}</div>`;
+  } catch(e) {
+    console.error('Search error:', e);
+    resultsEl.innerHTML = `<div class="empty-state"><div class="empty-sub">Search failed — check your connection and try again.</div></div>`;
+  }
+}
+
+function interleave(a, b) {
+  const result = [];
+  const max = Math.max(a.length, b.length);
+  for (let i = 0; i < max; i++) {
+    if (i < a.length) result.push(a[i]);
+    if (i < b.length) result.push(b[i]);
+  }
+  return result;
+}
+
+// ── Search APIs (via Cloudflare Worker) ──────────────────────────────────────
+async function searchGiphy(query, limit = 20) {
+  try {
+    const res = await fetch(`${WORKER_URL}/giphy?q=${encodeURIComponent(query)}&limit=${limit}`);
+    const data = await res.json();
+    if (!data.data) return [];
+    return data.data
+      .filter(g => !isNSFW(g.title) && !isNSFW(g.slug))
+      .map(g => ({
+        type: 'gif', title: g.title || query, url: g.url,
+        thumbUrl: g.images?.fixed_height_small?.url || g.images?.preview_gif?.url,
+        fullUrl: g.images?.fixed_height?.url || g.images?.downsized?.url,
+        source: 'GIPHY', sourceUrl: g.url, isGif: true
+      }));
+  } catch(e) { console.warn('Giphy search failed:', e); return []; }
+}
+
+async function searchPixabay(query, count = 20) {
+  try {
+    const res = await fetch(`${WORKER_URL}/pixabay?q=${encodeURIComponent(query)}&limit=${count}`);
+    const data = await res.json();
+    if (!data.hits) return [];
+    return data.hits
+      .filter(h => !isNSFW(h.tags) && !isNSFW(h.user))
+      .map(h => ({
+        type: 'image', title: h.tags ? h.tags.split(',')[0].trim() : query,
+        url: h.pageURL, thumbUrl: h.previewURL, fullUrl: h.webformatURL,
+        source: 'Pixabay', sourceUrl: h.pageURL, photographer: h.user
+      }));
+  } catch(e) { console.warn('Pixabay search failed:', e); return []; }
+}
+
+async function searchUnsplash(query, count = 20) {
+  try {
+    const res = await fetch(`${WORKER_URL}/unsplash?q=${encodeURIComponent(query)}&limit=${count}`);
+    const data = await res.json();
+    if (!data.results) return [];
+    return data.results
+      .filter(p => !isNSFW(p.alt_description||'') && !isNSFW(p.description||''))
+      .map(p => ({
+        type: 'image', title: p.alt_description || p.description || query,
+        url: p.links?.html, thumbUrl: p.urls?.small, fullUrl: p.urls?.regular,
+        source: 'Unsplash', sourceUrl: p.links?.html, photographer: p.user?.name
+      }));
+  } catch(e) { console.warn('Unsplash search failed:', e); return []; }
+}
+
+async function searchWikipedia(query) {
+  try {
+    const url = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&srlimit=6&srprop=snippet&format=json&origin=*`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (!data.query || !data.query.search) return [];
+    return data.query.search
+      .filter(r => !isNSFW(r.title) && !isNSFW(r.snippet))
+      .map(r => ({
+        type: 'article', title: r.title,
+        snippet: r.snippet.replace(/<[^>]+>/g,''),
+        url: `https://en.wikipedia.org/wiki/${encodeURIComponent(r.title.replace(/ /g,'_'))}`,
+        source: 'Wikipedia',
+        sourceUrl: `https://en.wikipedia.org/wiki/${encodeURIComponent(r.title.replace(/ /g,'_'))}`
+      }));
+  } catch(e) { return []; }
+}
+
+// ── Render Helpers ────────────────────────────────────────────────────────────
+function renderSearchResultCard(r) {
+  const displayImg = r.thumbUrl || r.fullUrl;
+  const isGif = r.isGif || false;
+
+  if (r.type === 'gif' || r.type === 'image') {
+    const gifBadge = isGif ? `<span style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.65);color:#fff;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 7px;border-radius:100px;">GIF</span>` : '';
+    const credit = r.photographer ? `<div class="pin-source">by ${escHtml(r.photographer)} · ${escHtml(r.source)}</div>` : `<div class="pin-source">${escHtml(r.source)}</div>`;
+    return `<div class="pin-card" style="position:relative;" onclick="openSavePinModalWith('${escHtml(r.fullUrl||r.thumbUrl)}','${escHtml(r.title)}')">
+      ${displayImg ? `<img class="pin-img" src="${escHtml(displayImg)}" alt="${escHtml(r.title)}" loading="lazy" onerror="this.style.display='none'">` : `<div class="pin-img-placeholder"><span>◈</span></div>`}
+      ${gifBadge}
+      <div class="pin-overlay">
+        <div class="pin-overlay-actions">
+          <button class="pin-overlay-btn save" onclick="event.stopPropagation();openSavePinModalWith('${escHtml(r.fullUrl||r.thumbUrl||'')}','${escHtml(r.title)}')">Save</button>
+          ${r.sourceUrl ? `<a class="pin-overlay-btn" href="${escHtml(r.sourceUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">↗</a>` : ''}
+        </div>
+      </div>
+      <div class="pin-info">
+        <div class="pin-title">${escHtml(r.title)}</div>
+        ${credit}
+      </div>
+    </div>`;
+  } else {
+    return `<div class="pin-card" onclick="window.open('${escHtml(r.url)}','_blank')">
+      <div class="pin-img-placeholder" style="aspect-ratio:auto;min-height:80px;padding:16px;align-items:flex-start;">
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">${escHtml(r.source)}</div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.3;">${escHtml(r.title)}</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.5;">${escHtml((r.snippet||'').slice(0,100))}...</div>
+        </div>
+      </div>
+      <div class="pin-overlay">
+        <div class="pin-overlay-actions">
+          <button class="pin-overlay-btn" onclick="event.stopPropagation();openSavePinModalWith('${escHtml(r.url)}','${escHtml(r.title)}')">Save link</button>
+        </div>
+      </div>
+    </div>`;
+  }
+}
+
+function renderPinCard(pin, readOnly) {
+  const hasImg = pin.imageUrl && !isNSFW(pin.imageUrl);
+  const tags = (pin.tags||[]).slice(0,3).map(t => `<span class="pin-tag">${escHtml(t)}</span>`).join('');
+  return `<div class="pin-card" id="pincard-${pin.id}" onclick="openPinDetail('${pin.id}', ${readOnly?'true':'false'})">
+    ${hasImg ? `<img class="pin-img" src="${escHtml(pin.imageUrl)}" alt="${escHtml(pin.title)}" loading="lazy" onerror="this.style.display='none'">` : `<div class="pin-img-placeholder"><span>◈</span></div>`}
+    <div class="pin-overlay">
+      <div class="pin-overlay-actions">
+        ${!readOnly ? `<button class="pin-overlay-btn danger" onclick="event.stopPropagation();confirmDeletePin('${pin.id}','${escHtml(pin.title||'this pin')}')">✕</button>` : ''}
+        ${pin.url ? `<a class="pin-overlay-btn" href="${escHtml(pin.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">↗ Open</a>` : ''}
+      </div>
+    </div>
+    <div class="pin-info">
+      <div class="pin-title">${escHtml(pin.title||'Untitled')}</div>
+      ${pin.url ? `<div class="pin-source">${escHtml(getDomain(pin.url))}</div>` : ''}
+      ${tags ? `<div class="pin-tags">${tags}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+function renderFolderCard(folder, isShared) {
+  const pinsInFolder = isShared ? [] : mySavedPins.filter(p => p.folderIds && p.folderIds.includes(folder.id));
+  const previewPins = pinsInFolder.slice(0,4);
+  let mosaicCells = '';
+  for (let i=0;i<4;i++) {
+    const p = previewPins[i];
+    const hasImg = p && p.imageUrl && !isNSFW(p.imageUrl);
+    mosaicCells += `<div class="folder-mosaic-img">${hasImg ? `<img src="${escHtml(p.imageUrl)}" loading="lazy" onerror="this.style.display='none'">` : `<div class="folder-mosaic-placeholder" style="background:var(--surface2);">⬡</div>`}</div>`;
+  }
+  const action = isShared ? `navigateTo('shared-folder','${folder.id}')` : `navigateTo('folder','${folder.id}')`;
+  return `<div class="folder-card" onclick="${action}">
+    <div class="folder-mosaic">${mosaicCells}</div>
+    ${!isShared ? `
+    <div class="folder-actions" onclick="event.stopPropagation()">
+      <button class="folder-action-btn" title="Share" onclick="openShareFolderModal('${folder.id}')">↗</button>
+      <button class="folder-action-btn del" title="Delete folder" onclick="confirmDeleteFolder('${folder.id}','${escHtml(folder.name)}')">✕</button>
+    </div>` : ''}
+    <div class="folder-info">
+      <div class="folder-name">${escHtml(folder.name)}</div>
+      <div class="folder-meta">
+        ${isShared ? '' : `${pinsInFolder.length} item${pinsInFolder.length!==1?'s':''}`}
+        ${folder.isPublic ? `<span class="folder-shared-badge">Shared</span>` : ''}
+        ${isShared ? `<span>by ${escHtml(folder.ownerName||'someone')}</span>` : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderSidebarFolders() {
+  const list = document.getElementById('sidebar-folder-list');
+  if (!list) return;
+  if (!myFolders.length) { list.innerHTML = ''; return; }
+  list.innerHTML = myFolders.slice(0,8).map(f =>
+    `<div class="sidebar-item" onclick="navigateTo('folder','${f.id}')">
+      <span class="sidebar-item-icon">⬡</span> ${escHtml(f.name)}
+      <span class="sidebar-folder-count">${mySavedPins.filter(p=>p.folderIds&&p.folderIds.includes(f.id)).length||''}</span>
+    </div>`
+  ).join('');
+}
+
+// ── Folder View ───────────────────────────────────────────────────────────────
+async function renderFolderView(folderId) {
+  const mc = document.getElementById('main-content');
+  const folder = myFolders.find(f => f.id === folderId);
+  if (!folder) {
+    mc.innerHTML = `<div class="empty-state"><div class="empty-sub">Folder not found.</div></div>`;
+    return;
+  }
+
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+
+  const pinsInFolder = mySavedPins.filter(p => p.folderIds && p.folderIds.includes(folderId));
+
+  mc.innerHTML = `
+    <div style="padding:8px 16px 0;">
+      <button class="back-btn" onclick="navigateTo('folders')">
+        <span class="back-btn-icon">←</span> My Folders
+      </button>
+    </div>
+    <div class="page-header">
+      <div>
+        <div class="page-title">${escHtml(folder.name)}</div>
+        ${folder.description ? `<div class="page-sub">${escHtml(folder.description)}</div>` : ''}
+      </div>
+      <div class="page-header-actions">
+        <button class="btn-sm btn-sm-ghost" onclick="openShareFolderModal('${folderId}')">↗ Share</button>
+        <button class="btn-sm btn-sm-primary" onclick="openSavePinModalToFolder('${folderId}')">+ Save</button>
+      </div>
+    </div>
+    <div class="folder-detail-actions">
+      <button class="btn-sm btn-sm-danger" onclick="confirmDeleteFolder('${folderId}','${escHtml(folder.name)}')">Delete folder</button>
+    </div>
+    <div id="folder-pins-area">
+      ${!pinsInFolder.length ? `
+        <div class="empty-state">
+          <div class="empty-icon">⬡</div>
+          <div class="empty-title">This folder is empty</div>
+          <div class="empty-sub">Save items and add them to this folder.</div>
+          <button class="btn-sm btn-sm-primary" onclick="openSavePinModalToFolder('${folderId}')">+ Save something</button>
+        </div>` : `<div class="pin-grid">${pinsInFolder.map(p => renderPinCardInFolder(p, folderId)).join('')}</div>`}
+    </div>`;
+}
+
+function renderPinCardInFolder(pin, folderId) {
+  const hasImg = pin.imageUrl && !isNSFW(pin.imageUrl);
+  const tags = (pin.tags||[]).slice(0,3).map(t => `<span class="pin-tag">${escHtml(t)}</span>`).join('');
+  return `<div class="pin-card" id="pincard-${pin.id}" onclick="openPinDetail('${pin.id}', false)">
+    ${hasImg ? `<img class="pin-img" src="${escHtml(pin.imageUrl)}" alt="${escHtml(pin.title)}" loading="lazy" onerror="this.style.display='none'">` : `<div class="pin-img-placeholder"><span>◈</span></div>`}
+    <div class="pin-overlay">
+      <div class="pin-overlay-actions">
+        <button class="pin-overlay-btn danger" onclick="event.stopPropagation();removeFromFolder('${pin.id}','${folderId}','${escHtml(pin.title||'')}')">Remove</button>
+        ${pin.url ? `<a class="pin-overlay-btn" href="${escHtml(pin.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">↗</a>` : ''}
+      </div>
+    </div>
+    <div class="pin-info">
+      <div class="pin-title">${escHtml(pin.title||'Untitled')}</div>
+      ${pin.url ? `<div class="pin-source">${escHtml(getDomain(pin.url))}</div>` : ''}
+      ${tags ? `<div class="pin-tags">${tags}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+// ── Shared Folder View ────────────────────────────────────────────────────────
+async function renderSharedFolderView(folderId) {
+  const mc = document.getElementById('main-content');
+  mc.innerHTML = `<div class="empty-state"><div class="empty-icon" style="animation:spin 2s linear infinite;display:inline-block;">◎</div><div class="empty-title" style="margin-top:12px;">Loading...</div></div>`;
+  try {
+    const folderDoc = await db.collection('indy_boards_folders').doc(folderId).get();
+    if (!folderDoc.exists || !folderDoc.data().isPublic) {
+      mc.innerHTML = `<div class="empty-state"><div class="empty-icon">⊗</div><div class="empty-title">Folder not found</div><div class="empty-sub">This folder may have been made private or deleted.</div></div>`;
+      return;
+    }
+    const folder = { id: folderDoc.id, ...folderDoc.data() };
+    const pinsSnap = await db.collection('indy_boards_pins')
+      .where('ownerUid','==',folder.ownerUid)
+      .where('folderIds','array-contains',folderId)
+      .orderBy('savedAt','desc').limit(100).get();
+    const pins = pinsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    mc.innerHTML = `
+      <div style="padding:8px 16px 0;">
+        <button class="back-btn" onclick="navigateTo('shared')">
+          <span class="back-btn-icon">←</span> Shared with me
+        </button>
+      </div>
+      <div class="shared-banner">
+        <div class="shared-banner-icon">↗</div>
+        <div class="shared-banner-text">
+          <div class="shared-banner-title">${escHtml(folder.name)}</div>
+          <div class="shared-banner-sub">Shared folder by ${escHtml(folder.ownerName||'someone')}</div>
+        </div>
+      </div>
+      <div class="page-header">
+        <div>
+          <div class="page-title">${escHtml(folder.name)}</div>
+          ${folder.description ? `<div class="page-sub">${escHtml(folder.description)}</div>` : ''}
+        </div>
+      </div>
+      ${pins.length ? `<div class="pin-grid">${pins.map(p => renderPinCard(p, true)).join('')}</div>` :
+        `<div class="empty-state"><div class="empty-icon">◻</div><div class="empty-title">Empty folder</div></div>`}`;
+  } catch(e) {
+    mc.innerHTML = `<div class="empty-state"><div class="empty-sub">Failed to load folder.</div></div>`;
+  }
+}
+
+// ── Confirm Delete (generic) ──────────────────────────────────────────────────
+function showConfirm({ title, icon, msg, btnLabel, onConfirm }) {
+  document.getElementById('confirm-modal-title').textContent = title || 'Are you sure?';
+  document.getElementById('confirm-modal-icon').textContent = icon || '🗑';
+  document.getElementById('confirm-modal-msg').textContent = msg || '';
+  document.getElementById('confirm-modal-btn').textContent = btnLabel || 'Delete';
+  document.getElementById('confirm-modal-btn').onclick = () => {
+    closeModal('confirm-modal');
+    onConfirm();
+  };
+  openModal('confirm-modal');
+}
+
+function confirmDeletePin(pinId, title) {
+  showConfirm({
+    title: 'Remove pin?',
+    icon: '✕',
+    msg: `"${title}" will be permanently removed from your saves.`,
+    btnLabel: 'Remove',
+    onConfirm: () => deletePin(pinId)
+  });
+}
+
+function confirmDeleteFolder(folderId, name) {
+  showConfirm({
+    title: 'Delete folder?',
+    icon: '⬡',
+    msg: `"${name}" will be deleted. Your saved pins won't be deleted — they'll just be removed from this folder.`,
+    btnLabel: 'Delete folder',
+    onConfirm: () => deleteFolder(folderId)
+  });
+}
+
+// ── Pin Detail Modal ──────────────────────────────────────────────────────────
+async function openPinDetail(pinId, readOnly) {
+  const pin = mySavedPins.find(p => p.id === pinId);
+  if (!pin) return;
+  document.getElementById('pin-detail-title-header').textContent = pin.title || 'Saved item';
+  const content = document.getElementById('pin-detail-content');
+  const hasImg = pin.imageUrl && !isNSFW(pin.imageUrl);
+  const userFolders = myFolders.map(f => {
+    const inFolder = pin.folderIds && pin.folderIds.includes(f.id);
+    return `<div class="pin-detail-folder-chip ${inFolder?'in-folder':''}" onclick="togglePinInFolder('${pin.id}','${f.id}',${inFolder})">${escHtml(f.name)}</div>`;
+  }).join('');
+
+  content.innerHTML = `<div class="pin-detail-grid">
+    <div class="pin-detail-img-wrap" style="${!hasImg?'min-height:160px;font-size:48px;color:var(--muted);':''}">
+      ${hasImg ? `<img src="${escHtml(pin.imageUrl)}" alt="${escHtml(pin.title)}" style="width:100%;height:auto;max-height:500px;object-fit:cover;">` : '◈'}
+    </div>
+    <div class="pin-detail-body">
+      <div class="pin-detail-title">${escHtml(pin.title||'Untitled')}</div>
+      ${pin.url ? `<div class="pin-detail-url"><a href="${escHtml(pin.url)}" target="_blank" rel="noopener">↗ ${escHtml(getDomain(pin.url))}</a></div>` : ''}
+      ${pin.description ? `<div class="pin-detail-desc">${escHtml(pin.description)}</div>` : ''}
+      ${(pin.tags||[]).length ? `<div class="pin-tags">${(pin.tags||[]).map(t=>`<span class="pin-tag">${escHtml(t)}</span>`).join('')}</div>` : ''}
+      ${!readOnly && myFolders.length ? `<div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Add to folder</div>
+        <div class="pin-detail-folder-list">${userFolders}</div>
+      </div>` : ''}
+      <div class="pin-detail-actions">
+        ${pin.url ? `<a class="btn-sm btn-sm-primary" href="${escHtml(pin.url)}" target="_blank" rel="noopener" style="text-decoration:none;">↗ Open link</a>` : ''}
+        ${!readOnly ? `<button class="btn-sm btn-sm-danger" onclick="closeModal('pin-detail-modal');confirmDeletePin('${pin.id}','${escHtml(pin.title||'this pin')}')">Remove</button>` : ''}
+      </div>
+    </div>
+  </div>`;
+  openModal('pin-detail-modal');
+}
+
+async function togglePinInFolder(pinId, folderId, currentlyIn) {
+  const pin = mySavedPins.find(p => p.id === pinId);
+  if (!pin) return;
+  try {
+    if (currentlyIn) {
+      await db.collection('indy_boards_pins').doc(pinId).update({
+        folderIds: firebase.firestore.FieldValue.arrayRemove(folderId)
+      });
+      showToast('Removed from folder');
+    } else {
+      await db.collection('indy_boards_pins').doc(pinId).update({
+        folderIds: firebase.firestore.FieldValue.arrayUnion(folderId)
+      });
+      showToast('Added to folder');
+    }
+    await openPinDetail(pinId, false);
+  } catch(e) { showToast('Failed to update folder', 'error'); }
+}
+
+// ── Save Pin Modal ────────────────────────────────────────────────────────────
+let preSaveFolderId = null;
+
+function openSavePinModal() {
+  preSaveFolderId = null;
+  savingToFolders = new Set();
+  document.getElementById('pin-url').value = '';
+  document.getElementById('pin-title').value = '';
+  document.getElementById('pin-desc').value = '';
+  document.getElementById('pin-tags').value = '';
+  document.getElementById('pin-url-preview').classList.remove('loaded');
+  renderFolderSelectList();
+  openModal('save-pin-modal');
+  setTimeout(() => document.getElementById('pin-url').focus(), 80);
+}
+
+function openSavePinModalToFolder(folderId) {
+  openSavePinModal();
+  preSaveFolderId = folderId;
+  savingToFolders = new Set([folderId]);
+  renderFolderSelectList();
+}
+
+function openSavePinModalWith(url, title) {
+  openSavePinModal();
+  document.getElementById('pin-url').value = url || '';
+  document.getElementById('pin-title').value = title || '';
+  if (url) {
+    const preview = document.getElementById('pin-url-preview');
+    preview.src = url;
+  }
+}
+
+function renderFolderSelectList() {
+  const list = document.getElementById('save-folder-select');
+  if (!myFolders.length) {
+    list.innerHTML = `<div style="font-size:12px;color:var(--muted);padding:8px 0;">No folders yet — <a style="cursor:pointer;color:var(--text2);text-decoration:underline;" onclick="closeModal('save-pin-modal');openNewFolderModal()">create one</a></div>`;
+    return;
+  }
+  list.innerHTML = myFolders.map(f =>
+    `<div class="folder-select-item ${savingToFolders.has(f.id)?'selected':''}" onclick="toggleSaveFolder('${f.id}')">
+      <div class="folder-select-item-check">${savingToFolders.has(f.id)?'✓':''}</div>
+      <div class="folder-select-item-name">${escHtml(f.name)}</div>
+      <div class="folder-select-item-count">${mySavedPins.filter(p=>p.folderIds&&p.folderIds.includes(f.id)).length}</div>
+    </div>`
+  ).join('');
+}
+
+function toggleSaveFolder(folderId) {
+  if (savingToFolders.has(folderId)) savingToFolders.delete(folderId);
+  else savingToFolders.add(folderId);
+  renderFolderSelectList();
+}
+
+function onPinUrlInput(val) {
+  clearTimeout(pinUrlDebounce);
+  pinUrlDebounce = setTimeout(() => {
+    const preview = document.getElementById('pin-url-preview');
+    if (val && val.startsWith('http') && (val.includes('.jpg')||val.includes('.jpeg')||val.includes('.png')||val.includes('.gif')||val.includes('.webp'))) {
+      preview.src = val;
+    } else {
+      preview.classList.remove('loaded');
+    }
+  }, 500);
+}
+
+async function submitSavePin() {
+  const url   = document.getElementById('pin-url').value.trim();
+  const title = document.getElementById('pin-title').value.trim();
+  const desc  = document.getElementById('pin-desc').value.trim();
+  const tagsRaw = document.getElementById('pin-tags').value.trim();
+  if (!title) return showToast('Please add a title', 'error');
+
+  if (isNSFW(url) || isNSFW(title) || isNSFW(desc)) {
+    showToast('That content is not allowed', 'error');
+    return;
+  }
+
+  const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim().toLowerCase()).filter(Boolean) : [];
+  const isImageUrl = url && (url.includes('.jpg')||url.includes('.jpeg')||url.includes('.png')||url.includes('.gif')||url.includes('.webp'));
+
+  setBtn('btn-save-pin', true, 'Saving...');
+  try {
+    await db.collection('indy_boards_pins').add({
+      ownerUid: currentUser.uid,
+      ownerName: currentUserName,
+      url: url || null,
+      imageUrl: isImageUrl ? url : null,
+      title,
+      description: desc || null,
+      tags,
+      folderIds: Array.from(savingToFolders),
+      savedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    closeModal('save-pin-modal');
+    showToast('Saved! ✦', 'success');
+    recoCache = null; // refresh reco next time
+  } catch(e) {
+    showToast('Failed to save', 'error');
+    console.error(e);
+  } finally {
+    setBtn('btn-save-pin', false, 'Save');
+  }
+}
+
+// ── Delete / Remove Actions ───────────────────────────────────────────────────
+async function deletePin(pinId) {
+  try {
+    await db.collection('indy_boards_pins').doc(pinId).delete();
+    showToast('Removed', 'success');
+  } catch(e) { showToast('Failed to remove', 'error'); }
+}
+
+async function deleteFolder(folderId) {
+  try {
+    // Remove folderId from all pins that reference it
+    const pinsInFolder = mySavedPins.filter(p => p.folderIds && p.folderIds.includes(folderId));
+    const batch = db.batch();
+    pinsInFolder.forEach(p => {
+      batch.update(db.collection('indy_boards_pins').doc(p.id), {
+        folderIds: firebase.firestore.FieldValue.arrayRemove(folderId)
+      });
+    });
+    batch.delete(db.collection('indy_boards_folders').doc(folderId));
+    await batch.commit();
+    showToast('Folder deleted', 'success');
+    navigateTo('folders');
+  } catch(e) {
+    showToast('Failed to delete folder', 'error');
+    console.error(e);
+  }
+}
+
+async function removeFromFolder(pinId, folderId, title) {
+  try {
+    await db.collection('indy_boards_pins').doc(pinId).update({
+      folderIds: firebase.firestore.FieldValue.arrayRemove(folderId)
+    });
+    showToast('Removed from folder');
+    // Re-render the folder view
+    renderFolderView(folderId);
+  } catch(e) { showToast('Failed to remove', 'error'); }
+}
+
+// ── New Folder Modal ──────────────────────────────────────────────────────────
+function openNewFolderModal() {
+  document.getElementById('folder-name').value = '';
+  document.getElementById('folder-desc').value = '';
+  openModal('new-folder-modal');
+  setTimeout(() => document.getElementById('folder-name').focus(), 80);
+}
+
+async function submitNewFolder() {
+  const name = document.getElementById('folder-name').value.trim();
+  const desc = document.getElementById('folder-desc').value.trim();
+  if (!name) return showToast('Folder name is required', 'error');
+  setBtn('btn-new-folder', true, 'Creating...');
+  try {
+    const docRef = await db.collection('indy_boards_folders').add({
+      ownerUid: currentUser.uid,
+      ownerName: currentUserName,
+      name, description: desc || null,
+      isPublic: false,
+      shareToken: null,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    closeModal('new-folder-modal');
+    showToast('Folder created!', 'success');
+    navigateTo('folder', docRef.id);
+  } catch(e) {
+    showToast('Failed to create folder', 'error');
+  } finally {
+    setBtn('btn-new-folder', false, 'Create Folder');
+  }
+}
+
+// ── Share Folder Modal ────────────────────────────────────────────────────────
+function openShareFolderModal(folderId) {
+  shareFolderTarget = myFolders.find(f => f.id === folderId);
+  if (!shareFolderTarget) return;
+  document.getElementById('share-folder-name-sub').textContent = shareFolderTarget.name;
+  const isPublic = shareFolderTarget.isPublic || false;
+  const toggle = document.getElementById('share-toggle');
+  toggle.classList.toggle('on', isPublic);
+  const linkSection = document.getElementById('share-link-section');
+  linkSection.style.display = isPublic ? '' : 'none';
+  if (isPublic) {
+    const shareUrl = `${location.href.split('?')[0]}?sharedFolder=${folderId}`;
+    document.getElementById('share-link-value').value = shareUrl;
+  }
+  openModal('share-folder-modal');
+}
+
+async function toggleSharing() {
+  if (!shareFolderTarget) return;
+  const toggle = document.getElementById('share-toggle');
+  const newState = !toggle.classList.contains('on');
+  toggle.classList.toggle('on', newState);
+  const linkSection = document.getElementById('share-link-section');
+  linkSection.style.display = newState ? '' : 'none';
+  if (newState) {
+    const shareUrl = `${location.href.split('?')[0]}?sharedFolder=${shareFolderTarget.id}`;
+    document.getElementById('share-link-value').value = shareUrl;
+  }
+  try {
+    await db.collection('indy_boards_folders').doc(shareFolderTarget.id).update({ isPublic: newState });
+    shareFolderTarget.isPublic = newState;
+    showToast(newState ? 'Sharing enabled' : 'Sharing disabled', 'success');
+  } catch(e) { showToast('Failed to update sharing', 'error'); toggle.classList.toggle('on', !newState); }
+}
+
+function copyShareLink() {
+  const val = document.getElementById('share-link-value').value;
+  navigator.clipboard.writeText(val).then(() => showToast('Link copied!', 'success')).catch(() => showToast('Copy failed', 'error'));
+}
+
+// ── Deep Link ─────────────────────────────────────────────────────────────────
+function checkDeepLink() {
+  const params = new URLSearchParams(location.search);
+  const sf = params.get('sharedFolder');
+  if (sf && currentUser) navigateTo('shared-folder', sf);
+}
+
+// ── Header Search ─────────────────────────────────────────────────────────────
+function onHeaderSearch(val) {
+  clearTimeout(searchDebounce);
+  if (!val.trim()) return;
+  searchDebounce = setTimeout(() => {
+    navigateTo('search', val.trim());
+    setTimeout(() => {
+      const inp = document.getElementById('search-main-input');
+      if (inp) inp.value = val.trim();
+    }, 50);
+  }, 600);
+}
+
+function doSearch() {
+  const val = document.getElementById('header-search-input').value.trim();
+  if (val) navigateTo('search', val);
+}
+
+// ── Avatar ────────────────────────────────────────────────────────────────────
+function openAvatarPopup() {
+  const preview = document.getElementById('avatar-preview');
+  const input = document.getElementById('avatar-input');
+  input.value = currentAvatar;
+  preview.textContent = currentAvatar || document.getElementById('header-avatar').textContent;
+  document.getElementById('avatar-popup-overlay').style.display = 'flex';
+  setTimeout(() => input.focus(), 50);
+}
+function closeAvatarPopup(e) {
+  if (e && e.target !== document.getElementById('avatar-popup-overlay')) return;
+  document.getElementById('avatar-popup-overlay').style.display = 'none';
+}
+function onAvatarInput(val) { document.getElementById('avatar-preview').textContent = val || '?'; }
+async function saveAvatar() {
+  const val = document.getElementById('avatar-input').value.trim();
+  try {
+    await db.collection('shop_users').doc(currentUser.uid).update({ avatar: val });
+    currentAvatar = val;
+    const initials = currentUserName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('header-avatar').textContent = val || initials;
+    document.getElementById('avatar-popup-overlay').style.display = 'none';
+    showToast('Avatar updated', 'success');
+  } catch(e) { showToast('Failed to save', 'error'); }
+}
+
+// ── Utilities ─────────────────────────────────────────────────────────────────
+function getDomain(url) {
+  try { return new URL(url).hostname.replace('www.',''); } catch(e) { return url; }
+}
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + name);
+  if (el) el.classList.add('active');
+}
+function hideLoading() { document.getElementById('loading-screen').classList.add('hidden'); }
+function showAuthMsg(txt, type) {
+  const el = document.getElementById('auth-msg');
+  el.textContent = txt; el.className = 'auth-msg ' + type;
+}
+function setBtn(id, loading, text) {
+  const btn = document.getElementById(id); if (!btn) return;
+  btn.disabled = loading;
+  btn.innerHTML = loading ? `<span class="spinner ${text.includes('→')?'':'spinner-dark'}"></span>${text}` : text;
+}
+let _tt;
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'show' + (type ? ' '+type : '');
+  clearTimeout(_tt); _tt = setTimeout(() => t.className = '', 2800);
+}
+function escHtml(s) {
+  return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function openModal(id)  { document.getElementById(id).style.display = 'flex'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+function closeModalOverlay(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+
+// ── Keyboard shortcuts ────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    ['save-pin-modal','pin-detail-modal','new-folder-modal','share-folder-modal','confirm-modal'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.style.display !== 'none') closeModal(id);
+    });
+    if (document.getElementById('avatar-popup-overlay').style.display !== 'none') closeAvatarPopup();
+  }
+  if (e.key === 'Enter') {
+    const active = document.querySelector('.screen.active');
+    if (active?.id === 'screen-auth') {
+      if (authMode === 'signin') doLogin();
+      else doSignup();
+    }
+  }
+});
+
+// ── Enter App ─────────────────────────────────────────────────────────────────
+function enterApp() {
+  showScreen('app');
+  const initials = currentUserName.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('header-avatar').textContent = currentAvatar || initials || '?';
+  document.getElementById('fab-save').classList.add('visible');
+  subscribeToFolders();
+  subscribeToSavedPins();
+  setTimeout(checkDeepLink, 800);
+  if (!new URLSearchParams(location.search).get('sharedFolder')) {
+    navigateTo('home');
+  }
+}
+</script>
+</body>
+</html>
