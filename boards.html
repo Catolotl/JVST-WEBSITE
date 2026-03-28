@@ -823,6 +823,22 @@ body {
 /* ── FEED ERROR STATE ── */
 .feed-error { padding:32px 20px; text-align:center; }
 .feed-error-msg { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:0.08em; margin-bottom:16px; }
+/* ── ONBOARDING PICKER ── */
+#screen-onboarding.active { display:flex !important; }
+.onboard-card {
+  position:relative; border-radius:var(--radius-lg); overflow:hidden;
+  cursor:pointer; height:160px; background:var(--surface2);
+  border:2px solid transparent; transition:border-color .15s, transform .15s;
+}
+.onboard-card:hover { transform:scale(1.02); }
+.onboard-card.selected { border-color:var(--text); }
+.onboard-card img { width:100%; height:100%; object-fit:cover; display:block; }
+.onboard-check {
+  position:absolute; top:7px; right:7px; width:22px; height:22px;
+  border-radius:50%; background:var(--text); color:var(--bg);
+  display:none; align-items:center; justify-content:center; font-size:12px;
+}
+.onboard-card.selected .onboard-check { display:flex; }
 </style>
 </head>
 <body>
@@ -877,6 +893,25 @@ body {
     </div>
     <div class="auth-footer" id="auth-footer-text">
       Already have an account? <a onclick="switchAuthTab('signin')">Sign in</a>
+    </div>
+  </div>
+</div>
+
+<!-- ONBOARDING SCREEN -->
+<div class="screen" id="screen-onboarding" style="align-items:center;justify-content:center;padding:24px 20px;min-height:100vh;background:var(--bg);flex-direction:column;gap:0;">
+  <div style="width:100%;max-width:680px;">
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">✦ One last step</div>
+      <div style="font-size:26px;font-weight:700;letter-spacing:-0.03em;margin-bottom:8px;">Pick images you like</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.6;">Choose 5–10 that match your taste — we'll use them to personalise your feed.</div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-top:8px;" id="onboard-count-label">0 selected</div>
+    </div>
+    <div id="onboard-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;overflow-y:auto;max-height:60vh;padding-right:4px;"></div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="btn btn-ghost" style="flex:0 0 auto;padding:12px 20px;font-size:12px;" onclick="skipOnboarding()">Skip</button>
+      <button class="btn btn-primary" id="btn-onboard-done" style="flex:1;padding:13px;" disabled onclick="completeOnboarding()">
+        Personalise my feed →
+      </button>
     </div>
   </div>
 </div>
@@ -1257,6 +1292,7 @@ const db = firebase.firestore();
 
 // ── Worker URL ───────────────────────────────────────────────────────────────
 const WORKER_URL = 'https://tiny-snowflake-cc03.rafaestrada-rafa.workers.dev';
+const PROXY_URL = 'https://delicate-credit-ed81.rafaestrada-rafa.workers.dev';
 
 // ── State ────────────────────────────────────────────────────────────────────
 let currentUser = null;
@@ -1273,8 +1309,15 @@ let searchDebounce = null;
 let authMode = 'signin';
 
 // ── NSFW keyword blocklist ───────────────────────────────────────────────────
-const NSFW_WORDS = ['nude','naked','porn','sex','nsfw','xxx','adult','erotic','hentai','onlyfans', 'woman', 'WOMAN', 'Woman', 'man', 'butt', 'ass', 'chest', 'abs', 'male', 'genetalia','ai', 'cock', 'dick', 'penis', 'vagina', 'pussy', 'whore', 'threesome', 'thigh', 'toes', 'fag', 'nigg', 'pegging', 'oral', 'anal', 'marco', 'corpse','tit','boob','boobs', 'cum', 'semen', 'short skirt', 'skirt', 'v-neck', 'v-card', 'v card', 'bikini', 'crack', 'crop top', 'crop-top', 'bra', 'boobie', 'underwear', 'condom', 'tampon','thong', 'undies', 'skinny', 'girl', 'hot', 'beauty', 'guy', 'man', 'slut', 'sexy', 'ball', 'sack', 'orgy', 'orgasm', 'thighs', 'anime','hooters', 'bang', 'lady', 'boobies', 'gang bang', 'bang', 'baning', 'tits', 'legs', 'pornhub', 'donald trump', 'nigger', 'fuck', 'shit', 'faggot', 'breasts','trump','feet' ,'valentines', 'repiblican', 'conservative', 'christian', 'religion', 'christ', 'god', 'crusifix', 'jesus', 'jew', 'hitler', 'putin', 'kim joung un', 'ching chong', 'illigal mexican', 'illigal alien', 'illigal'];
-
+const NSFW_WORDS = [
+  'nude','naked','porn','sex','nsfw','xxx','adult','erotic','hentai','onlyfans',
+  'pornhub','cock','dick','penis','vagina','pussy','whore','threesome',
+  'fag','nigger','nigg','pegging','oral','anal','tit','boob','boobs','cum',
+  'semen','bra','boobie','condom','thong','undies','slut','sack','orgy',
+  'orgasm','tits','gang bang','baning','hooters','faggot','breasts',
+  'donald trump','trump','putin','kim jong un','hitler',
+  'ching chong','fuck','shit','ass ','butt naked','genetalia'
+];
 
 let userDislikes = new Set();
 
@@ -1314,6 +1357,15 @@ auth.onAuthStateChanged(async user => {
           currentAvatar = '';
         }
       } catch(e) { currentUserName = user.displayName || 'You'; }
+      // New signup — show onboarding before app
+      if (window._pendingOnboarding) {
+        window._pendingOnboarding = false;
+        subscribeToFolders();
+        subscribeToSavedPins();
+        hideLoading();
+        showOnboarding();
+        return;
+      }
       enterApp();
     } else {
       currentUser = null;
@@ -1362,8 +1414,10 @@ async function doSignup() {
   if (!tos) return showAuthMsg('You must agree to the Terms of Service to continue', 'error');
   if (pass.length < 6) return showAuthMsg('Password must be at least 6 characters', 'error');
   setBtn('btn-signup', true, 'Creating...');
+  let isNewSignup = false;
   try {
     const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    isNewSignup = true;
     await cred.user.updateProfile({ displayName: name });
     await db.collection('shop_users').doc(cred.user.uid).set({
       displayName: name, email: email, avatar: '', createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1371,6 +1425,8 @@ async function doSignup() {
     await db.collection('indy_fan_profiles').doc(cred.user.uid).set({
       displayName: name, email: email, avatar: '', createdAt: firebase.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
+    // onAuthStateChanged will fire — flag so it shows onboarding
+    window._pendingOnboarding = true;
   } catch(e) {
     showAuthMsg(friendlyError(e), 'error');
     setBtn('btn-signup', false, 'Create account →');
@@ -1383,6 +1439,111 @@ function doSignOut() {
   if (mySavedPinsListener) { mySavedPinsListener(); mySavedPinsListener = null; }
   if (myFoldersListener) { myFoldersListener(); myFoldersListener = null; }
   auth.signOut();
+}
+
+// ── ONBOARDING ───────────────────────────────────────────────────────────────
+const ONBOARD_TOPICS = [
+  'mountain landscape','ocean waves','forest path','desert dunes','night sky stars',
+  'minimal architecture','abstract geometry','vintage typography','neon cityscape','rainy street',
+  'botanical illustration','film grain texture','brutalist building','japanese garden','misty lake',
+  'color palette swatches','dark moody interior','generative art','aerial landscape','weathered concrete'
+];
+let onboardSelected = new Set();
+let onboardImages = []; // [{url, title, topic}]
+
+async function showOnboarding() {
+  console.log('[INDY] showOnboarding called');
+  const el = document.getElementById('screen-onboarding');
+  console.log('[INDY] screen-onboarding element:', el);
+  showScreen('onboarding');
+  const grid = document.getElementById('onboard-grid');
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 0;font-family:\'DM Mono\',monospace;font-size:11px;color:var(--muted);">Loading images...</div>';
+  // Fetch 2 images per topic from Pexels (no CORS issues)
+  const picks = ONBOARD_TOPICS;
+  const results = await Promise.all(picks.map(async topic => {
+    try {
+      const r = await fetch(`https://api.openverse.org/v1/images/?q=${encodeURIComponent(topic)}&page_size=3&license_type=commercial,modification&excluded_tags=people,person,woman,man,face,portrait,human,trump,donald`, { headers: { 'Accept': 'application/json' } });
+      const d = await r.json();
+      return (d.results||[]).map(p => ({ url: p.thumbnail || p.url, fullUrl: p.url, title: p.title || topic, topic }));
+    } catch(e) { return []; }
+  }));
+  onboardImages = shuffleArray(results.flat());
+  grid.innerHTML = onboardImages.map((img, i) => `
+    <div class="onboard-card" id="obc-${i}" onclick="toggleOnboardCard(${i})">
+      <img src="${escHtml(img.url)}" alt="${escHtml(img.title)}" loading="lazy">
+      <div class="onboard-check">✓</div>
+    </div>`).join('');
+}
+
+function toggleOnboardCard(i) {
+  if (onboardSelected.has(i)) {
+    onboardSelected.delete(i);
+    document.getElementById(`obc-${i}`).classList.remove('selected');
+  } else {
+    onboardSelected.add(i);
+    document.getElementById(`obc-${i}`).classList.add('selected');
+  }
+  const n = onboardSelected.size;
+  document.getElementById('onboard-count-label').textContent = `${n} selected${n >= 5 ? ' ✓' : ` — pick ${5 - n} more`}`;
+  document.getElementById('btn-onboard-done').disabled = n < 5;
+}
+
+async function askGroqForKeywords(context) {
+  try {
+    const res = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'llama3-8b-8192',
+        max_tokens: 120,
+        messages: [{
+          role: 'system',
+          content: 'You are a recommendation engine. Output ONLY a JSON array of 10 short search query strings (2-4 words each), no explanation, no markdown, no code blocks. Just the raw JSON array.'
+        }, {
+          role: 'user',
+          content: `Based on these user interests, generate 10 diverse image search queries that would feel right for their feed:\n${context}\nRespond with only a JSON array like: ["query one","query two",...]`
+        }]
+      })
+    });
+    const data = await res.json();
+    const text = data?.choices?.[0]?.message?.content?.trim() || '[]';
+    const cleaned = text.replace(/```json|```/g, '').trim();
+    const arr = JSON.parse(cleaned);
+    return Array.isArray(arr) ? arr.filter(s => typeof s === 'string').slice(0, 10) : [];
+  } catch(e) { return []; }
+}
+
+async function completeOnboarding() {
+  const btn = document.getElementById('btn-onboard-done');
+  btn.disabled = true;
+  btn.textContent = 'Personalising...';
+
+  const selectedImgs = [...onboardSelected].map(i => onboardImages[i]);
+  const topicSummary = [...new Set(selectedImgs.map(img => img.topic))].join(', ');
+  const folderNames = myFolders.map(f => f.name).join(', ');
+
+  const context = [
+    `Selected image themes: ${topicSummary}`,
+    folderNames ? `Folder names: ${folderNames}` : '',
+    mySavedPins.length ? `Saved pin titles: ${mySavedPins.slice(0,10).map(p=>p.title).join(', ')}` : ''
+  ].filter(Boolean).join('\n');
+
+  const groqKeywords = await askGroqForKeywords(context);
+
+  // Merge with topic keywords from selections
+  const tasteKeywords = [...new Set([...selectedImgs.map(img => img.topic), ...groqKeywords])].slice(0, 15);
+
+  try {
+    localStorage.setItem('indy_taste_keywords', JSON.stringify(tasteKeywords));
+    localStorage.setItem('indy_onboarded', '1');
+  } catch(e) {}
+
+  enterApp();
+}
+
+function skipOnboarding() {
+  try { localStorage.setItem('indy_onboarded', '1'); } catch(e) {}
+  enterApp();
 }
 
 function friendlyError(e) {
@@ -1485,7 +1646,8 @@ let feedPage = 0;
 let feedLoading = false;
 let feedExhausted = false;
 let feedObserver = null;
-let feedSeenUrls = new Set(); // session-wide dedup across all pages
+let feedSeenUrls = new Set();
+let feedQueryCursors = {};
 
 async function renderHomeView() {
   const mc = document.getElementById('main-content');
@@ -1499,6 +1661,7 @@ async function renderHomeView() {
   feedExhausted = false;
   aiCardInserted = false;
   feedSeenUrls = new Set();
+  feedQueryCursors = {};
   if (feedObserver) { feedObserver.disconnect(); feedObserver = null; }
 
   mc.innerHTML = `
@@ -1563,11 +1726,11 @@ async function loadMoreFeedItems() {
   try {
     let newItems = [];
     if (currentFeedTopic === 'for-you') {
-      newItems = await loadForYouResults(feedPage + 1);
+      newItems = await loadForYouResults();
     } else {
       const queries = TOPIC_QUERIES[currentFeedTopic] || [currentFeedTopic];
       const picked = queries[feedPage % queries.length];
-      newItems = await fetchRecoForQuery(picked, 30, feedPage + 1);
+      newItems = await fetchRecoForQuery(picked, 30, nextPageForQuery(picked));
     }
     // Dedupe against session-wide seen set and already-saved pins
     const savedUrls = new Set(mySavedPins.map(p => p.imageUrl || p.url).filter(Boolean));
@@ -1576,11 +1739,10 @@ async function loadMoreFeedItems() {
       return key && !feedSeenUrls.has(key) && !savedUrls.has(key);
     });
     newItems.forEach(r => feedSeenUrls.add(r.fullUrl || r.thumbUrl));
-    newItems = shuffleArray(newItems);
     if (newItems.length === 0) {
-      const fallbacks = ['abstract art','minimal design','nature photography','architecture','illustration','color palette','street photography'];
+      const fallbacks = ['abstract art','minimal design','nature photography','architecture','illustration','color palette','street photography','film photography','typographic design','product design'];
       const fb = fallbacks[feedPage % fallbacks.length];
-      const fallbackItems = await fetchRecoForQuery(fb, 24);
+      const fallbackItems = await fetchRecoForQuery(fb, 24, nextPageForQuery(fb));
       newItems = dedupeResults(fallbackItems).filter(r => {
         const key = r.fullUrl || r.thumbUrl;
         return key && !feedSeenUrls.has(key);
@@ -1664,6 +1826,7 @@ function switchFeedTopic(topicId, btn) {
   feedExhausted = false;
   aiCardInserted = false;
   feedSeenUrls = new Set();
+  feedQueryCursors = {};
   const grid = document.getElementById('feed-pin-grid');
   if (grid) grid.innerHTML = '';
   const indicator = document.getElementById('feed-loading-indicator');
@@ -1671,20 +1834,58 @@ function switchFeedTopic(topicId, btn) {
   loadMoreFeedItems();
 }
 
-async function loadForYouResults(page = 1) {
+// Returns next page for a query and advances its cursor independently
+function nextPageForQuery(query) {
+  feedQueryCursors[query] = (feedQueryCursors[query] || 1);
+  const page = feedQueryCursors[query];
+  feedQueryCursors[query]++;
+  return page;
+}
+
+async function loadForYouResults() {
   const likeBoosts = getLikeBoostKeywords();
   const savedKws = getRecommendationKeywords() || [];
-  const keywords = [...new Set([...likeBoosts, ...savedKws])].slice(0, 6);
+  // Merge: taste (onboarding) > liked > saved pins
+  let tasteKws = [];
+  try { tasteKws = JSON.parse(localStorage.getItem('indy_taste_keywords') || '[]'); } catch(e) {}
+
+  // Every 5 pages, silently refresh Groq keywords if user has enough data
+  if (feedPage > 0 && feedPage % 5 === 0 && (mySavedPins.length > 3 || tasteKws.length > 0)) {
+    const folderNames = myFolders.map(f => f.name).join(', ');
+    const context = [
+      tasteKws.length ? `Initial taste: ${tasteKws.slice(0,6).join(', ')}` : '',
+      savedKws.length ? `Saved pin themes: ${savedKws.slice(0,6).join(', ')}` : '',
+      folderNames ? `Folders: ${folderNames}` : '',
+      likeBoosts.length ? `Liked themes: ${likeBoosts.join(', ')}` : ''
+    ].filter(Boolean).join('\n');
+    askGroqForKeywords(context).then(kws => {
+      if (kws.length) {
+        const merged = [...new Set([...tasteKws.slice(0,5), ...kws])].slice(0,15);
+        try { localStorage.setItem('indy_taste_keywords', JSON.stringify(merged)); } catch(e) {}
+      }
+    });
+  }
+
+  const keywords = [...new Set([...likeBoosts, ...tasteKws, ...savedKws])].filter(Boolean).slice(0, 10);
+
   if (keywords.length > 0) {
-    const sets = await Promise.all(keywords.map(kw => fetchRecoForQuery(kw, 16, page)));
-    const all = interleaveMultiple(sets);
-    if (all.length >= 10) return all;
-    const extra = await fetchRecoForQuery(keywords[0], 20, page);
-    return all.concat(extra);
+    const batchSize = Math.min(3, keywords.length);
+    const offset = (feedPage * batchSize) % keywords.length;
+    const batch = [];
+    for (let i = 0; i < batchSize; i++) batch.push(keywords[(offset + i) % keywords.length]);
+    const sets = await Promise.all(batch.map(kw => fetchRecoForQuery(kw, 20, nextPageForQuery(kw))));
+    return interleaveMultiple(sets);
   } else {
-    const broadQueries = ['abstract art', 'geometric patterns', 'nature photography', 'minimalist design', 'product photography', 'urban architecture', 'cinematic lighting'];
-    const picks = shuffleArray(broadQueries).slice(0, 3);
-    const sets = await Promise.all(picks.map(q => fetchRecoForQuery(q, 20, page)));
+    const broadQueries = [
+      'abstract art', 'geometric patterns', 'nature photography', 'minimalist design',
+      'product photography', 'urban architecture', 'cinematic lighting', 'illustration art',
+      'street photography', 'interior design', 'typographic poster', 'film photography'
+    ];
+    const batchSize = 3;
+    const offset = (feedPage * batchSize) % broadQueries.length;
+    const batch = [];
+    for (let i = 0; i < batchSize; i++) batch.push(broadQueries[(offset + i) % broadQueries.length]);
+    const sets = await Promise.all(batch.map(q => fetchRecoForQuery(q, 20, nextPageForQuery(q))));
     return interleaveMultiple(sets);
   }
 }
@@ -1800,29 +2001,30 @@ function getRecommendationKeywords() {
     'then','them','these','those','there','here','just','like','about','which',
     'would','could','should','were','does','did','any','each','other','over',
     'such','after','before','design','inspiration','photo','image','picture',
-    'woman','man','person','people','phone','holding','hand','portrait'
+    'woman','man','person','people','phone','holding','hand','portrait',
+    'media','gif','tadc','taimi','edit','video','clip','post','tweet','reel'
   ]);
-  
+
+  // Also filter out anything that looks like a proper name (capitalized single word)
+  // or a junk GIF/media title pattern
+  const looksLikeJunk = (word) => {
+    if (/^\d/.test(word)) return true; // starts with number
+    if (word.includes('@') || word.includes('#')) return true;
+    if (word.length > 20) return true; // suspiciously long
+    return false;
+  };
+
   const filtered = Object.entries(freq)
-    .filter(([word]) => word.length > 3 && !stopWords.has(word))
+    .filter(([word]) => word.length > 3 && !stopWords.has(word) && !looksLikeJunk(word))
     .sort((a,b) => b[1] - a[1]);
   
-  // Get top terms and combine into meaningful search queries
   const topTerms = filtered.slice(0, 12).map(e => e[0]);
-  
   if (!topTerms.length) return null;
   
-  // Create varied search queries
   const queries = [];
-  
-  // Single best term
   if (topTerms[0]) queries.push(topTerms[0]);
-  
-  // Pair related terms
   if (topTerms[1]) queries.push(`${topTerms[0]} ${topTerms[1]}`);
   if (topTerms[2] && topTerms[3]) queries.push(`${topTerms[2]} ${topTerms[3]}`);
-  
-  // Style-based queries
   const styleTerms = ['minimal', 'vintage', 'modern', 'abstract', 'colorful'];
   const detectedStyle = styleTerms.find(s => topTerms.includes(s));
   if (detectedStyle) queries.push(detectedStyle);
@@ -1832,26 +2034,17 @@ function getRecommendationKeywords() {
 
 function extractMeaningfulPhrases(text) {
   const phrases = [];
-  // Look for 2-3 word phrases that aren't just adjectives
   const words = text.split(/\s+/).filter(w => w.length > 2);
   for (let i = 0; i < words.length - 1; i++) {
-    // Skip if it's just "woman holding" patterns
     if (words[i] === 'woman' && words[i+1] === 'holding') continue;
     if (words[i] === 'person' && words[i+1] === 'with') continue;
-    
     phrases.push(`${words[i]} ${words[i+1]}`);
-    if (i < words.length - 2) {
-      phrases.push(`${words[i]} ${words[i+1]} ${words[i+2]}`);
-    }
+    if (i < words.length - 2) phrases.push(`${words[i]} ${words[i+1]} ${words[i+2]}`);
   }
   return phrases;
 }
 
-// ── Image APIs ───────────────────────────────────────────────────────────────
-// Free APIs: Pixabay (via worker), Unsplash (via worker), Openverse (no key),
-//            Wikimedia Commons (no key), Pexels (public key ok in browser)
-
-const PEXELS_KEY = 'CdArneGaXV2q4hv88X9v9gC8Ur6JTqpIzv0gByD0L2Gs4Xx4Hxkqg6W8'; // free public demo key
+// ── Image APIs ────────────────────────────────────────────────────────────────
 
 async function fetchFromPixabay(query, limit, page = 1) {
   try {
@@ -1919,17 +2112,13 @@ async function fetchFromWikimedia(query, limit, page = 1) {
 
 async function fetchFromPexels(query, limit, page = 1) {
   try {
-    const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=${limit}&page=${page}`, {
-      headers: { Authorization: PEXELS_KEY }
-    });
+    const res = await fetch(`${WORKER_URL}/pexels?q=${encodeURIComponent(query)}&limit=${limit}&page=${page}`);
     const data = await res.json();
     return (data.photos || []).map(p => ({
       type:'image', title: p.alt || query,
-      url: p.url,
-      thumbUrl: p.src?.medium || p.src?.small,
+      url: p.url, thumbUrl: p.src?.medium || p.src?.small,
       fullUrl: p.src?.large || p.src?.original,
-      source:'Pexels',
-      photographer: p.photographer
+      source:'Pexels', photographer: p.photographer
     }));
   } catch(e) { return []; }
 }
@@ -2921,6 +3110,15 @@ function improveImageQuality() {
 
 // ── Enter App ────────────────────────────────────────────────────────────────
 function enterApp() {
+  const onboarded = localStorage.getItem('indy_onboarded');
+  console.log('[INDY] enterApp called, onboarded=', onboarded);
+  if (!onboarded) {
+    console.log('[INDY] showing onboarding...');
+    subscribeToFolders();
+    subscribeToSavedPins();
+    showOnboarding();
+    return;
+  }
   showScreen('app');
   const initials = currentUserName.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
   document.getElementById('header-avatar').textContent = currentAvatar || initials || '?';
@@ -3257,9 +3455,9 @@ async function fetchWithRetry(url, opts = {}, retries = 2) {
 }
 
 // Patch all API fetchers to use retry
-async function fetchFromPixabay(query, limit) {
+async function fetchFromPixabay(query, limit, page = 1) {
   try {
-    const data = await fetchWithRetry(`${WORKER_URL}/pixabay?q=${encodeURIComponent(query)}&limit=${limit}`);
+    const data = await fetchWithRetry(`${WORKER_URL}/pixabay?q=${encodeURIComponent(query)}&limit=${limit}&page=${page}`);
     return (data?.hits || []).filter(h => !isNSFW(h.tags||'')).map(h => ({
       type:'image', title: h.tags ? h.tags.split(',')[0].trim() : query,
       url: h.pageURL, thumbUrl: h.previewURL, fullUrl: h.largeImageURL || h.webformatURL,
@@ -3268,9 +3466,9 @@ async function fetchFromPixabay(query, limit) {
   } catch(e) { return []; }
 }
 
-async function fetchFromUnsplash(query, limit) {
+async function fetchFromUnsplash(query, limit, page = 1) {
   try {
-    const data = await fetchWithRetry(`${WORKER_URL}/unsplash?q=${encodeURIComponent(query)}&limit=${limit}`);
+    const data = await fetchWithRetry(`${WORKER_URL}/unsplash?q=${encodeURIComponent(query)}&limit=${limit}&page=${page}`);
     return (data?.results || []).filter(p => !isNSFW(p.alt_description||'')).map(p => ({
       type:'image', title: p.alt_description || p.description || query,
       url: p.links?.html, thumbUrl: p.urls?.small, fullUrl: p.urls?.regular || p.urls?.full,
