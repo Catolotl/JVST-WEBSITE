@@ -1810,42 +1810,31 @@
         .indy-article-cta:hover { background:#333; }
         @media(max-width:600px){.indy-popup-content{padding:28px 22px 36px}.indy-popup-hero{height:220px}.indy-popup-hero-title{padding:20px 22px 18px}.indy-article-stat-row{grid-template-columns:repeat(2,1fr)}}
 
-        /* ── TUNES GOODBYE POPUP — fullscreen ── */
+        /* ── TUNES GOODBYE — compact modal ── */
         #tunes-goodbye-overlay {
             position: fixed; inset: 0; z-index: 4000;
-            background: var(--white);
-            display: none; flex-direction: column;
-            overflow-y: auto;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none; align-items: center; justify-content: center;
+            padding: 24px;
         }
         #tunes-goodbye-overlay.open { display: flex; }
-        .tunes-goodbye-topbar {
-            position: sticky; top: 0; z-index: 10;
-            background: rgba(255,255,255,0.88);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 0.5px solid var(--gray-200);
-            padding: 12px 30px;
-            display: flex; align-items: center;
-        }
-        .tunes-goodbye-return {
-            background: none; border: none;
-            font-family: var(--font-body);
-            font-size: 0.8rem; font-weight: 500;
-            color: #0071e3; cursor: pointer;
-            display: flex; align-items: center; gap: 5px;
-            padding: 0; letter-spacing: -0.01em;
-            transition: opacity 0.2s;
-        }
-        .tunes-goodbye-return:hover { opacity: 0.7; }
-        .tunes-goodbye-return::before { content: '‹'; font-size: 1.1rem; font-weight: 400; line-height: 1; }
+        .tunes-goodbye-topbar { display: none; }
         .tunes-goodbye-box {
-            width: 100%; max-width: 640px;
-            margin: 0 auto;
-            padding-bottom: 80px;
+            width: 100%; max-width: 520px;
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.15);
+            animation: tunesPopIn 0.4s cubic-bezier(0.16,1,0.3,1) both;
+            max-height: 90vh;
+            overflow-y: auto;
         }
+        @keyframes tunesPopIn { from{opacity:0;transform:scale(0.94) translateY(16px)} to{opacity:1;transform:none} }
         .tunes-goodbye-header {
             background: #0a0a0a;
-            padding: 56px 48px 40px;
+            padding: 32px 32px 26px;
             position: relative;
             overflow: hidden;
         }
@@ -1857,59 +1846,150 @@
         }
         .tunes-goodbye-tag {
             font-family: var(--font-mono);
-            font-size: 0.58rem; font-weight: 500;
+            font-size: 0.54rem; font-weight: 500;
             letter-spacing: 0.14em; text-transform: uppercase;
             color: rgba(255,255,255,0.35);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             display: flex; align-items: center; gap: 8px;
         }
         .tunes-goodbye-tag::before {
             content: ''; display: inline-block;
-            width: 18px; height: 1px; background: rgba(255,255,255,0.2);
+            width: 14px; height: 1px; background: rgba(255,255,255,0.2);
         }
         .tunes-goodbye-title {
             font-family: var(--font-display);
-            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-size: clamp(1.3rem, 3vw, 1.8rem);
             font-weight: 700; letter-spacing: -0.03em;
-            color: #fff; line-height: 1.06;
+            color: #fff; line-height: 1.08;
         }
         .tunes-goodbye-emojis {
-            margin-top: 18px;
-            font-size: 1.6rem; letter-spacing: 0.1em;
+            margin-top: 14px;
+            font-size: 1.3rem; letter-spacing: 0.1em;
             opacity: 0.7;
         }
-        .tunes-goodbye-body { padding: 40px 48px 36px; }
+        .tunes-goodbye-body { padding: 26px 32px 28px; }
         .tunes-goodbye-date {
             font-family: var(--font-mono);
-            font-size: 0.6rem; font-weight: 500;
+            font-size: 0.56rem; font-weight: 500;
             letter-spacing: 0.1em; text-transform: uppercase;
-            color: var(--gray-400); margin-bottom: 22px;
+            color: var(--gray-400); margin-bottom: 16px;
         }
         .tunes-goodbye-p {
-            font-size: 0.9rem; color: var(--gray-600);
-            line-height: 1.82; margin-bottom: 14px;
+            font-size: 0.83rem; color: var(--gray-600);
+            line-height: 1.78; margin-bottom: 11px;
         }
         .tunes-goodbye-p strong { color: var(--black); font-weight: 700; }
         .tunes-goodbye-sig {
-            margin-top: 28px; padding-top: 22px;
+            margin-top: 20px; padding-top: 16px;
             border-top: 1px solid var(--gray-100);
-            font-size: 0.82rem; color: var(--gray-400);
+            font-size: 0.78rem; color: var(--gray-400);
             font-style: italic;
         }
         .tunes-goodbye-close {
-            width: 100%; margin-top: 28px;
-            padding: 14px;
+            width: 100%; margin-top: 20px;
+            padding: 13px;
             border-radius: var(--radius-md);
             background: var(--black); color: #fff;
             border: none; font-family: var(--font-body);
-            font-size: 0.88rem; font-weight: 700;
+            font-size: 0.84rem; font-weight: 700;
             cursor: pointer; transition: background 0.15s;
+            letter-spacing: -0.01em;
         }
         .tunes-goodbye-close:hover { background: #222; }
         @media(max-width:600px) {
-            .tunes-goodbye-header { padding: 36px 24px 28px; }
-            .tunes-goodbye-body { padding: 28px 24px 28px; }
+            .tunes-goodbye-header { padding: 24px 22px 20px; }
+            .tunes-goodbye-body { padding: 20px 22px 24px; }
         }
+
+        /* ── WATER COMMITMENT POPUP ── */
+        #water-popup-backdrop {
+            position: fixed; inset: 0; z-index: 3500;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none; align-items: center; justify-content: center;
+            padding: 24px;
+        }
+        #water-popup-backdrop.open { display: flex; }
+        .water-popup-box {
+            width: 100%; max-width: 560px;
+            background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+            animation: tunesPopIn 0.38s cubic-bezier(0.16,1,0.3,1) both;
+            max-height: 92vh; overflow-y: auto;
+        }
+        .water-popup-header {
+            padding: 32px 32px 24px;
+            border-bottom: 1px solid #111;
+            position: relative;
+        }
+        .water-popup-close-btn {
+            position: absolute; top: 18px; right: 18px;
+            background: #1a1a1a; border: none;
+            width: 30px; height: 30px; border-radius: 50%;
+            color: #666; font-size: 12px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s, color 0.2s;
+        }
+        .water-popup-close-btn:hover { background: #2a2a2a; color: #fff; }
+        .water-popup-eyebrow {
+            font-family: var(--font-mono); font-size: 0.54rem;
+            font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+            color: #2ecc71; margin-bottom: 12px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .water-popup-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 3.5vw, 2rem);
+            font-weight: 800; letter-spacing: -0.04em;
+            color: #fff; line-height: 1.05;
+        }
+        .water-popup-body { padding: 28px 32px 32px; }
+        .water-popup-lead {
+            font-size: 0.88rem; color: #666; line-height: 1.82; margin-bottom: 24px;
+        }
+        .water-popup-stat-row {
+            display: grid; grid-template-columns: repeat(3,1fr);
+            gap: 1px; background: #111; border-radius: 12px;
+            overflow: hidden; margin-bottom: 28px;
+        }
+        .water-popup-stat {
+            background: #0a0a0a; padding: 18px 16px; text-align: center;
+        }
+        .water-popup-stat-num {
+            font-family: var(--font-display); font-size: 1.5rem;
+            font-weight: 800; letter-spacing: -0.04em; color: #fff; margin-bottom: 3px;
+        }
+        .water-popup-stat-num.green { color: #2ecc71; }
+        .water-popup-stat-label {
+            font-family: var(--font-mono); font-size: 0.52rem;
+            color: #444; letter-spacing: 0.08em; text-transform: uppercase;
+        }
+        .water-popup-section { margin-bottom: 20px; }
+        .water-popup-section-title {
+            font-family: var(--font-display); font-size: 0.9rem;
+            font-weight: 700; letter-spacing: -0.02em; color: #fff; margin-bottom: 6px;
+        }
+        .water-popup-section-body {
+            font-size: 0.82rem; color: #555; line-height: 1.78;
+        }
+        .water-popup-section-body strong { color: #888; font-weight: 600; }
+        .water-popup-divider { height: 1px; background: #111; margin: 20px 0; }
+        .water-popup-cta {
+            display: flex; gap: 10px; margin-top: 24px;
+        }
+        .water-popup-cta a {
+            flex: 1; text-align: center; padding: 13px;
+            border-radius: 980px; font-family: var(--font-body);
+            font-size: 0.8rem; font-weight: 700; text-decoration: none;
+            letter-spacing: -0.01em; transition: opacity 0.2s;
+        }
+        .water-popup-cta a:first-child { background: #fff; color: #000; }
+        .water-popup-cta a:first-child:hover { opacity: 0.85; }
+        .water-popup-cta a:last-child { background: #111; color: #555; border: 1px solid #1a1a1a; }
+        .water-popup-cta a:last-child:hover { color: #888; }
 
 /* ── Full-bleed featured artist banner (Benson Boone) ── */
 .tunes-section {
@@ -2123,6 +2203,116 @@
       max-width: 44%;
     }
   }
+
+/* ── NAV: JVST by IRELAND™ ── */
+.logo { align-items: flex-start; gap: 1px; }
+.logo-brand { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.038em; }
+.logo-parent { font-size: 0.49rem; letter-spacing: 0.14em; color: var(--gray-400); }
+
+/* ── WATER IMPACT SECTION ── */
+#water-impact { margin: 80px 0; background: #000; border-radius: 24px; overflow: hidden; }
+.water-eyebrow-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 40px; border-bottom: 1px solid #111;
+}
+.water-eyebrow-label {
+    font-family: var(--font-mono); font-size: 0.54rem; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase; color: #333;
+}
+.water-live-badge {
+    display: flex; align-items: center; gap: 7px;
+    font-family: var(--font-mono); font-size: 0.52rem; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase; color: #2ecc71;
+}
+.water-live-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: #2ecc71;
+    animation: waterPulse 1.8s ease-in-out infinite;
+    box-shadow: 0 0 6px #2ecc71;
+}
+@keyframes waterPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(0.65)} }
+.water-split { display: grid; grid-template-columns: 1fr 1fr; }
+.water-split-left {
+    padding: 60px 48px 60px 40px; border-right: 1px solid #111;
+    display: flex; flex-direction: column; justify-content: center;
+}
+.water-headline {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+    font-weight: 800; letter-spacing: -0.055em; line-height: 0.94;
+    color: #fff; margin-bottom: 30px;
+}
+.water-body { font-size: 0.85rem; color: #555; line-height: 1.88; margin-bottom: 14px; max-width: 360px; }
+.water-cta-row { margin-top: 36px; }
+.water-cta-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 28px; background: #fff; color: #000;
+    border-radius: 980px; font-family: var(--font-body);
+    font-size: 0.8rem; font-weight: 700; text-decoration: none;
+    letter-spacing: -0.01em; transition: opacity 0.2s, transform 0.15s;
+}
+.water-cta-btn:hover { opacity: 0.85; transform: translateY(-2px); }
+.water-split-right {
+    padding: 40px 40px 40px 48px;
+    display: flex; flex-direction: column;
+}
+.water-stat-block { padding: 22px 0; }
+.water-stat-num {
+    font-family: var(--font-display); font-size: 2.6rem; font-weight: 800;
+    letter-spacing: -0.055em; color: #fff; line-height: 1; margin-bottom: 5px;
+}
+.water-stat-num .water-stat-unit { font-size: 1.1rem; font-weight: 400; color: #444; margin-left: 1px; }
+.water-stat-label {
+    font-family: var(--font-mono); font-size: 0.55rem; color: #444;
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px;
+}
+.water-stat-bar-wrap { height: 2px; background: #1a1a1a; border-radius: 1px; overflow: hidden; }
+.water-stat-bar { height: 100%; background: #fff; border-radius: 1px; }
+.water-stat-bar-blue { background: #5badde; }
+.water-stat-bar-green { background: #2ecc71; }
+.water-stat-divider { height: 1px; background: #111; }
+.water-terminal {
+    margin-top: 20px; background: #080808;
+    border: 1px solid #1a1a1a; border-radius: 10px; overflow: hidden;
+    flex-shrink: 0;
+}
+.water-terminal-topbar {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 12px; background: #101010; border-bottom: 1px solid #1a1a1a;
+}
+.water-terminal-dot { width: 9px; height: 9px; border-radius: 50%; }
+.water-terminal-dot.r { background: #2a2a2a; }
+.water-terminal-dot.y { background: #2a2a2a; }
+.water-terminal-dot.g { background: #2ecc71; }
+.water-terminal-title {
+    font-family: var(--font-mono); font-size: 0.53rem; color: #2a2a2a;
+    letter-spacing: 0.06em; margin-left: 4px;
+}
+.water-terminal-body { padding: 14px 16px; min-height: 42px; }
+.water-terminal-line {
+    font-family: var(--font-mono); font-size: 0.63rem;
+    color: #333; display: flex; align-items: center; gap: 7px;
+}
+.water-term-dim { color: #2ecc71; }
+#waterStatusText { color: #4a4a4a; }
+.water-cursor { animation: waterBlink 1s step-end infinite; color: #2ecc71; }
+@keyframes waterBlink { 0%,100%{opacity:1} 50%{opacity:0} }
+@media(max-width: 760px) {
+    .water-split { grid-template-columns: 1fr; }
+    .water-split-left { padding: 36px 24px 28px; border-right: none; border-bottom: 1px solid #111; }
+    .water-split-right { padding: 28px 24px 36px; }
+    .water-eyebrow-bar { padding: 12px 24px; }
+    .water-headline { font-size: 2.6rem; }
+}
+
+/* ── NIKE×APPLE: NAV & GLOBAL POLISH ── */
+nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
+.nav-links a { font-size: 0.78rem; font-weight: 400; letter-spacing: -0.015em; }
+.hero-section { height: 78vh; }
+.slide-title { font-size: clamp(2.4rem, 5.5vw, 4.2rem); font-weight: 800; letter-spacing: -0.045em; line-height: 1.02; }
+.slide-label { font-size: 0.58rem; letter-spacing: 0.12em; }
+.section-header h2 { font-size: 1.75rem !important; font-weight: 800 !important; letter-spacing: -0.04em !important; }
+.product-card { border-radius: 12px; }
+.product-name { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.03em; }
     </style>
 </head>
 <body>
@@ -2131,8 +2321,8 @@
 <nav>
     <div class="nav-container">
 <a href="#" class="logo">
-    <span class="logo-parent">IRELAND™ Co.</span>
-    <span class="logo-brand">JVST</span>
+    <span class="logo-brand">IRELAND™</span>
+    <span class="logo-parent">est. 2024</span>
 </a>
 
 <div class="nav-right">
@@ -2243,17 +2433,18 @@
 </div>
 
 <!-- ═══ APR 20 DROP TEASER BANNER ═══ -->
-<div style="background:#000;padding:20px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;border-bottom:1px solid #111">
-    <div style="display:flex;align-items:center;gap:18px">
-        <div style="font-family:-apple-system,sans-serif;font-size:0.55rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#555;border-right:1px solid #222;padding-right:18px;white-space:nowrap">COMING SOON</div>
-        <div>
-            <div style="font-family:-apple-system,sans-serif;font-size:0.95rem;font-weight:700;color:#fff;letter-spacing:-0.02em;line-height:1.1">Something drops April 20th.</div>
-            <div style="font-family:-apple-system,sans-serif;font-size:0.7rem;color:#555;margin-top:2px">New services, new collabs, and more — stay tuned.</div>
+<div style="background:#000;padding:36px 40px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:28px;border-bottom:1px solid #111;position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 50% 120% at 0% 50%,rgba(255,255,255,0.025),transparent 60%);pointer-events:none"></div>
+    <div style="position:relative;z-index:1">
+        <div style="font-family:var(--font-mono);font-size:0.52rem;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#444;margin-bottom:10px;display:flex;align-items:center;gap:10px">
+            <span style="display:inline-block;width:14px;height:1px;background:#333"></span>JVST × IRELAND™ — APRIL 20, 2026
         </div>
+        <div style="font-family:var(--font-display);font-size:clamp(1.5rem,3.5vw,2.6rem);font-weight:700;letter-spacing:-0.04em;color:#fff;line-height:1.05;margin-bottom:8px">Something drops April 20th.<br><span style="color:#555">We can't tell you what. Yet.</span></div>
+        <div style="font-size:0.78rem;color:#3a3a3a;font-family:var(--font-body);letter-spacing:-0.01em">New services. New collabs. More details closer to the date.</div>
     </div>
-    <div style="display:flex;align-items:center;gap:12px">
-        <div id="drop-countdown" style="font-family:ui-monospace,'SF Mono',monospace;font-size:0.65rem;color:#444;letter-spacing:0.08em">–– : –– : ––</div>
-        <a href="shop.html" style="background:#fff;color:#000;text-decoration:none;padding:7px 16px;border-radius:980px;font-size:0.7rem;font-weight:700;white-space:nowrap;font-family:-apple-system,sans-serif;letter-spacing:-0.01em" onmouseover="this.style.opacity='.82'" onmouseout="this.style.opacity='1'">Be First →</a>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0;position:relative;z-index:1">
+        <div id="drop-countdown" style="font-family:var(--font-mono);font-size:0.7rem;color:#333;letter-spacing:0.1em;text-align:right">–– : –– : ––</div>
+        <a href="shop.html" style="background:#fff;color:#000;text-decoration:none;padding:11px 24px;border-radius:980px;font-size:0.78rem;font-weight:700;white-space:nowrap;font-family:var(--font-body);letter-spacing:-0.01em;transition:opacity 0.2s" onmouseover="this.style.opacity='.82'" onmouseout="this.style.opacity='1'">Get Ready →</a>
     </div>
 </div>
 <script>
@@ -2346,11 +2537,10 @@
         <a href="shop.html" style="background:#fff;color:#000;text-decoration:none;padding:11px 24px;border-radius:980px;font-size:0.82rem;font-weight:600;white-space:nowrap;flex-shrink:0;font-family:-apple-system,sans-serif;letter-spacing:-0.01em;transition:opacity 0.2s">Get Free Actions</a>
     </div>
 
-    <!-- ═══ GET TO KNOW INDY — Horizontal Scroll ═══ -->
-    <div id="indy-learn" style="margin-bottom:72px;">
+    <!-- INDY REMOVED -->
+    <div id="indy-learn" style="display:none">
         <div class="section-header" style="margin-bottom:28px;">
             <h2>Get to Know <em style="font-style:italic;">Indy</em> <span class="sec-icon">✦</span></h2>
-            <a href="indy.html" style="font-size:0.72rem;color:var(--gray-400);font-weight:500;font-family:var(--font-mono);text-decoration:none;transition:color .2s" onmouseover="this.style.color='#000'" onmouseout="this.style.color='var(--gray-400)'">Explore all →</a>
         </div>
         <div class="indy-scroll-wrap">
             <div class="indy-scroll-track" id="indyScrollTrack">
@@ -2455,67 +2645,59 @@
         </div>
     </div>
 
-    <div class="indy-cloud-unified">
-  <div class="indy-cloud-header">
-    <div class="indy-cloud-eyebrow">ONE LOGIN • EVERYWHERE</div>
-    <div class="indy-cloud-title">One Indy Cloud Account.<br>Access to everything.</div>
-    <div class="indy-cloud-sub">Sign in once and instantly unlock Indy AI, Indy Actions, and Indy TV — same login, same memory, same seamless experience across every service.</div>
-  </div>
-
-  <div class="indy-cloud-diagram">
-    <!-- Cloud box -->
-    <div class="cloud-main">
-      <div class="cloud-icon">☁</div>
-      <div class="cloud-label">Indy Cloud</div>
-    </div>
-
-    <!-- Webs (connecting lines) -->
-    <svg class="connection-svg" viewBox="0 0 820 310" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Web lines from cloud (center top) to each service box -->
-      <line x1="410" y1="92" x2="128" y2="238" stroke="#a78bfa" stroke-width="2.5" stroke-dasharray="3 3"/>
-      <line x1="410" y1="92" x2="292" y2="238" stroke="#a78bfa" stroke-width="2" stroke-dasharray="4 3"/>
-      <line x1="410" y1="92" x2="528" y2="238" stroke="#a78bfa" stroke-width="2" stroke-dasharray="3 3"/>
-      <line x1="410" y1="92" x2="692" y2="238" stroke="#a78bfa" stroke-width="2.5" stroke-dasharray="4 3"/>
-
-    </svg>
-
-    <!-- Four service boxes -->
-    <div class="services-row">
-      <!-- Indy AI -->
-      <div class="service-card">
-        <div class="service-icon">✦</div>
-        <div class="service-name">Indy AI</div>
-      </div>
-      <!-- Secret Drop? -->
-      <div class="service-card">
-        <div class="service-icon">?</div>
-        <div class="service-name">2026 Drop?</div>
-      </div>
-      <!-- Indy Actions -->
-      <div class="service-card">
-        <div class="service-icon">&lt;</div>
-        <div class="service-name">Indy Actions</div>
-      </div>
-      <!-- Indy TV -->
-      <div class="service-card">
-        <div class="service-icon">📺</div>
-        <div class="service-name">Indy TV</div>
-      </div>
-    </div>
-  </div>
-
-  <div style="margin-top: 48px;">
-    <a href="shop.html" class="indy-brand-btn-primary" style="font-size:0.85rem;padding:13px 32px;">Sign up free with Indy Cloud →</a>
-  </div>
-</div>
-
-    <!-- ═══ INDY DEVICE SHOWCASE ═══ -->
-    <div class="indy-showcase">
-        <div class="indy-showcase-header">
-            <div class="indy-showcase-eyebrow">INDY AI by IRELAND™</div>
-            <div class="indy-showcase-title">One AI.<br>Every Device.</div>
-            <p class="indy-showcase-sub">Seamlessly across your phone and desktop — same conversation, same memory, same Indy.</p>
+    <!-- ═══ WATER IMPACT SECTION ═══ -->
+    <div id="water-impact">
+        <!-- Full-bleed top bar -->
+        <div class="water-eyebrow-bar">
+            <span class="water-eyebrow-label">IRELAND™ × SUSTAINABILITY</span>
+            <div class="water-live-badge"><span class="water-live-dot"></span>LIVE MONITOR</div>
         </div>
+
+        <!-- Split layout: headline left, data right -->
+        <div class="water-split">
+            <div class="water-split-left">
+                <div class="water-headline">AI runs<br>on water.</div>
+                <p class="water-body">Every AI query cools a server rack somewhere. That takes water — liters of it, daily, across millions of conversations. Most companies don't talk about it. We do.</p>
+                <p class="water-body">We monitor our infrastructure in real time and actively work to route queries to lower-footprint data centers whenever possible.</p>
+                <div class="water-cta-row">
+                    <a href="#" class="water-cta-btn" onclick="openWaterPopup();return false">Our Commitment →</a>
+                </div>
+            </div>
+            <div class="water-split-right">
+                <div class="water-stat-block">
+                    <div class="water-stat-num" id="wStatNum1">~2–5<span class="water-stat-unit">ml</span></div>
+                    <div class="water-stat-label">Per AI query, industry average</div>
+                    <div class="water-stat-bar-wrap"><div class="water-stat-bar" style="width:62%"></div></div>
+                </div>
+                <div class="water-stat-divider"></div>
+                <div class="water-stat-block">
+                    <div class="water-stat-num" id="wStatNum2">12<span class="water-stat-unit">%</span></div>
+                    <div class="water-stat-label">Efficiency gain from query routing</div>
+                    <div class="water-stat-bar-wrap"><div class="water-stat-bar water-stat-bar-blue" style="width:12%"></div></div>
+                </div>
+                <div class="water-stat-divider"></div>
+                <div class="water-stat-block">
+                    <div class="water-stat-num" id="wStatNum3">0<span class="water-stat-unit">×</span></div>
+                    <div class="water-stat-label">High-impact regions used this hour</div>
+                    <div class="water-stat-bar-wrap"><div class="water-stat-bar water-stat-bar-green" style="width:4%"></div></div>
+                </div>
+                <!-- Live status terminal -->
+                <div class="water-terminal">
+                    <div class="water-terminal-topbar">
+                        <span class="water-terminal-dot r"></span><span class="water-terminal-dot y"></span><span class="water-terminal-dot g"></span>
+                        <span class="water-terminal-title">infrastructure.monitor</span>
+                    </div>
+                    <div class="water-terminal-body">
+                        <div class="water-terminal-line"><span class="water-term-dim">$</span> <span id="waterStatusText">Connecting…</span><span class="water-cursor">▍</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- hidden indy scaffolding kept for JS only -->
+    <div class="indy-showcase" style="display:none">
+        <div class="indy-showcase-header"></div>
         <div class="indy-device-stage">
 
             <!-- iPhone -->
@@ -2603,116 +2785,11 @@
         </div>
     </div>
 
-    <!-- ═══ INDY | IRELAND™ CO. BRAND BAND ═══ -->
-    <div class="indy-brand-band">
-        <div class="indy-brand-glyph">Indy</div>
-        <div class="indy-brand-inner">
-            <div class="indy-brand-lockup">
-                <div class="indy-brand-logo">Indy</div>
-                <div class="indy-brand-divider"></div>
-                <div class="indy-brand-co">
-                    <div class="indy-brand-co-top">by</div>
-                    <div class="indy-brand-co-name">IRELAND™ Co's JVST</div>
-                </div>
-            </div>
-            <div class="indy-brand-headline">Intelligence, refined.<br>Built different, on purpose.</div>
-            <p class="indy-brand-sub">Indy isn't another chatbot bolted onto an existing platform. It's a ground-up rethink of what AI should feel like — fast, private, culturally fluent, and genuinely yours. Free at its core. Powerful without the price tag.</p>
-            <div class="indy-brand-pills">
-                <div class="indy-brand-pill"><span class="indy-pill-dot"></span>G1 OS Native</div>
-                <div class="indy-brand-pill"><span class="indy-pill-dot"></span>On-Device AI</div>
-                <div class="indy-brand-pill"><span class="indy-pill-dot"></span>47 Languages</div>
-                <div class="indy-brand-pill"><span class="indy-pill-dot"></span>Zero Training Use</div>
-                <div class="indy-brand-pill"><span class="indy-pill-dot"></span>Free Tier Always</div>
-            </div>
-            <div class="indy-brand-actions">
-                <a href="indy.html" class="indy-brand-btn-primary">Try Indy Free →</a>
-                <a href="indy.html" class="indy-brand-btn-ghost">Learn More</a>
-            </div>
-        </div>
-        <div class="indy-brand-right">
-            <div class="indy-feat-row" style="animation-delay:.05s">
-                <div class="indy-feat-row-icon">✦</div>
-                <div class="indy-feat-row-text">
-                    <strong>0.3s Response</strong>
-                    <span>Guaranteed first-token SLA</span>
-                </div>
-            </div>
-            <div class="indy-feat-row" style="animation-delay:.12s">
-                <div class="indy-feat-row-icon">🧠</div>
-                <div class="indy-feat-row-text">
-                    <strong>Persistent Memory</strong>
-                    <span>Context that spans months</span>
-                </div>
-            </div>
-            <div class="indy-feat-row" style="animation-delay:.19s">
-                <div class="indy-feat-row-icon">🔒</div>
-                <div class="indy-feat-row-text">
-                    <strong>Zero-Knowledge</strong>
-                    <span>Encrypted. Never trained on.</span>
-                </div>
-            </div>
-            <div class="indy-feat-row" style="animation-delay:.26s">
-                <div class="indy-feat-row-icon">🌎</div>
-                <div class="indy-feat-row-text">
-                    <strong>Culture-Native</strong>
-                    <span>Gets the reference. Always.</span>
-                </div>
-            </div>
-            <div class="indy-feat-row" style="animation-delay:.33s">
-                <div class="indy-feat-row-icon">📱</div>
-                <div class="indy-feat-row-text">
-                    <strong>Every Device</strong>
-                    <span>Phone, desktop, tablet — one Indy</span>
-                </div>
-            </div>
-        </div>
-    </div>
 
-
-    <!-- ═══ INDY SCROLL-REVEAL MANIFESTO ═══ -->
-    <div class="indy-manifesto" id="indyManifesto">
-        <div class="indy-manifesto-inner">
-            <div class="indy-manifesto-eyebrow">INDY: IRELAND™ Co's JVST</div>
-            <div class="indy-manifesto-lines">
-                <div class="indy-manifesto-line" data-delay="0">The AI that remembers</div>
-                <div class="indy-manifesto-line" data-delay="120">who you actually are.</div>
-                <div class="indy-manifesto-line dim" data-delay="260">Fast enough to feel like thought.</div>
-                <div class="indy-manifesto-line dim" data-delay="400">Private enough to actually trust.</div>
-                <div class="indy-manifesto-line dim" data-delay="540">Built for the culture.</div>
-            </div>
-            <div class="indy-manifesto-stats">
-                <div class="indy-manifesto-stat">
-                    <div class="indy-manifesto-stat-num" data-delay="0">0.3s</div>
-                    <div class="indy-manifesto-stat-label">Response SLA</div>
-                </div>
-                <div class="indy-manifesto-stat">
-                    <div class="indy-manifesto-stat-num" data-delay="80">47</div>
-                    <div class="indy-manifesto-stat-label">Languages</div>
-                </div>
-                <div class="indy-manifesto-stat">
-                    <div class="indy-manifesto-stat-num" data-delay="160">0</div>
-                    <div class="indy-manifesto-stat-label">Data Sold</div>
-                </div>
-                <div class="indy-manifesto-stat">
-                    <div class="indy-manifesto-stat-num" data-delay="240">∞</div>
-                    <div class="indy-manifesto-stat-label">Memory Depth</div>
-                </div>
-            </div>
-            <a href="indy.html" class="indy-manifesto-cta">Try Indy Free <span class="indy-manifesto-cta-arrow">→</span></a>
-        </div>
-    </div>
-
-<!-- ═══ INDY ARTICLE POPUP ═══ -->
-<div id="indy-popup-overlay">
-    <div class="indy-popup-topbar">
-        <button class="indy-popup-return" onclick="closeIndyPopup()">return to home</button>
-    </div>
-    <div class="indy-popup-box" id="indyPopupBox">
-        <div class="indy-popup-hero" id="indyPopupHero">
-            <div class="indy-popup-hero-scan"></div>
-        </div>
-        <div class="indy-popup-content" id="indyPopupContent"></div>
-    </div>
+<!-- indy popup kept hidden for JS compat -->
+<div id="indy-popup-overlay" style="display:none!important">
+    <div class="indy-popup-topbar"><button class="indy-popup-return" onclick="closeIndyPopup()">return to home</button></div>
+    <div class="indy-popup-box" id="indyPopupBox"><div class="indy-popup-hero" id="indyPopupHero"><div class="indy-popup-hero-scan"></div></div><div class="indy-popup-content" id="indyPopupContent"></div></div>
 </div>
 
 <!-- ═══ PRODUCT FULLSCREEN VIEW ═══ -->
@@ -2744,27 +2821,68 @@
 </div>
 
 <!-- ═══ TUNES GOODBYE POPUP ═══ -->
-<div id="tunes-goodbye-overlay">
-    <div class="tunes-goodbye-topbar">
-        <button class="tunes-goodbye-return" onclick="closeTunesGoodbye()">return to home</button>
-    </div>
+<div id="tunes-goodbye-overlay" onclick="if(event.target===this)closeTunesGoodbye()">
     <div class="tunes-goodbye-box">
         <div class="tunes-goodbye-header">
-            <div class="tunes-goodbye-tag">A message from IRELAND™ Co's JVST</div>
+            <div class="tunes-goodbye-tag">A message from JVST by IRELAND™</div>
             <div class="tunes-goodbye-title">Two years, and a goodbye<br>we didn't want to write.</div>
             <div class="tunes-goodbye-emojis">🎵 📺</div>
         </div>
         <div class="tunes-goodbye-body">
             <div class="tunes-goodbye-date">March 23, 2026 · JVST Team</div>
-            <p class="tunes-goodbye-p">Two years ago today, we released <strong>TUNES</strong> — a new Mini Crafts (IRELAND) feature that would change the trajectory of our company for good. A music embed straight inside our platform, built with love, free for everyone. It was something we were genuinely proud of.</p>
-            <p class="tunes-goodbye-p">Skip back to today — we now have more amazing features like <strong>INDY AI</strong>, and way more new blind bags and products in our catalog. Best thing? They cost nothing. It makes us so happy to keep doing what we're doing with your support.</p>
-            <p class="tunes-goodbye-p">But we have some pretty bad news.</p>
-            <p class="tunes-goodbye-p">The embed feature from YouTube has been disabled from the admin level. This is outside our control, and we've exhausted every workaround we could find. So as of <strong>3/23/26</strong>, TUNES and TV are being <strong>Permanently Discontinued</strong>.</p>
-            <p class="tunes-goodbye-p">This wasn't a decision we made — it was one made for us. TUNES was the heartbeat of what made this platform feel alive, and TV gave you a window into something bigger. Losing both of them at once genuinely stings, and we won't pretend otherwise.</p>
-            <p class="tunes-goodbye-p">What we can promise is this: <strong>we're not done.</strong> INDY AI is only getting better. The catalog keeps growing. Actions keep refreshing. And speaking of what's next — we have something big on the horizon that we think you're going to love. On <strong>April 20th, we're dropping something brand new</strong> — a mystery event we've been building in secret. We can't say more than that yet, but trust us: it's worth the wait.</p>
-            <p class="tunes-goodbye-p">Thank you for two incredible years of TUNES. Thank you for watching TV with us. And thank you, genuinely, for still being here.</p>
+            <p class="tunes-goodbye-p">Two years ago today, we released <strong>TUNES</strong> — a music embed built right into our platform, free for everyone. It changed how this place felt. We were genuinely proud of it.</p>
+            <p class="tunes-goodbye-p">But we have some bad news. The YouTube embed feature was disabled at the admin level — outside our control, and we've exhausted every workaround we could find. As of <strong>3/23/26</strong>, TUNES and TV are <strong>permanently discontinued</strong>.</p>
+            <p class="tunes-goodbye-p">This wasn't a decision we made — it was one made for us. We won't pretend it doesn't sting.</p>
+            <p class="tunes-goodbye-p">What we can promise: <strong>we're not done.</strong> The catalog keeps growing. Actions keep refreshing. And on <strong>April 20th, we're dropping something brand new</strong> — built in secret, worth the wait.</p>
+            <p class="tunes-goodbye-p">Thank you for two incredible years. Thank you for still being here.</p>
             <div class="tunes-goodbye-sig">With love — The JVST × IRELAND™ team 🐰</div>
-            <button class="tunes-goodbye-close" onclick="closeTunesGoodbye()">I understand — close</button>
+            <button class="tunes-goodbye-close" onclick="closeTunesGoodbye()">Got it — close</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ WATER COMMITMENT POPUP ═══ -->
+<div id="water-popup-backdrop" onclick="if(event.target===this)closeWaterPopup()">
+    <div class="water-popup-box">
+        <div class="water-popup-header">
+            <button class="water-popup-close-btn" onclick="closeWaterPopup()">✕</button>
+            <div class="water-popup-eyebrow"><span style="width:6px;height:6px;border-radius:50%;background:#2ecc71;display:inline-block"></span>IRELAND™ × SUSTAINABILITY</div>
+            <div class="water-popup-title">We're drastically<br>cutting our water use.</div>
+        </div>
+        <div class="water-popup-body">
+            <p class="water-popup-lead">AI data centers are one of the fastest-growing consumers of fresh water globally. We think that's a problem — and we're doing something real about it, not just writing a blog post.</p>
+            <div class="water-popup-stat-row">
+                <div class="water-popup-stat">
+                    <div class="water-popup-stat-num green">−38%</div>
+                    <div class="water-popup-stat-label">Water per session vs. 2024</div>
+                </div>
+                <div class="water-popup-stat">
+                    <div class="water-popup-stat-num">12%</div>
+                    <div class="water-popup-stat-label">Efficiency gain this quarter</div>
+                </div>
+                <div class="water-popup-stat">
+                    <div class="water-popup-stat-num green">0</div>
+                    <div class="water-popup-stat-label">High-impact regions used today</div>
+                </div>
+            </div>
+            <div class="water-popup-section">
+                <div class="water-popup-section-title">Smart Query Routing</div>
+                <div class="water-popup-section-body">We route AI requests away from data centers in <strong>water-stressed regions</strong> whenever possible — prioritizing facilities that use recycled or grey water for cooling, and that run on renewable energy.</div>
+            </div>
+            <div class="water-popup-divider"></div>
+            <div class="water-popup-section">
+                <div class="water-popup-section-title">Live Infrastructure Monitoring</div>
+                <div class="water-popup-section-body">Our systems track estimated water consumption per query in real time. That data feeds directly into routing decisions — if a region's footprint spikes, we shift load automatically.</div>
+            </div>
+            <div class="water-popup-divider"></div>
+            <div class="water-popup-section">
+                <div class="water-popup-section-title">Where We're Going</div>
+                <div class="water-popup-section-body">Our target: <strong>reduce total water consumption by 60%</strong> relative to our 2024 baseline by end of 2026. We'll publish quarterly numbers. No greenwashing — just the actual data.</div>
+            </div>
+            <div class="water-popup-cta">
+                <a href="#">Read the Full Report</a>
+                <a href="#" onclick="closeWaterPopup();return false">Close</a>
+            </div>
         </div>
     </div>
 </div>
@@ -3960,19 +4078,19 @@ const INDY_ARTICLES = {
         tag: 'Coming April 20th', title: 'Something New Is Coming.',
         heroBg: 'linear-gradient(135deg,#0a0a0a 0%,#111 50%,#0a0a0a 100%)',
         heroGfx: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><div style="font-family:-apple-system,sans-serif;font-size:3.5rem;font-weight:700;color:#fff;letter-spacing:-0.06em;line-height:1">4·20</div><div style="font-family:ui-monospace,monospace;font-size:0.55rem;color:rgba(255,255,255,0.3);letter-spacing:0.18em;text-transform:uppercase">JVST × IRELAND™ Co</div></div>`,
-        lead: 'We\'ve been working on something new — and April 20th is the day it goes live. Here\'s a first look at what\'s on the way.',
+        lead: 'April 20th. That\'s all we\'re saying for now. Something drops. We\'ll tell you more when the time is right.',
         sections: [
-            { title: 'New Services', body: 'We\'re expanding what JVST offers beyond the store. New digital services are coming that integrate with your existing JVST account — same login, new things you can do. We\'re keeping the details close for now, but if you\'ve been a member for a while, you\'ll appreciate where we\'re going.' },
-            { title: 'Local Celebrity Collabs', body: 'We\'ve been building relationships with local figures and creators in our community — people you know. April 20th marks the first wave of collaborative drops with names you\'ll recognise. Limited availability, exclusive items, and a few surprises mixed in.' },
-            { title: 'More to Come', body: 'There\'s more that isn\'t listed here yet. We\'ll be teasing details leading up to the drop. Sign up for a JVST account now to make sure you have your Actions ready — some of what\'s coming will go fast.' },
+            { title: 'It\'s Coming', body: 'We\'ve been building something in secret and we\'re not ready to talk about it yet. What we can say: it\'s something new for JVST. Not another product. Something bigger. Stay tuned — we\'ll start dropping hints soon.' },
+            { title: 'Be Ready', body: 'Whatever it is, you\'ll want a JVST account before it goes live. Some things will move fast. Sign up now if you haven\'t yet, and watch this space.' },
+            { title: 'More Soon', body: 'Check back closer to April 20th. We\'ll be teasing details here and across our channels as the date gets closer. Trust us — it\'s worth the wait.' },
         ],
         feats: [
-            { icon: '✨', title: 'New Services', desc: 'Expanding the JVST ecosystem with brand new digital offerings.' },
-            { icon: '🤝', title: 'Local Collabs', desc: 'Collaborative drops with recognisable local names and creators.' },
-            { icon: '🎁', title: 'Exclusive Items', desc: 'Limited runs you won\'t find anywhere else.' },
-            { icon: '🆓', title: 'Still Free', desc: 'Everything works on Actions — no hidden costs, no surprises.' },
+            { icon: '🤫', title: 'Classified', desc: 'Details dropping closer to April 20th.' },
+            { icon: '⏳', title: 'Countdown Live', desc: 'Watch the timer. When it hits zero, it\'s on.' },
+            { icon: '🆓', title: 'Still Free', desc: 'Whatever it is — Actions-powered, no surprise costs.' },
+            { icon: '⚡', title: 'Act Fast', desc: 'Some things will go quickly. Be signed in and ready.' },
         ],
-        stats: [{ num: 'Apr 20', label: 'Drop Date' }, { num: '100%', label: 'Free with Actions' }, { num: '?', label: 'Surprises' }],
+        stats: [{ num: 'Apr 20', label: 'Drop Date' }, { num: '?', label: 'What Is It' }, { num: '∞', label: 'Hype' }],
         cta: { text: 'Get Your Account Ready →', href: 'shop.html' }
     },
     freestuff: {
@@ -4032,6 +4150,7 @@ document.addEventListener('keydown', e => {
         closeThankyou();
         closeIndyPopup();
         closeTunesGoodbye();
+        closeWaterPopup();
     }
 });
 
@@ -4094,11 +4213,41 @@ function closeTunesGoodbye() {
     try { localStorage.setItem(TUNES_GOODBYE_KEY, '1'); } catch {}
 }
 
+function openWaterPopup() {
+    document.getElementById('water-popup-backdrop').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeWaterPopup() {
+    document.getElementById('water-popup-backdrop').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     cart = loadCart();
     renderAllGrids();
     initFirebase();
+
+    // Water DB status monitor
+    (function(){
+        const dot = document.getElementById('waterDot');
+        const txt = document.getElementById('waterStatusText');
+        if (!dot || !txt) return;
+        const messages = [
+            { color:'#5badde', text:'Infrastructure monitor online — Indy AI data centers reporting normal water usage.' },
+            { color:'#5badde', text:'Current estimated water per session: 2.1ml — within our efficiency target.' },
+            { color:'#4ade80', text:'Water reduction protocol active — query batching enabled, cooling efficiency up 12%.' },
+            { color:'#5badde', text:'Live: 0 queries routed to high-water-cost regions in the last hour.' },
+        ];
+        let i = 0;
+        function cycle() {
+            dot.style.background = messages[i].color;
+            txt.textContent = messages[i].text;
+            i = (i + 1) % messages.length;
+        }
+        setTimeout(() => { cycle(); setInterval(cycle, 5000); }, 1200);
+    })();
 
     // Auto-show TUNES goodbye popup if not yet seen
     try {
