@@ -1995,14 +1995,13 @@ function getRecommendationKeywords() {
   
   // Remove generic/stop words more aggressively
   const stopWords = new Set([
-    'the','and','for','with','this','that','from','have','are','was','not','but',
+    'for','with','this','that','from','have','are','was','not','but',
     'its','into','our','your','can','will','all','get','has','her','his','how',
     'out','one','been','their','they','what','when','also','more','some','than',
     'then','them','these','those','there','here','just','like','about','which',
     'would','could','should','were','does','did','any','each','other','over',
     'such','after','before','design','inspiration','photo','image','picture',
-    'woman','man','person','people','phone','holding','hand','portrait',
-    'media','gif','tadc','taimi','edit','video','clip','post','tweet','reel'
+    'woman','man','person','people', 'holding','hand'
   ]);
 
   // Also filter out anything that looks like a proper name (capitalized single word)
