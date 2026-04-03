@@ -447,7 +447,7 @@
             display: flex;
             flex-direction: column;
             cursor: pointer;
-            background: var(--gray-50);
+            background: rgb(255, 255, 255, 0.4);
             border-radius: 8px;
             overflow: hidden;
             transition: box-shadow 0.25s ease, transform 0.25s ease;
@@ -463,7 +463,7 @@
             width: 100%;
             aspect-ratio: 3/4;
             position: relative;
-            background: var(--gray-100);
+            background: rgb(255, 255, 255, 0.4);
             overflow: hidden;
             flex-shrink: 0;
         }
@@ -2313,6 +2313,26 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
 .section-header h2 { font-size: 1.75rem !important; font-weight: 800 !important; letter-spacing: -0.04em !important; }
 .product-card { border-radius: 12px; }
 .product-name { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.03em; }
+.hero-section { height: 78vh; background: #0a0a0a; }
+
+/* Fixes */
+.carousel-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+    pointer-events: none;
+    z-index: 0;
+}
+.carousel-slide.active { opacity: 1; pointer-events: all; z-index: 1; }
+.hero-section {
+    position: relative;
+    height: 72vh;
+    min-height: 440px;
+    overflow: hidden;
+    margin-top: 54px;
+    background: #0a0a0a;
+}
     </style>
 </head>
 <body>
@@ -2361,7 +2381,7 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
         <div class="slide-overlay">
             <div class="slide-content">
                 <div class="slide-label">Mark your calenders!</div>
-                <h1 class="slide-title">4/20/26</h1>
+                <h1 class="slide-title">4/10/26</h1>
                 <p class="slide-desc">Look at your first teaser of the upcoming release!</p>
                 <span class="slide-tag">#IRELANDDROPS</span>
             </div>
@@ -2374,7 +2394,7 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
         <div class="slide-overlay">
             <div class="slide-content">
                 <div class="slide-label">Exclusive Colabs</div>
-                <h1 class="slide-title">JVST × Greyson Bonnifacio</h1>
+                <h1 class="slide-title">IRELAND × Greyson Bonnifacio</h1>
                 <p class="slide-desc">Sports meets technology. Limited edition release here TODAY. Use code "BLAIS" at checkout.</p>
                 <span class="slide-tag">#TeenSports</span>
             </div>
@@ -2386,7 +2406,7 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
         <div class="slide-overlay">
             <div class="slide-content">
                 <div class="slide-label">Exclusive Colabs</div>
-                <h1 class="slide-title">JVST × Rainn Blais</h1>
+                <h1 class="slide-title">IRELAND × Rainn Blais</h1>
                 <p class="slide-desc">Sports meets technology. Limited edition release here TODAY. Use code "BLAIS" at checkout.</p>
                 <span class="slide-tag">#TeenSports</span>
             </div>
@@ -2398,7 +2418,7 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
         <div class="slide-overlay" style="background:rgba(0,0,0,0.6)">
             <div class="slide-content">
                 <div class="slide-label">Artist Spotlight</div>
-                <h1 class="slide-title">Noah & Evan × JVST</h1>
+                <h1 class="slide-title">Noah & Evan × IRELAND</h1>
                 <p class="slide-desc">A new dimension of sound. Unapologetically authentic.</p>
                 <span class="slide-tag">#SupportLocalArtists</span>
             </div>
@@ -2432,11 +2452,11 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
     <div style="flex-shrink:0;padding:0 22px;font-family:-apple-system,sans-serif;font-size:0.58rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#888;border-right:1px solid #222;margin-right:22px;white-space:nowrap">How it works</div>
     <div style="overflow:hidden;flex:1">
         <div style="display:inline-flex;gap:48px;white-space:nowrap;animation:tick 28s linear infinite">
-            <span style="font-size:0.68rem;font-weight:400;color:#888;letter-spacing:0.04em;text-transform:uppercase;font-family:-apple-system,sans-serif">① <span style="color:#fff;font-weight:500">Sign up free at JVST</span> — get 10 Actions/month</span>
+            <span style="font-size:0.68rem;font-weight:400;color:#888;letter-spacing:0.04em;text-transform:uppercase;font-family:-apple-system,sans-serif">① <span style="color:#fff;font-weight:500">Sign up free at IRELAND™</span> — get 10 Actions/month</span>
             <span style="font-size:0.68rem;font-weight:400;color:#888;letter-spacing:0.04em;text-transform:uppercase;font-family:-apple-system,sans-serif">② <span style="color:#fff;font-weight:500">Add items to cart</span> — Blind Bags = 1 Action each</span>
             <span style="font-size:0.68rem;font-weight:400;color:#888;letter-spacing:0.04em;text-transform:uppercase;font-family:-apple-system,sans-serif">③ <span style="color:#fff;font-weight:500">Checkout</span> — get your order codes instantly</span>
             <span style="font-size:0.68rem;font-weight:400;color:#888;letter-spacing:0.04em;text-transform:uppercase;font-family:-apple-system,sans-serif">④ <span style="color:#fff;font-weight:500">Show digital receipt to employee</span> to redeem your order</span>
-            <span style="font-size:0.68rem;font-weight:400;color:#888;letter-spacing:0.04em;text-transform:uppercase;font-family:-apple-system,sans-serif">① <span style="color:#fff;font-weight:500">Sign up free at JVST</span> — get 10 Actions/month</span>
+            <span style="font-size:0.68rem;font-weight:400;color:#888;letter-spacing:0.04em;text-transform:uppercase;font-family:-apple-system,sans-serif">① <span style="color:#fff;font-weight:500">Sign up free at IRELAND™</span> — get 10 Actions/month</span>
             <span style="font-size:0.68rem;font-weight:400;color:#888;letter-spacing:0.04em;text-transform:uppercase;font-family:-apple-system,sans-serif">② <span style="color:#fff;font-weight:500">Add items to cart</span> — Blind Bags = 1 Action each</span>
             <span style="font-size:0.68rem;font-weight:400;color:#888;letter-spacing:0.04em;text-transform:uppercase;font-family:-apple-system,sans-serif">③ <span style="color:#fff;font-weight:500">Checkout</span> — get your order codes instantly</span>
             <span style="font-size:0.68rem;font-weight:400;color:#888;letter-spacing:0.04em;text-transform:uppercase;font-family:-apple-system,sans-serif">④ <span style="color:#fff;font-weight:500">Show digital receipt to employee</span> to redeem your order</span>
@@ -2444,14 +2464,14 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
     </div>
 </div>
 
-<!-- ═══ APR 20 DROP TEASER BANNER ═══ -->
+<!-- ═══ APR 10 DROP TEASER BANNER ═══ -->
 <div style="background:#000;padding:36px 40px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:28px;border-bottom:1px solid #111;position:relative;overflow:hidden">
     <div style="position:absolute;inset:0;background:radial-gradient(ellipse 50% 120% at 0% 50%,rgba(255,255,255,0.025),transparent 60%);pointer-events:none"></div>
     <div style="position:relative;z-index:1">
         <div style="font-family:var(--font-mono);font-size:0.52rem;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#444;margin-bottom:10px;display:flex;align-items:center;gap:10px">
-            <span style="display:inline-block;width:14px;height:1px;background:#333"></span>JVST × IRELAND™ — APRIL 20, 2026
+            <span style="display:inline-block;width:14px;height:1px;background:#333"></span>IRELAND™ — APRIL 10, 2026
         </div>
-        <div style="font-family:var(--font-display);font-size:clamp(1.5rem,3.5vw,2.6rem);font-weight:700;letter-spacing:-0.04em;color:#fff;line-height:1.05;margin-bottom:8px">Something drops April 20th.<br><span style="color:#555">We can't tell you what. Yet.</span></div>
+        <div style="font-family:var(--font-display);font-size:clamp(1.5rem,3.5vw,2.6rem);font-weight:700;letter-spacing:-0.04em;color:#fff;line-height:1.05;margin-bottom:8px">Something drops April 10th.<br><span style="color:#555">We can't tell you what. Yet.</span></div>
         <div style="font-size:0.78rem;color:#3a3a3a;font-family:var(--font-body);letter-spacing:-0.01em">New services. New collabs. More details closer to the date.</div>
     </div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0;position:relative;z-index:1">
@@ -2461,7 +2481,7 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
 </div>
 <script>
 (function(){
-    const target = new Date('2026-04-20T00:00:00');
+    const target = new Date('2026-04-10T00:00:00');
     function tick(){
         const now = new Date(), diff = target - now;
         if(diff <= 0){ document.getElementById('drop-countdown').textContent='LIVE NOW'; return; }
@@ -2478,10 +2498,10 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
 <main>
 
 <!-- ═══ TRENDING ═══ -->
-    <div id="trending" style="margin-bottom: 72px;">
+    <div id="trending" style="margin-bottom: 72px; background: linear-gradient(135deg, #fce4ec, #e8eaf6, #e0f7fa); border-radius: 20px; padding: 28px 24px;">
         <div class="section-header">
-            <h2>Spring Drops <span class="sec-icon">🌸</span></h2>
-            <span style="font-size:0.72rem;color:var(--gray-400);font-weight:500;font-family:var(--font-mono)">Seasonal picks</span>
+            <h2>IRELAND™ Spritz <span class="sec-icon">🫧</span></h2>
+            <span style="font-size:0.72rem;color:var(--gray-400);font-weight:500;font-family:var(--font-mono)">Brand new Product Type</span>
         </div>
         <div class="product-grid" id="trendingGrid"></div>
     </div>
@@ -2751,7 +2771,7 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
             <!-- MacBook -->
             <div class="indy-macbook">
                 <div class="indy-macbook-lid">
-                    <div class="indy-macbook-logo-notch">JVST</div>
+                    <div class="indy-macbook-logo-notch">IRELAND™</div>
                     <div class="indy-macbook-screen">
                         <div class="indy-macbook-scan"></div>
                         <div class="indy-macbook-ui">
@@ -2836,18 +2856,18 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
 <div id="tunes-goodbye-overlay" onclick="if(event.target===this)closeTunesGoodbye()">
     <div class="tunes-goodbye-box">
         <div class="tunes-goodbye-header">
-            <div class="tunes-goodbye-tag">A message from JVST by IRELAND™</div>
+            <div class="tunes-goodbye-tag">A message from IRELAND™</div>
             <div class="tunes-goodbye-title">Two years, and a goodbye<br>we didn't want to write.</div>
             <div class="tunes-goodbye-emojis">🎵 📺</div>
         </div>
         <div class="tunes-goodbye-body">
-            <div class="tunes-goodbye-date">March 23, 2026 · JVST Team</div>
+            <div class="tunes-goodbye-date">March 23, 2026 · IRELAND™ Team</div>
             <p class="tunes-goodbye-p">Two years ago today, we released <strong>TUNES</strong> — a music embed built right into our platform, free for everyone. It changed how this place felt. We were genuinely proud of it.</p>
             <p class="tunes-goodbye-p">But we have some bad news. The YouTube embed feature was disabled at the admin level — outside our control, and we've exhausted every workaround we could find. As of <strong>3/23/26</strong>, TUNES and TV are <strong>permanently discontinued</strong>.</p>
             <p class="tunes-goodbye-p">This wasn't a decision we made — it was one made for us. We won't pretend it doesn't sting.</p>
             <p class="tunes-goodbye-p">What we can promise: <strong>we're not done.</strong> The catalog keeps growing. Actions keep refreshing. And on <strong>April 20th, we're dropping something brand new</strong> — built in secret, worth the wait.</p>
             <p class="tunes-goodbye-p">Thank you for two incredible years. Thank you for still being here.</p>
-            <div class="tunes-goodbye-sig">With love — The JVST × IRELAND™ team 🐰</div>
+            <div class="tunes-goodbye-sig">With love — The IRELAND™ team 🐰</div>
             <button class="tunes-goodbye-close" onclick="closeTunesGoodbye()">Got it — close</button>
         </div>
     </div>
@@ -2934,7 +2954,7 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
                 </div>
             </div>
             <div id="coAuthNotice" class="co-auth-notice">
-                You're not signed in. <a href="shop.html">Sign in to your JVST account</a> to use your Actions — or copy your codes below or ask an employee to redeem manually.
+                You're not signed in. <a href="shop.html">Sign in to your IRELAND account</a> to use your Actions — or copy your codes below or ask an employee to redeem manually.
             </div>
             <div id="coWarn" class="co-warn"></div>
             <div>
@@ -3112,7 +3132,7 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
     <!-- Main grid -->
     <div class="cute-foot-grid">
       <div>
-        <div style="font-size:1.1rem;font-weight:700;margin-bottom:9px;color:#111">JVST <span style="color:var(--accent)">×</span> Mini Crafts</div>
+        <div style="font-size:1.1rem;font-weight:700;margin-bottom:9px;color:#111">Mini Crafts<span style="color:var(--accent)"></span> Mini Crafts</div>
         <p style="font-size:.78rem;color:#ccc;line-height:1.7;margin-bottom:16px">Intelligence, refined.<br>Built different, on purpose.<br><em>Hecho con amor 🐰</em></p>
         <a href="indy.html" style="display:inline-block;margin-right:6px;margin-bottom:4px;padding:4px 12px;background:#fff;border:1.5px solid #f0f0f0;border-radius:99px;font-size:.72rem;color:#aaa;text-decoration:none">Try Indy 3</a>
         <a href="login.html" style="display:inline-block;margin-bottom:4px;padding:4px 12px;background:#fff;border:1.5px solid #f0f0f0;border-radius:99px;font-size:.72rem;color:#aaa;text-decoration:none">Sign In</a>
@@ -3125,7 +3145,7 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
         <a href="#bundles" class="cute-foot-link">Bundles</a>
       </div>
       <div>
-        <h4 style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#ccc;margin-bottom:14px">JVST</h4>
+        <h4 style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#ccc;margin-bottom:14px">IRELAND™</h4>
         <a href="indy.html" class="cute-foot-link">Indy 3 AI</a>
         <a href="#actions" class="cute-foot-link">How Actions Work</a>
         <a href="login.html" class="cute-foot-link">Sign Up Free</a>
@@ -3140,12 +3160,12 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
 
     <!-- Legal -->
     <div class="cute-foot-legal">
-      <p style="font-size:.66rem;color:#ccc;line-height:1.75;letter-spacing:.01em">JVST and Indy 3 are operated by JVST Inc. All AI-generated content produced by Indy 3 is the responsibility of the user. JVST does not guarantee accuracy of AI outputs and recommends independent verification for any information used in professional, medical, legal, or financial contexts. Featured Artist submissions remain the intellectual property of the submitting artist. Mini Crafts™ is a JVST brand. By using JVST services you agree to our Terms of Service and Privacy Policy. Ask employee to redeem orders.</p>
+      <p style="font-size:.66rem;color:#ccc;line-height:1.75;letter-spacing:.01em">IRELAND™ and Indy 3 are operated by IRELAND™ Inc. All AI-generated content produced by Indy 3 is the responsibility of the user. IRELAND™ does not guarantee accuracy of AI outputs and recommends independent verification for any information used in professional, medical, legal, or financial contexts. Featured Artist submissions remain the intellectual property of the submitting artist. Mini Crafts™ is a IRELAND™ brand. By using IRELAND™ services you agree to our Terms of Service and Privacy Policy. Ask employee to redeem orders.</p>
     </div>
 
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
       <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-        <span style="font-size:.75rem;color:#ccc">© 2026 IRELAND™ co.'s JVST · Mini Crafts™ · All rights reserved.</span>
+        <span style="font-size:.75rem;color:#ccc">© 2026 IRELAND™ co.'s IRELAND™ · Mini Crafts™ · All rights reserved.</span>
         <span style="color:#eee">·</span>
         <span style="font-size:.75rem;color:#ccc">Registered in the United States.</span>
       </div>
@@ -3235,7 +3255,7 @@ const BLIND_BAGS = [
 },
 {
     id: 'BB-MIDBAG', code: 'MIDBAG', tag: 'Blind Bag · Season 2', name: 'Midnight Bag',
-    desc: 'Premium pull of Season 2. The Midnight Bag carries a 40% rare-item rate versus the standard 15% across other bags. Pool includes glow-in-the-dark variants, all-matte black exclusives, and the JVST logo charm.',
+    desc: 'Premium pull of Season 2. The Midnight Bag carries a 40% rare-item rate versus the standard 15% across other bags. Pool includes glow-in-the-dark variants, all-matte black exclusives, and the IRELAND™ logo charm.',
     cost: 2, img: "63.png",
     color: '#1e1b4b', labelColor: '#c4b5fd',
     label: 'Midnight Bag', sub: '🌙 Rare Pull'
@@ -3325,19 +3345,19 @@ const BUNDLES = [
     },
     {
         id: 'BND-START', code: 'STARTER', tag: 'Limited', name: 'Starter Pack',
-        desc: 'The full intro: 5 blind bags + 1 Indy Keychain + a handwritten note from JVST. Custom box. Limited to 100 sets.',
+        desc: 'The full intro: 5 blind bags + 1 Indy Keychain + a handwritten note from IRELAND™. Custom box. Limited to 100 sets.',
         cost: 5, img: "12.png",
         color: '#f687b3', label: 'Starter\nPack', sub: 'Limited 100'
     },
     {
         id: 'BND-LB01', code: 'LB01', tag: 'Loot Box', name: 'Loot Box #001',
-        desc: 'Random loot box packed with MINI CRAFTS memorabilia and rare JVST collectibles. No two boxes alike.',
+        desc: 'Random loot box packed with MINI CRAFTS memorabilia and rare IRELAND™ collectibles. No two boxes alike.',
         cost: 3, img: "9.png",
         color: '#a0aec0', label: 'Loot Box\n#001', sub: 'Mystery'
     },
     {
         id: 'BND-LB02', code: 'LB02', tag: 'Loot Box', name: 'Loot Box #002',
-        desc: 'Second series random loot box. New items, new chances — same rare JVST energy.',
+        desc: 'Second series random loot box. New items, new chances — same rare IRELAND™ energy.',
         cost: 3, img: "10.png",
         color: '#718096', label: 'Loot Box\n#002', sub: 'Series 2'
     },
@@ -3349,52 +3369,46 @@ const BUNDLES = [
     },
 ];
 
-const ALL_PRODUCTS = [...BLIND_BAGS, ...BOOKS, ...KEYCHAINS, ...BUNDLES];
+const SPRITZ = [
+    {
+        id: 'SB-SPTZ', code: 'SB-SPTZ', tag: 'Spritz', name: 'Strawberry Breeze',
+        desc: 'Strawberry Breeze Spritz — Sweet, sun-warmed strawberry meets a light airy finish in every spritz. This beautifully scented hand mist leaves your hands feeling fresh and delicately fragranced — like a perfect summer afternoon. Perfect for on-the-go refreshness.',
+        cost: 10, img: "sbsptz.png",
+        color: '#9f7aea', label: 'Strawberry\nBreeze', sub: 'Hand Mist',
+        canBuy: false  // ← toggle this
+    },
+        {
+        id: 'BL-SPTZ', code: 'BL-SPTZ', tag: 'Spritz', name: 'Blueberry Burst',
+        desc: 'Blueberry Blast Spritz — A refreshing burst of blueberry goodness in every spritz. This wonderfully scented hand mist leaves your hands feeling fresh, clean, and lightly moisturized with a delightful blueberry aroma. Perfect for on-the-go freshness.',
+        cost: 10, img: "bbsptz.png",
+        color: '#9f7aea', label: 'Blueberry\nBurst', sub: 'Hand Mist',
+        canBuy: false  // ← toggle this
+    },
+        {
+        id: 'CT-SPTZ', code: 'CT-SPTZ', tag: 'Spritz', name: 'Pure Citrus',
+        desc: 'Pure Citrus Spritz — A zesty blend of citrus notes in every spritz. This invigorating hand mist leaves your hands feeling refreshed and energized with a vibrant citrus aroma. Perfect for on-the-go revitalization.',
+        cost: 10, img: "ctsptz.png",
+        color: '#9f7aea', label: 'Citrus\nTwist', sub: 'Hand Mist',
+        canBuy: false  // ← toggle this
+    },
+        {
+        id: 'MN-SPTZ', code: 'MN-SPTZ', tag: 'Spritz', name: 'Midnight Musk',
+        desc: 'Midnight Musk Spritz — A mysterious blend of musk notes in every spritz. This enchanting hand mist leaves your hands feeling exotic and alluring with a captivating musk aroma. Perfect for on-the-go allure.',
+        cost: 10, img: "mnsptz.png",
+        color: '#9f7aea', label: 'Midnight\nMusk', sub: 'Hand Mist',
+        canBuy: false  // ← toggle this
+    },
+];
 
+const ALL_PRODUCTS = [...BLIND_BAGS, ...BOOKS, ...KEYCHAINS, ...BUNDLES, ...SPRITZ];
 // ── ADS ───────────────────────────────────────────────────────────────────────
 const ADS = [
-    {
-        ad_id: 'ad1',
-        tag: '4·20 Drop',
-        title: 'Something New Is Coming.',
-        subtitle: 'April 20th · JVST',
-        popupId: 'apr20drop',
-        bg: '#000',
-        adGfx: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:6px;padding:12px">
-            <div style="font-family:-apple-system,sans-serif;font-size:1.3rem;font-weight:700;color:#fff;letter-spacing:-0.04em;line-height:1">4·20</div>
-            <div style="font-family:-apple-system,sans-serif;font-size:0.45rem;color:rgba(255,255,255,0.35);letter-spacing:0.12em;text-transform:uppercase;text-align:center">Apr 20</div>
-        </div>`
-    },
-    {
-        ad_id: 'ad2',
-        tag: 'Actions',
-        title: 'Everything Is Free.',
-        subtitle: '10 Actions/month',
-        popupId: 'freestuff',
-        bg: '#000',
-        adGfx: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:4px;padding:12px">
-            <div style="font-family:-apple-system,sans-serif;font-size:1.5rem;font-weight:700;color:#fff;letter-spacing:-0.04em">FREE</div>
-            <div style="font-family:-apple-system,sans-serif;font-size:0.42rem;color:rgba(255,255,255,0.35);letter-spacing:0.1em;text-transform:uppercase">With Actions</div>
-        </div>`
-    },
-    {
-        ad_id: 'ad3',
-        tag: 'Important Update',
-        title: 'TUNES & TV: A Farewell.',
-        subtitle: 'Read our statement',
-        popupId: null,
-        clickFn: 'openTunesGoodbyePopup()',
-        bg: '#0a0a0a',
-        adGfx: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:6px;padding:10px;text-align:center">
-            <div style="font-size:1.2rem">🎵</div>
-            <div style="font-family:-apple-system,sans-serif;font-size:0.38rem;font-weight:600;color:rgba(255,255,255,0.4);letter-spacing:0.14em;text-transform:uppercase">3 · 23 · 26</div>
-        </div>`
-    },
+
 ];
 
 // ── CATALOG ───────────────────────────────────────────────────────────────────
 const CATALOG = {
-    trending:  ['BB-SPRNG', 'BB-BLOOM', 'BND-START', 'KC-PMP1'],
+    trending:  ['SB-SPTZ','BL-SPTZ', 'CT-SPTZ', 'MN-SPTZ'],
     blind_bags: ['BB-EP', 'BB-BKFST','BB-BRNCH','BB-LNCH','BB-DNR',{ad_id:'ad1'},'BB-SPRNG','BB-BLOOM','BB-GHBAG','BB-MIDBAG'],
     books:     ['WB-WHTB','WB-MCHA','WB-VIN',{ad_id:'ad2'},'WB-MINT','WB-AME','WB-PNK','WB-PCH'],
     keychains: ['KC-PMP1','KC-PMP2',{ad_id:'ad3'},'KC-GRNS','KC-HND'],
@@ -3474,6 +3488,12 @@ function bundlePlaceholder(p) {
 
 function renderCard(p, visual, extraBelow) {
     const inCart = !!cart[p.id];
+    const buyable = p.canBuy !== false; // defaults to true if not set
+    const btnLabel = !buyable ? 'Coming Soon' : inCart ? '✓' : 'Get';
+    const btnClass = !buyable ? 'product-add-btn' : inCart ? 'product-add-btn in-cart-btn' : 'product-add-btn';
+    const btnStyle = !buyable ? 'opacity:0.35;cursor:not-allowed;background:#888;' : '';
+    const btnClick = !buyable ? 'event.stopPropagation()' : `event.stopPropagation(); quickAddToCart('${p.id}')`;
+
     return `<div class="product-card${inCart ? ' in-cart' : ''}" onclick="openPopup('${p.id}')">
         <div class="product-img-wrap">
             ${visual}
@@ -3484,8 +3504,7 @@ function renderCard(p, visual, extraBelow) {
             <div class="product-name">${p.name}</div>
             ${extraBelow || ''}
             <div class="product-card-bottom">
-                <button class="product-add-btn${inCart ? ' in-cart-btn' : ''}" title="${inCart ? 'In cart' : 'Add to cart'}"
-                    onclick="event.stopPropagation(); quickAddToCart('${p.id}')">${inCart ? '✓' : 'Get'}</button>
+                <button class="${btnClass}" style="${btnStyle}" onclick="${btnClick}" ${!buyable ? 'disabled' : ''}>${btnLabel}</button>
             </div>
         </div>
     </div>`;
@@ -3613,9 +3632,21 @@ function renderPopupContent(p) {
         colorRow.style.display = 'none';
     }
     
-    const btn = document.getElementById('popupAddBtn');
+const btn = document.getElementById('popupAddBtn');
+if (p.canBuy === false) {
+    btn.textContent = 'Coming Soon';
+    btn.disabled = true;
+    btn.style.opacity = '0.35';
+    btn.style.cursor = 'not-allowed';
+    btn.style.background = '#888';
+} else {
     btn.textContent = inCart ? '✓  In Cart — Remove' : '＋ Add to Cart';
+    btn.disabled = false;
+    btn.style.opacity = '';
+    btn.style.cursor = '';
+    btn.style.background = '';
     btn.classList.toggle('added', inCart);
+}
 }
 
 function switchPopupBook(bookId) {
@@ -3923,39 +3954,6 @@ document.getElementById('menuToggle').addEventListener('click', () => {
     document.getElementById('navLinks').classList.toggle('active');
 });
 
-// ── CAROUSEL ─────────────────────────────────────────────────────────────────
-(function() {
-    const slides = document.querySelectorAll('.hero-section .carousel-slide');
-    const dots = document.querySelectorAll('.hero-section .carousel-dot');
-    let cur = 0, timer;
-
-    function playSlideVideo(slide) {
-        const vid = slide.querySelector('video.c-bg');
-        if (vid) { vid.currentTime = 0; vid.play().catch(() => {}); }
-    }
-    function pauseSlideVideo(slide) {
-        const vid = slide.querySelector('video.c-bg');
-        if (vid) vid.pause();
-    }
-
-    function go(n) {
-        pauseSlideVideo(slides[cur]);
-        slides[cur].classList.remove('active');
-        dots[cur].classList.remove('active');
-        cur = (n + slides.length) % slides.length;
-        slides[cur].classList.add('active');
-        dots[cur].classList.add('active');
-        playSlideVideo(slides[cur]);
-    }
-    function start() { timer = setInterval(() => go(cur + 1), 6000); }
-    function stop() { clearInterval(timer); }
-    dots.forEach((d, i) => d.addEventListener('click', () => { stop(); go(i); start(); }));
-    document.getElementById('cPrev').addEventListener('click', () => { stop(); go(cur - 1); start(); });
-    document.getElementById('cNext').addEventListener('click', () => { stop(); go(cur + 1); start(); });
-    // Play the first slide's video
-    playSlideVideo(slides[0]);
-    start();
-})();
 
 // ── INDY HORIZONTAL SCROLL ────────────────────────────────────────────────────
 function scrollIndyTrack(dir) {
@@ -4059,10 +4057,10 @@ const INDY_ARTICLES = {
         tag: 'Privacy', title: 'Your Data. Your Rules.',
         heroBg: 'linear-gradient(135deg,#0a0a0a,#1a1a1a)',
         heroGfx: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px"><div style="font-size:4rem;filter:grayscale(1) brightness(2)">🔒</div><div style="font-family:-apple-system,sans-serif;font-size:.62rem;color:rgba(255,255,255,.32);letter-spacing:.14em;text-transform:uppercase">Zero-log · Always encrypted</div></div>`,
-        lead: 'Privacy at JVST isn\'t a settings toggle or a compliance checkbox. It\'s an architectural commitment. The system is designed so that even we can\'t read your data — because we\'ve made it structurally impossible.',
+        lead: 'Privacy at IRELAND isn\'t a settings toggle or a compliance checkbox. It\'s an architectural commitment. The system is designed so that even we can\'t read your data — because we\'ve made it structurally impossible.',
         sections: [
             { title: 'Zero-Knowledge Infrastructure', body: 'Indy uses zero-knowledge proofs to authenticate users and process queries without the server ever seeing your actual content. Your messages are encrypted client-side before they leave your device. Our servers process encrypted tokens, not your words.' },
-            { title: 'No Training on Your Conversations', body: 'We will never use your private conversations to train our models. Full stop. Unlike competitors who treat user data as a training asset, JVST generates training data synthetically. Your private thoughts aren\'t fuel for our product.' },
+            { title: 'No Training on Your Conversations', body: 'We will never use your private conversations to train our models. Full stop. Unlike competitors who treat user data as a training asset, IRELAND™ generates training data synthetically. Your private thoughts aren\'t fuel for our product.' },
             { title: 'Third-Party Audited', body: 'Our privacy architecture is audited annually by Trail of Bits, one of the world\'s leading security research firms. Full audit reports are published publicly on our trust page. We invite scrutiny because we have nothing to hide.' },
         ],
         feats: [
@@ -4081,8 +4079,8 @@ const INDY_ARTICLES = {
         lead: 'Most AI is built by and for people who already have everything. Indy was built for the rest of us — young, creative, multilingual, culture-native, and tired of tools that don\'t get the reference.',
         sections: [
             { title: 'Culturally Fluent, Not Just Multilingual', body: 'Indy doesn\'t just translate languages — it understands cultural context. Internet slang, regional expressions, code-switching between English and Spanish mid-sentence — Indy follows without missing a beat. Because the next generation doesn\'t communicate in one clean language.' },
-            { title: 'Built With the Community', body: 'JVST runs an open Beta feedback program where members of the community directly shape how Indy thinks and responds. Our training data curation team includes voices from across the Americas, Europe, and beyond. Not as a checkbox — as the actual source of how Indy learns to talk.' },
-            { title: 'Free at the Core', body: 'The base version of Indy is and will always be free for students, young creators, and anyone in the JVST community. We believe access to powerful AI should not be gated behind a credit card. Actions make premium features accessible without charging a monthly fee most people can\'t justify.' },
+            { title: 'Built With the Community', body: 'IRELAND runs an open Beta feedback program where members of the community directly shape how Indy thinks and responds. Our training data curation team includes voices from across the Americas, Europe, and beyond. Not as a checkbox — as the actual source of how Indy learns to talk.' },
+            { title: 'Free at the Core', body: 'The base version of Indy is and will always be free for students, young creators, and anyone in the IRELAND community. We believe access to powerful AI should not be gated behind a credit card. Actions make premium features accessible without charging a monthly fee most people can\'t justify.' },
         ],
         feats: [
             { icon: '🗣️', title: 'Code-Switch Aware', desc: 'Follows mid-sentence language mixing without breaking context.' },
@@ -4096,11 +4094,11 @@ const INDY_ARTICLES = {
     apr20drop: {
         tag: 'Coming April 20th', title: 'Something New Is Coming.',
         heroBg: 'linear-gradient(135deg,#0a0a0a 0%,#111 50%,#0a0a0a 100%)',
-        heroGfx: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><div style="font-family:-apple-system,sans-serif;font-size:3.5rem;font-weight:700;color:#fff;letter-spacing:-0.06em;line-height:1">4·20</div><div style="font-family:ui-monospace,monospace;font-size:0.55rem;color:rgba(255,255,255,0.3);letter-spacing:0.18em;text-transform:uppercase">JVST × IRELAND™ Co</div></div>`,
+        heroGfx: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><div style="font-family:-apple-system,sans-serif;font-size:3.5rem;font-weight:700;color:#fff;letter-spacing:-0.06em;line-height:1">4·20</div><div style="font-family:ui-monospace,monospace;font-size:0.55rem;color:rgba(255,255,255,0.3);letter-spacing:0.18em;text-transform:uppercase">IRELAND™ Co</div></div>`,
         lead: 'April 20th. That\'s all we\'re saying for now. Something drops. We\'ll tell you more when the time is right.',
         sections: [
-            { title: 'It\'s Coming', body: 'We\'ve been building something in secret and we\'re not ready to talk about it yet. What we can say: it\'s something new for JVST. Not another product. Something bigger. Stay tuned — we\'ll start dropping hints soon.' },
-            { title: 'Be Ready', body: 'Whatever it is, you\'ll want a JVST account before it goes live. Some things will move fast. Sign up now if you haven\'t yet, and watch this space.' },
+            { title: 'It\'s Coming', body: 'We\'ve been building something in secret and we\'re not ready to talk about it yet. What we can say: it\'s something new for IRELAND. Not another product. Something bigger. Stay tuned — we\'ll start dropping hints soon.' },
+            { title: 'Be Ready', body: 'Whatever it is, you\'ll want an IRELAND account before it goes live. Some things will move fast. Sign up now if you haven\'t yet, and watch this space.' },
             { title: 'More Soon', body: 'Check back closer to April 20th. We\'ll be teasing details here and across our channels as the date gets closer. Trust us — it\'s worth the wait.' },
         ],
         feats: [
@@ -4118,15 +4116,15 @@ const INDY_ARTICLES = {
         heroGfx: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px"><div style="font-family:-apple-system,sans-serif;font-size:3rem;font-weight:700;color:#fff;letter-spacing:-0.05em">FREE</div><div style="font-family:ui-monospace,monospace;font-size:0.55rem;color:rgba(255,255,255,0.3);letter-spacing:0.14em;text-transform:uppercase">With Actions · Every Month</div></div>`,
         lead: 'No prices, no checkout, no credit card. Everything in the Mini Crafts store costs zero dollars — here\'s exactly how that works.',
         sections: [
-            { title: 'What Are Actions?', body: 'Actions are your monthly product allowance. Every JVST account gets 10 Actions automatically at the start of each month. They\'re not currency — you can\'t buy more of them and you can\'t spend real money here. When the month resets, your Actions refill. Simple.' },
-            { title: 'What Do Things Cost?', body: 'Blind Bags cost 1 Action each. White Board Books cost 2 Actions. Bundles range from 3 to 5 Actions depending on what\'s inside. Add what you want to your cart, check out with your JVST account, and show your digital receipt to an employee to collect your order.' },
-            { title: 'Do I Need an Account?', body: 'Yes — a free JVST account is how your Actions are tracked. Signing up takes about a minute. Once you\'re in, your balance updates in real time and carries across every JVST service. No subscription, no trial period, just a free account.' },
+            { title: 'What Are Actions?', body: 'Actions are your monthly product allowance. Every IRELAND account gets 10 Actions automatically at the start of each month. They\'re not currency — you can\'t buy more of them and you can\'t spend real money here. When the month resets, your Actions refill. Simple.' },
+            { title: 'What Do Things Cost?', body: 'Blind Bags cost 1 Action each. White Board Books cost 2 Actions. Bundles range from 3 to 5 Actions depending on what\'s inside. Add what you want to your cart, check out with your IRELAND account, and show your digital receipt to an employee to collect your order.' },
+            { title: 'Do I Need an Account?', body: 'Yes — a free IRELAND account is how your Actions are tracked. Signing up takes about a minute. Once you\'re in, your balance updates in real time and carries across every IRELAND service. No subscription, no trial period, just a free account.' },
         ],
         feats: [
             { icon: '🆓', title: 'Always Free', desc: 'No prices, no payments, no hidden fees — ever.' },
             { icon: '🔄', title: 'Monthly Refill', desc: '10 Actions reload automatically every month.' },
             { icon: '🛒', title: 'Add to Cart', desc: 'Shop like normal, then show your receipt at pickup.' },
-            { icon: '⚡', title: 'Instant Account', desc: 'Sign up free at JVST in about 60 seconds.' },
+            { icon: '⚡', title: 'Instant Account', desc: 'Sign up free at IRELAND in about 60 seconds.' },
         ],
         stats: [{ num: '10', label: 'Actions / Month' }, { num: '$0', label: 'Cost to You' }, { num: '∞', label: 'Products Available' }],
         cta: { text: 'Create Your Free Account →', href: 'shop.html' }
@@ -4274,6 +4272,66 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(openTunesGoodbyePopup, 1200);
         }
     } catch {}
+    
+});
+</script>
+<!-- === DEFINITIVE CAROUSEL FIX - Paste exactly here === -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const slides = document.querySelectorAll('.hero-section .carousel-slide');
+    const dots   = document.querySelectorAll('.hero-section .carousel-dot');
+    const prev   = document.getElementById('cPrev');
+    const next   = document.getElementById('cNext');
+
+    if (slides.length === 0) {
+        console.warn('Carousel fix: No slides found');
+        return;
+    }
+
+    let cur = 0;
+
+    function go(n) {
+        // Prevent "Cannot read properties of undefined (reading 'classList')"
+        if (!slides[cur]) return;
+        slides[cur].classList.remove('active');
+
+        if (dots[cur]) dots[cur].classList.remove('active');
+
+        cur = (n + slides.length) % slides.length;
+
+        if (slides[cur]) slides[cur].classList.add('active');
+        if (dots[cur]) dots[cur].classList.add('active');
+
+        // Video handling
+        document.querySelectorAll('.carousel-slide video').forEach(v => v.pause());
+        const vid = slides[cur] ? slides[cur].querySelector('video.c-bg') : null;
+        if (vid) {
+            vid.currentTime = 0;
+            vid.play().catch(() => {});
+        }
+    }
+
+    // Safe button & dot listeners
+    if (prev) prev.addEventListener('click', () => go(cur - 1));
+    if (next) next.addEventListener('click', () => go(cur + 1));
+
+    dots.forEach((dot, i) => dot.addEventListener('click', () => go(i)));
+
+    // Initialize
+    if (slides[0]) slides[0].classList.add('active');
+    if (dots[0]) dots[0].classList.add('active');
+
+    // Auto-rotate
+    let timer = setInterval(() => go(cur + 1), 6000);
+
+    // Pause on hover
+    const hero = document.getElementById('heroSection');
+    if (hero) {
+        hero.addEventListener('mouseenter', () => clearInterval(timer));
+        hero.addEventListener('mouseleave', () => timer = setInterval(() => go(cur + 1), 6000));
+    }
+
+    console.log('✅ Carousel safely initialized with', slides.length, 'slides');
 });
 </script>
 </body>
