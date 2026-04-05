@@ -2333,6 +2333,15 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
     margin-top: 54px;
     background: #0a0a0a;
 }
+/* Add this to your <style> section if you want extra drama */
+@media (min-width: 860px) {
+    #trending {
+        margin-left: calc(-50vw + 50% + 12px);   /* slight adjustment */
+        margin-right: calc(-50vw + 50% + 12px);
+        border-radius: 0px;
+        padding: 56px 32px 44px;
+    }
+}
     </style>
 </head>
 <body>
@@ -2376,7 +2385,7 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
     </div>
 
         <div class="carousel-slide">
-        <img class="c-bg" src="sg2.png" muted loop playsinline></img>
+        <img class="c-bg" src="https://thecinemaholic.com/wp-content/uploads/2024/12/Mingle1.jpg" muted loop playsinline></img>
         <div class="slide-overlay">
             <div class="slide-content">
                 <div class="slide-label">Mini Games - Season 2</div>
@@ -2455,6 +2464,7 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
         <button class="carousel-dot" data-i="4"></button>
                 <button class="carousel-dot" data-i="5"></button>
                 <button class="carousel-dot" data-i="6"></button>
+                <button class="carousel-dot" data-i="7"></button>
     </div>
 </div>
 
@@ -2509,29 +2519,27 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
 <!-- ═══ MAIN ═══ -->
 <main>
 
-<!-- ═══ TRENDING ═══ -->
-    <div id="trending" style="margin-bottom: 72px; background: linear-gradient(135deg, #fce4ec, #e8eaf6, #e0f7fa); border-radius: 20px; padding: 28px 24px;">
-        <div class="section-header">
-            <h2>IRELAND™ Spritz <span class="sec-icon">🫧</span></h2>
-            <span style="font-size:0.72rem;color:var(--gray-400);font-weight:500;font-family:var(--font-mono)">Brand new Product Type</span>
-        </div>
-        <div class="product-grid" id="trendingGrid"></div>
-    </div>
+<!-- ═══ IRELAND™ SPRITZ SECTION — FULL BACKGROUND GRADIENT ═══ -->
+<div id="trending" style="
+    margin-bottom: 72px; 
+    background: linear-gradient(135deg, #fce4ec, #e8eaf6, #e0f7fa); 
 
-        <!-- ── ACTIONS CALLOUT BANNER ── -->
-    <div style="background:#000;border-radius:16px;padding:24px 28px;margin-bottom:64px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;">
-        <div>
-            <div style="color:#555;font-family:-apple-system,sans-serif;font-size:0.55rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:7px">How Actions Work</div>
-            <div style="color:#fff;font-size:1rem;font-weight:700;margin-bottom:5px;letter-spacing:-0.02em;font-family:-apple-system,sans-serif">Everything in the store is free.</div>
-            <div style="color:#555;font-size:0.75rem;letter-spacing:-0.01em;font-family:-apple-system,sans-serif;line-height:1.65">Actions are <em style="color:#888;font-style:normal">not currency</em> — they're your monthly product limit. You get <strong style="color:#fff;font-weight:600">10 Actions every month</strong>, automatically. No money, no payments.</div>
-            <div style="display:flex;gap:14px;margin-top:12px;flex-wrap:wrap">
-                <div style="font-family:ui-monospace,monospace;font-size:0.55rem;color:#333;letter-spacing:0.06em">BLIND BAG = 1 ACTION</div>
-                <div style="font-family:ui-monospace,monospace;font-size:0.55rem;color:#333;letter-spacing:0.06em">WB BOOK = 2 ACTIONS</div>
-                <div style="font-family:ui-monospace,monospace;font-size:0.55rem;color:#333;letter-spacing:0.06em">BUNDLE = 3–5 ACTIONS</div>
-            </div>
-        </div>
-        <a href="shop.html" style="background:#fff;color:#000;text-decoration:none;padding:10px 20px;border-radius:980px;font-size:0.75rem;font-weight:700;white-space:nowrap;font-family:-apple-system,sans-serif;letter-spacing:-0.01em" onmouseover="this.style.opacity='.82'" onmouseout="this.style.opacity='1'">Get Actions Free →</a>
+    padding: 48px 24px 40px;
+    position: relative;
+    overflow: hidden;
+">
+    <!-- Optional subtle overlay/pattern if you want more depth -->
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 30% 20%, rgba(255,255,255,0.4), transparent 70%);pointer-events:none;"></div>
+    
+    <div class="section-header" style="position:relative;z-index:2;">
+        <h2>IRELAND™ Spritz <span class="sec-icon">🫧</span></h2>
+        <span style="font-size:0.72rem;color:var(--gray-400);font-weight:500;font-family:var(--font-mono)">
+            Brand new Product Type — Hand Mist
+        </span>
     </div>
+    
+    <div class="product-grid" id="trendingGrid" style="position:relative;z-index:2;"></div>
+</div>
 
     <!-- ═══ BLIND BAGS ═══ -->
     <div id="blind-bags">
@@ -2567,18 +2575,6 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
             <span style="font-size:0.72rem;color:var(--gray-400);font-weight:500;font-family:var(--font-mono)">3–5 Actions</span>
         </div>
         <div class="product-grid" id="bundleGrid"></div>
-    </div>
-
-    <!-- ── ACTIONS CALLOUT BANNER ── -->
-    <div style="background:#000;border-radius:18px;padding:24px 32px;margin-bottom:64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;">
-        <div style="display:flex;align-items:center;gap:18px">
-            <div style="background:#1d1d1f;border-radius:12px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;border:1px solid #333">🎁</div>
-            <div>
-                <div style="color:#fff;font-size:1rem;font-weight:600;margin-bottom:4px;letter-spacing:-0.02em;font-family:-apple-system,sans-serif">Everything here is free to order with Actions</div>
-                <div style="color:#86868b;font-size:0.78rem;letter-spacing:-0.01em;font-family:-apple-system,sans-serif;line-height:1.5">Sign up → get 10 Actions/month → shop → show digital receipt at pickup</div>
-            </div>
-        </div>
-        <a href="shop.html" style="background:#fff;color:#000;text-decoration:none;padding:11px 24px;border-radius:980px;font-size:0.82rem;font-weight:600;white-space:nowrap;flex-shrink:0;font-family:-apple-system,sans-serif;letter-spacing:-0.01em;transition:opacity 0.2s">Get Free Actions</a>
     </div>
 
     <!-- INDY REMOVED -->
@@ -2686,56 +2682,6 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
             </div>
             <button class="indy-scroll-btn indy-scroll-prev hidden" id="indyPrev" onclick="scrollIndyTrack(-1)">←</button>
             <button class="indy-scroll-btn indy-scroll-next" id="indyNext" onclick="scrollIndyTrack(1)">→</button>
-        </div>
-    </div>
-
-    <!-- ═══ WATER IMPACT SECTION ═══ -->
-    <div id="water-impact">
-        <!-- Full-bleed top bar -->
-        <div class="water-eyebrow-bar">
-            <span class="water-eyebrow-label">IRELAND™ × SUSTAINABILITY</span>
-            <div class="water-live-badge"><span class="water-live-dot"></span>LIVE MONITOR</div>
-        </div>
-
-        <!-- Split layout: headline left, data right -->
-        <div class="water-split">
-            <div class="water-split-left">
-                <div class="water-headline">AI runs<br>on water.</div>
-                <p class="water-body">Every AI query cools a server rack somewhere. That takes water — liters of it, daily, across millions of conversations. Most companies don't talk about it. We do.</p>
-                <p class="water-body">We monitor our infrastructure in real time and actively work to route queries to lower-footprint data centers whenever possible.</p>
-                <div class="water-cta-row">
-                    <a href="#" class="water-cta-btn" onclick="openWaterPopup();return false">Our Commitment →</a>
-                </div>
-            </div>
-            <div class="water-split-right">
-                <div class="water-stat-block">
-                    <div class="water-stat-num" id="wStatNum1">~2–5<span class="water-stat-unit">ml</span></div>
-                    <div class="water-stat-label">Per AI query, industry average</div>
-                    <div class="water-stat-bar-wrap"><div class="water-stat-bar" style="width:62%"></div></div>
-                </div>
-                <div class="water-stat-divider"></div>
-                <div class="water-stat-block">
-                    <div class="water-stat-num" id="wStatNum2">12<span class="water-stat-unit">%</span></div>
-                    <div class="water-stat-label">Efficiency gain from query routing</div>
-                    <div class="water-stat-bar-wrap"><div class="water-stat-bar water-stat-bar-blue" style="width:12%"></div></div>
-                </div>
-                <div class="water-stat-divider"></div>
-                <div class="water-stat-block">
-                    <div class="water-stat-num" id="wStatNum3">0<span class="water-stat-unit">×</span></div>
-                    <div class="water-stat-label">High-impact regions used this hour</div>
-                    <div class="water-stat-bar-wrap"><div class="water-stat-bar water-stat-bar-green" style="width:4%"></div></div>
-                </div>
-                <!-- Live status terminal -->
-                <div class="water-terminal">
-                    <div class="water-terminal-topbar">
-                        <span class="water-terminal-dot r"></span><span class="water-terminal-dot y"></span><span class="water-terminal-dot g"></span>
-                        <span class="water-terminal-title">infrastructure.monitor</span>
-                    </div>
-                    <div class="water-terminal-body">
-                        <div class="water-terminal-line"><span class="water-term-dim">$</span> <span id="waterStatusText">Connecting…</span><span class="water-cursor">▍</span></div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -2851,6 +2797,9 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
                 <div class="popup-swatches" id="popupSwatches"></div>
             </div>
             <div class="popup-desc" id="popupDesc"></div>
+            <div class="popup-desc">⚙ Production Starts 1 day after order <br>
+✅ Ready to ship 1.5 days  after order <br>
+🏠 Delivered to you by 2-4 days after order</div>
             <div class="popup-code-row">
                 <span class="popup-code-label">CODE</span>
                 <span class="popup-code" id="popupCode"></span>
@@ -3124,21 +3073,8 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
 ════════════════════════════════════════════════════ -->
 <footer class="cute-footer">
   <div class="cute-wrap">
-    <!-- CTA bar -->
-    <div class="cute-foot-cta">
-      <div>
-        <div class="cute-eyebrow" style="margin-bottom:6px">The movement</div>
-        <div style="font-size:1.05rem;font-weight:700;letter-spacing:-.02em;color:#111">Culture-first. Built different. <em style="font-weight:400;color:#bbb">Para la gente.</em></div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <a href="indy.html" class="cute-btn-red" style="font-size:.8rem;padding:7px 18px">Try Indy 3 →</a>
-        <a href="login.html" class="cute-btn-outline" style="font-size:.8rem;padding:7px 18px">Sign In</a>
-      </div>
-    </div>
 
-    <div style="text-align:right;margin-bottom:36px">
-      <span style="font-size:.72rem;color:#ddd;font-style:italic">Hecho con amor 🐰</span>
-    </div>
+
     <div style="height:1.5px;background:#f5f5f5;margin-bottom:36px"></div>
 
     <!-- Main grid -->
@@ -3383,28 +3319,28 @@ const BUNDLES = [
 
 const SPRITZ = [
     {
-        id: 'SB-SPTZ', code: 'SB-SPTZ', tag: 'Spritz', name: 'Strawberry Breeze',
+        id: 'SB-SPTZ', code: 'SB-SPTZ', tag: 'Spritz', name: 'Strawberry Breeze Hand Mist - 30ml',
         desc: 'Strawberry Breeze Spritz — Sweet, sun-warmed strawberry meets a light airy finish in every spritz. This beautifully scented hand mist leaves your hands feeling fresh and delicately fragranced — like a perfect summer afternoon. Perfect for on-the-go refreshness.',
         cost: 10, img: "sbsptz.png",
         color: '#9f7aea', label: 'Strawberry\nBreeze', sub: 'Hand Mist',
         canBuy: false  // ← toggle this
     },
         {
-        id: 'BL-SPTZ', code: 'BL-SPTZ', tag: 'Spritz', name: 'Blueberry Burst',
+        id: 'BL-SPTZ', code: 'BL-SPTZ', tag: 'Spritz', name: 'Blueberry Burst Hand Mist - 30ml',
         desc: 'Blueberry Blast Spritz — A refreshing burst of blueberry goodness in every spritz. This wonderfully scented hand mist leaves your hands feeling fresh, clean, and lightly moisturized with a delightful blueberry aroma. Perfect for on-the-go freshness.',
         cost: 10, img: "bbsptz.png",
         color: '#9f7aea', label: 'Blueberry\nBurst', sub: 'Hand Mist',
         canBuy: false  // ← toggle this
     },
         {
-        id: 'CT-SPTZ', code: 'CT-SPTZ', tag: 'Spritz', name: 'Pure Citrus',
+        id: 'CT-SPTZ', code: 'CT-SPTZ', tag: 'Spritz', name: 'Pure Citrus Hand Mist - 30ml',
         desc: 'Pure Citrus Spritz — A zesty blend of citrus notes in every spritz. This invigorating hand mist leaves your hands feeling refreshed and energized with a vibrant citrus aroma. Perfect for on-the-go revitalization.',
         cost: 10, img: "ctsptz.png",
         color: '#9f7aea', label: 'Citrus\nTwist', sub: 'Hand Mist',
         canBuy: false  // ← toggle this
     },
         {
-        id: 'MN-SPTZ', code: 'MN-SPTZ', tag: 'Spritz', name: 'Midnight Musk',
+        id: 'MN-SPTZ', code: 'MN-SPTZ', tag: 'Spritz', name: 'Midnight Musk Hand Mist - 30ml',
         desc: 'Midnight Musk Spritz — A mysterious blend of musk notes in every spritz. This enchanting hand mist leaves your hands feeling exotic and alluring with a captivating musk aroma. Perfect for on-the-go allure.',
         cost: 10, img: "mnsptz.png",
         color: '#9f7aea', label: 'Midnight\nMusk', sub: 'Hand Mist',
