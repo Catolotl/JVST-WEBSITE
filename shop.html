@@ -763,6 +763,22 @@
 
   @media (max-width: 400px) { .stats-row { grid-template-columns: 1fr 1fr; } }
   @media (min-width: 600px) { .modal { border-radius: 16px; margin-bottom: 40px; } .modal-overlay { align-items: center; } }
+  /* ── ORDER FLAGS (gift wrap / priority / note) ── */
+.ap-order-flags {
+  font-size: 10px;
+  color: #b8972a;
+  font-family: 'DM Mono', monospace;
+  margin-top: 3px;
+  line-height: 1.4;
+}
+.hi-note {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  font-style: italic;
+  margin-top: 2px;
+  line-height: 1.35;
+}
 </style>
 </head>
 <body>
@@ -1444,7 +1460,6 @@ const CATALOGUE = {
   'BSBOX':     { name: 'MiniX Box',                  actions: 4 },
   'SUM26':     { name: "Summer '26 Box",             actions: 4 },
 
-  // Bundles
   'BAGBUN':    { name: '5-Pack Blind Bags',          actions: 4 },
   'KEYCH':     { name: 'JVST Keychain Pack',         actions: 2 },
   'STICKS':    { name: 'Mega Sticker Sheet Set',     actions: 1 },
@@ -2095,19 +2110,26 @@ function renderGiftingSummary() {
 function renderHistory(id, list) {
   const el = document.getElementById(id);
   if (!el) return;
-  if (!list||!list.length) {
-    el.innerHTML = '<div class="empty-state">No purchases yet</div>'; return;
+  if (!list || !list.length) {
+    el.innerHTML = '<div class="empty-state">No purchases yet</div>';
+    return;
   }
   const now = Date.now();
   el.innerHTML = list.map(p => {
     const age = now - new Date(p.date).getTime();
-    const isRecent = age < 48*3600*1000;
+    const isRecent = age < 48 * 3600 * 1000;
+    const flagIcons = [
+      p.giftWrap ? '🎁' : '',
+      p.priority  ? '⚡' : '',
+      p.note      ? '✏️' : '',
+    ].filter(Boolean).join(' ');
     return `<div class="history-item">
       <div class="hi-left">
-        <div class="hi-dot${isRecent?' recent':''}"></div>
+        <div class="hi-dot${isRecent ? ' recent' : ''}"></div>
         <div>
-          <div class="hi-product">${escHtml(p.product||'Item')}</div>
+          <div class="hi-product">${escHtml(p.product||'Item')}${flagIcons ? ` <span style="font-size:11px;opacity:.7;">${flagIcons}</span>` : ''}</div>
           <div class="hi-date">${new Date(p.date).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}</div>
+          ${p.note ? `<div class="hi-note">&ldquo;${escHtml(p.note)}&rdquo;</div>` : ''}
         </div>
       </div>
       <div class="hi-right">
@@ -2415,12 +2437,12 @@ function adminSwitchTab(tab) {
 async function adminLoadAll() {
   const loadingEl = document.getElementById('admin-loading');
   const usersEl   = document.getElementById('admin-users-list');
-  const ordersEl  = document.getElementById('admin-orders-list');
+  const ordersEl  = document.getElementById('admin-orders-list'); // may be null (replaced by sheet)
   const statsEl   = document.getElementById('admin-stats');
 
   loadingEl.style.display = 'block';
   usersEl.innerHTML = '';
-  ordersEl.innerHTML = '';
+  if (ordersEl) ordersEl.innerHTML = '';
 
   try {
     const snap = await db.collection('shop_users').get();
@@ -2445,18 +2467,20 @@ async function adminLoadAll() {
     usersEl.innerHTML = sortedUsers.length ? sortedUsers.map(u => adminUserCard(u)).join('') 
                                            : '<div class="ap-empty">No members yet</div>';
 
-    // ── All orders tab (flatten + sort newest first)
-    const allOrders = [];
-    members.forEach(u => {
-      (u.purchases||[]).forEach(p => allOrders.push({ ...p, _userName: u.displayName||'?', _userEmail: u.email||'' }));
-    });
-    allOrders.sort((a,b) => new Date(b.date) - new Date(a.date));
-    ordersEl.innerHTML = allOrders.length ? allOrders.map(p => adminOrderRow(p)).join('')
-                                          : '<div class="ap-empty">No orders yet</div>';
+    // ── All orders tab is now the fullscreen sheet (ordersEl no longer exists)
+    if (ordersEl) {
+      const allOrders = [];
+      members.forEach(u => {
+        (u.purchases||[]).forEach(p => allOrders.push({ ...p, _userName: u.displayName||'?', _userEmail: u.email||'' }));
+      });
+      allOrders.sort((a,b) => new Date(b.date) - new Date(a.date));
+      ordersEl.innerHTML = allOrders.length ? allOrders.map(p => adminOrderRow(p)).join('')
+                                            : '<div class="ap-empty">No orders yet</div>';
+    }
 
   } catch(e) {
-    usersEl.innerHTML  = '<div class="ap-empty" style="color:var(--danger)">Failed to load data</div>';
-    ordersEl.innerHTML = '<div class="ap-empty" style="color:var(--danger)">Failed to load data</div>';
+    usersEl.innerHTML = '<div class="ap-empty" style="color:var(--danger)">Failed to load data</div>';
+    if (ordersEl) ordersEl.innerHTML = '<div class="ap-empty" style="color:var(--danger)">Failed to load data</div>';
     console.error('Admin load error:', e);
   } finally {
     loadingEl.style.display = 'none';
@@ -2472,15 +2496,23 @@ function adminUserCard(u) {
   const verified  = u.verified || false;
   const purchases = (u.purchases||[]).slice().reverse();
 
-  const purchaseRows = purchases.length
-    ? purchases.map(p => `
+const purchaseRows = purchases.length
+    ? purchases.map(p => {
+        const flags = [
+          p.giftWrap ? '🎁 Gift wrap' : '',
+          p.priority  ? '⚡ Priority'  : '',
+          p.note      ? `✏️ "${escHtml(p.note)}"` : '',
+        ].filter(Boolean).join(' · ');
+        return `
         <div class="ap-order-row">
           <div>
             <div class="ap-order-product">${escHtml(p.product||'Item')}</div>
             <div class="ap-order-date">${new Date(p.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})}</div>
+            ${flags ? `<div class="ap-order-flags">${flags}</div>` : ''}
           </div>
           <div class="ap-order-cost">−${p.actionsCost||1} act.</div>
-        </div>`).join('')
+        </div>`;
+      }).join('')
     : '<div class="ap-empty" style="padding:12px 14px;">No orders</div>';
 
   const verifyLabel = verified ? '✦ Unverify' : '✦ Verify';
@@ -2518,7 +2550,13 @@ function adminUserCard(u) {
 }
 
 // Single order row for the All Orders tab
+// Single order row for the All Orders tab
 function adminOrderRow(p) {
+  const flags = [
+    p.giftWrap ? '🎁 Gift wrap' : '',
+    p.priority  ? '⚡ Priority'  : '',
+    p.note      ? `✏️ "${escHtml(p.note)}"` : '',
+  ].filter(Boolean).join(' · ');
   return `
     <div class="ap-order-row">
       <div>
@@ -2526,6 +2564,7 @@ function adminOrderRow(p) {
         <div class="ap-order-date">
           ${escHtml(p._userName)} · ${new Date(p.date).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}
         </div>
+        ${flags ? `<div class="ap-order-flags">${flags}</div>` : ''}
       </div>
       <div class="ap-order-cost">−${p.actionsCost||1} act.</div>
     </div>`;
@@ -3168,8 +3207,16 @@ window.addEventListener('load', () => {
       </div>
 
       <!-- ALL ORDERS panel -->
-      <div id="admin-panel-orders" style="display:none;">
-        <div id="admin-orders-list"></div>
+      <div id="admin-panel-orders" style="display:none; padding:16px 18px;">
+        <button onclick="openOrdersSheet()" style="
+          width:100%;padding:14px;border-radius:var(--radius);
+          background:var(--text);color:#fff;border:none;cursor:pointer;
+          font-size:13px;font-weight:600;font-family:'Inter',sans-serif;
+          letter-spacing:.02em;display:flex;align-items:center;justify-content:center;gap:8px;
+        ">⬡ Open Orders Board <span style="font-size:10px;opacity:.6;font-family:'DM Mono',monospace;">(fullscreen)</span></button>
+        <div style="margin-top:10px;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;text-align:center;">
+          Live sync · Track progress · Gift wrap · Priority · Notes
+        </div>
       </div>
 
       <!-- TOOLS panel -->
@@ -3332,5 +3379,682 @@ window.addEventListener('load', () => {
   /* Empty state */
   .ap-empty { padding:28px;text-align:center;color:var(--muted);font-size:12px;font-family:'DM Mono',monospace; }
 </style>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     ORDERS BOARD — fullscreen sheet overlay
+══════════════════════════════════════════════════════════════════════ -->
+<div id="orders-sheet" style="
+  position:fixed;inset:0;z-index:9000;
+  background:#fff;
+  display:none;flex-direction:column;
+  font-family:'Inter',sans-serif;
+  animation:sheetIn .25s ease;
+">
+
+  <!-- Top bar -->
+  <div id="ob-topbar" style="
+    height:56px;border-bottom:1px solid var(--border);
+    padding:0 18px;display:flex;align-items:center;gap:12px;
+    background:#fff;flex-shrink:0;position:relative;
+  ">
+    <button onclick="closeOrdersSheet()" style="
+      width:32px;height:32px;border-radius:50%;border:1px solid var(--border);
+      background:var(--surface);cursor:pointer;font-size:16px;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    ">←</button>
+    <div style="flex:1;">
+      <div style="font-size:15px;font-weight:600;letter-spacing:-.02em;">Orders Board</div>
+      <div style="font-size:15px;font-weight:600;letter-spacing:-.02em;">Newest At Bottom</div>
+      <div id="ob-subtitle" style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">Loading…</div>
+    </div>
+    <!-- Filter pills -->
+    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+      <div style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.08em;margin-right:2px;">Filter</div>
+      <button class="ob-filter-btn active" data-filter="all" onclick="obSetFilter('all',this)">All</button>
+      <button class="ob-filter-btn" data-filter="Not Started" onclick="obSetFilter('Not Started',this)">Not Started</button>
+      <button class="ob-filter-btn" data-filter="Started" onclick="obSetFilter('Started',this)">Started</button>
+      <button class="ob-filter-btn" data-filter="Almost Done" onclick="obSetFilter('Almost Done',this)">Almost Done</button>
+      <button class="ob-filter-btn" data-filter="Done" onclick="obSetFilter('Done',this)">Done</button>
+    </div>
+    <!-- Add order btn -->
+    <button onclick="obAddBlankRow()" style="
+      height:32px;padding:0 14px;border-radius:7px;
+      background:var(--text);color:#fff;border:none;cursor:pointer;
+      font-size:12px;font-weight:600;font-family:'Inter',sans-serif;
+      letter-spacing:.02em;white-space:nowrap;flex-shrink:0;
+    ">+ Add Order</button>
+    <!-- Sync dot -->
+    <div id="ob-sync-dot" title="Live sync" style="
+      width:8px;height:8px;border-radius:50%;background:#1a7a1a;flex-shrink:0;
+      box-shadow:0 0 0 2px rgba(26,122,26,.2);
+      transition:background .3s;
+    "></div>
+  </div>
+
+  <!-- Table header (sticky) -->
+  <div id="ob-thead" style="
+    display:grid;
+    grid-template-columns: 180px 110px 150px 110px 160px 130px 1fr;
+    gap:0;border-bottom:2px solid var(--border);
+    background:var(--surface);flex-shrink:0;
+    font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--muted);font-family:'DM Mono',monospace;
+  ">
+    <div class="ob-th" onclick="obSort('maker')">Who's Making ↕</div>
+    <div class="ob-th" onclick="obSort('orderDate')">Order Date ↕</div>
+    <div class="ob-th" onclick="obSort('recipient')">Recipient ↕</div>
+    <div class="ob-th" onclick="obSort('dueBy')">Due By ↕</div>
+    <div class="ob-th" onclick="obSort('progress')">Progress ↕</div>
+    <div class="ob-th" onclick="obSort('makeBy')">Make By ↕</div>
+    <div class="ob-th">Note · Priority · Gift Wrap</div>
+  </div>
+
+  <!-- Scrollable rows -->
+  <div id="ob-body" style="flex:1;overflow-y:auto;overflow-x:auto;"></div>
+
+  <!-- Bottom status bar -->
+  <div style="
+    height:36px;border-top:1px solid var(--border);background:var(--surface);
+    padding:0 18px;display:flex;align-items:center;justify-content:space-between;
+    font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;flex-shrink:0;
+  ">
+    <span id="ob-count-bar">–</span>
+    <div style="display:flex;gap:16px;">
+      <span id="ob-last-sync">–</span>
+      <button onclick="obExportCSV()" style="background:none;border:none;cursor:pointer;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;padding:0;">⬇ Export CSV</button>
+    </div>
+  </div>
+</div>
+
+
+<style>
+  @keyframes sheetIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+  /* Filter buttons */
+  .ob-filter-btn {
+    padding:5px 11px;border-radius:100px;border:1px solid var(--border);
+    background:var(--surface);color:var(--muted);font-size:10px;font-weight:600;
+    font-family:'DM Mono',monospace;cursor:pointer;letter-spacing:.04em;transition:all .12s;
+    white-space:nowrap;
+  }
+  .ob-filter-btn.active { background:var(--text);color:#fff;border-color:var(--text); }
+  .ob-filter-btn:hover:not(.active) { border-color:var(--text);color:var(--text); }
+
+  /* Table header cells */
+  .ob-th {
+    padding:10px 12px;cursor:pointer;user-select:none;
+    border-right:1px solid var(--border);transition:background .1s;white-space:nowrap;
+  }
+  .ob-th:hover { background:var(--surface2); }
+  .ob-th:last-child { border-right:none; }
+
+  /* Table rows */
+  .ob-row {
+    display:grid;
+    grid-template-columns: 180px 110px 150px 110px 160px 130px 1fr;
+    gap:0;border-bottom:1px solid var(--border);
+    min-height:48px;transition:background .1s;cursor:pointer;
+  }
+  .ob-row:hover { background:var(--surface); }
+  .ob-row.done-row { opacity:.6; }
+  .ob-cell {
+    padding:10px 12px;display:flex;align-items:center;
+    border-right:1px solid var(--border);font-size:12px;
+    overflow:hidden;word-break:break-word;
+  }
+  .ob-cell:last-child { border-right:none; }
+
+  /* Progress badge */
+  .ob-prog-badge {
+    display:inline-flex;align-items:center;gap:5px;
+    padding:3px 9px;border-radius:100px;font-size:10px;font-weight:600;
+    font-family:'DM Mono',monospace;letter-spacing:.04em;white-space:nowrap;
+  }
+  .ob-prog-dot { width:6px;height:6px;border-radius:50%;flex-shrink:0; }
+  .ob-prog-not-started  { background:#f0f0f0;color:#606060; }
+  .ob-prog-started      { background:#e8f0fb;color:#1a5fc0; }
+  .ob-prog-almost-done  { background:#fff8e0;color:#a06010; }
+  .ob-prog-done         { background:#f0fff4;color:#1a7a1a; }
+
+  /* Modal fields */
+  .ob-field { display:flex;flex-direction:column;gap:4px; }
+  .ob-field label { font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace; }
+  .ob-field input, .ob-field select {
+    padding:9px 11px;border-radius:var(--radius);border:1px solid var(--border);
+    background:var(--surface);color:var(--text);font-size:13px;
+    font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;width:100%;
+  }
+  .ob-field input:focus, .ob-field select:focus { border-color:var(--text); }
+
+  /* Flag chips */
+  .ob-flag { font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600; }
+  .ob-flag-priority { background:#fff8e0;color:#a06010; }
+  .ob-flag-gift { background:#fce8f4;color:#a01060; }
+
+  /* Inline sheet controls */
+  .ob-inline-sel {
+    width:100%;border:1px solid transparent;border-radius:5px;
+    padding:4px 6px;font-size:11px;font-family:'Inter',sans-serif;
+    background:transparent;color:var(--text);cursor:pointer;
+    transition:border-color .12s, background .12s;outline:none;
+    -webkit-appearance:auto;
+  }
+  .ob-inline-sel:hover, .ob-inline-sel:focus {
+    border-color:var(--border2);background:var(--surface);
+  }
+  .ob-prog-sel {
+    border-radius:100px;padding:3px 8px;font-weight:600;font-size:10px;
+    font-family:'DM Mono',monospace;letter-spacing:.04em;
+  }
+  .ob-inline-date {
+    width:100%;border:1px solid transparent;border-radius:5px;
+    padding:4px 6px;font-size:11px;font-family:'DM Mono',monospace;
+    background:transparent;color:var(--text);cursor:pointer;
+    transition:border-color .12s, background .12s;outline:none;
+  }
+  .ob-inline-date:hover, .ob-inline-date:focus {
+    border-color:var(--border2);background:var(--surface);
+  }
+  .ob-inline-note {
+    flex:1;min-width:60px;border:1px solid transparent;border-radius:5px;
+    padding:3px 6px;font-size:11px;font-family:'Inter',sans-serif;
+    background:transparent;color:var(--text);outline:none;
+    transition:border-color .12s, background .12s;
+  }
+  .ob-inline-note:hover, .ob-inline-note:focus {
+    border-color:var(--border2);background:var(--surface);
+  }
+  .ob-inline-note::placeholder { color:var(--muted); }
+  .ob-chk-label {
+    display:flex;align-items:center;gap:3px;cursor:pointer;
+    font-size:12px;padding:2px 4px;border-radius:4px;
+    transition:background .1s;white-space:nowrap;
+  }
+  .ob-chk-label:hover { background:var(--surface2); }
+  .ob-del-btn {
+    flex-shrink:0;width:24px;height:24px;border-radius:5px;
+    border:1px solid #f0c0c0;background:transparent;color:#cc6666;
+    font-size:12px;cursor:pointer;display:flex;align-items:center;
+    justify-content:center;opacity:.5;transition:opacity .15s;
+    padding:0;
+  }
+  .ob-del-btn:hover { opacity:1; }
+  .ob-row-done { opacity:.55; }
+
+  /* Mobile: hide some columns on very small screens */
+  @media(max-width:700px) {
+    #ob-thead, .ob-row {
+      grid-template-columns: 140px 100px 130px 100px 140px 110px 1fr;
+    }
+  }
+</style>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════
+//  ORDERS BOARD  —  Live synced fullscreen admin sheet
+//  Stores in Firestore collection: shop_orders
+//  Fields: maker, orderDate, recipient, dueBy, progress, makeBy, note, priority, giftWrap, createdAt, updatedAt
+// ══════════════════════════════════════════════════════════════════════════
+
+let obUnsubscribe = null;   // Firestore live listener
+let obOrders      = [];     // local cache
+let obFilter      = 'all';
+let obSortField   = 'orderDate';
+let obSortDir     = -1;     // -1 = newest first
+
+// ─── Open / Close ────────────────────────────────────────────────────────
+
+function openOrdersSheet() {
+  const el = document.getElementById('orders-sheet');
+  el.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  obStartListen();
+}
+
+function closeOrdersSheet() {
+  document.getElementById('orders-sheet').style.display = 'none';
+  document.body.style.overflow = '';
+  if (obUnsubscribe) { obUnsubscribe(); obUnsubscribe = null; }
+}
+
+// ─── Firestore live listener ─────────────────────────────────────────────
+
+async function obStartListen() {
+  if (obUnsubscribe) obUnsubscribe();
+
+  const dot = document.getElementById('ob-sync-dot');
+  dot.style.background = '#e0a000'; // orange = connecting
+
+  // ── Step 1: Seed existing shop_users purchases into shop_orders ──────────
+  // Uses a stable dedup key "<userUid>_<purchase.date>" so we never double-import
+  try {
+    const [usersSnap, existingSnap] = await Promise.all([
+      db.collection('shop_users').get(),
+      db.collection('shop_orders').get()
+    ]);
+
+    const importedKeys = new Set();
+    existingSnap.forEach(doc => {
+      const k = doc.data().sourceKey;
+      if (k) importedKeys.add(k);
+    });
+
+    const batch = db.batch();
+    let batchCount = 0;
+
+    usersSnap.forEach(userDoc => {
+      const u = userDoc.data();
+      if (u.displayName === ADMIN_NAME) return;
+      (u.purchases || []).forEach(p => {
+        const key = `${userDoc.id}_${p.date}`;
+        if (importedKeys.has(key)) return;
+
+        const ref = db.collection('shop_orders').doc();
+        batch.set(ref, {
+          recipient  : u.displayName || '?',
+          orderDate  : p.date ? new Date(p.date).toISOString().slice(0, 10) : null,
+          note       : p.note      || null,
+          priority   : p.priority  || false,
+          giftWrap   : p.giftWrap  || false,
+          progress   : 'Not Started',
+          maker      : null,
+          dueBy      : null,
+          makeBy     : null,
+          product    : p.product   || null,
+          sourceKey  : key,
+          _fromUser  : u.displayName || '?',
+          _userEmail : u.email || '',
+          createdAt  : p.date || new Date().toISOString(),
+          updatedAt  : new Date().toISOString(),
+        });
+        batchCount++;
+      });
+    });
+
+    if (batchCount > 0) await batch.commit();
+    console.log(`[Orders Board] Seeded ${batchCount} new order(s) from shop_users`);
+  } catch(e) {
+    console.warn('[Orders Board] Seed step non-fatal error:', e);
+  }
+
+  // ── Step 2: Attach live listener ─────────────────────────────────────────
+  try {
+    obUnsubscribe = db.collection('shop_orders')
+      .orderBy('createdAt', 'desc')
+      .onSnapshot(snap => {
+        obOrders = [];
+        snap.forEach(doc => obOrders.push({ id: doc.id, ...doc.data() }));
+        obRender();
+        dot.style.background = '#1a7a1a';
+        document.getElementById('ob-last-sync').textContent =
+          'synced ' + new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      }, err => {
+        console.error('Orders listener error:', err);
+        dot.style.background = '#cc0000';
+        document.getElementById('ob-subtitle').textContent = 'Sync error — check Firestore rules';
+      });
+  } catch(e) {
+    console.error('obStartListen error:', e);
+    dot.style.background = '#cc0000';
+  }
+}
+
+// ─── Render table ────────────────────────────────────────────────────────
+
+function obRender() {
+  let rows = obOrders.slice();
+
+  // Filter
+  if (obFilter !== 'all') rows = rows.filter(r => r.progress === obFilter);
+
+  // Sort
+  rows.sort((a, b) => {
+    let av = a[obSortField] || '';
+    let bv = b[obSortField] || '';
+    if (obSortField === 'orderDate' || obSortField === 'dueBy' || obSortField === 'createdAt') {
+      av = av ? new Date(av).getTime() : 0;
+      bv = bv ? new Date(bv).getTime() : 0;
+      return obSortDir * (bv - av);
+    }
+    return obSortDir * String(av).localeCompare(String(bv));
+  });
+
+  // Stats subtitle
+  const total    = obOrders.length;
+  const done     = obOrders.filter(r => r.progress === 'Done').length;
+  const inProg   = obOrders.filter(r => r.progress === 'Started' || r.progress === 'Almost Done').length;
+  const urgent   = obOrders.filter(r => r.priority).length;
+  document.getElementById('ob-subtitle').textContent =
+    `${total} orders · ${done} done · ${inProg} in progress · ${urgent} priority`;
+  document.getElementById('ob-count-bar').textContent =
+    rows.length === total ? `${total} orders` : `${rows.length} of ${total} orders`;
+
+  // Render rows
+  const body = document.getElementById('ob-body');
+  if (!rows.length) {
+    body.innerHTML = `<div style="padding:60px;text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;">
+      ${obFilter !== 'all' ? 'No orders with this status' : 'No orders yet — click + Add Order to get started'}
+    </div>`;
+    return;
+  }
+
+  const MAKERS = ['Pierce','Emily','Lila','Rafa','Bragnae'];
+  const PROGRESS_OPTS = ['Not Started','Started','Almost Done','Done'];
+
+  function makerOpts(cur) {
+    return ['', ...MAKERS].map(m =>
+      `<option value="${m}" ${m===cur?'selected':''}>${m||'— unassigned —'}</option>`
+    ).join('');
+  }
+  function progOpts(cur) {
+    return PROGRESS_OPTS.map(p =>
+      `<option value="${p}" ${p===cur?'selected':''}>${p}</option>`
+    ).join('');
+  }
+  function progStyle(p) {
+    return {
+      'Not Started': 'background:#f0f0f0;color:#606060;',
+      'Started':     'background:#e8f0fb;color:#1a5fc0;',
+      'Almost Done': 'background:#fff8e0;color:#a06010;',
+      'Done':        'background:#f0fff4;color:#1a7a1a;',
+    }[p] || 'background:#f0f0f0;color:#606060;';
+  }
+
+  body.innerHTML = rows.map(r => {
+    const prog      = r.progress || 'Not Started';
+    const isDone    = prog === 'Done';
+    const dueStyle  = r.dueBy && !isDone && new Date(r.dueBy+'T00:00:00') < new Date()
+      ? 'border-color:#ffaaaa;background:#fff5f5;color:#cc0000;' : '';
+    const recipientSub = r.product
+      ? `<div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;">${escHtml(r.product)}</div>` : '';
+
+    return `<div class="ob-row ${isDone?'ob-row-done':''}" data-id="${r.id}" style="cursor:default;">
+
+      <!-- Who's Making -->
+      <div class="ob-cell">
+        <select class="ob-inline-sel" onchange="obPatch('${r.id}','maker',this.value)" title="Who's making">
+          ${makerOpts(r.maker||'')}
+        </select>
+      </div>
+
+      <!-- Order Date -->
+      <div class="ob-cell">
+        <input class="ob-inline-date" type="date" value="${r.orderDate||''}"
+          onchange="obPatch('${r.id}','orderDate',this.value||null)"
+          title="Order date">
+      </div>
+
+      <!-- Recipient -->
+      <div class="ob-cell" style="flex-direction:column;align-items:flex-start;gap:2px;">
+        <div style="font-weight:500;font-size:12px;">${escHtml(r.recipient||'—')}</div>
+        ${recipientSub}
+      </div>
+
+      <!-- Due By -->
+      <div class="ob-cell">
+        <input class="ob-inline-date" type="date" value="${r.dueBy||''}"
+          style="${dueStyle}"
+          onchange="obPatch('${r.id}','dueBy',this.value||null)"
+          title="${r.dueBy&&!isDone&&new Date(r.dueBy+'T00:00:00')<new Date()?'⚠ Overdue':'Due by'}">
+      </div>
+
+      <!-- Progress -->
+      <div class="ob-cell">
+        <select class="ob-inline-sel ob-prog-sel" style="${progStyle(prog)}"
+          onchange="obPatch('${r.id}','progress',this.value);this.style.cssText='${progStyle('__PLACEHOLDER__')}';this.style.cssText=obProgStyleInline(this.value)">
+          ${progOpts(prog)}
+        </select>
+      </div>
+
+      <!-- Make By -->
+      <div class="ob-cell">
+        <input class="ob-inline-date" type="date" value="${r.makeBy||''}"
+          onchange="obPatch('${r.id}','makeBy',this.value||null)"
+          title="Make by date">
+      </div>
+
+      <!-- Note · Priority · Gift Wrap · Delete -->
+      <div class="ob-cell" style="gap:5px;flex-wrap:wrap;justify-content:space-between;min-width:0;">
+        <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;flex:1;min-width:0;">
+          <input class="ob-inline-note" type="text"
+            value="${escHtml(r.note||'')}"
+            placeholder="Note…"
+            onchange="obPatch('${r.id}','note',this.value.trim()||null)"
+            title="Note">
+          <label class="ob-chk-label" title="Priority">
+            <input type="checkbox" ${r.priority?'checked':''} onchange="obPatch('${r.id}','priority',this.checked)"> ⚡
+          </label>
+          <label class="ob-chk-label" title="Gift wrap">
+            <input type="checkbox" ${r.giftWrap?'checked':''} onchange="obPatch('${r.id}','giftWrap',this.checked)"> 🎁
+          </label>
+        </div>
+        <button onclick="obInlineDelete('${r.id}','${(r.recipient||'').replace(/'/g,"\'")}')" class="ob-del-btn" title="Delete">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d + 'T00:00:00');
+  return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+// ─── Filter + Sort ───────────────────────────────────────────────────────
+
+function obSetFilter(val, btn) {
+  obFilter = val;
+  document.querySelectorAll('.ob-filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === val));
+  obRender();
+}
+
+function obSort(field) {
+  if (obSortField === field) obSortDir *= -1;
+  else { obSortField = field; obSortDir = -1; }
+  obRender();
+}
+
+
+// ─── Inline patch (save a single field instantly) ────────────────────────
+
+async function obPatch(id, field, value) {
+  try {
+    await db.collection('shop_orders').doc(id).update({
+      [field]: value,
+      updatedAt: new Date().toISOString()
+    });
+  } catch(e) {
+    console.error('obPatch error:', e);
+  }
+}
+
+function obProgStyleInline(p) {
+  return {
+    'Not Started': 'background:#f0f0f0;color:#606060;',
+    'Started':     'background:#e8f0fb;color:#1a5fc0;',
+    'Almost Done': 'background:#fff8e0;color:#a06010;',
+    'Done':        'background:#f0fff4;color:#1a7a1a;',
+  }[p] || 'background:#f0f0f0;color:#606060;';
+}
+
+// ─── Inline row delete ───────────────────────────────────────────────────
+
+async function obInlineDelete(id, recipientName) {
+  if (!confirm(`Delete order for "${recipientName || 'this order'}"? This cannot be undone.`)) return;
+  try {
+    await db.collection('shop_orders').doc(id).delete();
+  } catch(e) {
+    alert('Failed to delete order. Check your connection.');
+    console.error('obInlineDelete error:', e);
+  }
+}
+
+// ─── Modal messages ───────────────────────────────────────────────────────
+
+// ─── Add blank row directly to Firestore ─────────────────────────────────
+
+async function obAddBlankRow() {
+  const btn = document.querySelector('#ob-topbar button[onclick="obAddBlankRow()"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Adding…'; }
+  try {
+    await db.collection('shop_orders').add({
+      maker     : null,
+      orderDate : new Date().toISOString().slice(0, 10),
+      recipient : 'New Order',
+      dueBy     : null,
+      progress  : 'Not Started',
+      makeBy    : null,
+      note      : null,
+      priority  : false,
+      giftWrap  : false,
+      createdAt : new Date().toISOString(),
+      updatedAt : new Date().toISOString(),
+    });
+  } catch(e) {
+    alert('Failed to add order. Check your connection.');
+    console.error('obAddBlankRow error:', e);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '+ Add Order'; }
+  }
+}
+
+// ─── CSV Export ───────────────────────────────────────────────────────────
+
+function obExportCSV() {
+  const headers = ['Maker','Order Date','Recipient','Due By','Progress','Make By','Note','Priority','Gift Wrap','Created At'];
+  const rows = obOrders.map(r => [
+    r.maker||'', r.orderDate||'', r.recipient||'', r.dueBy||'',
+    r.progress||'', r.makeBy||'', r.note||'',
+    r.priority ? 'Yes' : 'No', r.giftWrap ? 'Yes' : 'No',
+    r.createdAt ? new Date(r.createdAt).toLocaleString() : ''
+  ]);
+  const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `orders-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+// ─── Keyboard shortcut: Escape closes overlays ─────────────────────────
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (document.getElementById('orders-sheet').style.display === 'flex') closeOrdersSheet();
+});
+
+// ── PATCH: fix sort (newest first) + permanent deletes ──────────────────
+
+// Override obInlineDelete to also write to a blocklist
+window.obInlineDelete = async function(id, recipientName) {
+  if (!confirm(`Delete order for "${recipientName || 'this order'}"? This cannot be undone.`)) return;
+  try {
+    const doc = await db.collection('shop_orders').doc(id).get();
+    const sourceKey = doc.data()?.sourceKey;
+    if (sourceKey) {
+      await db.collection('shop_orders_deleted').doc(sourceKey.replace(/[^a-zA-Z0-9_]/g, '_')).set({
+        sourceKey,
+        deletedAt: new Date().toISOString()
+      });
+    }
+    await db.collection('shop_orders').doc(id).delete();
+  } catch(e) {
+    alert('Failed to delete. Check your connection.');
+    console.error('obInlineDelete error:', e);
+  }
+};
+
+// Override obStartListen to respect the blocklist
+const _origObStartListen = window.obStartListen;
+window.obStartListen = async function() {
+  if (obUnsubscribe) obUnsubscribe();
+  const dot = document.getElementById('ob-sync-dot');
+  dot.style.background = '#e0a000';
+
+  try {
+    const [usersSnap, existingSnap, deletedSnap] = await Promise.all([
+      db.collection('shop_users').get(),
+      db.collection('shop_orders').get(),
+      db.collection('shop_orders_deleted').get()
+    ]);
+
+    const importedKeys = new Set();
+    existingSnap.forEach(doc => { const k = doc.data().sourceKey; if (k) importedKeys.add(k); });
+
+    const deletedKeys = new Set();
+    deletedSnap.forEach(doc => { const k = doc.data().sourceKey; if (k) deletedKeys.add(k); });
+
+    const batch = db.batch();
+    let batchCount = 0;
+
+    usersSnap.forEach(userDoc => {
+      const u = userDoc.data();
+      if (u.displayName === ADMIN_NAME) return;
+      (u.purchases || []).forEach(p => {
+        const key = `${userDoc.id}_${p.date}`;
+        if (importedKeys.has(key) || deletedKeys.has(key)) return;
+        const ref = db.collection('shop_orders').doc();
+        batch.set(ref, {
+          recipient  : u.displayName || '?',
+          orderDate  : p.date ? new Date(p.date).toISOString().slice(0, 10) : null,
+          note       : p.note      || null,
+          priority   : p.priority  || false,
+          giftWrap   : p.giftWrap  || false,
+          progress   : 'Not Started',
+          maker      : null,
+          dueBy      : null,
+          makeBy     : null,
+          product    : p.product   || null,
+          sourceKey  : key,
+          _fromUser  : u.displayName || '?',
+          _userEmail : u.email || '',
+          createdAt  : p.date || new Date().toISOString(),
+          updatedAt  : new Date().toISOString(),
+        });
+        batchCount++;
+      });
+    });
+
+    if (batchCount > 0) await batch.commit();
+  } catch(e) {
+    console.warn('[Orders Board] Seed error:', e);
+  }
+
+  try {
+    obUnsubscribe = db.collection('shop_orders')
+      .orderBy('createdAt', 'desc')
+      .onSnapshot(snap => {
+        obOrders = [];
+        snap.forEach(doc => obOrders.push({ id: doc.id, ...doc.data() }));
+        // Always default to newest first
+        obSortField = 'createdAt';
+        obSortDir   = -1;
+        obRender();
+        dot.style.background = '#1a7a1a';
+        document.getElementById('ob-last-sync').textContent =
+          'synced ' + new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      }, err => {
+        console.error('Orders listener error:', err);
+        dot.style.background = '#cc0000';
+      });
+  } catch(e) {
+    console.error('obStartListen error:', e);
+    dot.style.background = '#cc0000';
+  }
+};
+
+// ── PATCH: force newest orderDate first, always ────────────────────────
+const _obRenderOrig = window.obRender;
+window.obRender = function() {
+  obOrders.sort((a, b) => {
+    const av = a.orderDate || a.createdAt || '';
+    const bv = b.orderDate || b.createdAt || '';
+    if (!av) return 1;   // nulls to bottom
+    if (!bv) return -1;
+    return bv.localeCompare(av); // ISO strings compare correctly as text
+  });
+  _obRenderOrig();
+};
+</script>
 </body>
 </html>
