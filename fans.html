@@ -3,33 +3,52 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>INDY Fan — JVST</title>
+<title>IRELAND™ Lounge — support your people</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
+:root {
+  --bg: #fff; --surface: #fff; --surface2: #f5f5f5;
+  --ink: #111; --ink2: #555; --ink3: #aaa;
+  --accent: #000; --accent-bg: #f0f0f0;
+  --gold: #000; --gold-bg: #f0f0f0;
+  --border: rgba(0,0,0,0.1); --border-strong: rgba(0,0,0,0.16);
+  --radius: 12px; --shadow: 0 2px 12px rgba(0,0,0,0.07);
+  --font-d: 'Lato', sans-serif; --font-b: 'Lato', sans-serif;
+}
+[data-dark] {
+  --bg:#000; --surface:#1c1a18; --surface2:#252320;
+  --ink:#f0ede8; --ink2:#888; --ink3:#555;
+  --border:rgba(255,255,255,0.09); --border-strong:rgba(255,255,255,0.16);
+  --accent-bg:#1a1a1a; --gold-bg:#1a1a1a;
+}
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff; color: #111; }
-.page { max-width: 480px; margin: 0 auto; padding: 1rem; }
+body { font-family: var(--font-b); background: var(--bg); color: var(--ink); transition: background .2s, color .2s; }
+.page { max-width: 480px; margin: 0 auto; padding: 1rem 1rem 72px; }
 
 /* NAV */
-.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
-.header-logo { font-size: 18px; font-weight: 600; color: #111; }
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+.header-logo { font-family: var(--font-d); font-size: 15px; color: var(--ink); line-height:1; font-weight:bold;}
+
 .header-right { display: flex; align-items: center; gap: 8px; }
-.header-actions { font-size: 13px; color: #555; background: #f5f5f5; padding: 4px 10px; border-radius: 8px; border: 0.5px solid rgba(0,0,0,0.1); }
-.sign-btn { font-size: 12px; font-weight: 500; background: #111; color: #fff; border: none; border-radius: 99px; padding: 5px 13px; cursor: pointer; }
+.header-actions { font-family: var(--font-d); font-size: 12px; font-weight: 700; color: var(--ink2); background: var(--surface2); padding: 5px 11px; border-radius: 99px; border: 1px solid var(--border); }
+.sign-btn { font-size: 12px; font-weight: 600; background: var(--ink); color: var(--bg,#fff); border: none; border-radius: 99px; padding: 6px 14px; cursor: pointer; font-family: var(--font-b); }
 .sign-btn:hover { opacity: 0.8; }
+.dark-toggle { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface2); cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; }
 
 /* FLASH */
-.flash-banner { background: #f5f5f5; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 10px 14px; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+.flash-banner { background: #000; border-radius: var(--radius); padding: 12px 16px; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; }
 .flash-left { display: flex; flex-direction: column; gap: 3px; }
-.flash-label { font-size: 11px; color: #854F0B; background: #FAEEDA; padding: 2px 7px; border-radius: 6px; font-weight: 500; width: fit-content; }
-.flash-text { font-size: 13px; color: #111; }
-.flash-timer { font-size: 13px; color: #555; font-weight: 500; font-variant-numeric: tabular-nums; }
+.flash-label { font-family: var(--font-d); font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: rgba(255,255,255,0.75); }
+.flash-text { font-size: 13px; color: #fff; font-weight: 500; }
+.flash-timer { font-family: var(--font-d); font-size: 20px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }
 
 /* ATHLETES */
 .athletes-row { display: flex; gap: 12px; justify-content: center; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
 .athletes-row::-webkit-scrollbar { display: none; }
 .athlete-circle { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0; }
-.athlete-ring { width: 64px; height: 64px; border-radius: 50%; border: 2px solid rgba(0,0,0,0.12); padding: 2px; transition: border-color 0.2s; display: flex; align-items: center; justify-content: center; }
-.athlete-ring:hover { border-color: #111; }
+.athlete-ring { width: 66px; height: 66px; border-radius: 50%; border: 2.5px solid var(--border-strong,rgba(0,0,0,0.16)); padding: 2px; transition: border-color 0.2s, box-shadow 0.2s; display: flex; align-items: center; justify-content: center; }
+.athlete-ring:hover { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg,#fdf0ea); }
 .athlete-pfp { width: 60px; height: 60px; border-radius: 50%; background: #f5f5f5; display: flex; align-items: center; justify-content: center; font-size: 26px; }
 .athlete-name-row { display: flex; align-items: center; gap: 3px; font-size: 11px; color: #555; }
 .check { display: inline-flex; align-items: center; justify-content: center; width: 12px; height: 12px; background: #111; border-radius: 50%; flex-shrink: 0; }
@@ -41,16 +60,17 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .divider { height: 0.5px; background: rgba(0,0,0,0.08); margin: 0 0 1.5rem; }
 
 /* POSTS */
-.post { margin-bottom: 1.5rem; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 12px; overflow: hidden; background: #fff; }
-.post-header { display: flex; align-items: center; justify-content: space-between; padding: 11px 13px; }
+.post { margin-bottom: 12px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--surface); box-shadow: var(--shadow); transition: box-shadow 0.15s; }
+.post:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.post-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; }
 .post-user { display: flex; align-items: center; gap: 9px; }
-.post-avatar { width: 34px; height: 34px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; border: 0.5px solid rgba(0,0,0,0.07); }
+.post-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; border: 1px solid var(--border); }
 .post-username { font-size: 13px; font-weight: 500; color: #111; display: flex; align-items: center; gap: 4px; }
 .post-name-stack { display: flex; flex-direction: column; gap: 1px; }
-.post-nickname { font-size: 13px; font-weight: 600; color: #111; line-height: 1.2; }
-.post-handle { font-size: 11px; color: #aaa; line-height: 1.2; }
-.post-time { font-size: 11px; color: #aaa; }
-.pinned-tag { font-size: 10px; color: #555; background: #f0f0f0; border: 0.5px solid rgba(0,0,0,0.1); padding: 3px 8px; border-radius: 99px; }
+.post-nickname { font-family: var(--font-d); font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.2; }
+.post-handle { font-size: 11px; color: var(--ink3); line-height: 1.2; }
+.post-time { font-size: 11px; color: var(--ink3); }
+.pinned-tag { font-family: var(--font-d); font-size: 10px; color: var(--gold,#b8860b); background: var(--gold-bg,#fdf6e3); border: 1px solid rgba(184,134,11,0.2); padding: 3px 9px; border-radius: 99px; font-weight: 700; }
 .post-image { width: 100%; aspect-ratio: 1/1; background: #f5f5f5; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 .post-image img { width: 100%; height: 100%; object-fit: cover; }
 .post-image-placeholder { font-size: 12px; color: #bbb; }
@@ -58,21 +78,21 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .post-caption { font-size: 13px; color: #111; margin-bottom: 8px; line-height: 1.55; }
 .post-caption strong { font-weight: 600; }
 .post-likes { display: flex; align-items: center; gap: 6px; }
-.like-btn { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #555; cursor: pointer; padding: 4px 9px; border-radius: 8px; border: 0.5px solid rgba(0,0,0,0.1); background: none; transition: background 0.15s; font-family: inherit; }
-.like-btn:hover { background: #f5f5f5; }
-.like-btn.liked { color: #c0392b; border-color: rgba(192,57,43,0.3); }
-.like-btn.delete-btn { color: #bbb; }
-.like-btn.delete-btn:hover { color: #c0392b; background: #fff0ee; border-color: rgba(192,57,43,0.2); }
+.like-btn { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--ink2); cursor: pointer; padding: 5px 10px; border-radius: 8px; border: 1px solid var(--border); background: none; transition: all 0.15s; font-family: var(--font-b); font-weight: 500; }
+.like-btn:hover { background: var(--surface2); }
+.like-btn.liked { color: var(--accent); border-color: rgba(232,82,26,0.3); background: var(--accent-bg); }
+.like-btn.delete-btn { color: var(--ink3); }
+.like-btn.delete-btn:hover { color: #c0392b; background: #fff0ee; }
 .heart { font-size: 13px; line-height: 1; }
 
 /* ATHLETE MODAL */
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: flex-end; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
 .overlay.open { opacity: 1; pointer-events: all; }
-.modal { background: #fff; border-radius: 16px 16px 0 0; width: 100%; max-width: 480px; padding: 1.25rem 1.25rem 2rem; border: 0.5px solid rgba(0,0,0,0.1); transform: translateY(20px); transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1); }
+.modal { background: var(--surface); border-radius: 20px 20px 0 0; width: 100%; max-width: 480px; padding: 1.25rem 1.25rem 2.5rem; border: 1px solid var(--border); border-bottom: none; transform: translateY(20px); transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1); box-shadow: 0 -4px 32px rgba(0,0,0,0.12); }
 .overlay.open .modal { transform: translateY(0); }
 .modal-handle { width: 36px; height: 4px; border-radius: 99px; background: #e0e0e0; margin: 0 auto 1.25rem; }
 .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
-.modal-title { font-size: 15px; font-weight: 600; color: #111; }
+.modal-title { font-family: var(--font-d); font-size: 16px; font-weight: 800; color: var(--ink); }
 .close-btn { font-size: 18px; color: #999; cursor: pointer; background: none; border: none; line-height: 1; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
 .close-btn:hover { background: #f0f0f0; }
 .modal-athlete { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; }
@@ -90,7 +110,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .profile-input:focus { border-color: #111; background: #fff; }
 .profile-input::placeholder { color: #bbb; }
 .profile-hint { font-size: 11px; color: #bbb; margin-bottom: 1rem; }
-.profile-save-btn { width: 100%; background: #111; color: #fff; border: none; border-radius: 8px; padding: 11px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+.profile-save-btn { width: 100%; background: var(--ink); color: var(--bg,#fff); border: none; border-radius: 8px; padding: 11px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: var(--font-d); transition: opacity 0.15s; }
 .profile-save-btn:hover { opacity: 0.75; }
 .profile-feedback { font-size: 12px; text-align: center; margin-top: 8px; min-height: 16px; color: #111; }
 .modal-athlete-name { font-size: 14px; font-weight: 600; color: #111; }
@@ -99,28 +119,28 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .progress-labels { display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-bottom: 6px; }
 .progress-current { font-weight: 600; color: #111; }
 .progress-bar-bg { height: 8px; background: #f0f0f0; border-radius: 99px; overflow: hidden; }
-.progress-bar-fill { height: 100%; border-radius: 99px; background: #111; transition: width 0.4s ease; }
-.reward-box { background: #f8f8f8; border-radius: 8px; padding: 10px 12px; margin-bottom: 1.25rem; font-size: 13px; color: #666; border: 0.5px solid rgba(0,0,0,0.08); }
+.progress-bar-fill { height: 100%; border-radius: 99px; background: #000; transition: width 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+.reward-box { background: var(--gold-bg,#fdf6e3); border-radius: 8px; padding: 10px 12px; margin-bottom: 1.25rem; font-size: 13px; color: var(--ink2); border: 1px solid rgba(184,134,11,0.18); }
 .reward-box strong { color: #111; font-weight: 500; }
 .donate-row { display: flex; gap: 8px; }
 .donate-input { flex: 1; padding: 9px 11px; border: 0.5px solid rgba(0,0,0,0.15); border-radius: 8px; font-size: 13px; background: #fff; color: #111; font-family: inherit; outline: none; transition: border-color 0.15s; }
 .donate-input:focus { border-color: #111; }
 .donate-input::placeholder { color: #bbb; }
-.donate-btn { padding: 9px 18px; border-radius: 8px; background: #111; color: #fff; font-size: 13px; font-weight: 500; border: none; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+.donate-btn { padding: 9px 18px; border-radius: 8px; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; border: none; cursor: pointer; font-family: var(--font-d); transition: opacity 0.15s; }
 .donate-btn:hover { opacity: 0.75; }
 .donate-feedback { font-size: 12px; color: #111; text-align: center; margin-top: 8px; min-height: 16px; }
 
 /* AUTH MODAL */
 .auth-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; padding: 1rem; }
 .auth-overlay.open { opacity: 1; pointer-events: all; }
-.auth-modal { background: #fff; border-radius: 14px; border: 0.5px solid rgba(0,0,0,0.1); padding: 1.5rem; width: 100%; max-width: 340px; position: relative; transform: scale(0.97); transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1); }
+.auth-modal { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); padding: 1.5rem; width: 100%; max-width: 340px; position: relative; transform: scale(0.97); transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1); box-shadow: 0 8px 40px rgba(0,0,0,0.15); }
 .auth-overlay.open .auth-modal { transform: scale(1); }
-.auth-title { font-size: 15px; font-weight: 600; color: #111; margin-bottom: 4px; }
+.auth-title { font-family: var(--font-d); font-size: 18px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
 .auth-sub { font-size: 13px; color: #888; margin-bottom: 1.25rem; }
 .auth-input { width: 100%; background: #f8f8f8; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 8px; padding: 10px 12px; font-size: 13px; color: #111; font-family: inherit; outline: none; margin-bottom: 9px; transition: border-color 0.15s; }
 .auth-input:focus { border-color: #111; background: #fff; }
 .auth-input::placeholder { color: #bbb; }
-.auth-btn { width: 100%; background: #111; color: #fff; border: none; border-radius: 8px; padding: 11px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; margin-bottom: 10px; transition: opacity 0.15s; }
+.auth-btn { width: 100%; background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 11px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: var(--font-d); margin-bottom: 10px; transition: opacity 0.15s; }
 .auth-btn:hover { opacity: 0.75; }
 .auth-error { font-size: 12px; color: #c0392b; margin-bottom: 8px; min-height: 16px; }
 .auth-toggle { font-size: 12px; color: #888; text-align: center; cursor: pointer; }
@@ -148,15 +168,15 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 
 /* NEW PRODUCTS */
 .section-label-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 0.75rem; }
-.section-label { font-size: 13px; font-weight: 600; color: #111; }
+.section-label { font-family: var(--font-d); font-size: 14px; font-weight: 800; color: var(--ink); }
 .section-label-sub { font-size: 11px; color: #888; }
 .products-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
 .products-row::-webkit-scrollbar { display: none; }
-.product-card { flex-shrink: 0; width: 130px; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden; background: #fff; cursor: pointer; transition: box-shadow 0.15s; }
-.product-card:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+.product-card { flex-shrink: 0; width: 135px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--surface); cursor: pointer; transition: box-shadow 0.15s, transform 0.15s; box-shadow: var(--shadow); }
+.product-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); transform: translateY(-2px); }
 .product-img { width: 100%; height: 90px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; font-size: 24px; }
 .product-info { padding: 8px 9px; }
-.product-name { font-size: 11px; font-weight: 600; color: #111; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.product-name { font-family: var(--font-d); font-size: 11px; font-weight: 700; color: var(--ink); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .product-athlete { font-size: 10px; color: #888; margin-bottom: 5px; }
 .product-cost { display: flex; align-items: center; justify-content: space-between; }
 .product-actions { font-size: 10px; font-weight: 600; color: #111; background: #f0f0f0; border-radius: 5px; padding: 2px 6px; }
@@ -176,10 +196,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .composer.visible { display: block; }
 .composer-top { display: flex; align-items: flex-start; gap: 9px; }
 .composer-avatar { width: 34px; height: 34px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; border: 0.5px solid rgba(0,0,0,0.1); }
-.composer-textarea { flex: 1; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 8px; padding: 9px 11px; font-size: 13px; color: #111; font-family: inherit; outline: none; resize: none; min-height: 68px; background: #f8f8f8; transition: border-color 0.15s, background 0.15s; }
+.composer-textarea { flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; font-size: 13px; color: var(--ink); font-family: var(--font-b); outline: none; resize: none; min-height: 68px; background: var(--surface2); transition: border-color 0.15s, background 0.15s; }
 .composer-textarea:focus { border-color: #111; background: #fff; }
 .composer-textarea::placeholder { color: #bbb; }
-.composer-post-btn { font-size: 12px; font-weight: 600; background: #111; color: #fff; border: none; border-radius: 99px; padding: 6px 16px; cursor: pointer; font-family: inherit; transition: opacity 0.15s; }
+.composer-post-btn { font-size: 12px; font-weight: 700; background: var(--accent); color: #fff; border: none; border-radius: 99px; padding: 6px 16px; cursor: pointer; font-family: var(--font-d); transition: opacity 0.15s; }
 .composer-post-btn:hover { opacity: 0.75; }
 .composer-post-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .composer-status { font-size: 11px; color: #888; margin-top: 7px; min-height: 14px; }
@@ -190,11 +210,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 
   <!-- HEADER -->
   <div class="header">
-    <span class="header-logo">JVST</span>
+    <span class="header-logo">IRELAND™ Lounge</span>
     <div class="header-right">
       <span class="header-actions" id="actionsDisplay">— actions</span>
       <button class="sign-btn" onclick="openProfile()" style="display:none;background:#f5f5f5;color:#111;border:0.5px solid rgba(0,0,0,0.12)" id="profileBtn">✏️</button>
-      <button class="sign-btn" id="authBtn" onclick="openAuth()">sign in</button>
+      <button class="dark-toggle" onclick="toggleDark()" title="Toggle dark mode" style="font-size:11px;font-weight:600;width:auto;padding:5px 10px;border-radius:99px">dark</button><button class="sign-btn" id="authBtn" onclick="openAuth()">sign in</button>
     </div>
   </div>
 
@@ -225,7 +245,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <div class="composer-status" id="composerStatus"></div>
   </div>
 
-  <!-- NEW PRODUCTS / LOCAL ATHLETE SUPPORT -->
+  <!-- NEW PRODUCTS / ATHLETE SUPPORT -->
   <div class="new-products-section" id="newProductsSection" style="display:none">
     <div class="section-label-row">
       <span class="section-label">new drops</span>
@@ -338,16 +358,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <div class="tos-sub">please read and accept before continuing</div>
     <div class="tos-body" id="tosBody">
       <h4>1. Acceptance</h4>
-      By creating an account you agree to these Terms of Service and our Privacy Policy. If you do not agree, do not use JVST / INDY Fan.
+      By creating an account on IRELAND™ you agree to these Terms of Service and our Privacy Policy. If you do not agree, do not use IRELAND™.
 
       <h4>2. Actions — Free Monthly Limit</h4>
       Actions are <strong>not currency and have no monetary value.</strong> They are a free monthly product limit automatically granted to every account. You receive <strong>10 Actions every month</strong> at no cost — no payment, no credit card required. Actions reset monthly and do not carry over. Unused Actions expire at the end of each monthly cycle.
 
       <h4>3. What Actions Cost</h4>
-      Items in the JVST catalog are redeemed using Actions: Blind Bags = 1 Action · White Board Books = 2 Actions · Bundles = 3–5 Actions. Orders are fulfilled in-person — show your digital receipt to a JVST employee to redeem.
+      Items in the IRELAND™ catalog are redeemed using Actions: Blind Bags = 1 Action · White Board Books = 2 Actions · Bundles = 3–5 Actions. Orders are fulfilled in-person — show your digital receipt to a IRELAND™ rep to redeem.
 
       <h4>4. Athlete Support</h4>
-      You may donate Actions from your monthly balance to support athletes in the INDY Fan pool. Donated Actions are irreversible. Rewards are fulfilled by JVST at sole discretion once a goal is reached and may be modified or substituted.
+      You may donate Actions from your monthly balance to support athletes in the INDY Fan pool. Donated Actions are irreversible. Rewards are fulfilled by IRELAND™ at sole discretion once a goal is reached and may be modified or substituted.
 
       <h4>5. Eligibility</h4>
       You must be at least 13 years of age to create an account. By registering you confirm you meet this requirement.
@@ -356,13 +376,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       You agree not to: create fake accounts, manipulate action counts through automated means, harass other users or athletes, or use the platform for any unlawful purpose.
 
       <h4>7. Content</h4>
-      JVST may display athlete and user-generated content. You grant JVST a non-exclusive license to use any content you post on the platform.
+      IRELAND™ may display athlete and user-generated content. You grant IRELAND™ a non-exclusive license to use any content you post on the platform.
 
       <h4>8. Modifications</h4>
-      JVST reserves the right to change these terms at any time. Continued use after changes constitutes acceptance of the updated terms.
+      IRELAND™ reserves the right to change these terms at any time. Continued use after changes constitutes acceptance of the updated terms.
 
       <h4>9. Limitation of Liability</h4>
-      JVST is not liable for indirect, incidental, or consequential damages arising from use of the platform. The platform is provided "as is" without warranties of any kind.
+      IRELAND™ is not liable for indirect, incidental, or consequential damages arising from use of the platform. The platform is provided "as is" without warranties of any kind.
 
       <h4>10. Governing Law</h4>
       These terms are governed by the laws of the applicable jurisdiction without regard to conflict of law provisions.
@@ -392,14 +412,14 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const ATHLETES = [
-  { id: "greyson", name: "greysonbonnifacio", sub: "athlete · collab", initials: "GB", goal: 500, reward: "exclusive greyson x jvst blind bag" },
+  { id: "greyson", name: "greysonbonnifacio", sub: "athlete · collab", initials: "GB", goal: 500, reward: "exclusive greyson x ireland blind bag" },
   { id: "rainn",   name: "rainnblais",        sub: "athlete · collab", initials: "RB", goal: 500, reward: "rainn collab trophy sleeve" },
-  { id: "noah",    name: "noah",               sub: "artist spotlight",  initials: "N",  goal: 300, reward: "noah x jvst limited keychain" },
-  { id: "evan",    name: "evan",               sub: "artist spotlight",  initials: "E",  goal: 300, reward: "evan x jvst limited keychain" }
+  { id: "noah",    name: "noah",               sub: "artist spotlight",  initials: "N",  goal: 300, reward: "noah x ireland limited keychain" },
+  { id: "evan",    name: "evan",               sub: "artist spotlight",  initials: "E",  goal: 300, reward: "evan x ireland limited keychain" }
 ];
 
 // ---- ALLOWED DISPLAY NAMES (school setting — whitelist) ----
-const ALLOWED_DISPLAY_NAMES = ["Ryan", "Lila Ireland", "Rainn Likes fart", "indyfans", "Bragnae Kelly", "EM"];
+const ALLOWED_DISPLAY_NAMES = ["Ryan", "Lila Ireland", "Rainn Likes fart", "IrelandLounge"];
 
 let currentUserCanPost = false;
 
@@ -475,13 +495,13 @@ window.submitPost = async function() {
     btn.disabled = false;
   }
 };
-// ---- LOCAL ATHLETE NEW PRODUCTS ----
+// ---- ATHLETE NEW PRODUCTS ----
 const NEW_PRODUCTS = [
   { id: "gb-blind-bag",    name: "Greyson Blind Bag",       athlete: "greysonbonnifacio", athleteId: "greyson", emoji: "🎁", cost: 1, desc: "Mystery blind bag curated by Greyson — limited run drop for INDY Fanz supporters.", tag: "new" },
   { id: "rb-trophy-sleeve",name: "Rainn Trophy Sleeve",     athlete: "rainnblais",        athleteId: "rainn",   emoji: "🏆", cost: 2, desc: "Exclusive trophy sleeve collab with Rainn Blais. Show your local athlete love.", tag: "new" },
-  { id: "noah-keychain",   name: "Noah Keychain",           athlete: "noah",              athleteId: "noah",    emoji: "🔑", cost: 1, desc: "Limited noah x jvst keychain — handpicked for the fan community.", tag: "limited" },
-  { id: "evan-keychain",   name: "Evan Keychain",           athlete: "evan",              athleteId: "evan",    emoji: "🗝️", cost: 1, desc: "Limited evan x jvst keychain — supporter exclusive.", tag: "limited" },
-  { id: "spring-bundle",   name: "Spring Bundle",           athlete: "jvst",              athleteId: null,      emoji: "🌸", cost: 3, desc: "Spring bundle drop — includes 3 items supporting local athletes. Flash sale price.", tag: "sale" }
+  { id: "noah-keychain",   name: "Noah Keychain",           athlete: "noah",              athleteId: "noah",    emoji: "🔑", cost: 1, desc: "Limited noah x ireland keychain — handpicked for the fan community.", tag: "limited" },
+  { id: "evan-keychain",   name: "Evan Keychain",           athlete: "evan",              athleteId: "evan",    emoji: "🗝️", cost: 1, desc: "Limited evan x ireland keychain — supporter exclusive.", tag: "limited" },
+  { id: "spring-bundle",   name: "Spring Bundle",           athlete: "local",              athleteId: null,      emoji: "🌸", cost: 3, desc: "Spring bundle drop — includes 3 items supporting local athletes. Flash sale price.", tag: "sale" }
 ];
 
 let currentProduct = null;
@@ -512,7 +532,7 @@ window.openProduct = function(id) {
   document.getElementById("productModalName").textContent = p.name;
   document.getElementById("productModalAthlete").textContent = p.athlete + (p.tag === "new" ? " · new drop" : p.tag === "limited" ? " · limited" : " · flash sale");
   document.getElementById("productModalDesc").textContent = p.desc;
-  document.getElementById("productModalCost").innerHTML = `cost: <strong>${p.cost} action${p.cost !== 1 ? "s" : ""}</strong> — redeemed in-person with a JVST employee`;
+  document.getElementById("productModalCost").innerHTML = `cost: <strong>${p.cost} action${p.cost !== 1 ? "s" : ""}</strong> — redeemed in-person with a IRELAND™ rep`;
   document.getElementById("productRedeemFeedback").textContent = "";
   document.getElementById("productRedeemFeedback").style.color = "#111";
   document.getElementById("productRedeemBtn").disabled = false;
@@ -557,7 +577,7 @@ window.redeemProduct = async function() {
       product: p.name,
       date: now,
       actionsCost: p.cost,
-      method: "indy_fan",
+      method: "ireland_fan",
       code: p.id
     };
 
@@ -570,7 +590,7 @@ window.redeemProduct = async function() {
 
     const newBalance = ACTIONS_LIMIT - (freshUsed + p.cost);
     fb.style.color = "#111";
-    fb.textContent = `✓ redeemed! ${newBalance} action${newBalance !== 1 ? "s" : ""} left. Show this to a JVST employee to claim your ${p.name}.`;
+    fb.textContent = `✓ redeemed! ${newBalance} action${newBalance !== 1 ? "s" : ""} left. Show this to a IRELAND™ rep to claim your ${p.name}.`;
   } catch(e) {
     console.error(e);
     fb.style.color = "#c0392b";
@@ -582,6 +602,9 @@ window.redeemProduct = async function() {
 
 // Expose on window so global onclick="" handlers can access them outside the module
 window.currentUser = null;
+window.ATHLETES_REF = ATHLETES;
+window._auth = auth;
+window._signOut = signOut;
 window.userActions = 0;
 let currentUser = null;
 let userActions = 0;
@@ -591,19 +614,21 @@ let currentAthlete = null;
 let authMode = "signin";
 
 // ---- PFP / NICKNAME SYSTEM ----
-// Stored in indy_fan_profiles/{uid} — isolated from all other apps
+// Stored in ireland_profiles/{uid} — isolated from all other apps
 const PFP_OPTIONS = ["😊","🏆","⚡","🔥","🎯","🌟","🦁","🐺","🦊","🐉","🌊","🎭","💫","🚀","🎸","🏅","👑","🤝","💪","🎮"];
 let myPfp = "😊";
 let myNickname = "";
+window.myPfp = myPfp; window.myNickname = myNickname;
 // cache of uid -> {pfp, nickname} for rendering other users' posts
 const profileCache = {};
 
 async function loadMyProfile(uid) {
   try {
-    const snap = await getDoc(doc(db, "indy_fan_profiles", uid));
+    const snap = await getDoc(doc(db, "ireland_profiles", uid));
     if (snap.exists()) {
       myPfp = snap.data().pfp || "😊";
       myNickname = snap.data().nickname || "";
+      window.myPfp = myPfp; window.myNickname = myNickname;
     }
   } catch {}
   updateComposer(currentUser);
@@ -612,7 +637,7 @@ async function loadMyProfile(uid) {
 async function getProfileFor(uid, fallbackInitial) {
   if (profileCache[uid]) return profileCache[uid];
   try {
-    const snap = await getDoc(doc(db, "indy_fan_profiles", uid));
+    const snap = await getDoc(doc(db, "ireland_profiles", uid));
     if (snap.exists()) {
       profileCache[uid] = { pfp: snap.data().pfp || fallbackInitial, nickname: snap.data().nickname || "" };
     } else {
@@ -648,7 +673,7 @@ window.saveProfile = async function() {
   const nickname = document.getElementById("nicknameInput").value.trim();
   const fb = document.getElementById("profileFeedback");
   try {
-    await setDoc(doc(db, "indy_fan_profiles", currentUser.uid), { pfp: myPfp, nickname }, { merge: true });
+    await setDoc(doc(db, "ireland_profiles", currentUser.uid), { pfp: myPfp, nickname }, { merge: true });
     myNickname = nickname;
     profileCache[currentUser.uid] = { pfp: myPfp, nickname };
     fb.textContent = "saved ✓";
@@ -675,8 +700,10 @@ async function initAthletes() {
     onSnapshot(ref, s => {
       if (s.exists()) {
         athleteData[a.id] = s.data();
+        window.athleteData = athleteData;
         renderAthletes();
         if (currentAthlete && currentAthlete.id === a.id) refreshModal(a.id);
+        if (document.getElementById('boardPanel').style.display !== 'none') renderLeaderboard();
       }
     });
   }
@@ -754,11 +781,11 @@ function postHtml(p) {
   const pfp = p.authorPfp || "😊";
   // ── Stale username remap — add any old name → corrected name pairs here ──
   const NAME_REMAP = { "cat": "Ryan" };
-  const rawAuthor = (p.author || "jvst");
+  const rawAuthor = (p.author || "local");
   const remappedAuthor = NAME_REMAP[rawAuthor.toLowerCase()] || rawAuthor;
   const nickname = p.authorNickname || remappedAuthor;
   // Handle uses the real login username (author field), not the display nickname
-  const handleBase = remappedAuthor !== "jvst" ? remappedAuthor : null;
+  const handleBase = remappedAuthor !== "local" ? remappedAuthor : null;
   const handle = handleBase ? `@${handleBase.replace(/\s+/g,"").toLowerCase()}` : "";
   const nameBlock = handle
     ? `<div class="post-name-stack"><span class="post-nickname">${nickname} ${checkSvg()}</span><span class="post-handle">${handle}</span></div>`
@@ -775,19 +802,20 @@ function postHtml(p) {
     <div class="post-footer">
       <div class="post-caption">${p.caption||''}</div>
       <div class="post-likes">
-        <button class="like-btn" onclick="window.toggleLike(this,'${p.id}')">
-          <span class="heart">♡</span> <span class="like-count">${p.likes||0}</span>
-        </button>
+<button class="like-btn ${liked.has(p.id) ? 'liked' : ''}" onclick="window.toggleLike(this,'${p.id}')">
+  <span class="heart">${liked.has(p.id) ? '♥' : '♡'}</span> <span class="like-count">${p.likes||0}</span>
+</button>
         ${(p.id !== "welcome" && p.authorUid && currentUser && p.authorUid === currentUser.uid)
           ? `<button class="like-btn delete-btn" onclick="window.deletePost('${p.id}')" title="delete post">🗑</button>`
           : ""}
+        <button class="like-btn share-btn" onclick="sharePost('${p.id}')" title="share">share</button>
       </div>
     </div>
   </div>`;
 }
 
 function welcomePost() {
-  return postHtml({ id:"welcome", author:"jvst", authorInitials:"J", authorPfp:"🏅", authorNickname:"JVST", caption:"welcome to INDY Fan. support your people, stack your actions, earn exclusive drops. this is just the beginning.", likes:0, pinned:true, imageUrl:null, createdAt:null });
+  return postHtml({ id:"welcome", author:"ireland", authorInitials:"J", authorPfp:"🏅", authorNickname:"IRELAND™", caption:"welcome to IRELAND™. support your people, stack your actions, earn exclusive drops. this is just the beginning.", likes:0, pinned:true, imageUrl:null, createdAt:null });
 }
 
 async function loadFeed() {
@@ -807,20 +835,21 @@ async function loadFeed() {
 }
 
 // ---- LIKES ----
-const liked = new Set(JSON.parse(localStorage.getItem("jvst_likes")||"[]"));
+const liked = new Set(JSON.parse(localStorage.getItem("ireland_likes")||"[]"));
 window.toggleLike = async function(btn, postId) {
   const countEl = btn.querySelector(".like-count");
   const heart = btn.querySelector(".heart");
   const isLiked = liked.has(postId);
   let n = parseInt(countEl.textContent.replace(/[^\d]/g,""))||0;
   if (isLiked) {
-    liked.delete(postId); btn.classList.remove("liked"); heart.textContent = "♡"; n = Math.max(0,n-1);
+liked.delete(postId); btn.classList.remove("liked"); heart.textContent = "♡"; n = Math.max(0,n-1);
+    if (postId !== "welcome") { try { await updateDoc(doc(db,"posts",postId),{likes:increment(-1)}); } catch {} }
   } else {
-    liked.add(postId); btn.classList.add("liked"); heart.textContent = "♥"; n++;
+liked.add(postId); btn.classList.add("liked"); heart.textContent = "♥"; n++;
     if (postId !== "welcome") { try { await updateDoc(doc(db,"posts",postId),{likes:increment(1)}); } catch {} }
   }
   countEl.textContent = n >= 1000 ? (n/1000).toFixed(1)+"k" : n;
-  localStorage.setItem("jvst_likes", JSON.stringify([...liked]));
+  localStorage.setItem("ireland_likes", JSON.stringify([...liked]));
 };
 
 // ---- DELETE POST ----
@@ -846,7 +875,7 @@ window.toggleAuthMode = function() {
   authMode = authMode === "signin" ? "signup" : "signin";
   const isIn = authMode === "signin";
   document.getElementById("authTitle").textContent = isIn ? "Sign in" : "Sign up";
-  document.getElementById("authSub").textContent = isIn ? "access your actions + shop the catalog" : "join jvst free — 10 actions/month, no money needed";
+  document.getElementById("authSub").textContent = isIn ? "access your actions + support your people" : "join IRELAND™ free — 10 actions/month, no money needed";
   document.getElementById("authSubmit").textContent = isIn ? "Sign in" : "Create account";
   document.getElementById("authToggle").innerHTML = isIn ? `no account? <span>sign up free</span>` : `already have one? <span>sign in</span>`;
   document.getElementById("authError").textContent = "";
@@ -1004,6 +1033,13 @@ function updateActionsDisplay() {
   el.textContent = userActions === Infinity ? "∞ actions" : userActions + " actions";
 }
 
+// ---- SHARE ----
+window.sharePost = function(id) {
+  const url = location.href.split('#')[0] + '#post-' + id;
+  if(navigator.share) { navigator.share({ title: 'IRELAND™', url }); }
+  else { navigator.clipboard.writeText(url).then(() => alert('Link copied!')); }
+};
+
 // ---- FLASH TIMER ----
 let secs = 10053;
 (function tick() {
@@ -1018,6 +1054,261 @@ let secs = 10053;
 // ---- INIT ----
 initAthletes();
 renderProducts();
+</script>
+
+<!-- BOTTOM NAV -->
+<style>
+.bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; height:58px; background:var(--surface); border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-around; z-index:50; padding-bottom:env(safe-area-inset-bottom,0); }
+.nav-tab { display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; padding:6px 16px; border:none; background:none; font-family:var(--font-b); flex:1; }
+.nav-icon { font-size:20px; line-height:1; }
+.nav-label { font-size:10px; color:var(--ink3); font-weight:500; transition:color .15s; }
+.nav-tab.active .nav-label { color:var(--accent); font-weight:700; }
+.nav-tab.active .nav-icon { filter: none; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+/* Streak */
+.streak-card { background:#000; border-radius:var(--radius); padding:14px 16px; display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; overflow:hidden; position:relative; }
+
+.streak-label { font-family:var(--font-d); font-size:10px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; color:rgba(255,255,255,.5); }
+.streak-val { font-family:var(--font-d); font-size:28px; font-weight:800; color:#fff; line-height:1.1; }
+.streak-sub { font-size:11px; color:rgba(255,255,255,.55); margin-top:2px; }
+.streak-dots { display:flex; gap:4px; margin-bottom:4px; justify-content:flex-end; position:relative; z-index:1; }
+.streak-dot { width:9px; height:9px; border-radius:50%; background:rgba(255,255,255,.18); }
+.streak-dot.on { background:#fff; }
+.streak-next { font-size:10px; color:rgba(255,255,255,.45); text-align:right; position:relative; z-index:1; }
+/* Leaderboard */
+.lb-section-title { font-family:var(--font-d); font-size:15px; font-weight:800; color:var(--ink); margin:14px 0 10px; }
+.lb-entry { display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; margin-bottom:8px; box-shadow:var(--shadow); transition:transform .15s; }
+.lb-entry:hover { transform:translateX(2px); }
+.lb-rank { font-family:var(--font-d); font-size:16px; font-weight:800; color:var(--ink3); width:24px; text-align:center; flex-shrink:0; }
+.lb-rank.gold{color:#c9962a;} .lb-rank.silver{color:#8a9099;} .lb-rank.bronze{color:#a0603a;}
+.lb-avatar { width:40px; height:40px; border-radius:50%; background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.lb-info { flex:1; min-width:0; }
+.lb-name { font-size:13px; font-weight:600; color:var(--ink); }
+.lb-sub { font-size:11px; color:var(--ink3); }
+.lb-score { font-family:var(--font-d); font-size:15px; font-weight:800; color:var(--ink); text-align:right; }
+.lb-score-lbl { font-size:9px; color:var(--ink3); text-align:right; }
+.tier-badge { font-size:9px; font-weight:700; padding:2px 7px; border-radius:99px; font-family:var(--font-d); display:inline-block; margin-top:2px; }
+.tier-legend{background:#000;color:#fff;border:1px solid #000;}
+.tier-star{background:#fff;color:#000;border:1px solid #000;}
+.tier-fan{background:#f0f0f0;color:#000;border:1px solid #ccc;}
+.tier-new{background:var(--surface2);color:var(--ink3);border:1px solid var(--border);}
+/* Share button on posts */
+.share-btn { margin-left:auto; }
+</style>
+
+<!-- PAGE TABS WRAPPER — wrap existing content in tab panels via JS below -->
+<div class="bottom-nav" id="bottomNav">
+  <button class="nav-tab active" onclick="switchTab('home',this)"><span class="nav-label" style="font-size:13px;font-weight:600">Home</span></button>
+  <button class="nav-tab" onclick="switchTab('explore',this)"><span class="nav-label" style="font-size:13px;font-weight:600">Athletes</span></button>
+  <button class="nav-tab" onclick="switchTab('board',this)"><span class="nav-label" style="font-size:13px;font-weight:600">Leaders</span></button>
+  <button class="nav-tab" onclick="switchTab('me',this)"><span class="nav-label" style="font-size:13px;font-weight:600">Me</span></button>
+</div>
+
+<!-- EXTRA TAB PANELS (injected into .page by JS) -->
+<div id="explorePanel" class="tab-panel" style="display:none"></div>
+<div id="boardPanel" class="tab-panel" style="display:none">
+  <!-- Leaderboard content rendered by JS -->
+</div>
+<div id="mePanel" class="tab-panel" style="display:none">
+  <!-- Me tab rendered by JS -->
+</div>
+
+<script>
+// ── DARK MODE ──
+function toggleDark(){
+  document.documentElement.toggleAttribute('data-dark');
+  document.querySelector('.dark-toggle').textContent = document.documentElement.hasAttribute('data-dark') ? 'light' : 'dark';
+  localStorage.setItem('ireland_dark', document.documentElement.hasAttribute('data-dark') ? '1' : '');
+}
+if(localStorage.getItem('ireland_dark')) { document.documentElement.setAttribute('data-dark',''); document.querySelector('.dark-toggle') && (document.querySelector('.dark-toggle').textContent='light'); }
+
+// ── TABS ──
+const PAGE = document.querySelector('.page');
+// Wrap existing page content in a home panel
+const homePanel = document.createElement('div');
+homePanel.id = 'homePanel';
+homePanel.className = 'tab-panel active';
+while(PAGE.firstChild) homePanel.appendChild(PAGE.firstChild);
+PAGE.appendChild(homePanel);
+// Add other panels
+['explorePanel','boardPanel','mePanel'].forEach(id => {
+  const el = document.getElementById(id);
+  if(el) PAGE.appendChild(el);
+});
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  ['homePanel','explorePanel','boardPanel','mePanel'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = id === name+'Panel' ? 'block' : 'none';
+  });
+  if(name === 'board') renderLeaderboard();
+  if(name === 'explore') renderExplore();
+  if(name === 'me') renderMe();
+}
+
+// ── STREAK TRACKER ──
+function getStreak() {
+  const today = new Date().toDateString();
+  const data = JSON.parse(localStorage.getItem('ireland_streak') || '{"days":[],"last":""}');
+  const days = data.days || [];
+  if(data.last === today) return { count: days.length, days };
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  const newDays = data.last === yesterday ? [...days.slice(-6), today] : [today];
+  const out = { count: newDays.length, days: newDays, last: today };
+  localStorage.setItem('ireland_streak', JSON.stringify(out));
+  return out;
+}
+
+// ── LEADERBOARD ──
+function renderLeaderboard() {
+  const panel = document.getElementById('boardPanel');
+  const streak = getStreak();
+  const dotHtml = Array.from({length:7}, (_,i) => `<div class="streak-dot${i < streak.count ? ' on' : ''}"></div>`).join('');
+
+  const ATHLETE_META = {
+    greyson: { emoji:'GB', name:'greysonbonnifacio', sub:'athlete' },
+    rainn:   { emoji:'RB', name:'rainnblais',        sub:'athlete' },
+    noah:    { emoji:'N',  name:'noah',               sub:'artist'  },
+    evan:    { emoji:'E',  name:'evan',               sub:'artist'  },
+  };
+
+  // Build entries from live athleteData, sorted by current (donations received)
+  const liveData = window.athleteData || {};
+  const entries = Object.entries(ATHLETE_META)
+    .map(([id, meta]) => ({
+      ...meta,
+      score: (liveData[id] && liveData[id].current) || 0,
+    }))
+    .sort((a, b) => b.score - a.score)
+    .map((e, i) => ({ ...e, rank: i + 1 }));
+
+  const rankClass = r => r===1?'gold':r===2?'silver':r===3?'bronze':'';
+
+  panel.innerHTML = `
+    <div style="font-family:var(--font-d);font-size:22px;font-weight:900;color:var(--ink);letter-spacing:1px;margin-bottom:10px">Leaderboard (Top Donations)</div>
+    <div class="streak-card">
+      <div>
+        <div class="streak-label">Your Streak</div>
+        <div class="streak-val">${streak.count} <span style="font-size:16px">day${streak.count!==1?'s':''}</span></div>
+        <div class="streak-sub">keep the fire going ❄️</div>
+      </div>
+      <div>
+        <div class="streak-dots">${dotHtml}</div>
+        <div class="streak-next">🏆 next reward at 7 days</div>
+      </div>
+    </div>
+    <div class="lb-section-title">Most Donated</div>
+    ${entries.map(e => `
+    <div class="lb-entry">
+      <div class="lb-rank ${rankClass(e.rank)}">${e.rank}</div>
+      <div class="lb-avatar">${e.emoji}</div>
+      <div class="lb-info">
+        <div class="lb-name">${e.name}</div>
+        <div class="lb-sub">${e.sub}</div>
+      </div>
+      <div>
+        <div class="lb-score">${e.score}</div>
+        <div class="lb-score-lbl">donated</div>
+      </div>
+    </div>`).join('')}
+    <div style="text-align:center;padding:1rem 0;font-size:11px;color:var(--ink3)">lounge updates live · sip slow 🍵</div>
+  `;
+}
+
+// ── EXPLORE TAB (Athletes) ──
+function renderExplore() {
+  const panel = document.getElementById('explorePanel');
+  if(!window.athleteData || !window.ATHLETES_REF) { panel.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--ink3);font-size:13px">Loading athletes…</div>'; return; }
+  panel.innerHTML = `<div style="margin-bottom:14px"></div>` + window.ATHLETES_REF.map(a => {
+    const d = (window.athleteData||{})[a.id] || { current:0, goal: a.goal };
+    const pct = Math.min(100, Math.round(d.current / d.goal * 100));
+    const emojis = { greyson:'GB', rainn:'RB', noah:'N', evan:'E' };
+    return `<div class="athlete-support-card" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+        <div style="width:50px;height:50px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:26px">${emojis[a.id]||'🏅'}</div>
+        <div>
+          <div style="font-family:var(--font-d);font-size:15px;font-weight:800;color:var(--ink)">${a.name}</div>
+          <div style="font-size:11px;color:var(--ink3);margin-top:2px">${a.sub}</div>
+        </div>
+      </div>
+      <div style="height:10px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:8px">
+        <div style="height:100%;width:${pct}%;background:#000;border-radius:99px;transition:width .5s ease"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-bottom:12px">
+        <span><strong style="color:var(--ink)">${d.current} actions</strong> pooled</span>
+        <span>goal: ${d.goal}</span>
+      </div>
+      <div style="background:#f5f5f5;border:1px solid #e0e0e0;border-radius:8px;padding:9px 12px;font-size:12px;color:var(--ink2);margin-bottom:12px">reward: <strong style="color:var(--ink)">${a.reward}</strong></div>
+      <div style="display:flex;gap:8px">
+        <input class="donate-input" type="number" min="1" placeholder="actions to donate" id="explDonateInput-${a.id}" />
+        <button class="donate-btn" onclick="exploreDonate('${a.id}')">Support</button>
+      </div>
+      <div id="explDonateFb-${a.id}" style="font-size:12px;color:var(--ink);text-align:center;margin-top:8px;min-height:16px"></div>
+    </div>`;
+  }).join('');
+}
+
+window.exploreDonate = async function(athleteId) {
+  if(!window.currentUser) { window.openAuth(); return; }
+  const inp = document.getElementById('explDonateInput-'+athleteId);
+  const fb = document.getElementById('explDonateFb-'+athleteId);
+  const amt = parseInt(inp.value);
+  if(!amt || amt < 1) return;
+  if(amt > window.userActions) { fb.style.color='#c0392b'; fb.textContent='not enough actions'; return; }
+  // reuse the global donate logic by opening athlete modal
+  fb.textContent = 'opening support panel…';
+  const a = window.ATHLETES_REF.find(x=>x.id===athleteId);
+  if(a) { window.openAthlete && window.openAthlete(a.id); }
+};
+
+// ── ME TAB ──
+function renderMe() {
+  const panel = document.getElementById('mePanel');
+  const u = window.currentUser;
+  const streak = getStreak();
+  if(!u) {
+    panel.innerHTML = `<div style="text-align:center;padding:3rem 1rem">
+      <div style="font-size:48px;margin-bottom:1rem">👋</div>
+      <div style="font-family:var(--font-d);font-size:18px;font-weight:800;color:var(--ink);margin-bottom:8px">Sign in to see your profile</div>
+      <div style="font-size:13px;color:var(--ink3);margin-bottom:1.5rem">Track your actions, streak, and fan tier</div>
+      <button class="auth-btn" style="width:auto;padding:10px 24px" onclick="window.openAuth()">Sign In</button>
+    </div>`;
+    return;
+  }
+  const tier = window.userActions >= 8 ? 'legend' : window.userActions >= 5 ? 'star' : window.userActions >= 2 ? 'fan' : 'new';
+  const tierLabel = {legend:'Legend',star:'Star Fan',fan:'Fan',new:'New Supporter'}[tier];
+  panel.innerHTML = `
+    <div style="text-align:center;padding:1.5rem 0 1rem">
+      <div style="width:72px;height:72px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 10px;border:2px solid var(--border)">${window.myPfp||'😊'}</div>
+      <div style="font-family:var(--font-d);font-size:18px;font-weight:800;color:var(--ink)">${window.myNickname||u.displayName||u.email.split('@')[0]}</div>
+      <div style="font-size:11px;color:var(--ink3);margin-top:2px">${u.email}</div>
+      <div style="margin-top:8px"><span class="tier-badge tier-${tier}">${tierLabel}</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;box-shadow:var(--shadow)">
+        <div style="font-family:var(--font-d);font-size:26px;font-weight:800;color:var(--ink)">${window.userActions===Infinity?'∞':window.userActions}</div>
+        <div style="font-size:11px;color:var(--ink3);margin-top:2px">Actions Left</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;box-shadow:var(--shadow)">
+        <div style="font-family:var(--font-d);font-size:26px;font-weight:800;color:#000">${streak.count}</div>
+        <div style="font-size:11px;color:var(--ink3);margin-top:2px">Day Streak</div>
+      </div>
+    </div>
+    <button onclick="window.openProfile()" style="width:100%;padding:11px;background:var(--ink);color:var(--bg,#fff);border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font-d);margin-bottom:10px">Edit Profile</button>
+    <button onclick="window._signOut(window._auth)" style="width:100%;padding:11px;background:var(--surface2);color:var(--ink2);border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-b)">Sign Out</button>
+  `;
+}
+
+// expose ATHLETES array for explore tab
+document.addEventListener('DOMContentLoaded', () => {
+  if(document.querySelector('.dark-toggle') && localStorage.getItem('ireland_dark')) {
+    document.querySelector('.dark-toggle').textContent = 'light';
+    document.documentElement.setAttribute('data-dark','');
+  }
+});
 </script>
 </body>
 </html>
