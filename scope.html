@@ -422,63 +422,64 @@ let progInterval = null;
 async function searchAndPlay(query) {
   setStatus('♪ searching…');
 
-  // Clean query a bit (remove extra words if needed)
+  // Clean the query (e.g. "APT by ROSÉ" → "APT ROSÉ")
   const cleanQuery = query.replace(/ by /i, ' ').trim();
 
   const itunesUrl = `https://itunes.apple.com/search?term=${encodeURIComponent(cleanQuery)}&media=music&entity=song&limit=3`;
 
+  let data = null;
+
   try {
-    // Try direct first (often works)
-    let res = await fetch(itunesUrl, { mode: 'cors' });
-    let data = await res.json();
+    // Try direct fetch first (often works)
+    let res = await fetch(itunesUrl);
+    if (res.ok) data = await res.json();
+  } catch (_) {}
 
-    // Fallback to one of your proxies if direct fails
-    if (!data?.results?.length) {
-      const PROXIES = [
-        q => `https://api.allorigins.win/get?url=${encodeURIComponent(q)}`,
-        q => `https://corsproxy.io/?${encodeURIComponent(q)}`,
-      ];
-      for (const makeProxy of PROXIES) {
-        try {
-          const pRes = await fetch(makeProxy(itunesUrl));
-          const pRaw = await pRes.json();
-          data = pRaw.contents ? JSON.parse(pRaw.contents) : pRaw;
-          if (data?.results?.length) break;
-        } catch (_) {}
-      }
+  // Fallback to your proxies if direct fails
+  if (!data?.results?.length) {
+    const PROXIES = [
+      q => `https://api.allorigins.win/get?url=${encodeURIComponent(q)}`,
+      q => `https://corsproxy.io/?${encodeURIComponent(q)}`,
+      q => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(q)}`,
+    ];
+
+    for (const makeProxy of PROXIES) {
+      try {
+        const pRes = await fetch(makeProxy(itunesUrl));
+        if (!pRes.ok) continue;
+        const pRaw = await pRes.json();
+        const jsonStr = pRaw.contents || pRaw;
+        data = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
+        if (data?.results?.length) break;
+      } catch (_) {}
     }
-
-    const track = data?.results?.[0]; // best match
-    if (!track?.previewUrl) {
-      setStatus('no preview found 😕');
-      return;
-    }
-
-    // Use the preview
-    sfx.src = track.previewUrl;
-    sfx.play().catch(err => console.warn('Playback failed:', err));
-
-    const title = `${track.trackName} — ${track.artistName}`;
-    g('playerTitle').textContent = title;
-    g('player').classList.add('visible');
-    g('playerCtrl').textContent = '⏸';
-
-    clearInterval(progInterval);
-    progInterval = setInterval(() => {
-      if (!sfx.duration) return;
-      const percent = (sfx.currentTime / sfx.duration) * 100;
-      g('playerBar').style.width = percent + '%';
-      if (sfx.ended) {
-        clearInterval(progInterval);
-        g('playerCtrl').textContent = '▶';
-      }
-    }, 300);
-
-    setStatus('');
-  } catch (e) {
-    console.error('Music search error:', e);
-    setStatus('search failed');
   }
+
+  const track = data?.results?.[0];
+  if (!track?.previewUrl) {
+    setStatus('no preview found 😕');
+    return;
+  }
+
+  // Play the preview
+  sfx.src = track.previewUrl;
+  sfx.play().catch(() => setStatus('playback blocked'));
+
+  g('playerTitle').textContent = `${track.trackName} — ${track.artistName}`;
+  g('player').classList.add('visible');
+  g('playerCtrl').textContent = '⏸';
+
+  clearInterval(progInterval);
+  progInterval = setInterval(() => {
+    if (!sfx.duration) return;
+    g('playerBar').style.width = (sfx.currentTime / sfx.duration * 100) + '%';
+    if (sfx.ended) {
+      clearInterval(progInterval);
+      g('playerCtrl').textContent = '▶';
+    }
+  }, 300);
+
+  setStatus('');
 }
 function togglePlay()  { sfx.paused ? resumeMusic() : pauseMusic(); }
 function pauseMusic()  { sfx.pause(); g('playerCtrl').textContent='▶'; }
