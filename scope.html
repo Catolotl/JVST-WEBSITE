@@ -421,27 +421,53 @@ let progInterval = null;
 
 async function searchAndPlay(query) {
   setStatus('♪ searching…');
-try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
-    const url = `https://corsproxy.io/?url=${encodeURIComponent(`https://api.deezer.com/search?q=${encodeURIComponent(query)}&limit=1`)}`;
-    const res  = await fetch(url, { signal: controller.signal });
-    clearTimeout(timeout);
-const data = await res.json();
-    const track = data.data?.[0];
-    if (!track?.preview) { setStatus('no preview found'); return; }
-    sfx.src = track.preview; sfx.play();
-    g('playerTitle').textContent = `${track.title} — ${track.artist.name}`;
-    g('player').classList.add('visible');
-    g('playerCtrl').textContent = '⏸';
-    clearInterval(progInterval);
-    progInterval = setInterval(() => {
-      if (!sfx.duration) return;
-      g('playerBar').style.width = (sfx.currentTime/sfx.duration*100)+'%';
-      if (sfx.ended) { clearInterval(progInterval); g('playerCtrl').textContent='▶'; }
-    }, 400);
-    setStatus('');
-  } catch(e) { console.error(e); setStatus('music error'); }
+
+  const PROXIES = [
+    q => `https://api.allorigins.win/get?url=${encodeURIComponent(q)}`,
+    q => `https://corsproxy.io/?${encodeURIComponent(q)}`,
+    q => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(q)}`,
+  ];
+
+  const deezerUrl = `https://api.deezer.com/search?q=${encodeURIComponent(query)}&limit=1`;
+  let track = null;
+
+  for (const makeProxy of PROXIES) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 6000);
+      const res = await fetch(makeProxy(deezerUrl), { signal: controller.signal });
+      clearTimeout(timeout);
+
+      if (!res.ok) continue;
+
+      const raw = await res.json();
+      // allorigins wraps in { contents: "..." }, others return directly
+      const data = raw.contents ? JSON.parse(raw.contents) : raw;
+
+      track = data?.data?.[0];
+      if (track?.preview) break; // found it, stop trying
+    } catch (e) {
+      console.warn('Proxy attempt failed:', e);
+    }
+  }
+
+  if (!track?.preview) {
+    setStatus('no preview found');
+    return;
+  }
+
+  sfx.src = track.preview;
+  sfx.play();
+  g('playerTitle').textContent = `${track.title} — ${track.artist.name}`;
+  g('player').classList.add('visible');
+  g('playerCtrl').textContent = '⏸';
+  clearInterval(progInterval);
+  progInterval = setInterval(() => {
+    if (!sfx.duration) return;
+    g('playerBar').style.width = (sfx.currentTime / sfx.duration * 100) + '%';
+    if (sfx.ended) { clearInterval(progInterval); g('playerCtrl').textContent = '▶'; }
+  }, 400);
+  setStatus('');
 }
 function togglePlay()  { sfx.paused ? resumeMusic() : pauseMusic(); }
 function pauseMusic()  { sfx.pause(); g('playerCtrl').textContent='▶'; }
