@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100%; height:100%; background:#000; overflow:hidden; font-family:monospace; }
+#eyesvg { position:fixed; inset:0; width:100vw; height:100vh; display:block; }
+
+#status {
+  position:fixed; bottom:40px; left:50%; transform:translateX(-50%);
+  color:rgba(100,220,255,0.35); font-size:10px; letter-spacing:.22em;
+  text-transform:uppercase; white-space:nowrap; z-index:100;
+  transition:opacity .6s, color .4s;
+  pointer-events:none;
+}
+
+#transcript {
+  position:fixed; bottom:64px; left:50%; transform:translateX(-50%);
+  color:rgba(255,255,255,0.18); font-size:11px; line-height:1.7;
+  pointer-events:none; z-index:100; text-align:center;
+  max-width:400px; transition:opacity .5s;
+}
+
+#player {
+  position:fixed; top:28px; left:50%; transform:translateX(-50%);
+  display:none; align-items:center; gap:12px;
+  background:rgba(0,0,0,0.6); border:1px solid rgba(100,220,255,0.15);
+  border-radius:40px; padding:9px 18px; z-index:100;
+  color:rgba(100,220,255,0.7); font-size:11px; letter-spacing:.06em;
+  backdrop-filter:blur(10px);
+}
+#player.visible { display:flex; }
+#playerTitle { max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#playerCtrl, #playerStop { cursor:pointer; opacity:.6; transition:opacity .2s; user-select:none; }
+#playerCtrl:hover, #playerStop:hover { opacity:1; }
+#playerProgress { width:80px; height:1.5px; background:rgba(100,220,255,0.15); border-radius:2px; }
+#playerBar { height:100%; background:rgba(100,220,255,0.7); border-radius:2px; width:0%; transition:width .5s linear; }
+audio#sfx { display:none; }
+</style>
+</head>
+<body>
+
+<svg id="eyesvg" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Soft outer glow -->
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="14" result="b1"/>
+      <feGaussianBlur stdDeviation="5"  result="b2" in="SourceGraphic"/>
+      <feMerge><feMergeNode in="b1"/><feMergeNode in="b2"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glowSm" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- LEFT EYE — pill shape via rx/ry on rect, or just a wide ellipse -->
+  <g id="gL" filter="url(#glow)">
+    <rect id="eyeL" x="170" y="200" width="140" height="50" rx="25" ry="25" fill="#3de8ff"/>
+  </g>
+
+
+  <!-- RIGHT EYE -->
+  <g id="gR" filter="url(#glow)">
+    <rect id="eyeR" x="490" y="200" width="140" height="50" rx="25" ry="25" fill="#3de8ff"/>
+  </g>
+</svg>
+
+<div id="player">
+  <span id="playerCtrl" onclick="togglePlay()">⏸</span>
+  <span id="playerTitle">—</span>
+  <div id="playerProgress"><div id="playerBar"></div></div>
+  <span id="playerStop" onclick="stopMusic()">✕</span>
+</div>
+<audio id="sfx"></audio>
+
+<div id="transcript"></div>
+<div id="status">starting…</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════
+const PROXY      = 'https://delicate-credit-ed81.rafaestrada-rafa.workers.dev';
+const CHAT_MODEL = 'llama-3.3-70b-versatile';
+const TTS_MODEL  = 'canopylabs/orpheus-v1-english';
+const TTS_VOICE  = 'troy'; // male voice
+
+const SYSTEM = `You are a chill, witty AI companion. Your eyes are visible on screen and react to your emotions. Your name is Indy but the app is called Scope and your linked up to a TTS voice and a Text synthesyser so the user actualy talking to you and your responces are turning into real speech, so if the user's message looks weird, ignore it. Keep replies short — 1 to 3 sentences. Be natural, a bit dry, warm.
+
+Express emotions with tags — use them freely, they're invisible to the user:
+<Blink>            quick blink
+<Wink>             wink right eye
+<Happy>…</Happy>   squint-smile eyes
+<Surprised>…</Surprised>  wide eyes
+<Angry>…</Angry>   narrowed, red
+<Sad>…</Sad>       droopy blue
+<Sleepy>…</Sleepy> half-closed purple
+<Excited>…</Excited> big bright eyes
+
+Music controls:
+<Play SONG by ARTIST>  search and play
+<Pause>   pause music
+<Resume>  resume music
+<Stop>    stop music
+
+Example: "Oh nice, <Excited>I love that song!</Excited> <Play APT by ROSÉ>"
+Only use ONE open emotion tag at a time. Always close it before opening another.`;
+
+// ═══════════════════════════════════════════════
+// EYE STATE
+// ═══════════════════════════════════════════════
+// Eyes are pill-shaped rects. We animate:
+//   scaleY  (height of pill)  — emotion
+//   translateX                — face tracking / gaze
+//   color                     — emotion
+//   lids                      — blink / emotion
+
+// Base geometry
+const BASE = {
+  L: { x:170, y:200, w:140, h:50, cx:240, cy:225 },
+  R: { x:490, y:200, w:140, h:50, cx:560, cy:225 },
+};
+
+// Each emotion: h = pill height multiplier, color, lidT = top lid px, browOp, browTilt
+const EM = {
+  neutral:   { h:1.00, color:'#3de8ff', lidT:0,  lidB:0,  brow:0,    browDY:0,  tiltL:0,  tiltR:0,  dx:0  },
+  happy:     { h:0.40, color:'#00ffaa', lidT:14, lidB:0,  brow:0,    browDY:0,  tiltL:0,  tiltR:0,  dx:0  },
+  surprised: { h:1.60, color:'#ffe94d', lidT:0,  lidB:0,  brow:0.85, browDY:-12,tiltL:0,  tiltR:0,  dx:0  },
+  angry:     { h:0.55, color:'#ff3a3a', lidT:18, lidB:0,  brow:1.0,  browDY:-2, tiltL:9,  tiltR:-9, dx:0  },
+  sad:       { h:0.65, color:'#4d88ff', lidT:10, lidB:0,  brow:0.55, browDY:5,  tiltL:-7, tiltR:7,  dx:0  },
+  sleepy:    { h:0.25, color:'#aa77ff', lidT:28, lidB:0,  brow:0,    browDY:0,  tiltL:0,  tiltR:0,  dx:0  },
+  excited:   { h:1.35, color:'#ff66ff', lidT:0,  lidB:0,  brow:0.65, browDY:-9, tiltL:0,  tiltR:0,  dx:0  },
+  blink:     { h:0.04, color:'#3de8ff', lidT:0,  lidB:0,  brow:0,    browDY:0,  tiltL:0,  tiltR:0,  dx:0  },
+};
+
+let emotion = 'neutral', prevEmotion = 'neutral', eAlpha = 1;
+let curE = { ...EM.neutral };
+let blinkTimer = 0, nextBlink = 2800 + Math.random()*3500;
+let blinking = false, winkMode = false;
+let aiEmotion = null;
+// Gaze offset (translateX applied to eye groups)
+let gazeX = 0, gazeY = 0, tGazeX = 0, tGazeY = 0;
+let lastFrameTs = 0, idleT = 0;
+let idleEmIdx = 0, idleEmTimer = 0;
+const IDLE_SEQ = ['neutral','happy','sleepy','neutral','excited','neutral','sad','neutral'];
+
+const lerp = (a,b,t) => a+(b-a)*t;
+const clamp = (v,lo,hi) => Math.max(lo,Math.min(hi,v));
+const g = id => document.getElementById(id);
+
+function setEmotion(name) {
+  if (!EM[name] || name === emotion) return;
+  prevEmotion = emotion; emotion = name; eAlpha = 0;
+}
+
+function doBlink(side='both') {
+  if (blinking) return;
+  blinking = true; winkMode = side === 'right';
+  const saved = emotion;
+  setEmotion('blink');
+  setTimeout(() => {
+    setEmotion(saved === 'blink' ? (aiEmotion||'neutral') : saved);
+    setTimeout(() => { blinking = false; winkMode = false; }, 180);
+  }, 140);
+}
+
+function render() {
+  const e = curE;
+  const baseH = BASE.L.h;
+  const newH  = baseH * e.h;
+  const dy    = (baseH - newH) / 2; // keep vertically centered
+
+  // ── Left eye pill ──
+  const lx = BASE.L.x + gazeX;
+  const ly = BASE.L.y + dy + gazeY;
+  g('eyeL').setAttribute('x', lx);
+  g('eyeL').setAttribute('y', ly);
+  g('eyeL').setAttribute('width', BASE.L.w);
+  g('eyeL').setAttribute('height', newH);
+  g('eyeL').setAttribute('rx', Math.min(newH/2, 25));
+  g('eyeL').setAttribute('ry', Math.min(newH/2, 25));
+  g('eyeL').setAttribute('fill', e.color);
+
+  // Lids (static, not affected by gaze)
+  const eyeTop = BASE.L.y + dy;
+  const eyeBot = eyeTop + newH;
+
+  // Wink: right eye stays neutral during wink
+  const rH    = winkMode ? baseH : newH;
+  const rDy   = (baseH - rH) / 2;
+  const rLidT = winkMode ? 0 : e.lidT;
+  const rx = BASE.R.x + gazeX;
+  const ry = BASE.R.y + rDy + gazeY;
+  g('eyeR').setAttribute('x', rx);
+  g('eyeR').setAttribute('y', ry);
+  g('eyeR').setAttribute('width', BASE.R.w);
+  g('eyeR').setAttribute('height', rH);
+  g('eyeR').setAttribute('rx', Math.min(rH/2, 25));
+  g('eyeR').setAttribute('ry', Math.min(rH/2, 25));
+  g('eyeR').setAttribute('fill', e.color);
+
+  const rEyeTop = BASE.R.y + rDy;
+  const rEyeBot = rEyeTop + rH;
+}
+
+function frame(ts) {
+  const dt = Math.min(ts - lastFrameTs, 50); lastFrameTs = ts; idleT += dt;
+
+  // Auto blink
+  blinkTimer += dt;
+  if (blinkTimer > nextBlink) {
+    blinkTimer = 0; nextBlink = 2000 + Math.random()*5000; doBlink();
+  }
+
+  // Idle gaze wander when no face detected
+  const noFace = Date.now() - lastFaceMs > 2000;
+  if (noFace) {
+    const t = idleT / 1000;
+    tGazeX = Math.sin(t * 0.5) * 12;
+    tGazeY = Math.sin(t * 0.33 + 1) * 5;
+    if (!aiEmotion) {
+      idleEmTimer += dt;
+      if (idleEmTimer > 5000) {
+        idleEmTimer = 0;
+        idleEmIdx = (idleEmIdx + 1) % IDLE_SEQ.length;
+        if (!blinking) setEmotion(IDLE_SEQ[idleEmIdx]);
+      }
+    }
+  }
+
+  // Smooth gaze
+  const sp = 1 - Math.pow(0.002, dt/1000);
+  gazeX += (tGazeX - gazeX) * sp;
+  gazeY += (tGazeY - gazeY) * sp;
+
+  // Smooth emotion morph
+  eAlpha = clamp(eAlpha + (1 - Math.pow(0.0001, dt/1000)), 0, 1);
+  const from = EM[prevEmotion]||EM.neutral, to = EM[emotion]||EM.neutral;
+  curE = {
+    h:      lerp(from.h,      to.h,      eAlpha),
+    color:  eAlpha > 0.5 ? to.color : from.color,
+    lidT:   lerp(from.lidT,   to.lidT,   eAlpha),
+    lidB:   lerp(from.lidB,   to.lidB,   eAlpha),
+    brow:   lerp(from.brow,   to.brow,   eAlpha),
+    browDY: lerp(from.browDY, to.browDY, eAlpha),
+    tiltL:  lerp(from.tiltL,  to.tiltL,  eAlpha),
+    tiltR:  lerp(from.tiltR,  to.tiltR,  eAlpha),
+  };
+
+  render();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(ts => { lastFrameTs = ts; frame(ts); });
+
+// ═══════════════════════════════════════════════
+// FACE TRACKING
+// ═══════════════════════════════════════════════
+let detector = null, videoEl = null, lastFaceMs = 0;
+const MAX_GAZE = 18;
+
+async function loadScript(src) {
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = res; s.onerror = () => rej();
+    document.head.appendChild(s);
+  });
+}
+
+async function initCamera() {
+  try {
+    await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js');
+    await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow-models/face-detection@1.0.2/dist/face-detection.min.js');
+    const stream = await navigator.mediaDevices.getUserMedia({ video:{facingMode:'user',width:320,height:240}, audio:false });
+    videoEl = document.createElement('video');
+    videoEl.srcObject = stream; videoEl.muted = true; videoEl.playsInline = true;
+    await videoEl.play();
+    detector = await faceDetection.createDetector(
+      faceDetection.SupportedModels.MediaPipeFaceDetector,
+      { runtime:'tfjs', maxFaces:1, modelType:'short' }
+    );
+    faceLoop();
+  } catch(e) { console.warn('Camera:', e); }
+}
+
+async function faceLoop() {
+  if (detector && videoEl?.readyState >= 2) {
+    try {
+      const faces = await detector.estimateFaces(videoEl, { flipHorizontal:true });
+      if (faces.length) {
+        lastFaceMs = Date.now();
+        const b = faces[0].box;
+        const nx = ((b.xMin + b.width*.5) / videoEl.videoWidth  - .5) * 2;
+        const ny = ((b.yMin + b.height*.5) / videoEl.videoHeight - .5) * 2;
+        tGazeX = nx * MAX_GAZE;
+        tGazeY = ny * MAX_GAZE;
+        // Proximity emotion (only if AI isn't controlling it)
+        if (!aiEmotion && !blinking) {
+          const sz = b.width / videoEl.videoWidth;
+          setEmotion(sz > 0.55 ? 'surprised' : sz > 0.28 ? 'happy' : 'neutral');
+        }
+      }
+    } catch(_) {}
+  }
+  requestAnimationFrame(faceLoop);
+}
+initCamera();
+
+// ═══════════════════════════════════════════════
+// TAG PARSER
+// ═══════════════════════════════════════════════
+function parseTags(raw) {
+  const actions = [];
+  let cleanText = '';
+  const re = /<(Blink|Wink|Happy|Surprised|Angry|Sad|Sleepy|Excited|Pause|Resume|Stop|Play [^>]+)>|<\/(Happy|Surprised|Angry|Sad|Sleepy|Excited)>/gi;
+  let last = 0, m;
+  re.lastIndex = 0;
+  while ((m = re.exec(raw)) !== null) {
+    cleanText += raw.slice(last, m.index);
+    last = re.lastIndex;
+    const tag = (m[1]||m[2]).trim();
+    const isClose = m[0].startsWith('</');
+    const ci = cleanText.length;
+    if (!isClose) {
+      const tl = tag.toLowerCase();
+      if (tl === 'blink')        actions.push({ ci, type:'blink' });
+      else if (tl === 'wink')    actions.push({ ci, type:'wink' });
+      else if (tl === 'pause')   actions.push({ ci, type:'mPause' });
+      else if (tl === 'resume')  actions.push({ ci, type:'mResume' });
+      else if (tl === 'stop')    actions.push({ ci, type:'mStop' });
+      else if (tl.startsWith('play ')) actions.push({ ci, type:'play', val: tag.slice(5).trim() });
+      else actions.push({ ci, type:'emStart', val: tl });
+    } else {
+      actions.push({ ci, type:'emEnd' });
+    }
+  }
+  cleanText += raw.slice(last);
+  return { cleanText, actions };
+}
+
+function fireActions(actions) {
+  actions.forEach(a => {
+    if (a.type==='blink')   doBlink();
+    else if (a.type==='wink')    doBlink('right');
+    else if (a.type==='emStart') { aiEmotion=a.val; setEmotion(a.val); }
+    else if (a.type==='emEnd')   { aiEmotion=null;  setEmotion('neutral'); }
+    else if (a.type==='play')    searchAndPlay(a.val);
+    else if (a.type==='mPause')  pauseMusic();
+    else if (a.type==='mResume') resumeMusic();
+    else if (a.type==='mStop')   stopMusic();
+  });
+}
+
+function scheduleActions(actions, text, duration) {
+  const total = text.length || 1;
+  actions.forEach(a => {
+    const delay = (a.ci / total) * duration * 1000;
+    setTimeout(() => {
+      if (a.type==='blink')   doBlink();
+      else if (a.type==='wink')    doBlink('right');
+      else if (a.type==='emStart') { aiEmotion=a.val; setEmotion(a.val); }
+      else if (a.type==='emEnd')   { aiEmotion=null;  setEmotion('neutral'); }
+      else if (a.type==='play')    searchAndPlay(a.val);
+      else if (a.type==='mPause')  pauseMusic();
+      else if (a.type==='mResume') resumeMusic();
+      else if (a.type==='mStop')   stopMusic();
+    }, Math.max(0, delay));
+  });
+}
+
+// ═══════════════════════════════════════════════
+// GROQ CHAT
+// ═══════════════════════════════════════════════
+const history = [];
+
+async function askGroq(userText) {
+  history.push({ role:'user', content: userText });
+  const res = await fetch(PROXY, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model: CHAT_MODEL, max_tokens: 250,
+      messages: [{ role:'system', content: SYSTEM }, ...history]
+    })
+  });
+  const data = await res.json();
+  const reply = data.choices?.[0]?.message?.content || '';
+  history.push({ role:'assistant', content: reply });
+  return reply;
+}
+
+// ═══════════════════════════════════════════════
+// GROQ TTS
+// ═══════════════════════════════════════════════
+async function speakText(text) {
+  if (!text.trim()) return null;
+  text = text.slice(0, 200);
+  try {
+    const res = await fetch(PROXY, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model: TTS_MODEL, voice: TTS_VOICE, input: text, response_format:'wav' })
+    });
+    if (!res.ok) { console.warn('TTS failed', res.status); return null; }
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    return new Promise(resolve => {
+      const audio = new Audio(url);
+      audio.onloadedmetadata = () => resolve({ audio, duration: audio.duration });
+      audio.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+    });
+  } catch(e) { console.warn('TTS error:', e); return null; }
+}
+
+// ═══════════════════════════════════════════════
+// MUSIC — Deezer preview via allorigins
+// ═══════════════════════════════════════════════
+const sfx = g('sfx');
+let progInterval = null;
+
+async function searchAndPlay(query) {
+  setStatus('♪ searching…');
+try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    const url = `https://corsproxy.io/?url=${encodeURIComponent(`https://api.deezer.com/search?q=${encodeURIComponent(query)}&limit=1`)}`;
+    const res  = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeout);
+const data = await res.json();
+    const track = data.data?.[0];
+    if (!track?.preview) { setStatus('no preview found'); return; }
+    sfx.src = track.preview; sfx.play();
+    g('playerTitle').textContent = `${track.title} — ${track.artist.name}`;
+    g('player').classList.add('visible');
+    g('playerCtrl').textContent = '⏸';
+    clearInterval(progInterval);
+    progInterval = setInterval(() => {
+      if (!sfx.duration) return;
+      g('playerBar').style.width = (sfx.currentTime/sfx.duration*100)+'%';
+      if (sfx.ended) { clearInterval(progInterval); g('playerCtrl').textContent='▶'; }
+    }, 400);
+    setStatus('');
+  } catch(e) { console.error(e); setStatus('music error'); }
+}
+function togglePlay()  { sfx.paused ? resumeMusic() : pauseMusic(); }
+function pauseMusic()  { sfx.pause(); g('playerCtrl').textContent='▶'; }
+function resumeMusic() { sfx.play();  g('playerCtrl').textContent='⏸'; }
+function stopMusic()   { sfx.pause(); sfx.src=''; g('player').classList.remove('visible'); clearInterval(progInterval); }
+
+// ═══════════════════════════════════════════════
+// SILENCE-DETECTION MIC
+// Always listening. Sends when you stop talking.
+// ═══════════════════════════════════════════════
+let recognition = null, isListening = false, isBusy = false;
+let silenceTimer = null;
+const SILENCE_MS = 1400; // ms of silence before sending
+
+function initMic() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { setStatus('speech not supported'); return; }
+  recognition = new SR();
+  recognition.lang = 'en-US';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  let finalTranscript = '';
+
+  recognition.onstart = () => { isListening = true; setStatus('listening…'); };
+
+  recognition.onresult = e => {
+    if (isBusy) return;
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) finalTranscript += e.results[i][0].transcript;
+      else interim += e.results[i][0].transcript;
+    }
+    if (interim || finalTranscript) {
+      showTranscript((finalTranscript || interim).trim());
+      // Reset silence timer every time speech comes in
+      clearTimeout(silenceTimer);
+      silenceTimer = setTimeout(() => {
+        const text = finalTranscript.trim() || interim.trim();
+        finalTranscript = '';
+        if (text && !isBusy) handleInput(text);
+      }, SILENCE_MS);
+    }
+  };
+
+  recognition.onerror = e => {
+    if (e.error === 'no-speech' || e.error === 'aborted') return;
+    console.warn('SR:', e.error);
+  };
+
+  recognition.onend = () => {
+    isListening = false;
+    // Auto-restart unless busy
+    if (!isBusy) setTimeout(startMic, 300);
+  };
+
+  startMic();
+}
+
+function startMic() {
+  if (isListening || isBusy) return;
+  try { recognition?.start(); } catch(_) {}
+}
+
+function stopMic() {
+  isListening = false;
+  try { recognition?.stop(); } catch(_) {}
+}
+
+// ═══════════════════════════════════════════════
+// MAIN HANDLER
+// ═══════════════════════════════════════════════
+async function handleInput(text) {
+  isBusy = true;
+  stopMic();
+  setStatus('thinking…');
+  setEmotion('excited'); aiEmotion = 'excited';
+
+  try {
+    const raw = await askGroq(text);
+    const { cleanText, actions } = parseTags(raw);
+    showTranscript(cleanText);
+    setStatus('speaking…');
+
+    const tts = await speakText(cleanText);
+    if (tts?.audio && tts.duration > 0) {
+      scheduleActions(actions, cleanText, tts.duration);
+      tts.audio.play();
+      await new Promise(r => { tts.audio.onended = r; tts.audio.onerror = r; });
+    } else {
+      // TTS unavailable — fire all actions immediately
+      fireActions(actions);
+      // Brief pause so user can read
+      await new Promise(r => setTimeout(r, 2000));
+    }
+  } catch(e) {
+    console.error('handleInput:', e);
+    setStatus('error');
+    await new Promise(r => setTimeout(r, 1500));
+  }
+
+  aiEmotion = null;
+  setEmotion('neutral');
+  isBusy = false;
+  setStatus('listening…');
+  startMic();
+}
+
+// ═══════════════════════════════════════════════
+// UI
+// ═══════════════════════════════════════════════
+function setStatus(t) { g('status').textContent = t; }
+function showTranscript(t) {
+  const el = g('transcript');
+  el.textContent = t;
+  el.style.opacity = '1';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.style.opacity = '0'; }, 6000);
+}
+
+// ═══════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════
+setTimeout(() => { setEmotion('excited'); aiEmotion='excited'; }, 200);
+setTimeout(() => { aiEmotion=null; setEmotion('neutral'); initMic(); }, 1600);
+</script>
+</body>
+</html>
