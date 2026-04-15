@@ -2708,7 +2708,21 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
     color: #444;
 }
 
-
+.product-bogo-tag {
+    display: inline-block;
+    background: #fde047;
+    color: #000;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 0px;
+    margin-left: 5px;
+    vertical-align: middle;
+    line-height: 1.5;
+}
     </style>
 </head>
 
@@ -3759,28 +3773,32 @@ const SPRITZ = [
         desc: 'Strawberry Breeze Spritz — Sweet, sun-warmed strawberry meets a light airy finish in every spritz. This beautifully scented hand mist leaves your hands feeling fresh and delicately fragranced — like a perfect summer afternoon. Perfect for on-the-go refreshness.',
         cost: 10, img: "sbsptz.png",
         color: '#9f7aea', label: 'Strawberry\nBreeze', sub: 'Hand Mist',
-        canBuy: false
+        canBuy: true,
+        bogo: true,
     },
         {
         id: 'BL-SPTZ', code: 'BL-SPTZ', tag: 'Spritz', name: 'Blueberry Burst Hand Mist - 30ml',
         desc: 'Blueberry Blast Spritz — A refreshing burst of blueberry goodness in every spritz. This wonderfully scented hand mist leaves your hands feeling fresh, clean, and lightly moisturized with a delightful blueberry aroma. Perfect for on-the-go freshness.',
         cost: 10, img: "bbsptz.png",
         color: '#9f7aea', label: 'Blueberry\nBurst', sub: 'Hand Mist',
-        canBuy: false
+        canBuy: true,
+        bogo: true,
     },
         {
         id: 'CT-SPTZ', code: 'CT-SPTZ', tag: 'Spritz', name: 'Pure Citrus Hand Mist - 30ml',
         desc: 'Pure Citrus Spritz — A zesty blend of citrus notes in every spritz. This invigorating hand mist leaves your hands feeling refreshed and energized with a vibrant citrus aroma. Perfect for on-the-go revitalization.',
         cost: 10, img: "ctsptz.png",
         color: '#9f7aea', label: 'Citrus\nTwist', sub: 'Hand Mist',
-        canBuy: false
+        canBuy: true,
+        bogo: true,
     },
         {
         id: 'MN-SPTZ', code: 'MN-SPTZ', tag: 'Spritz', name: 'Midnight Musk Hand Mist - 30ml',
         desc: 'Midnight Musk Spritz — A mysterious blend of musk notes in every spritz. This enchanting hand mist leaves your hands feeling exotic and alluring with a captivating musk aroma. Perfect for on-the-go allure.',
         cost: 10, img: "mnsptz.png",
         color: '#9f7aea', label: 'Midnight\nMusk', sub: 'Hand Mist',
-        canBuy: false
+        canBuy: true,
+        bogo: true,
     },
 ];
 
@@ -3790,35 +3808,35 @@ const ACCESSORIES = [
         desc: 'Show off your blind bag collection with the official Blind Bag Trophy Sleeve. Crafted from durable materials, this sleeve is designed to hold and display your favorite blind bags in style. Whether you have one bag or a whole collection, the Trophy Sleeve keeps them safe while showcasing their charm.',
         cost: 2, img: "trfy.png",
         color: '#9f7aea', label: 'Trophy\nSleeve', sub: 'Accessory',
-        canBuy: true
+        canBuy: true,
     },
         {
         id: 'SPRTZ-KC-1', code: 'SPRTZ-KC-1', tag: 'Accessories', name: 'Spritz Keychain - Strawberry Breeze',
         desc: 'Decorate your Ireland Spritz bottle with the official Spritz Keychain. This charming accessory features a miniaturized fruit or object matching the flavors scent, complete with intricate details and vibrant colors that match the Strawberry Breeze scent. Attach it to your keys, bag, or anywhere you want to add a touch of spritz-inspired flair.',
         cost: 2, img: "sbry.png",
         color: '#9f7aea', label: 'Spritz\nKeychain', sub: 'Accessory',
-        canBuy: false
+        canBuy: true,
     },
             {
         id: 'SPRTZ-KC-2', code: 'SPRTZ-KC-2', tag: 'Accessories', name: 'Spritz Keychain - Blueberry Burst',
         desc: 'Decorate your Ireland Spritz bottle with the official Spritz Keychain. This charming accessory features a miniaturized fruit or object matching the flavors scent, complete with intricate details and vibrant colors that match the Blueberry Burst scent. Attach it to your keys, bag, or anywhere you want to add a touch of spritz-inspired flair.',
         cost: 2, img: "bbry.png",
         color: '#9f7aea', label: 'Spritz\nKeychain', sub: 'Accessory',
-        canBuy: false
+        canBuy: true,
     },
                 {
         id: 'SPRTZ-KC-3', code: 'SPRTZ-KC-3', tag: 'Accessories', name: 'Spritz Keychain - Pure Citrus',
         desc: 'Decorate your Ireland Spritz bottle with the official Spritz Keychain. This charming accessory features a miniaturized fruit or object matching the flavors scent, complete with intricate details and vibrant colors that match the Pure Citrus scent. Attach it to your keys, bag, or anywhere you want to add a touch of spritz-inspired flair.',
         cost: 2, img: "orng.png",
         color: '#9f7aea', label: 'Spritz\nKeychain', sub: 'Accessory',
-        canBuy: false
+        canBuy: true,
     },
                     {
         id: 'SPRTZ-KC-4', code: 'SPRTZ-KC-4', tag: 'Accessories', name: 'Spritz Keychain - Midnight Musk',
         desc: 'Decorate your Ireland Spritz bottle with the official Spritz Keychain. This charming accessory features a miniaturized fruit or object matching the flavors scent, complete with intricate details and vibrant colors that match the Midnight Musk scent. Attach it to your keys, bag, or anywhere you want to add a touch of spritz-inspired flair.',
         cost: 2, img: "lvnd.png",
         color: '#9f7aea', label: 'Spritz\nKeychain', sub: 'Accessory',
-        canBuy: false
+        canBuy: true,
     },
 ]
 
@@ -3929,7 +3947,7 @@ function renderCard(p, visual, extraBelow) {
         </div>
         <div class="product-card-info">
             <div class="product-card-topic">${p.tag || ''}</div>
-            <div class="product-name">${p.name}</div>
+            <div class="product-name">${p.name}${p.bogo ? '<span class="product-bogo-tag">BOGO 25%</span>' : ''}</div>
             ${extraBelow || ''}
             <div class="product-card-bottom">
                 <button class="${btnClass}" style="${btnStyle}" onclick="${btnClick}" ${!buyable ? 'disabled' : ''}>${btnLabel}</button>
@@ -4964,6 +4982,170 @@ function initPickupMap() {
 }
 
 // Include Leaflet CSS & JS (add this in <head>)
+</script>
+
+<!-- === IMPROVED BOGO + 25% OFF LOGIC (Auto Overwrite) === -->
+<script>
+// Calculate cost for Spritz (BOGO 25%)
+function calculateSpritzCost(qty) {
+    if (qty <= 0) return 0;
+    return 10 + (qty - 1) * 8;   // first full 10, rest at 8
+}
+
+// Calculate cost for items with 25% off on additional units (e.g. keychains/accessories)
+function calculateDiscountedCost(baseCost, qty) {
+    if (qty <= 0) return 0;
+    if (qty === 1) return baseCost;
+    
+    // 25% off on every unit after the first, rounded up
+    const first = baseCost;
+    const additionalPrice = Math.ceil(baseCost * 0.75);   // 25% off = 75% of price, rounded up
+    return first + (qty - 1) * additionalPrice;
+}
+
+// Get effective cost for any product
+function getItemEffectiveCost(product, qty) {
+    if (!product) return 0;
+    
+    if (product.bogo === true) {
+        return calculateSpritzCost(qty);           // Spritz BOGO
+    }
+    
+    // For keychains / accessories that should get 25% off on extras
+    if (product.tag && (product.tag.includes('Keychain') || product.tag.includes('Accessories'))) {
+        return calculateDiscountedCost(product.cost, qty);
+    }
+    
+    // Default: normal price
+    return product.cost * qty;
+}
+
+// ── Overwrite Popup Total ──
+window.updatePopupTotal = function(p) {
+    if (!p) return;
+    const priority = document.getElementById('chipPriority')?.classList.contains('selected') || false;
+    let base = getItemEffectiveCost(p, popupQty);
+    const extra = priority ? 5 : 0;
+    const total = base + extra;
+
+    const totalEl = document.getElementById('popupTotalVal');
+    totalEl.innerHTML = `${total} <small>Action${total !== 1 ? 's' : ''}</small>`;
+    
+    if (p.bogo) {
+        totalEl.innerHTML += ` <span style="font-size:0.68rem;color:#10b981;font-weight:700">(BOGO 25%)</span>`;
+    } else if (p.tag && (p.tag.includes('Keychain') || p.tag.includes('Accessories'))) {
+        totalEl.innerHTML += ` <span style="font-size:0.68rem;color:#10b981;font-weight:700">(25% off additional)</span>`;
+    }
+    if (extra) {
+        totalEl.innerHTML += `<span style="font-size:0.6rem;color:var(--gray-400);margin-left:6px">+5 priority</span>`;
+    }
+};
+
+// ── Overwrite Cart Total ──
+window.cartTotalActions = function() {
+    const meta = loadCartMeta();
+    return Object.keys(cart).reduce((sum, id) => {
+        const p = ALL_PRODUCTS.find(x => x.id === id);
+        if (!p) return sum;
+        const qty = cart[id] || 1;
+        const base = getItemEffectiveCost(p, qty);
+        const priorityFee = (meta[id] && meta[id].priority) ? 5 : 0;
+        return sum + base + priorityFee;
+    }, 0);
+};
+
+// ── Overwrite renderCartDrawer ──
+window.renderCartDrawer = function() {
+    cart = loadCart();
+    const keys = Object.keys(cart);
+    const body = document.getElementById('cartDrawerBody');
+
+    if (!keys.length) {
+        body.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">🛒</div><div>Your cart is empty</div></div>`;
+        document.getElementById('cartTotal').textContent = '0';
+        return;
+    }
+
+    body.innerHTML = keys.map(id => {
+        const p = ALL_PRODUCTS.find(x => x.id === id);
+        if (!p) return '';
+        const qty = cart[id];
+        const itemTotal = getItemEffectiveCost(p, qty);
+
+        let thumb = p.img ? `<img src="${p.img}" alt="${p.name}">` : 
+                    `<div class="mini-placeholder" style="background:${p.color || '#ddd'}">${p.emoji || '🎁'}</div>`;
+
+        return `<div class="cart-item-row">
+            <div class="cart-item-thumb">${thumb}</div>
+            <div class="cart-item-info">
+                <div class="cart-item-name">${p.name}</div>
+                <div class="cart-item-sub">${p.cost} ea. ${p.bogo ? '(BOGO 25%)' : (p.tag && (p.tag.includes('Keychain') || p.tag.includes('Accessories'))) ? '(25% off addl.)' : ''}</div>
+                <div class="cart-item-qty-row">
+                    <button class="qty-btn" onclick="adjustQty('${id}',-1)">−</button>
+                    <span class="qty-val">${qty}</span>
+                    <button class="qty-btn" onclick="adjustQty('${id}',1)">+</button>
+                </div>
+            </div>
+            <div class="cart-item-price">${itemTotal}</div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('cartTotal').textContent = cartTotalActions();
+};
+
+// ── Overwrite openCheckout (for review screen) ──
+const originalOpenCheckout = window.openCheckout || function(){};
+window.openCheckout = function() {
+    originalOpenCheckout();
+
+    cart = loadCart();
+    const keys = Object.keys(cart);
+    if (!keys.length) return;
+
+    const meta = loadCartMeta();
+
+    document.getElementById('coItemsList').innerHTML = keys.map(id => {
+        const p = ALL_PRODUCTS.find(x => x.id === id);
+        if (!p) return '';
+        const qty = cart[id];
+        const m = meta[id] || {};
+        const itemCost = getItemEffectiveCost(p, qty) + (m.priority ? 5 : 0);
+
+        const badges = [
+            m.giftWrap ? `<span class="co-item-badge">🎁 Gift wrap</span>` : '',
+            m.priority ? `<span class="co-item-badge co-item-badge-priority">⚡ Priority +5</span>` : '',
+            m.note ? `<span class="co-item-badge">✏️ Note</span>` : '',
+        ].filter(Boolean).join('');
+
+        const noteRow = m.note ? `<div class="co-item-note">"${m.note}"</div>` : '';
+
+        return `<div class="co-item-row">
+            <div class="co-item-left">
+                <span class="co-item-emoji">${p.emoji || '🎁'}</span>
+                <div>
+                    <div class="co-item-name">${p.name}</div>
+                    <div class="co-item-code">${p.code}</div>
+                    ${badges ? `<div class="co-item-badges">${badges}</div>` : ''}
+                    ${noteRow}
+                </div>
+            </div>
+            <div class="co-item-right">
+                <div class="co-item-cost">${itemCost} act.</div>
+                ${qty > 1 ? `<div class="co-item-qty">×${qty}</div>` : ''}
+            </div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('coTotalVal').textContent = `${cartTotalActions()} action${cartTotalActions() !== 1 ? 's' : ''}`;
+};
+
+// Force re-render after paste
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        renderAllGrids();
+        renderCartDrawer();
+    }, 200);
+});
 </script>
 
 <!-- Pickup Location Popup
