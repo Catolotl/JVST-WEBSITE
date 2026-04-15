@@ -2707,6 +2707,8 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
     line-height: 1.6;
     color: #444;
 }
+
+
     </style>
 </head>
 
@@ -2729,8 +2731,6 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
                 <li><a href="index.html" class="active">Home</a></li>
                 <li><a href="indy.html">Indy AI</a></li>
                 <li><a href="internal.html">For Devs</a></li>
-                <li><a href="fans.html">LOUNGE *NEW*</a></li>
-                <li><a href="boards.html">BOARDS *NEW*</a></li>
                 <li><a href="shop.html">☻</a></li>
             </ul>
             
@@ -2750,7 +2750,17 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
 <!-- ═══ HERO CAROUSEL ═══ -->
 <div class="hero-section" id="heroSection">
 
-            <div class="carousel-slide active">
+
+                <div class="carousel-slide active">
+        <img class="c-bg" src="promo2.png" alt="BOGO 25 Percent Off">
+        <div class="slide-overlay">
+            <div class="slide-content">
+
+            </div>
+        </div>
+    </div>
+
+            <div class="carousel-slide">
         <img class="c-bg" src="posterraven.png" alt="Edgar Allen Poe Blind Bag">
         <div class="slide-overlay">
             <div class="slide-content">
@@ -2777,8 +2787,8 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
         <div class="slide-overlay">
             <div class="slide-content">
                 <div class="slide-label">Ireland Spritz™</div>
-                <h1 class="slide-title">Out Now [PRE-ORDER]!</h1>
-                <p class="slide-desc">Excited for the new drop? There's more! Ireland Spritz, the all-new hand spray is here to stay on on this website!</p>
+                <h1 class="slide-title">Coming Soon!</h1>
+                <p class="slide-desc">Excited for the new drop? There's more! Ireland Spritz, the all-new hand spray is coming to this website next week!</p>
                 <span class="slide-tag">#IRELANDSPRITZ</span>
             </div>
         </div>
@@ -2839,6 +2849,7 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
         <button class="carousel-dot" data-i="2"></button>
         <button class="carousel-dot" data-i="3"></button>
         <button class="carousel-dot" data-i="4"></button>
+        <button class="carousel-dot" data-i="5"></button>
     </div>
 </div>
 
@@ -2860,6 +2871,20 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
     </div>
 </div>
 
+<!-- ═══ APR 10 DROP TEASER BANNER ═══ -->
+<div class="drop-banner">
+    <div class="drop-banner-left">
+        <div class="drop-banner-eyebrow">
+            <span class="drop-banner-eyebrow-rule"></span>IRELAND™ — APRIL 10, 2026
+        </div>
+        <div class="drop-banner-title">Something drops April 10th.<br><span class="drop-banner-title-muted">We can't tell you what. Yet.</span></div>
+        <div class="drop-banner-sub">New services. New collabs. More details closer to the date.</div>
+    </div>
+    <div class="drop-banner-right">
+        <div id="drop-countdown" class="drop-banner-countdown">–– : –– : ––</div>
+        <a href="shop.html" class="drop-banner-cta">Get Ready →</a>
+    </div>
+</div>
 <script>
 (function(){
     const target = new Date('2026-04-10T00:00:00');
@@ -2879,6 +2904,7 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
 <main>
 
 <!-- ═══ IRELAND™ SPRITZ SECTION — FULL BACKGROUND GRADIENT ═══ -->
+ 
 <div id="trending">
     <div style="position:absolute;inset:0;background:radial-gradient(circle at 20% 30%, rgba(255,255,255,0.55), transparent 60%), radial-gradient(circle at 80% 70%, rgba(224,247,250,0.6), transparent 55%);pointer-events:none;"></div>
     <div class="trending-inner">
@@ -3733,28 +3759,28 @@ const SPRITZ = [
         desc: 'Strawberry Breeze Spritz — Sweet, sun-warmed strawberry meets a light airy finish in every spritz. This beautifully scented hand mist leaves your hands feeling fresh and delicately fragranced — like a perfect summer afternoon. Perfect for on-the-go refreshness.',
         cost: 10, img: "sbsptz.png",
         color: '#9f7aea', label: 'Strawberry\nBreeze', sub: 'Hand Mist',
-        canBuy: true
+        canBuy: false
     },
         {
         id: 'BL-SPTZ', code: 'BL-SPTZ', tag: 'Spritz', name: 'Blueberry Burst Hand Mist - 30ml',
         desc: 'Blueberry Blast Spritz — A refreshing burst of blueberry goodness in every spritz. This wonderfully scented hand mist leaves your hands feeling fresh, clean, and lightly moisturized with a delightful blueberry aroma. Perfect for on-the-go freshness.',
         cost: 10, img: "bbsptz.png",
         color: '#9f7aea', label: 'Blueberry\nBurst', sub: 'Hand Mist',
-        canBuy: true
+        canBuy: false
     },
         {
         id: 'CT-SPTZ', code: 'CT-SPTZ', tag: 'Spritz', name: 'Pure Citrus Hand Mist - 30ml',
         desc: 'Pure Citrus Spritz — A zesty blend of citrus notes in every spritz. This invigorating hand mist leaves your hands feeling refreshed and energized with a vibrant citrus aroma. Perfect for on-the-go revitalization.',
         cost: 10, img: "ctsptz.png",
         color: '#9f7aea', label: 'Citrus\nTwist', sub: 'Hand Mist',
-        canBuy: true
+        canBuy: false
     },
         {
         id: 'MN-SPTZ', code: 'MN-SPTZ', tag: 'Spritz', name: 'Midnight Musk Hand Mist - 30ml',
         desc: 'Midnight Musk Spritz — A mysterious blend of musk notes in every spritz. This enchanting hand mist leaves your hands feeling exotic and alluring with a captivating musk aroma. Perfect for on-the-go allure.',
         cost: 10, img: "mnsptz.png",
         color: '#9f7aea', label: 'Midnight\nMusk', sub: 'Hand Mist',
-        canBuy: true
+        canBuy: false
     },
 ];
 
@@ -3771,28 +3797,28 @@ const ACCESSORIES = [
         desc: 'Decorate your Ireland Spritz bottle with the official Spritz Keychain. This charming accessory features a miniaturized fruit or object matching the flavors scent, complete with intricate details and vibrant colors that match the Strawberry Breeze scent. Attach it to your keys, bag, or anywhere you want to add a touch of spritz-inspired flair.',
         cost: 2, img: "sbry.png",
         color: '#9f7aea', label: 'Spritz\nKeychain', sub: 'Accessory',
-        canBuy: true
+        canBuy: false
     },
             {
         id: 'SPRTZ-KC-2', code: 'SPRTZ-KC-2', tag: 'Accessories', name: 'Spritz Keychain - Blueberry Burst',
         desc: 'Decorate your Ireland Spritz bottle with the official Spritz Keychain. This charming accessory features a miniaturized fruit or object matching the flavors scent, complete with intricate details and vibrant colors that match the Blueberry Burst scent. Attach it to your keys, bag, or anywhere you want to add a touch of spritz-inspired flair.',
         cost: 2, img: "bbry.png",
         color: '#9f7aea', label: 'Spritz\nKeychain', sub: 'Accessory',
-        canBuy: true
+        canBuy: false
     },
                 {
         id: 'SPRTZ-KC-3', code: 'SPRTZ-KC-3', tag: 'Accessories', name: 'Spritz Keychain - Pure Citrus',
         desc: 'Decorate your Ireland Spritz bottle with the official Spritz Keychain. This charming accessory features a miniaturized fruit or object matching the flavors scent, complete with intricate details and vibrant colors that match the Pure Citrus scent. Attach it to your keys, bag, or anywhere you want to add a touch of spritz-inspired flair.',
         cost: 2, img: "orng.png",
         color: '#9f7aea', label: 'Spritz\nKeychain', sub: 'Accessory',
-        canBuy: true
+        canBuy: false
     },
                     {
         id: 'SPRTZ-KC-4', code: 'SPRTZ-KC-4', tag: 'Accessories', name: 'Spritz Keychain - Midnight Musk',
         desc: 'Decorate your Ireland Spritz bottle with the official Spritz Keychain. This charming accessory features a miniaturized fruit or object matching the flavors scent, complete with intricate details and vibrant colors that match the Midnight Musk scent. Attach it to your keys, bag, or anywhere you want to add a touch of spritz-inspired flair.',
         cost: 2, img: "lvnd.png",
         color: '#9f7aea', label: 'Spritz\nKeychain', sub: 'Accessory',
-        canBuy: true
+        canBuy: false
     },
 ]
 
