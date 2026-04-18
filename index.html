@@ -456,10 +456,6 @@
             transition: box-shadow 0.25s ease, transform 0.25s ease;
             position: relative;
         }
-        .product-card:hover {
-            box-shadow: 0 8px 24px rgba(0,0,0,0.10);
-            transform: translateY(-2px);
-        }
 
         /* Image on top */
         .product-img-wrap {
@@ -2723,6 +2719,142 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
     vertical-align: middle;
     line-height: 1.5;
 }
+
+
+
+/* ── WIDE IMAGE GALLERY — Smaller side margins than product grids ── */
+.wide-gallery-section {
+    padding: 100px 0 80px;
+    background: var(--white);
+}
+
+.wide-gallery-header {
+    padding: 0 0;                    /* fully removed side padding */
+    max-width: 100%;                 /* allow it to go full width */
+    margin: 0;                       /* remove any auto margins */
+    max-width: 1400px;
+    margin: 0 auto 40px;
+}
+
+.wide-gallery-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--black);
+    margin-bottom: 8px;
+}
+
+.wide-gallery-subtitle {
+    font-size: 0.95rem;
+    color: var(--gray-400);
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+}
+
+.wide-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+    gap: 24px;
+    padding: 0 0;                    /* fully removed side padding */
+    max-width: 100%;                 /* allow it to go full width */
+    margin: 0;                       /* remove any auto margins */
+}
+
+/* Hover effects stay the same */
+.wide-gallery-card {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease;
+    cursor: pointer;
+}
+
+.wide-gallery-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 30px 70px rgba(0,0,0,0.18);
+}
+
+.wide-gallery-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.wide-gallery-card:hover img {
+    transform: scale(1.06);
+}
+
+.wide-gallery-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 32px 28px;
+    background: linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.wide-gallery-card:hover .wide-gallery-overlay {
+    opacity: 1;
+}
+
+.wide-gallery-name {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.wide-gallery-desc {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-top: 4px;
+}
+
+/* Related Products in Popup */
+.popup-related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+}
+
+.popup-related-item {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.popup-related-item:hover {
+    transform: translateY(-4px);
+}
+
+.popup-related-item img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.popup-related-item .rel-name {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-top: 8px;
+    line-height: 1.2;
+    color: var(--black);
+}
+
+.popup-related-item .rel-price {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--gray-400);
+}
     </style>
 </head>
 
@@ -2885,20 +3017,6 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
     </div>
 </div>
 
-<!-- ═══ APR 10 DROP TEASER BANNER ═══ -->
-<div class="drop-banner">
-    <div class="drop-banner-left">
-        <div class="drop-banner-eyebrow">
-            <span class="drop-banner-eyebrow-rule"></span>IRELAND™ — APRIL 10, 2026
-        </div>
-        <div class="drop-banner-title">Something drops April 10th.<br><span class="drop-banner-title-muted">We can't tell you what. Yet.</span></div>
-        <div class="drop-banner-sub">New services. New collabs. More details closer to the date.</div>
-    </div>
-    <div class="drop-banner-right">
-        <div id="drop-countdown" class="drop-banner-countdown">–– : –– : ––</div>
-        <a href="shop.html" class="drop-banner-cta">Get Ready →</a>
-    </div>
-</div>
 <script>
 (function(){
     const target = new Date('2026-04-10T00:00:00');
@@ -2916,6 +3034,35 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
 
 <!-- ═══ MAIN ═══ -->
 <main>
+
+    <!-- Wide Image Gallery - Perfect for Spritz Photo Shoots -->
+<section class="wide-gallery-section">
+    <div class="wide-gallery-header">
+        <h2 class="wide-gallery-title">Spritz Studio Shots</h2>
+        <p class="wide-gallery-subtitle">Behind the scenes • Fresh campaign visuals</p>
+    </div>
+
+    <div class="wide-gallery-grid" id="spritzGallery">
+
+        <!-- Paste as many images as you want here -->
+        <div class="wide-gallery-card" onclick="openPopup('BL-SP')">
+            <img src="sprtznewad.png" alt="New Sprtiz">
+            <div class="wide-gallery-overlay">
+                <div class="wide-gallery-name">New Sprtiz Scents</div>
+                <div class="wide-gallery-desc">Hand mist • 30ml</div>
+            </div>
+        </div>
+
+        <div class="wide-gallery-card" onclick="openPopup('WB-MCH')">
+            <img src="matchadropad.png" alt="Matcha Drop">
+            <div class="wide-gallery-overlay">
+                <div class="wide-gallery-name">Matcha Drop</div>
+                <div class="wide-gallery-desc">NEW SPRITZ AND WB BOOKS</div>
+            </div>
+        </div>
+
+    </div>
+</section>
 
 <!-- ═══ IRELAND™ SPRITZ SECTION — FULL BACKGROUND GRADIENT ═══ -->
  
@@ -3264,6 +3411,15 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
             </div>
 
             <button class="popup-add-btn" id="popupAddBtn" onclick="toggleCartFromPopup()">＋ Add to Cart</button>
+            <!-- Related Products -->
+<div class="popup-related" id="popupRelated" style="margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--gray-200);">
+    <div style="font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 16px;">
+        You may also like
+    </div>
+    <div class="popup-related-grid" id="popupRelatedGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px;">
+        <!-- JS will fill this -->
+    </div>
+</div>
         </div>
     </div>
 </div>
@@ -3506,6 +3662,198 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
     flex-shrink: 0;
 }
 #school-warn-bar .warn-dismiss:hover { color: #fff; border-color: #555; }
+
+
+
+/* ── SECTION HEADER — aligned with product grid side margins ── */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 24px;
+    padding: 0 32px;           /* ← This matches the grid side padding */
+    max-width: 1300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ── PRODUCT GRID — bigger side margins + moderate internal gap ── */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;                 /* internal gap between cards */
+    margin-bottom: 72px;
+    
+    padding: 0 32px;           /* ← Bigger left/right margins for the whole row */
+    max-width: 1300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Make sure the special full-bleed sections (like #trending) still look good */
+#trending .product-grid {
+    padding: 0 32px;           /* keep consistent */
+}
+
+/* Optional: even more side space on very wide screens */
+@media (min-width: 1400px) {
+    .section-header,
+    .product-grid {
+        padding-left: 48px;
+        padding-right: 48px;
+    }
+}
+
+/* ── PRODUCT FULLSCREEN VIEW — Image-first layout ── */
+#product-popup {
+    position: fixed; 
+    inset: 0; 
+    z-index: 2000;
+    background: var(--white);
+    display: none;
+    flex-direction: column;
+    overflow-y: auto;
+}
+#product-popup.open { display: flex; }
+
+.popup-fs-topbar {
+    position: sticky; 
+    top: 0; 
+    z-index: 10;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 0.5px solid var(--gray-200);
+    padding: 12px 30px;
+    display: flex; 
+    align-items: center;
+}
+
+.popup-return-btn {
+    background: none; 
+    border: none;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #0071e3;
+    cursor: pointer;
+    display: flex; 
+    align-items: center; 
+    gap: 5px;
+    padding: 0;
+    letter-spacing: -0.01em;
+}
+.popup-return-btn:hover { opacity: 0.7; }
+.popup-return-btn::before { content: '‹'; font-size: 1.15rem; }
+
+/* Main body — image dominant */
+.popup-fs-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 40px 40px 80px;
+    gap: 80px;
+    align-items: start;
+}
+
+/* Image side — bigger and centered */
+.popup-img {
+    width: 100%;
+    aspect-ratio: 3/3.8;           /* taller, more portrait for products */
+    background: #f8f8f8;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    position: sticky;
+    top: 100px;
+    align-self: flex-start;
+}
+.popup-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Info side — secondary, starts lower */
+.popup-fs-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 20px;             /* pushes text down a bit */
+}
+
+.popup-tag {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+}
+
+.popup-name {
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 3.2vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    color: var(--black);
+}
+
+.popup-desc {
+    font-size: 0.95rem;
+    color: var(--gray-600);
+    line-height: 1.75;
+    margin-bottom: 12px;
+}
+
+/* Rest of the info elements stay clean */
+.popup-code-row,
+.popup-total-callout,
+.popup-delivery-row,
+.popup-color-row,
+.popup-option-group {
+    margin-top: 8px;
+}
+
+/* Make the Add button stand out more */
+.popup-add-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    background: var(--black);
+    color: #fff;
+    border: none;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    margin-top: 12px;
+}
+.popup-add-btn:hover { background: #222; transform: translateY(-1px); }
+
+/* Mobile: stack vertically, image first */
+@media (max-width: 860px) {
+    .popup-fs-body {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 28px 22px 60px;
+    }
+    .popup-img {
+        position: static;
+        aspect-ratio: 3/3.2;
+        max-height: 420px;
+    }
+    .popup-fs-info {
+        padding-top: 0;
+    }
+}
 </style>
 
 
@@ -3568,6 +3916,118 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
     </div>
   </div>
 </footer>
+
+<!-- Cherry Blossom Petals - Delicate Spring Touch -->
+<div id="blossom-container" style="position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden;"></div>
+<script>
+const PETAL_COLORS = [
+    { fill: '#ffd6e7', stroke: '#e8a0be' },
+    { fill: '#fde8f2', stroke: '#f0b8d4' },
+    { fill: '#ffe0ee', stroke: '#ec9cc0' },
+    { fill: '#fff0f7', stroke: '#f4c0d8' },
+];
+
+const PETAL_SHAPES = [
+    'M0,-16 C9,-12 16,-3 13,6 C15,14 6,19 0,17 C-6,19 -15,14 -13,6 C-16,-3 -9,-12 0,-16Z',
+    'M0,-15 C10,-10 17,-2 13,7 C15,15 5,19 0,17 C-5,19 -15,15 -13,7 C-17,-2 -10,-10 0,-15Z',
+    'M0,-14 C11,-8 16,0 12,8 C14,15 5,18 0,16 C-5,18 -14,15 -12,8 C-16,0 -11,-8 0,-14Z',
+];
+
+function createSoftBlossom() {
+    const container = document.getElementById('blossom-container');
+    const color = PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)];
+    const shape = PETAL_SHAPES[Math.floor(Math.random() * PETAL_SHAPES.length)];
+    const scale = Math.random() * 0.5 + 0.75;
+const opacity = (Math.random() * 0.10 + 0.20).toFixed(2);
+
+
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('width', 40 * scale);
+    svg.setAttribute('height', 40 * scale);
+    svg.setAttribute('viewBox', '-20 -20 40 40');
+    svg.style.cssText = 'position:absolute;pointer-events:none;overflow:visible;';
+    svg.style.left = (Math.random() * 104 - 2) + 'vw';
+    svg.style.top = '-44px';
+    svg.style.opacity = opacity;
+
+    const path = document.createElementNS(ns, 'path');
+    path.setAttribute('d', shape);
+    path.setAttribute('fill', color.fill);
+    path.setAttribute('stroke', color.stroke);
+    path.setAttribute('stroke-width', '0.7');
+    svg.appendChild(path);
+
+    // Soft center
+    const center = document.createElementNS(ns, 'circle');
+    center.setAttribute('cx', '0'); center.setAttribute('cy', '1');
+    center.setAttribute('r', '2.2');
+    center.setAttribute('fill', color.stroke);
+    center.setAttribute('fill-opacity', '0.4');
+    svg.appendChild(center);
+
+    // 3 delicate veins
+    for (let i = 0; i < 3; i++) {
+        const angle = (i / 3) * Math.PI - Math.PI / 2;
+        const v = document.createElementNS(ns, 'line');
+        v.setAttribute('x1', '0'); v.setAttribute('y1', '1');
+        v.setAttribute('x2', (Math.cos(angle) * 12).toFixed(1));
+        v.setAttribute('y2', (Math.sin(angle) * 12).toFixed(1));
+        v.setAttribute('stroke', color.stroke);
+        v.setAttribute('stroke-width', '0.35');
+        v.setAttribute('stroke-opacity', '0.28');
+        svg.appendChild(v);
+    }
+
+    container.appendChild(svg);
+
+    // Physics — clear downward momentum, gentle side drift, no sway oscillation
+    const duration  = Math.random() * 18 + 13;   // 13–31s: fast enough to read as falling
+    const swayX     = (Math.random() - 0.5) * 55; // subtle lateral drift
+    const rotateEnd = (Math.random() - 0.5) * 100;
+    const fallDist  = window.innerHeight + 60;
+
+    let t0 = null;
+
+    function frame(ts) {
+        if (!t0) t0 = ts;
+        const p = Math.min((ts - t0) / 1000 / duration, 1);
+
+        // Ease-in so it accelerates naturally, like actual gravity
+        const y = p * p * fallDist;
+        const x = swayX * p;
+        const r = rotateEnd * p;
+        svg.style.transform = `translate(${x}px,${y}px) rotate(${r}deg)`;
+
+        if (p < 1) {
+            requestAnimationFrame(frame);
+        } else {
+            svg.remove();
+        }
+    }
+
+    // Fade out gently in final stretch
+    setTimeout(() => {
+        svg.style.transition = 'opacity 3.5s linear';
+        svg.style.opacity = '0';
+    }, (duration - 3.5) * 1000);
+
+    requestAnimationFrame(frame);
+}
+
+function startGentleBlossoms() {
+    // Staggered opening burst — fills the screen naturally on load
+    for (let i = 0; i < 6; i++) {
+        setTimeout(createSoftBlossom, i * 320);
+    }
+    // Sparse continuous fall — matches your original cadence
+    setInterval(() => {
+        if (Math.random() > 0.65) createSoftBlossom();
+    }, 650);
+}
+
+document.addEventListener('DOMContentLoaded', startGentleBlossoms);
+</script>
 <script>
 'use strict';
 
@@ -3664,8 +4124,15 @@ const BOOKS = [
     {
         id: 'WB-WHTB', code: 'WB-WHT', tag: 'White Board Book', name: 'White Board Book',
         desc: 'Reusable whiteboard notebook — draw, erase, repeat. Classic Maroon cover.',
-        cost: 2, img: "2.png",
+        cost: 2, img: "https://lh7-rt.googleusercontent.com/sitesz/AClOY7olqfi1vKfqLzIQe5O2JK6IXfm_0klTsN0xHrWARLFD30Dcv5KP8Pyq6BxadQ0J4HBFGexpeq7p3hA9VOOKRNtLZccxpytVijjQAe_M3gSv_cBDd_jf_CqKIacVHxgVkcBAhLw2mPyEBa-agr7BfUUOckubAs-hlOkUguANldkXYEEFHYuf4SXekHCLLw=s2048?key=K2TP11tEt5USlx2623La7A",
         spineColor: '#c0392b', coverColor: '#e8b4b0',
+    },
+
+    {
+        id: 'WB-PCH', code: 'WB-PCH', tag: 'White Board Book', name: 'Peach White Board Book',
+        desc: 'Warm peach-toned whiteboard notebook. The fan favorite.',
+        cost: 2, img: 'https://lh7-rt.googleusercontent.com/sitesz/AClOY7qMcYwcB_z6L8PcNf9aQwg8VsOlcfNRO5KRRyEh-ggWopkNdQ6pVRFu92RkslbkKVSxQbs0yvlWVRkqWQLSKtvhxS5DRtn0UnpBTv3AAPlg4xUOqkg6dDvfW-uBw_SIL3OOjEzGEeNtBJxoMQc1LIRVJ6-MLWWOIeJWX6H9yifCgfNfNYBcn7uvtNH4Ng=s2048?key=K2TP11tEt5USlx2623La7A',
+        spineColor: '#c07850', coverColor: '#fddbb4',
     },
 
         {
@@ -3678,32 +4145,26 @@ const BOOKS = [
     {
         id: 'WB-VIN', code: 'WB-VIN', tag: 'White Board Book', name: 'Vintage White Board Book',
         desc: 'Warm vintage-toned whiteboard book with a retro feel.',
-        cost: 2, img: '7.png',
+        cost: 2, img: 'https://lh7-rt.googleusercontent.com/sitesz/AClOY7ro-31kVzfzfXg1slNnE1gThQLZZic2h1QjJlNaoLTTQ4Zh3Jcz-4p3vO7zQ8tRbS6sFDyddGRiwqQ08AxxiySqQL-7uPwt9LyuZlY_FCtAo8tSo0JxjNsHvk3zSXXxovE_WKsaMuQtyZ8h5GUqBIaldn5ymexvXmdCK-Qk7GrFxZqhL3X_DAB7Z2ryIA=s2048?key=K2TP11tEt5USlx2623La7A',
         spineColor: '#bfbfbf', coverColor: '#f0f0f0',
     },
     {
         id: 'WB-MINT', code: 'WB-MNT', tag: 'White Board Book', name: 'Mint White Board Book',
         desc: 'Fresh mint-colored reusable whiteboard book.',
-        cost: 2, img: '4.png',
+        cost: 2, img: 'https://lh7-rt.googleusercontent.com/sitesz/AClOY7p6uFmN0ZN8RnYrqi4HEVusTVDcyjjv79dB6lzfpZiExWoE5WhBou0ZPoKzvmK8uQGFzcw6nZlcVnRYUiRlvLeLAfUCDBCy82jDNQr9QZc1fFRCW1WhLHJ5f3XyGDQEOPYJCF9Zcg8Qrw9VW4N_S0aeFi963_GwNYIn0HSAtn8PvGnmmMec6ALnYBKWuYzK=s2048?key=K2TP11tEt5USlx2623La7A',
         spineColor: '#2d9e7e', coverColor: '#a8e6cf',
     },
     {
         id: 'WB-AME', code: 'WB-AME', tag: 'White Board Book', name: 'Amethyst White Board Book',
         desc: 'Deep amethyst purple — reusable whiteboard with a bold look.',
-        cost: 2, img: "20.png",
+        cost: 2, img: "https://lh7-rt.googleusercontent.com/sitesz/AClOY7qwa148aKacwDrhm4c9yfHmsSg0CwnIi6lLeE_J72zuRTu5ATzE4zew5FLTukSNENEpUQIE4nYH7go_QbKL0n18ZXAoFjEzkOAx-nYSPDDqPWTdcNihCAV61cJknKCQXn1ZY_Ngiti2GkPdjd0WLzwQeFIojVVO42TcXG94nptT1RbTY4Ir5WV3iIv8jBD_=s2048?key=K2TP11tEt5USlx2623La7A",
         spineColor: '#6b46c1', coverColor: '#c4b5fd',
     },
     {
         id: 'WB-PNK', code: 'WB-PNK', tag: 'White Board Book', name: 'Pink White Board Book',
         desc: 'Soft pink reusable whiteboard book — cute and functional.',
-        cost: 2, img: "1234.png",
+        cost: 2, img: "https://lh7-rt.googleusercontent.com/sitesz/AClOY7oxSYcFa8U4PNMPN7AsN6Ad1BHlu2ph6ONEfMBe_EBSQeq1e8gifgbbxdscSj1nbvHfB0FNWQGksTtsHbz-LHsK1R-epnekCYgR9lGMnOLyE2XkE4BKAX9cihBlN2UpXqMp4P6gfyufVOxYb9ecDZhcot_5WaKKsUmIWNcDhWbvlBn6Is6UxBBi6yL95A=s2048?key=K2TP11tEt5USlx2623La7A",
         spineColor: '#d53f8c', coverColor: '#fbcfe8',
-    },
-    {
-        id: 'WB-PCH', code: 'WB-PCH', tag: 'White Board Book', name: 'Peach White Board Book',
-        desc: 'Warm peach-toned whiteboard notebook. The fan favorite.',
-        cost: 2, img: '3.png',
-        spineColor: '#c07850', coverColor: '#fddbb4',
     },
 ];
 
@@ -3768,6 +4229,31 @@ const BUNDLES = [
 ];
 
 const SPRITZ = [
+
+        {
+        id: 'LT-SPTZ', code: 'LT-SPTZ', tag: 'Spritz', name: 'Lemon Twist Hand Mist - 30ml',
+        desc: 'Lemon Twist Spritz — A mysterious blend of musk notes in every spritz. This enchanting hand mist leaves your hands feeling exotic and alluring with a captivating musk aroma. Perfect for on-the-go allure.',
+        cost: 10, img: "ltsptz.png",
+        color: '#9f7aea', label: 'Lemon\nTwist', sub: 'Hand Mist',
+        canBuy: true,
+        bogo: true,
+    },
+            {
+        id: 'MM-SPTZ', code: 'MM-SPTZ', tag: 'Spritz', name: 'Matcha Madness Hand Mist - 30ml',
+        desc: 'Matcha Madness Spritz — A mysterious blend of musk notes in every spritz. This enchanting hand mist leaves your hands feeling exotic and alluring with a captivating musk aroma. Perfect for on-the-go allure.',
+        cost: 10, img: "mmsptz.png",
+        color: '#9f7aea', label: 'Matcha\nMadness', sub: 'Hand Mist',
+        canBuy: true,
+        bogo: true,
+    },
+            {
+        id: 'RR-SPTZ', code: 'RR-SPTZ', tag: 'Spritz', name: 'Raspberry Rush Hand Mist - 30ml',
+        desc: 'Raspberry Rush Spritz — A vibrant blend of raspberry notes in every spritz. This delightful hand mist leaves your hands feeling refreshed and invigorated with a sweet raspberry aroma. Perfect for on-the-go revitalization.',
+        cost: 10, img: "rrsptz.png",
+        color: '#9f7aea', label: 'Raspberry\nRush', sub: 'Hand Mist',
+        canBuy: true,
+        bogo: true,
+    },
     {
         id: 'SB-SPTZ', code: 'SB-SPTZ', tag: 'Spritz', name: 'Strawberry Breeze Hand Mist - 30ml',
         desc: 'Strawberry Breeze Spritz — Sweet, sun-warmed strawberry meets a light airy finish in every spritz. This beautifully scented hand mist leaves your hands feeling fresh and delicately fragranced — like a perfect summer afternoon. Perfect for on-the-go refreshness.',
@@ -3848,14 +4334,64 @@ const ADS = [
 
 // ── CATALOG ───────────────────────────────────────────────────────────────────
 const CATALOG = {
-    trending:  ['SB-SPTZ','BL-SPTZ', 'CT-SPTZ', 'MN-SPTZ'],
+    trending:  ['MM-SPTZ','SB-SPTZ','BL-SPTZ', 'CT-SPTZ', 'MN-SPTZ'],
     blind_bags: ['BB-EP', 'BB-GB', 'BB-BKFST','BB-BRNCH','BB-LNCH','BB-DNR','BB-SPRNG','BB-BLOOM','BB-GHBAG','BB-MIDBAG',],
-    books:     ['WB-WHTB','WB-MCHA','WB-VIN',{ad_id:'ad2'},'WB-MINT','WB-AME','WB-PNK','WB-PCH'],
-    spritz:  ['SB-SPTZ','BL-SPTZ', 'CT-SPTZ', 'MN-SPTZ'],
+    books:     ['WB-WHTB','WB-PCH','WB-AME','WB-MINT','WB-PNK','WB-VIN','WB-MCHA',],
+    spritz:  ['MM-SPTZ', 'LT-SPTZ', 'RR-SPTZ','SB-SPTZ','BL-SPTZ', 'CT-SPTZ', 'MN-SPTZ',],
     accessories:  ['BB-ACC', 'SPRTZ-KC-1', 'SPRTZ-KC-2', 'SPRTZ-KC-3', 'SPRTZ-KC-4'],
     keychains: ['KC-PMP1','KC-PMP2',{ad_id:'ad3'},'KC-GRNS','KC-HND'],
     bundles:   ['BND-5PK','BND-START','BND-LB01','BND-LB02','BND-LB03'],
 };
+
+// Related products suggestions
+const RELATED_MAP = {
+    // Blind Bags
+    'BB-EP': ['BB-GB', 'BB-BKFST', 'BB-SPRNG', 'BB-BLOOM'],
+    'BB-GB': ['BB-EP', 'BB-BKFST', 'BB-BRNCH'],
+    'BB-BKFST': ['BB-BRNCH', 'BB-LNCH', 'BB-DNR'],
+    'BB-SPRNG': ['BB-BLOOM', 'BB-GHBAG', 'BB-MIDBAG'],
+    
+    // Books
+    'WB-WHTB': ['WB-MCHA', 'WB-PCH', 'WB-PNK'],
+    'WB-MCHA': ['WB-PCH', 'WB-MINT', 'WB-AME'],
+    
+    // Spritz
+    'SB-SPTZ': ['BL-SPTZ', 'CT-SPTZ', 'MN-SPTZ'],
+    'BL-SPTZ': ['SB-SPTZ', 'CT-SPTZ', 'MN-SPTZ'],
+    'CT-SPTZ': ['SB-SPTZ', 'BL-SPTZ', 'MN-SPTZ'],
+    'MN-SPTZ': ['SB-SPTZ', 'BL-SPTZ', 'CT-SPTZ'],
+    
+    // Default fallbacks
+    'default': ['BB-BKFST', 'WB-PCH', 'SB-SPTZ']
+};
+
+function renderRelatedProducts(currentId) {
+    const grid = document.getElementById('popupRelatedGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = '';
+    
+    let relatedIds = RELATED_MAP[currentId] || RELATED_MAP['default'];
+    
+    relatedIds.forEach(id => {
+        const p = ALL_PRODUCTS.find(x => x.id === id);
+        if (!p) return;
+        
+        const div = document.createElement('div');
+        div.className = 'popup-related-item';
+        div.innerHTML = `
+            <img src="${p.img || 'placeholder.png'}" alt="${p.name}">
+            <div class="rel-name">${p.name}</div>
+            <div class="rel-price">${p.cost} Action${p.cost !== 1 ? 's' : ''}</div>
+        `;
+        div.onclick = (e) => {
+            e.stopPropagation();
+            closePopup();           // close current
+            setTimeout(() => openPopup(id), 300); // open related
+        };
+        grid.appendChild(div);
+    });
+}
 
 // ── CART ──────────────────────────────────────────────────────────────────────
 const CART_KEY = 'minicrafts_cart_v1';
@@ -4065,6 +4601,7 @@ function renderPopupContent(p) {
     document.getElementById('popupDesc').textContent = p.desc;
     document.getElementById('popupCode').textContent = p.code;
     updatePopupTotal(p);
+    renderRelatedProducts(p.id);
     
     // Color swatches for books
     const colorRow = document.getElementById('popupColorRow');
@@ -4104,6 +4641,7 @@ function switchPopupBook(bookId) {
     const book = BOOKS.find(b => b.id === bookId);
     if (!book) return;
     renderPopupContent(book);
+    
 }
 
 // ── POPUP QTY, CHIPS & cartMeta ──────────────────────────────────────────────
