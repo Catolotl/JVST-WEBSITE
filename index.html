@@ -4499,7 +4499,7 @@ function bundlePlaceholder(p) {
 function renderCard(p, visual, extraBelow) {
     const inCart = !!cart[p.id];
     const buyable = p.canBuy !== false; // defaults to true if not set
-    const btnLabel = !buyable ? 'Coming Soon' : inCart ? '✓' : 'Get';
+    const btnLabel = !buyable ? 'Off Sale' : inCart ? '✓' : 'Get';
     const btnClass = !buyable ? 'product-add-btn' : inCart ? 'product-add-btn in-cart-btn' : 'product-add-btn';
     const btnStyle = !buyable ? 'opacity:0.35;cursor:not-allowed;background:#888;' : '';
     const btnClick = !buyable ? 'event.stopPropagation()' : `event.stopPropagation(); quickAddToCart('${p.id}')`;
@@ -4650,7 +4650,7 @@ function renderPopupContent(p) {
     
 const btn = document.getElementById('popupAddBtn');
 if (p.canBuy === false) {
-    btn.textContent = 'Coming Soon';
+    btn.textContent = 'Off Sale';
     btn.disabled = true;
     btn.style.opacity = '0.35';
     btn.style.cursor = 'not-allowed';
