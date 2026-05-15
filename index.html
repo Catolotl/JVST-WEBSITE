@@ -4028,7 +4028,7 @@ function startGentleBlossoms() {
     }, 650);
 }
 
-document.addEventListener('DOMContentLoaded', startGentleBlossoms);
+document.addEventListener('DOMContentL†goaded', startGentleBlossoms);
 </script>
 <script>
 'use strict';
@@ -4055,6 +4055,7 @@ const BLIND_BAGS = [
         cost: 2, img: 'raven.png',
         color: '#e53e3e', labelColor: '#fff',
         label: 'Edgar Allen Poe Bag', sub: '"Vainly I had sought to borrow"'
+                canBuy: false,
     },
         {
         id: 'BB-GB', code: 'BBAG-GB', tag: 'Blind Bag', name: 'Gummi Bear Bag',
@@ -4062,6 +4063,7 @@ const BLIND_BAGS = [
         cost: 2, img: 'gbbb.png',
         color: '#e53e3e', labelColor: '#fff',
         label: 'Gummi Bear Bag', sub: '"What will you find?"'
+                    canBuy: false,
     },
     {
         id: 'BB-BKFST', code: 'BBAG-BK', tag: 'Blind Bag', name: 'Breakfast Bag',
@@ -4069,6 +4071,7 @@ const BLIND_BAGS = [
         cost: 1, img: 'breakfastbb.png',
         color: '#e53e3e', labelColor: '#fff',
         label: 'Breakfast\nBlind Bag', sub: '"What Will You Find?"'
+                canBuy: false,
     },
     {
         id: 'BB-BRNCH', code: 'BBAG-BR', tag: 'Blind Bag', name: 'Brunch Bag',
@@ -4076,6 +4079,7 @@ const BLIND_BAGS = [
         cost: 1, img: "brunchbb.png",
         color: '#ed8936', labelColor: '#fff',
         label: 'Brunch Bag', sub: '"What Will You Find?"'
+                canBuy: false,
     },
     {
         id: 'BB-LNCH', code: 'BBAG-LN', tag: 'Blind Bag', name: 'Lunch Bag',
@@ -4083,6 +4087,7 @@ const BLIND_BAGS = [
         cost: 1, img: 'lunchbb.png',
         color: '#3182ce', labelColor: '#fff',
         label: 'Lunch Blind Bag', sub: '"What Will You Find?"'
+                canBuy: false,
     },
     {
         id: 'BB-DNR', code: 'BBAG-DN', tag: 'Blind Bag', name: 'Dinner Bag',
@@ -4090,6 +4095,7 @@ const BLIND_BAGS = [
         cost: 1, img: 'dinnerbb.png',
         color: '#38a169', labelColor: '#fff',
         label: 'Dinner Blind Bag', sub: '"What Will You Find?"'
+                canBuy: false,
     },
     {
         id: 'BB-SPRNG', code: 'BBAG-SP', tag: 'Blind Bag · Seasonal', name: 'Spring Bag',
@@ -4097,6 +4103,7 @@ const BLIND_BAGS = [
         cost: 1, img: "73.png",
         color: '#1e6b3a', labelColor: '#d1fae5',
         label: 'Spring Bag', sub: '🌸 "What Will You Find?"'
+                canBuy: false,
     },
     {
         id: 'BB-BLOOM', code: 'BBAG-BL', tag: 'Blind Bag · Pre-Order', name: 'Bloom Bag',
@@ -4104,6 +4111,7 @@ const BLIND_BAGS = [
         cost: 1, img: "74.png",
         color: 'var(--accent-dark)', labelColor: '#fff',
         label: 'Bloom Bag', sub: '🌸 Pre-Order'
+                canBuy: false,
     },
 
     {
@@ -4112,6 +4120,7 @@ const BLIND_BAGS = [
     cost: 1, img: "62.png",
     color: '#d97706', labelColor: '#fef3c7',
     label: 'Golden Hour', sub: '🌅 Season 2'
+                canBuy: false,
 },
 {
     id: 'BB-MIDBAG', code: 'MIDBAG', tag: 'Blind Bag · Season 2', name: 'Midnight Bag',
@@ -4119,6 +4128,7 @@ const BLIND_BAGS = [
     cost: 2, img: "63.png",
     color: '#1e1b4b', labelColor: '#c4b5fd',
     label: 'Midnight Bag', sub: '🌙 Rare Pull'
+            canBuy: false,
 },
 ];
 
@@ -4128,6 +4138,7 @@ const BOOKS = [
         desc: 'Reusable whiteboard notebook — draw, erase, repeat. Classic Maroon cover.',
         cost: 2, img: "2.png",
         spineColor: '#c0392b', coverColor: '#e8b4b0',
+                canBuy: false,
     },
 
         {
@@ -4135,6 +4146,7 @@ const BOOKS = [
         desc: 'Soft matcha green reusable whiteboard book — a fresh take on the classic.',
         cost: 2, img: '6789.png',
         spineColor: '#44624a', coverColor: 'linear-gradient(to bottom, #4c922f, #ff9e9e);',
+                    canBuy: false,
     },
 
     {
@@ -4142,30 +4154,35 @@ const BOOKS = [
         desc: 'Warm vintage-toned whiteboard book with a retro feel.',
         cost: 2, img: '7.png',
         spineColor: '#bfbfbf', coverColor: '#f0f0f0',
+                canBuy: false,
     },
     {
         id: 'WB-MINT', code: 'WB-MNT', tag: 'White Board Book', name: 'Mint White Board Book',
         desc: 'Fresh mint-colored reusable whiteboard book.',
         cost: 2, img: '4.png',
         spineColor: '#2d9e7e', coverColor: '#a8e6cf',
+                canBuy: false,
     },
     {
         id: 'WB-AME', code: 'WB-AME', tag: 'White Board Book', name: 'Amethyst White Board Book',
         desc: 'Deep amethyst purple — reusable whiteboard with a bold look.',
         cost: 2, img: "20.png",
         spineColor: '#6b46c1', coverColor: '#c4b5fd',
+                canBuy: false,
     },
     {
         id: 'WB-PNK', code: 'WB-PNK', tag: 'White Board Book', name: 'Pink White Board Book',
         desc: 'Soft pink reusable whiteboard book — cute and functional.',
         cost: 2, img: "1234.png",
         spineColor: '#d53f8c', coverColor: '#fbcfe8',
+                canBuy: false,
     },
     {
         id: 'WB-PCH', code: 'WB-PCH', tag: 'White Board Book', name: 'Peach White Board Book',
         desc: 'Warm peach-toned whiteboard notebook. The fan favorite.',
         cost: 2, img: '3.png',
         spineColor: '#c07850', coverColor: '#fddbb4',
+                canBuy: false,
     },
 ];
 
@@ -4175,24 +4192,28 @@ const KEYCHAINS = [
         desc: 'Handmade Spring keychain — a fresh floral accent for your keys or bag.',
         cost: 1, img: "106.png",
         emoji: '🌸', color: '#f9a8d4',
+                canBuy: false,
     },
     {
         id: 'KC-PMP2', code: 'KC-PM2', tag: 'Keychain · Seasonal', name: 'Soccer Ball Keychain',
         desc: 'Spring keychain in soft blossom pink. Each one handmade.',
         cost: 1, img: "107.png",
         emoji: '🌸', color: '#f472b6',
+                canBuy: false,
     },
     {
         id: 'KC-GRNS', code: 'KC-GRN', tag: 'Keychain · Seasonal', name: 'Garden Capybara Keychain',
         desc: 'Spring gardening capybara themed keychain with fresh green charm.',
         cost: 1, img: "108.png",
         emoji: '🌿', color: '#6ee7b7',
+                canBuy: false,
     },
     {
         id: 'KC-HND', code: 'KC-PM3', tag: 'Keychain · Seasonal', name: 'Handmade Spring Duck Keychain',
         desc: 'Handcrafted Spring Duck keychain — each one is slightly unique.',
         cost: 1, img: "109.png",
         emoji: '🌷', color: '#fca5a5',
+                canBuy: false,
     },
 ];
 
@@ -4202,30 +4223,35 @@ const BUNDLES = [
         desc: 'Five random rare blind bags shipped together with a rare collectors outer box. Best value per pull.',
         cost: 5, img: "75.png",
         color: '#9f7aea', label: '5-Pack\nBlind Bags', sub: 'Best Value'
+                canBuy: false,
     },
     {
         id: 'BND-START', code: 'STARTER', tag: 'Limited', name: 'Starter Pack',
         desc: 'The full intro: 5 blind bags + 1 Indy Keychain + a handwritten note from IRELAND™. Custom box. Limited to 100 sets.',
         cost: 5, img: "12.png",
         color: '#f687b3', label: 'Starter\nPack', sub: 'Limited 100'
+                canBuy: false,
     },
     {
         id: 'BND-LB01', code: 'LB01', tag: 'Loot Box', name: 'Loot Box #001',
         desc: 'Random loot box packed with MINI CRAFTS memorabilia and rare IRELAND™ collectibles. No two boxes alike.',
         cost: 3, img: "9.png",
         color: '#a0aec0', label: 'Loot Box\n#001', sub: 'Mystery'
+                canBuy: false,
     },
     {
         id: 'BND-LB02', code: 'LB02', tag: 'Loot Box', name: 'Loot Box #002',
         desc: 'Second series random loot box. New items, new chances — same rare IRELAND™ energy.',
         cost: 3, img: "10.png",
         color: '#718096', label: 'Loot Box\n#002', sub: 'Series 2'
+                canBuy: false,
     },
     {
         id: 'BND-LB03', code: 'LB03', tag: 'Loot Box', name: 'Loot Box #003',
         desc: 'Entry-level loot box. Great starting point for new collectors, MINI CRAFTS essentials inside.',
         cost: 1, img: "11.png",
         color: '#cbd5e0', label: 'Loot Box\n#003', sub: 'Starter'
+                canBuy: false,
     },
 ];
 
@@ -4236,7 +4262,7 @@ const SPRITZ = [
         desc: 'Lemon Twist Spritz — A mysterious blend of musk notes in every spritz. This enchanting hand mist leaves your hands feeling exotic and alluring with a captivating musk aroma. Perfect for on-the-go allure.',
         cost: 10, img: "ltsptz.png",
         color: '#9f7aea', label: 'Lemon\nTwist', sub: 'Hand Mist',
-        canBuy: true,
+        canBuy: false,
         bogo: true,
     },
             {
@@ -4244,7 +4270,7 @@ const SPRITZ = [
         desc: 'Matcha Madness Spritz — A mysterious blend of musk notes in every spritz. This enchanting hand mist leaves your hands feeling exotic and alluring with a captivating musk aroma. Perfect for on-the-go allure.',
         cost: 10, img: "mmsptz.png",
         color: '#9f7aea', label: 'Matcha\nMadness', sub: 'Hand Mist',
-        canBuy: true,
+        canBuy: false,
         bogo: true,
     },
             {
@@ -4252,7 +4278,7 @@ const SPRITZ = [
         desc: 'Raspberry Rush Spritz — A vibrant blend of raspberry notes in every spritz. This delightful hand mist leaves your hands feeling refreshed and invigorated with a sweet raspberry aroma. Perfect for on-the-go revitalization.',
         cost: 10, img: "rrsptz.png",
         color: '#9f7aea', label: 'Raspberry\nRush', sub: 'Hand Mist',
-        canBuy: true,
+        canBuy: false,
         bogo: true,
     },
     {
@@ -4260,7 +4286,7 @@ const SPRITZ = [
         desc: 'Strawberry Breeze Spritz — Sweet, sun-warmed strawberry meets a light airy finish in every spritz. This beautifully scented hand mist leaves your hands feeling fresh and delicately fragranced — like a perfect summer afternoon. Perfect for on-the-go refreshness.',
         cost: 10, img: "sbsptz.png",
         color: '#9f7aea', label: 'Strawberry\nBreeze', sub: 'Hand Mist',
-        canBuy: true,
+        canBuy: false,
         bogo: true,
     },
         {
@@ -4268,7 +4294,7 @@ const SPRITZ = [
         desc: 'Blueberry Blast Spritz — A refreshing burst of blueberry goodness in every spritz. This wonderfully scented hand mist leaves your hands feeling fresh, clean, and lightly moisturized with a delightful blueberry aroma. Perfect for on-the-go freshness.',
         cost: 10, img: "bbsptz.png",
         color: '#9f7aea', label: 'Blueberry\nBurst', sub: 'Hand Mist',
-        canBuy: true,
+        canBuy: false,
         bogo: true,
     },
         {
@@ -4276,7 +4302,7 @@ const SPRITZ = [
         desc: 'Pure Citrus Spritz — A zesty blend of citrus notes in every spritz. This invigorating hand mist leaves your hands feeling refreshed and energized with a vibrant citrus aroma. Perfect for on-the-go revitalization.',
         cost: 10, img: "ctsptz.png",
         color: '#9f7aea', label: 'Citrus\nTwist', sub: 'Hand Mist',
-        canBuy: true,
+        canBuy: false,
         bogo: true,
     },
         {
@@ -4284,7 +4310,7 @@ const SPRITZ = [
         desc: 'Midnight Musk Spritz — A mysterious blend of musk notes in every spritz. This enchanting hand mist leaves your hands feeling exotic and alluring with a captivating musk aroma. Perfect for on-the-go allure.',
         cost: 10, img: "mnsptz.png",
         color: '#9f7aea', label: 'Midnight\nMusk', sub: 'Hand Mist',
-        canBuy: true,
+        canBuy: false,
         bogo: true,
     },
 ];
@@ -4295,35 +4321,35 @@ const ACCESSORIES = [
         desc: 'Show off your blind bag collection with the official Blind Bag Trophy Sleeve. Crafted from durable materials, this sleeve is designed to hold and display your favorite blind bags in style. Whether you have one bag or a whole collection, the Trophy Sleeve keeps them safe while showcasing their charm.',
         cost: 2, img: "trfy.png",
         color: '#9f7aea', label: 'Trophy\nSleeve', sub: 'Accessory',
-        canBuy: true,
+        canBuy: false,
     },
         {
         id: 'SPRTZ-KC-1', code: 'SPRTZ-KC-1', tag: 'Accessories', name: 'Spritz Keychain - Strawberry Breeze',
         desc: 'Decorate your Ireland Spritz bottle with the official Spritz Keychain. This charming accessory features a miniaturized fruit or object matching the flavors scent, complete with intricate details and vibrant colors that match the Strawberry Breeze scent. Attach it to your keys, bag, or anywhere you want to add a touch of spritz-inspired flair.',
         cost: 2, img: "sbry.png",
         color: '#9f7aea', label: 'Spritz\nKeychain', sub: 'Accessory',
-        canBuy: true,
+        canBuy: false,
     },
             {
         id: 'SPRTZ-KC-2', code: 'SPRTZ-KC-2', tag: 'Accessories', name: 'Spritz Keychain - Blueberry Burst',
         desc: 'Decorate your Ireland Spritz bottle with the official Spritz Keychain. This charming accessory features a miniaturized fruit or object matching the flavors scent, complete with intricate details and vibrant colors that match the Blueberry Burst scent. Attach it to your keys, bag, or anywhere you want to add a touch of spritz-inspired flair.',
         cost: 2, img: "bbry.png",
         color: '#9f7aea', label: 'Spritz\nKeychain', sub: 'Accessory',
-        canBuy: true,
+        canBuy: false,
     },
                 {
         id: 'SPRTZ-KC-3', code: 'SPRTZ-KC-3', tag: 'Accessories', name: 'Spritz Keychain - Pure Citrus',
         desc: 'Decorate your Ireland Spritz bottle with the official Spritz Keychain. This charming accessory features a miniaturized fruit or object matching the flavors scent, complete with intricate details and vibrant colors that match the Pure Citrus scent. Attach it to your keys, bag, or anywhere you want to add a touch of spritz-inspired flair.',
         cost: 2, img: "orng.png",
         color: '#9f7aea', label: 'Spritz\nKeychain', sub: 'Accessory',
-        canBuy: true,
+        canBuy: false,
     },
                     {
         id: 'SPRTZ-KC-4', code: 'SPRTZ-KC-4', tag: 'Accessories', name: 'Spritz Keychain - Midnight Musk',
         desc: 'Decorate your Ireland Spritz bottle with the official Spritz Keychain. This charming accessory features a miniaturized fruit or object matching the flavors scent, complete with intricate details and vibrant colors that match the Midnight Musk scent. Attach it to your keys, bag, or anywhere you want to add a touch of spritz-inspired flair.',
         cost: 2, img: "lvnd.png",
         color: '#9f7aea', label: 'Spritz\nKeychain', sub: 'Accessory',
-        canBuy: true,
+        canBuy: false,
     },
 ]
 
@@ -5705,5 +5731,85 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
  -->
+
+
+    <!-- === SHOP CLOSURE NOTICE POPUP === -->
+<div id="shop-closure-overlay" style="position:fixed;inset:0;z-index:9999;background:rgba(10,10,10,0.92);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:var(--white);max-width:460px;width:100%;border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.25);">
+        
+        <!-- Header -->
+        <div style="padding:28px 28px 12px;background:linear-gradient(135deg,#1a1a1a,#111);color:#fff;text-align:center;position:relative;">
+            <div onclick="closeClosurePopup()" style="position:absolute;top:16px;right:20px;font-size:28px;line-height:1;cursor:pointer;opacity:0.6;">×</div>
+            <div style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;opacity:0.7;margin-bottom:8px;">FINAL UPDATE • MAY 2026</div>
+            <div style="font-family:var(--font-display);font-size:2rem;font-weight:700;letter-spacing:-0.03em;line-height:1.1;">Mini Crafts Shop is Closing</div>
+        </div>
+
+        <div style="padding:32px 28px 28px;font-size:0.9rem;line-height:1.7;color:var(--black);">
+            <p>Hey friends,</p>
+            <p>After a good run, we're officially winding down physical product sales. <strong>All current orders have been canceled</strong> and refunds (where applicable) processed.</p>
+            
+            <p>The shop saw very low sales and, honestly, I've lost the motivation to keep restocking, photographing, packing, and shipping small batches. It was a fun creative experiment, but it's time to move on.</p>
+            
+            <p><strong>Digital services</strong> (this site, Indy tools, etc.) will remain online for the foreseeable future, though updates will be rare or nonexistent.</p>
+            
+            <p><strong>Good news:</strong> <span style="color:#10b981;font-weight:600;">Tunes is coming back</span> soon as a standalone music experience.</p>
+            
+            <p style="margin-top:20px;font-size:0.82rem;color:var(--gray-600);">
+                Thank you to everyone who supported the project. I really appreciate it. Time for me to focus on bigger, more professional work.
+            </p>
+        </div>
+
+        <div style="padding:0 28px 28px;display:flex;gap:12px;">
+            <button onclick="closeClosurePopup()" 
+                    style="flex:1;padding:14px;background:var(--black);color:white;border:none;border-radius:12px;font-weight:600;font-size:0.9rem;cursor:pointer;">
+                Got it, thanks
+            </button>
+        </div>
+
+        <div style="text-align:center;padding:12px 28px 24px;font-size:0.7rem;color:var(--gray-400);font-family:var(--font-mono);">
+            — IRELAND™ Team
+        </div>
+    </div>
+</div>
+
+<script>
+// Closure Popup Logic
+function showClosurePopup() {
+    const overlay = document.getElementById('shop-closure-overlay');
+    const dismissed = localStorage.getItem('shop_closure_dismissed_v1');
+    
+    if (dismissed) return;
+    
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeClosurePopup(permanent = true) {
+    const overlay = document.getElementById('shop-closure-overlay');
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+    
+    if (permanent) {
+        localStorage.setItem('shop_closure_dismissed_v1', 'true');
+    }
+}
+
+// Auto-show on load (after a short delay so it doesn't fight other popups)
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        showClosurePopup();
+    }, 1800);
+});
+
+// Allow escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const overlay = document.getElementById('shop-closure-overlay');
+        if (overlay.style.display === 'flex') {
+            closeClosurePopup();
+        }
+    }
+});
+</script>
 </body>
 </html>
