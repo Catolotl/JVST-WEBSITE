@@ -2877,8 +2877,9 @@ nav { height: 56px; border-bottom: none; background: rgba(255,255,255,0.92); }
                 <li><a href="index.html" class="active">Home</a></li>
                 <li><a href="indy.html">Indy AI</a></li>
                 <li><a href="internal.html">For Devs</a></li>
-                <li><a style="font-weight: bolder;" href="fans.html">Lounge</a></li>
-                <li><a style="font-weight: bolder;" href="boards.html">Boards</a></li>
+                <li><a" href="fans.html">Lounge</a></li>
+                <li><a" href="boards.html">Boards</a></li>
+                <li><a style="font-weight: bolder;" href="boards.html">Tunes</a></li>
                 <li><a href="shop.html">☻</a></li>
             </ul>
             
@@ -4054,7 +4055,7 @@ const BLIND_BAGS = [
         desc: 'Discover you way through halls of terror, evil birds, or other evil classics by the #1 Poet.',
         cost: 2, img: 'raven.png',
         color: '#e53e3e', labelColor: '#fff',
-        label: 'Edgar Allen Poe Bag', sub: '"Vainly I had sought to borrow"'
+        label: 'Edgar Allen Poe Bag', sub: '"Vainly I had sought to borrow"',
                 canBuy: false,
     },
         {
@@ -4062,7 +4063,7 @@ const BLIND_BAGS = [
         desc: 'A sweet surprise! Randomly assorted gummy bear-themed items — from mini candy jars to bear-shaped collectables. A chewy mystery in every bag. **(Not actual candy)**',
         cost: 2, img: 'gbbb.png',
         color: '#e53e3e', labelColor: '#fff',
-        label: 'Gummi Bear Bag', sub: '"What will you find?"'
+        label: 'Gummi Bear Bag', sub: '"What will you find?"',
                     canBuy: false,
     },
     {
@@ -4070,7 +4071,7 @@ const BLIND_BAGS = [
         desc: 'Start your day with a mystery! One of the original Mini Crafts blind bags — "What Will You Find?"',
         cost: 1, img: 'breakfastbb.png',
         color: '#e53e3e', labelColor: '#fff',
-        label: 'Breakfast\nBlind Bag', sub: '"What Will You Find?"'
+        label: 'Breakfast\nBlind Bag', sub: '"What Will You Find?"',
                 canBuy: false,
     },
     {
@@ -4078,7 +4079,7 @@ const BLIND_BAGS = [
         desc: 'Mid-morning mystery. Random items themed around the best meal of the day.',
         cost: 1, img: "brunchbb.png",
         color: '#ed8936', labelColor: '#fff',
-        label: 'Brunch Bag', sub: '"What Will You Find?"'
+        label: 'Brunch Bag', sub: '"What Will You Find?"',
                 canBuy: false,
     },
     {
@@ -4086,7 +4087,7 @@ const BLIND_BAGS = [
         desc: 'Midday mystery collectible, randomly assorted. "What Will You Find?"',
         cost: 1, img: 'lunchbb.png',
         color: '#3182ce', labelColor: '#fff',
-        label: 'Lunch Blind Bag', sub: '"What Will You Find?"'
+        label: 'Lunch Blind Bag', sub: '"What Will You Find?"',
                 canBuy: false,
     },
     {
@@ -4094,7 +4095,7 @@ const BLIND_BAGS = [
         desc: 'Evening edition with rare night-drop items. The original dinner bag.',
         cost: 1, img: 'dinnerbb.png',
         color: '#38a169', labelColor: '#fff',
-        label: 'Dinner Blind Bag', sub: '"What Will You Find?"'
+        label: 'Dinner Blind Bag', sub: '"What Will You Find?"',
                 canBuy: false,
     },
     {
@@ -4102,7 +4103,7 @@ const BLIND_BAGS = [
         desc: 'Fresh spring edition packed with seasonal surprises. Limited seasonal run — blooms while supplies last.',
         cost: 1, img: "73.png",
         color: '#1e6b3a', labelColor: '#d1fae5',
-        label: 'Spring Bag', sub: '🌸 "What Will You Find?"'
+        label: 'Spring Bag', sub: '🌸 "What Will You Find?"',
                 canBuy: false,
     },
     {
@@ -4110,7 +4111,7 @@ const BLIND_BAGS = [
         desc: 'Pre-order the limited Spring Bloom edition before it sells out. Ships this season.',
         cost: 1, img: "74.png",
         color: 'var(--accent-dark)', labelColor: '#fff',
-        label: 'Bloom Bag', sub: '🌸 Pre-Order'
+        label: 'Bloom Bag', sub: '🌸 Pre-Order',
                 canBuy: false,
     },
 
@@ -4119,7 +4120,7 @@ const BLIND_BAGS = [
     desc: 'Season 2 opens with the Golden Hour. Warm amber-toned collectibles: sunset horizon figure, golden mirror charm, sun tea bottle mini, amber glass keychain, and three S2-exclusive variants not found in any S1 bag. Packaging uses the new matte kraft stock introduced in 2026.',
     cost: 1, img: "62.png",
     color: '#d97706', labelColor: '#fef3c7',
-    label: 'Golden Hour', sub: '🌅 Season 2'
+    label: 'Golden Hour', sub: '🌅 Season 2',
                 canBuy: false,
 },
 {
@@ -4127,7 +4128,7 @@ const BLIND_BAGS = [
     desc: 'Premium pull of Season 2. The Midnight Bag carries a 40% rare-item rate versus the standard 15% across other bags. Pool includes glow-in-the-dark variants, all-matte black exclusives, and the IRELAND™ logo charm.',
     cost: 2, img: "63.png",
     color: '#1e1b4b', labelColor: '#c4b5fd',
-    label: 'Midnight Bag', sub: '🌙 Rare Pull'
+    label: 'Midnight Bag', sub: '🌙 Rare Pull',
             canBuy: false,
 },
 ];
@@ -4222,35 +4223,35 @@ const BUNDLES = [
         id: 'BND-5PK', code: 'BAGBUN', tag: 'Bundle', name: '5-Pack Blind Bags',
         desc: 'Five random rare blind bags shipped together with a rare collectors outer box. Best value per pull.',
         cost: 5, img: "75.png",
-        color: '#9f7aea', label: '5-Pack\nBlind Bags', sub: 'Best Value'
+        color: '#9f7aea', label: '5-Pack\nBlind Bags', sub: 'Best Value',
                 canBuy: false,
     },
     {
         id: 'BND-START', code: 'STARTER', tag: 'Limited', name: 'Starter Pack',
         desc: 'The full intro: 5 blind bags + 1 Indy Keychain + a handwritten note from IRELAND™. Custom box. Limited to 100 sets.',
         cost: 5, img: "12.png",
-        color: '#f687b3', label: 'Starter\nPack', sub: 'Limited 100'
+        color: '#f687b3', label: 'Starter\nPack', sub: 'Limited 100',
                 canBuy: false,
     },
     {
         id: 'BND-LB01', code: 'LB01', tag: 'Loot Box', name: 'Loot Box #001',
         desc: 'Random loot box packed with MINI CRAFTS memorabilia and rare IRELAND™ collectibles. No two boxes alike.',
         cost: 3, img: "9.png",
-        color: '#a0aec0', label: 'Loot Box\n#001', sub: 'Mystery'
+        color: '#a0aec0', label: 'Loot Box\n#001', sub: 'Mystery',
                 canBuy: false,
     },
     {
         id: 'BND-LB02', code: 'LB02', tag: 'Loot Box', name: 'Loot Box #002',
         desc: 'Second series random loot box. New items, new chances — same rare IRELAND™ energy.',
         cost: 3, img: "10.png",
-        color: '#718096', label: 'Loot Box\n#002', sub: 'Series 2'
+        color: '#718096', label: 'Loot Box\n#002', sub: 'Series 2',
                 canBuy: false,
     },
     {
         id: 'BND-LB03', code: 'LB03', tag: 'Loot Box', name: 'Loot Box #003',
         desc: 'Entry-level loot box. Great starting point for new collectors, MINI CRAFTS essentials inside.',
         cost: 1, img: "11.png",
-        color: '#cbd5e0', label: 'Loot Box\n#003', sub: 'Starter'
+        color: '#cbd5e0', label: 'Loot Box\n#003', sub: 'Starter',
                 canBuy: false,
     },
 ];
@@ -5746,11 +5747,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div style="padding:32px 28px 28px;font-size:0.9rem;line-height:1.7;color:var(--black);">
             <p>Hey friends,</p>
-            <p>After a good run, we're officially winding down physical product sales. <strong>All current orders have been canceled</strong> and refunds (where applicable) processed.</p>
+            <p>After a good run, we're officially winding down physical product sales. <strong>All current orders have been canceled</strong>, and 10 free actions will be gifted to every actions user upon request.</p>
             
-            <p>The shop saw very low sales and, honestly, I've lost the motivation to keep restocking, photographing, packing, and shipping small batches. It was a fun creative experiment, but it's time to move on.</p>
+            <p>The shop saw very low sales and, honestly, I've lost the motivation to keep restocking, creating product thumbnails, packing, and shipping small batches. It was a fun creative experiment, but it's time to move on.</p>
             
-            <p><strong>Digital services</strong> (this site, Indy tools, etc.) will remain online for the foreseeable future, though updates will be rare or nonexistent.</p>
+            <p><strong>Digital services</strong> (this site, Indy, tools, etc.) will remain online for the foreseeable future, though updates will be rare or nonexistent.</p>
             
             <p><strong>Good news:</strong> <span style="color:#10b981;font-weight:600;">Tunes is coming back</span> soon as a standalone music experience.</p>
             
